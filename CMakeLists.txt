@@ -8,7 +8,7 @@ set(PROJECT_VERSION 1.0)
 set(PROJECT_DESCRIPTION "Widget for showing frames")
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake")
-#include(CommonSetup)
+include(CommonSetup)
 
 # Include headers within source
 # If you create subdirectories within source include headers with subdirectory, i.e. 
