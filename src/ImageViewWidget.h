@@ -18,6 +18,7 @@
 #include "EllipseItem.h"
 #include "PolygonItem.h"
 #include "PolylineItem.h"
+#include "frame_helper/FrameHelper.h"
 
 #ifndef IMAGEVIEWWIDGET_H
 #define	IMAGEVIEWWIDGET_H
@@ -67,7 +68,6 @@
  */
 class ImageViewWidget : public QWidget
 {
-
     Q_OBJECT
 
 public:
@@ -78,13 +78,13 @@ public:
      * @param height the height of images put onto the widget
      * @param format the format from QImage
      */
-    ImageViewWidget(int width, int height, QImage::Format format);
+    ImageViewWidget(int width=640, int height=480, QImage::Format format=QImage::Format_RGB888);
 
     /**
      * Destructor cleaning up
      */
     virtual ~ImageViewWidget();
-
+public slots:
     /**
      * Changes the format and dimensions of the widget so images with
      * other dimensions or formats can be added
@@ -93,13 +93,15 @@ public:
      * @param format the new image format
      */
     void changeFormat(int width, int height, QImage::Format format);
+    void changeFormat2(QString mode, int pixel_size, int width, int height);
+    
+    void addRawImage(QString mode, int pixel_size, int width, int height,const char* pbuffer);
 
     /**
-     * Adds an image to the widget
-     * @param data the char data of the image
-     * @param numBytes the number of bytes the image data consists of
+     * Adds a QImage to the widget.
+     * @param image the image to be added
      */
-    void addImage(uchar* data, int numBytes);
+     void addImage(QImage* image);
 
     /**
      * Adds an image and scales it. If the given dimensions match the
@@ -121,7 +123,7 @@ public:
      * @param text the text to be displayed
      * @return pointer to a #seeDrawItem to remove the text afterwards.
      */
-    DrawItem* addText(int xPos, int yPos, int groupNr, QColor* color, char* text);
+    void addText(int xPos, int yPos, int groupNr, QColor* color, char* text);
 
     /**
      * Adds a line to the images and all successive images
@@ -219,23 +221,31 @@ public:
      */
     void clearGroups();
 
+    int getHeight(){return height;};
+    int getWidth(){return width;};
+    int getFormat(){return format;};
+  public:
     /**
-     * Overwritten method paints the iamge given to the widget
+    * Adds an image to the widget
+    * @param data the char data of the image
+    * @param numBytes the number of bytes the image data consists of
+    */
+    void addImage(uchar* data, int numBytes);
+    
+    /**
+     * Overwritten method paints the image given to the widget
      * @param event the Event which occured
      */
     void paintEvent(QPaintEvent* event);
+    
 protected:
-    /**
-     * Adds a QImage to the widget. Useful convinience method
-     * @param image the image to be added
-     */
-    void addImage(QImage* image);
-
     /**
      * Adds all shapes to the image
      * @param shownImage teh iamge to add the shapes to
      */
     void addDrawItemsToWidget(QImage* shownImage);
+    
+    QImage::Format getFormat(base::samples::frame::frame_mode_t mode,int pixel_size);
 
     /** The image currently shown*/
     QImage* image;
