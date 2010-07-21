@@ -21,6 +21,10 @@ pkg_check_modules(BASE "base-types" )
 include_directories(${BASE_INCLUDE_DIRS})
 link_directories(${BASE_LIBDIR})
 
+pkg_check_modules(FRAMEHELPER "frame_helper" )
+include_directories(${FRAMEHELPER_INCLUDE_DIRS})
+link_directories(${FRAMEHELPER_LIBDIR})
+
 # command line output on, you can also use make VERBOSE=1
 # set(CMAKE_VERBOSE_MAKEFILE on)
 
