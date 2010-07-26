@@ -3,6 +3,8 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 SET(image_view_widget_MOC_HDRS
   ImageViewWidget.h
+  DrawItem.h
+  TextItem.h
 )
 QT4_WRAP_CPP(image_view_widget_MOC_SRCS ${image_view_widget_MOC_HDRS})
 

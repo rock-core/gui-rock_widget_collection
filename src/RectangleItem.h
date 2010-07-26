@@ -25,7 +25,7 @@ public:
      * @param width the width of the rectangle
      * @param height the height of the rectangle
      */
-    RectangleItem(int posX, int posY, int groupNr, QColor* color, int width, int height);
+    RectangleItem(int posX, int posY, int groupNr, const QColor &color, int width, int height);
 
     /**
      * Destructor

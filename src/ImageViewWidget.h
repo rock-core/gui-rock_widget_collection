@@ -84,6 +84,15 @@ public:
      * Destructor cleaning up
      */
     virtual ~ImageViewWidget();
+    
+    
+    /**
+     * Overwritten method paints the image given to the widget
+     * @param event the Event which occured
+     */
+    void paintEvent(QPaintEvent* event);
+    
+    
 public slots:
     /**
      * Changes the format and dimensions of the widget so images with
@@ -94,36 +103,29 @@ public slots:
      */
     void changeFormat(int width, int height, QImage::Format format);
     void changeFormat2(QString mode, int pixel_size, int width, int height);
-    
-    void addRawImage(QString mode, int pixel_size, int width, int height,const char* pbuffer);
+    void addRawImage(const QString &mode, int pixel_size, int width, int height,const char* pbuffer);
 
     /**
      * Adds a QImage to the widget.
      * @param image the image to be added
      */
-     void addImage(QImage* image);
+     void addImage(const QImage &image);
 
     /**
-     * Adds an image and scales it. If the given dimensions match the
-     * dimensions given to the widget no scaling will be done and addImage(uchar*, int)
-     * will be called.
-     * @param data the image data
-     * @param numBytes the number of bytes of the iamge
-     * @param origWidth the width of the image NOT the widget
-     * @param origHeight the height of the image NOT the widget
+     * Adds a shape to the image
+     * @param drawItem teh itrem which to draw. keep the item given to remove it afterwards
      */
-    void addImageAndScale(uchar* data, int numBytes, int origWidth, int origHeight);
-
+    QObject* addItem(QObject* object);
+    
     /**
      * Adds a Text to the image and all successive images
      * @param xPos the starting x position
      * @param yPos the starting y position
      * @param groupNr the group number
-     * @param color the color of the text
      * @param text the text to be displayed
      * @return pointer to a #seeDrawItem to remove the text afterwards.
      */
-    void addText(int xPos, int yPos, int groupNr, QColor* color, char* text);
+    QObject* addText(int xPos, int yPos, int groupNr, const QString &text);
 
     /**
      * Adds a line to the images and all successive images
@@ -135,7 +137,7 @@ public slots:
      * @param endY the ending y position
      * @return pointer to a #seeDrawItem to remove the line afterwards
      */
-    DrawItem* addLine(int xPos, int yPos, int groupNr, QColor* color, int endX, int endY);
+    QObject* addLine(int xPos, int yPos, int groupNr, const QColor &color, int endX, int endY);
 
     /**
      * Adds an ellipse to the image and all successive images. the elipse will be drawn
@@ -149,7 +151,7 @@ public slots:
      * @param height the height of the rectangle
      * @return pointer to a #seeDrawItem to remove the ellipse afterwards
      */
-    DrawItem* addEllipse(int xPos, int yPos, int groupNr, QColor* color, int width, int height);
+    QObject* addEllipse(int xPos, int yPos, int groupNr, const QColor &color, int width, int height);
 
     /**
      * Adds a rectangle to the image and all successive images.
@@ -162,7 +164,7 @@ public slots:
      * @param height the height of the rectangle
      * @return pointer to a #seeDrawItem to remove the ellipse afterwards
      */
-    DrawItem* addRectangle(int xPos, int yPos, int groupNr, QColor* color, int width, int height);
+    QObject* addRectangle(int xPos, int yPos, int groupNr, const QColor &color, int width, int height);
 
     /**
      * Adds multiple lines
@@ -172,7 +174,7 @@ public slots:
      * @param numberOfPoints the number of points in the points array
      * @return pointer to a DrawItem
      */
-    DrawItem* addPolyline(int groupNr, QColor* color, QPoint* points, int numberOfPoints);
+    QObject* addPolyline(int groupNr, const QColor &color, QPoint* points, int numberOfPoints);
 
     /**
      * Adds a Polygon with the given points. An additional line will be drawn between
@@ -183,30 +185,18 @@ public slots:
      * @param numberOfPoints the number of points in the points array
      * @return a DrawItem containing the Polygon
      */
-    DrawItem* addPolygon(int groupNr, QColor* color, QPoint* points, int numberOfPoints);
-
-    /**
-     * Adds a shape to the image
-     * @param drawItem teh itrem which to draw. keep the item given to remove it afterwards
-     */
-    void addItem(DrawItem* drawItem);
+    QObject* addPolygon(int groupNr, const QColor &color, QPoint* points, int numberOfPoints);
 
     /**
      * Remobves a shape from the image
      * @param drawItem the shape to remove
      */
-    void removeItem(DrawItem* drawItem);
-
-    /**
-     * Removes all items of the given type #seeDrawType
-     * @param drawType the type which shall be removed
-     */
-    void removeAll(DrawType drawType);
-
-    /**
+    QObject* removeItem(QObject* drawItem,bool delete_object);
+    
+     /**
      * Removes all shapes from the iamges
      */
-    void removeAllItems();
+    void removeAllItems(bool delete_objects);
 
     /**
      * Sets the visibvle status of a group (true being visible)
@@ -224,31 +214,17 @@ public slots:
     int getHeight(){return height;};
     int getWidth(){return width;};
     int getFormat(){return format;};
-  public:
-    /**
-    * Adds an image to the widget
-    * @param data the char data of the image
-    * @param numBytes the number of bytes the image data consists of
-    */
-    void addImage(uchar* data, int numBytes);
-    
-    /**
-     * Overwritten method paints the image given to the widget
-     * @param event the Event which occured
-     */
-    void paintEvent(QPaintEvent* event);
-    
+  
 protected:
     /**
      * Adds all shapes to the image
      * @param shownImage teh iamge to add the shapes to
      */
-    void addDrawItemsToWidget(QImage* shownImage);
-    
+    void addDrawItemsToWidget(QImage &shownImage);
     QImage::Format getFormat(base::samples::frame::frame_mode_t mode,int pixel_size);
-
+    
     /** The image currently shown*/
-    QImage* image;
+    QImage image;
     /** The format used in the widget*/
     QImage::Format format;
     /** The width of the widgets images*/

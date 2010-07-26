@@ -6,17 +6,12 @@
  */
 
 #include "DrawItem.h"
+int DrawItem::_ID = 0;
 
-DrawItem::DrawItem(int posX, int posY, int groupNr, QColor* color)
+DrawItem::DrawItem(int posX, int posY, int groupNr, const QColor &color):
+groupNr(groupNr),posX(posX),posY(posY),color(color),lineWidth(0),penCapStyle(Qt::SquareCap),penStyle(Qt::SolidLine),m_id(_ID++)
 {
-    this->groupNr = groupNr;
-    this->posX = posX;
-    this->posY = posY;
-    this->color = color;
-    this->lineWidth = 0;
-    this->penCapStyle = Qt::SquareCap;
-    this->penStyle = Qt::SolidLine;
-
+ 
 }
 
 void DrawItem::addPenStyle(QPainter* painter)
@@ -25,7 +20,7 @@ void DrawItem::addPenStyle(QPainter* painter)
     pen.setCapStyle(penCapStyle);
     pen.setStyle(penStyle);
     pen.setWidth(lineWidth);
-    pen.setColor(*color);
+    pen.setColor(color);
     painter->setPen(pen);
 }
 

@@ -9,7 +9,7 @@
 
 #include "LineItem.h"
 
-LineItem::LineItem(int posX, int posY, int groupNr, QColor* color, int endX, int endY)
+LineItem::LineItem(int posX, int posY, int groupNr, const QColor &color, int endX, int endY)
     : DrawItem(posX, posY, groupNr, color)
 {
     this->endX = endX;

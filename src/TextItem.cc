@@ -7,14 +7,20 @@
 
 #include "TextItem.h"
 
-TextItem::TextItem(int posX, int posY, int groupNr, QColor* color, char* text) : DrawItem(posX, posY, groupNr, color)
+TextItem::TextItem(int posX, int posY, int groupNr,const QString &text) :
+DrawItem(posX, posY, groupNr, QColor(0,0,0)),text(text),font(QFont("Serif")),background(false)
 {
-    this->text = text;
-    font = new QFont("Serif", 24, QFont::Normal);
+  
 }
 
 void TextItem::draw(QPainter* painter)
 {
-    painter->setFont(*font);
-    painter->drawText(QRect(posX, posY, 200, 200), Qt::TextWordWrap, text);
+    painter->setFont(font);
+    painter->setPen(color);
+    if(background)
+    {
+      painter->setBackgroundMode(Qt::OpaqueMode);
+      painter->setBackground(QBrush(background_color));
+    }
+    painter->drawText(posX, posY, text);
 }

@@ -27,7 +27,7 @@ public:
      * @param width the width of the outlying rectangle
      * @param height the height of the oulying rectangle
      */
-    EllipseItem(int posX, int posY, int groupNr, QColor* color, int width, int height);
+    EllipseItem(int posX, int posY, int groupNr,const QColor &color, int width, int height);
 
     /**
      * Destructor

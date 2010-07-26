@@ -11,7 +11,7 @@
 #include "PolygonItem.h"
 #include "FillItem.h"
 
-PolygonItem::PolygonItem(QColor* color, int groupNr, QPoint* points, int numberOfPoints)
+PolygonItem::PolygonItem(const QColor &color, int groupNr, QPoint* points, int numberOfPoints)
     : PolylineItem(color, groupNr, points, numberOfPoints)
 {
 }

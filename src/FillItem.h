@@ -26,7 +26,7 @@ public:
      * @param groupNr the group number
      * @param color the border color
      */
-    FillItem(int posX, int posY, int groupNr, QColor* color);
+    FillItem(int posX, int posY, int groupNr, const QColor &color);
 
     /**
      * Returns whether the border is drawn

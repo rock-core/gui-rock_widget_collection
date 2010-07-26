@@ -17,6 +17,7 @@
  */
 class TextItem : public DrawItem
 {
+    Q_OBJECT
 public:
     /**
      * Creates a Textitem
@@ -26,24 +27,30 @@ public:
      * @param color the color of teh text
      * @param text the text to display
      */
-    TextItem(int posX, int posY, int groupNr, QColor* color, char* text);
+    TextItem(int posX, int posY, int groupNr, const QString &text);
 
     /**
      * Destructor
      */
     virtual ~TextItem() {};
+    
+    /**
+     * @see DrawItem#draw
+     */
+    void draw(QPainter* painter);
 
+  public slots:
     /**
      * Returns the text of the item
      * @return the text of the item
      */
-    char* getText() {return text;};
+    QString getText() {return text;};
 
     /**
      * Returns the font used
      * @return the font used.
      */
-    QFont* getFont(){return font;};
+    QFont getFont(){return font;};
 
     /**
      * Returns DrawType#Text
@@ -55,24 +62,22 @@ public:
      * Sets the text of the item
      * @param text the text of the item
      */
-    void setText(char* text) {this->text = text;};
+    void setText(const QString &text) {this->text = text;};
 
     /**
      * Sets the font of the item
      * @param font the font of the item
      */
-    void setFont(QFont* font) {this->font = font;};
+    void setFont(const QFont &font) {this->font = font;};
+    void setBackgroundColor(QColor color) {this->background_color = color;background=true;};
 
-    /**
-     * @see DrawItem#draw
-     */
-    void draw(QPainter* painter);
 private:
     /** The text of the item*/
-    char* text;
+    QString text;
     /** The font of the item*/
-    QFont* font;
-
+    QFont font;
+    bool background;
+    QColor background_color;
 };
 
 #endif	/* TEXTITEM_H */

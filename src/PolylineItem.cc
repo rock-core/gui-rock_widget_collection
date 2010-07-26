@@ -12,7 +12,7 @@
 
 #include "PolylineItem.h"
 
-PolylineItem::PolylineItem(QColor* color, int groupNr, QPoint* points, int numberOfPoints)
+PolylineItem::PolylineItem(const QColor &color, int groupNr, QPoint* points, int numberOfPoints)
     : FillItem(0, 0, groupNr, color)
 {
     for(int i=0;i<numberOfPoints;i++)

@@ -38,10 +38,10 @@ int main(int argc, char** argv)
     points[0] = QPoint(10, 10);
     points[1] = QPoint(10, 100);
     points[2] = QPoint(20, 50);
-    ArrowItem* arrowItem = new ArrowItem(10, 20, 0, new QColor(255, 0, 0), 10, 120);
+    ArrowItem* arrowItem = new ArrowItem(10, 20, 0, QColor(255, 0, 0), 10, 120);
     arrowItem->setInteriorColor(new QColor(255, 0, 0));
     arrowItem->setLineWidth(2);
-    PolygonItem* polygonItem = new PolygonItem(new QColor(255, 0, 0), 0, points, 3);
+    PolygonItem* polygonItem = new PolygonItem(QColor(255, 0, 0), 0, points, 3);
 //    polygonItem->setDrawBorder(false);
 //    polygonItem->setInteriorColor(new QColor(0, 0, 255));
     widget->addItem(arrowItem);
@@ -57,7 +57,7 @@ int main(int argc, char** argv)
 //    rect->setInteriorColor(new QColor(255, 0, 0));
 //    widget->addItem(polygonItem);
 //    widget->show();
-    widget->addImage(image->bits(), image->numBytes());
+//    widget->addImage(image->bits(), image->numBytes());
     std::cout << "Remove" << std::endl;
 //    widget->removeItem(textItem);
 //    widget->addText(textItem);

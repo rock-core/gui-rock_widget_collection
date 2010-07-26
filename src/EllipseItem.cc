@@ -9,7 +9,7 @@
 
 #include "EllipseItem.h"
 
-EllipseItem::EllipseItem(int posX, int posY, int groupNr, QColor* color, int width, int height)
+EllipseItem::EllipseItem(int posX, int posY, int groupNr, const QColor &color, int width, int height)
     : RectangleItem(posX, posY, groupNr, color, width, height)
 {
 }

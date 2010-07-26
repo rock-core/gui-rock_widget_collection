@@ -32,7 +32,7 @@ public:
      * @param endX the x end position of the line NOT the arrow
      * @param endY the y end position of the line NOT the arrow
      */
-    ArrowItem(int posX, int posY, int groupNr, QColor* color, int endX, int endY);
+    ArrowItem(int posX, int posY, int groupNr, const QColor &color, int endX, int endY);
     /**
      * Destructor
      */

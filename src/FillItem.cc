@@ -8,7 +8,7 @@
 #include "FillItem.h"
 #include <iostream>
 
-FillItem::FillItem(int posX, int posY, int groupNr, QColor* color)
+FillItem::FillItem(int posX, int posY, int groupNr, const QColor &color)
     : DrawItem(posX, posY, groupNr, color)
 {
     drawBorder = true;

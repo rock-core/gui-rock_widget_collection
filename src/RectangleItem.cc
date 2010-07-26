@@ -9,7 +9,7 @@
 
 #include "RectangleItem.h"
 
-RectangleItem::RectangleItem(int posX, int posY, int groupNr, QColor* color, int width, int height)
+RectangleItem::RectangleItem(int posX, int posY, int groupNr, const QColor &color, int width, int height)
     : FillItem(posX, posY, groupNr, color)
 {
     this->width = width;
@@ -19,7 +19,7 @@ RectangleItem::RectangleItem(int posX, int posY, int groupNr, QColor* color, int
 void RectangleItem::draw(QPainter* painter)
 {
     FillItem::draw(painter);
-    painter->drawRect(posX, posY, width, height);
+    painter->drawRect(posX, posY, width, height);    
 }
 
 

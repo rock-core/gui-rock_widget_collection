@@ -9,10 +9,12 @@
 
 ImageViewGLWidget::ImageViewGLWidget()
 {
+  
 }
 
 
 ImageViewGLWidget::~ImageViewGLWidget()
 {
+  
 }
 

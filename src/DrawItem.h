@@ -23,23 +23,42 @@ enum DrawType {Text, Line, Ellipse, Rectangle, Polyline, Polygon, Arrow};
  * The abstract draw method needs to be overwritten in each item. So each item draws
  * itself.
  */
-class DrawItem
+class DrawItem : public QObject
 {
-public:
-    /**
+  public:
+     /**
      * Generates a DrawItem
      * @param posX the starting x position
      * @param posY the starting y position
      * @param groupNr the group number
      * @param color the color
      */
-    DrawItem(int posX, int posY, int groupNr, QColor* color);
+    DrawItem(int posX, int posY, int groupNr, const QColor &color);
 
     /**
      * Destructor
      */
     virtual ~DrawItem() {};
-
+    
+    /**
+     * virtual method wjich returns the type of teh item
+     * @return the type of the item defined by #seeDrawType
+     */
+    virtual DrawType getType() = 0;
+    
+    /**
+     * avstract method to draw the item
+     * @param painter the painter with wich to draw the shape
+     */
+    virtual void draw(QPainter* painter) = 0;
+    
+    bool operator==(const DrawItem &other)
+    {
+      return (getID() == other.getID());
+    }
+  
+  Q_OBJECT
+  public slots:
     /**
      * Returns the x position
      * @return the x position
@@ -62,16 +81,10 @@ public:
      * Returns the color
      * @return the color
      */
-    QColor* getColor(){return color;};
+    QColor getColor(){return color;};
 
     /**
-     * virtual method wjich returns the type of teh item
-     * @return the type of the item defined by #seeDrawType
-     */
-    virtual DrawType getType() = 0;
-
-    /**
-     * Setrs the x position
+     * Sets the x position
      * @param posX the x position
      */
     void setPosX(int posX) {this->posX = posX;};
@@ -92,7 +105,7 @@ public:
      * Sets the color
      * @param color the color
      */
-    void setColor(QColor* color) {this->color = color;};
+    void setColor(const QColor &color) {this->color = color;};
 
     /**
      * Returns the width of lines drawn. the smallest visible width is zero
@@ -130,12 +143,11 @@ public:
      * @param penCapStyle
      */
     void setPenCapStyle(Qt::PenCapStyle penCapStyle) {this->penCapStyle = penCapStyle;};
-
-    /**
-     * avstract method to draw the item
-     * @param painter the painter with wich to draw the shape
-     */
-    virtual void draw(QPainter* painter) = 0;
+    
+    int getID() const
+    {
+      return m_id;
+    };
 
 protected:
     /**
@@ -150,13 +162,15 @@ protected:
     /** The group number*/
     int groupNr;
     /** The color*/
-    QColor* color;
+    QColor color;
     /** the width of the shapes lines*/
     int lineWidth;
     /** The pen style of the lines*/
     Qt::PenStyle penStyle;
     /** the pen cap style of the item, irrelevant for lines which have no start or end point*/
     Qt::PenCapStyle penCapStyle;
+    int m_id;
+    static int _ID;
 };
 
 #endif	/* DRAWITEM_H */

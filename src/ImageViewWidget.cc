@@ -10,91 +10,87 @@
 
 using namespace base::samples::frame;
 
-ImageViewWidget::ImageViewWidget(int width, int height, QImage::Format format)
+ImageViewWidget::ImageViewWidget(int width, int height, QImage::Format format):
+format(format),width(width),height(height),image(width, height, format)
 {
-    image = new QImage(width, height, format);
-    this->format = format;
-    this->width = width;
-    this->height = height;
-    this->setMinimumSize(QSize(width, height));
+    setMinimumSize(QSize(width, height));
 }
 
 ImageViewWidget::~ImageViewWidget()
 {
-    items.clear();
+//   items.clear();
 }
 
-void ImageViewWidget::addText(int xPos, int yPos, int groupNr, QColor* color, char* text)
+QObject* ImageViewWidget::addText(int xPos, int yPos, int groupNr, const QString &text)
 {
-    TextItem* textItem = new TextItem(xPos, yPos, groupNr, color, text);
+    TextItem* textItem = new TextItem(xPos, yPos, groupNr, text);
     items.push_back(textItem);
-   // return textItem;
+    return textItem;
 }
 
-DrawItem* ImageViewWidget::addLine(int xPos, int yPos, int groupNr, QColor* color, int endX, int endY)
+QObject* ImageViewWidget::addLine(int xPos, int yPos, int groupNr, const QColor &color, int endX, int endY)
 {
     LineItem* item = new LineItem(xPos, yPos, groupNr, color, endX, endY);
     items.push_back(item);
     return item;
 }
 
-DrawItem* ImageViewWidget::addEllipse(int xPos, int yPos, int groupNr, QColor* color, int width, int height)
+QObject* ImageViewWidget::addEllipse(int xPos, int yPos, int groupNr, const QColor &color, int width, int height)
 {
     EllipseItem* item = new EllipseItem(xPos, yPos, groupNr, color, width, height);
     items.push_back(item);
     return item;
 }
 
-DrawItem* ImageViewWidget::addRectangle(int xPos, int yPos, int groupNr, QColor* color, int width, int height)
+QObject* ImageViewWidget::addRectangle(int xPos, int yPos, int groupNr, const QColor &color, int width, int height)
 {
     RectangleItem* item = new RectangleItem(xPos, yPos, groupNr, color, width, height);
     items.push_back(item);
     return item;
 }
 
-DrawItem* ImageViewWidget::addPolyline(int groupNr, QColor* color, QPoint* points, int numberOfPoints)
+QObject* ImageViewWidget::addPolyline(int groupNr, const QColor &color, QPoint* points, int numberOfPoints)
 {
     PolylineItem* item = new PolylineItem(color, groupNr, points, numberOfPoints);
     items.push_back(item);
     return item;
 }
 
-DrawItem* ImageViewWidget::addPolygon(int groupNr, QColor* color, QPoint* points, int numberOfPoints)
+QObject* ImageViewWidget::addPolygon(int groupNr, const QColor &color, QPoint* points, int numberOfPoints)
 {
     PolygonItem* item = new PolygonItem(color, groupNr, points, numberOfPoints);
     items.push_back(item);
     return item;
 }
 
-void ImageViewWidget::addItem(DrawItem* drawItem)
+QObject* ImageViewWidget::addItem(QObject* object)
 {
+    DrawItem* drawItem = dynamic_cast<DrawItem*>(object);
     items.push_back(drawItem);
+    return object;
 }
 
-void ImageViewWidget::removeItem(DrawItem* drawItem)
+ QObject* ImageViewWidget::removeItem(QObject* object,bool delete_object)
 {
-    items.removeAll(drawItem);
-}
-
-void ImageViewWidget::removeAll(DrawType drawType)
-{
-    QList<DrawItem*> removeItems;
-    for(int i=0;i<items.size();i++)
+    DrawItem *draw_item = dynamic_cast<DrawItem*>(object);
+    items.removeAll(draw_item);
+    if(delete_object)
     {
-        if(items[i]->getType() == drawType)
-        {
-            removeItems.push_back(items[i]);
-        }
+      delete object;
+      object = NULL;
     }
-    for(int i=0;i<removeItems.size();i++)
-    {
-        items.removeAll(removeItems[i]);
-    }
+    return object;
 }
 
-void ImageViewWidget::removeAllItems()
+void ImageViewWidget::removeAllItems(bool delete_objects)
 {
-    items.clear();
+   if(delete_objects)
+   {
+      QList<DrawItem*>::iterator iter = items.begin();
+      for(;iter != items.end();++iter)
+          delete(*iter);
+   }
+   items.clear();
 }
 
 void ImageViewWidget::setGroupStatus(int groupNr, bool enable)
@@ -118,15 +114,7 @@ void ImageViewWidget::clearGroups()
 
 void ImageViewWidget::changeFormat(int width, int height, QImage::Format format)
 {
-    delete image;
-    image = new QImage(width, height, format);
-}
-
-
-void ImageViewWidget::addImage(uchar* data, int numBytes)
-{
-    memcpy(this->image->bits(), data, numBytes);
-    repaint();
+    image = QImage(width, height, format);
 }
 
 void ImageViewWidget::changeFormat2(QString mode, int pixel_size, int width, int height)
@@ -134,9 +122,9 @@ void ImageViewWidget::changeFormat2(QString mode, int pixel_size, int width, int
   std::string temp = mode.toStdString();
   base::samples::frame::frame_mode_t _mode = Frame::toFrameMode(temp);
   if(_mode == MODE_BAYER_RGGB || _mode == MODE_BAYER_GRBG || _mode == MODE_BAYER_BGGR || _mode == MODE_BAYER_GBRG)
-      changeFormat(width,height,QImage::Format_RGB888);
+     changeFormat(width,height,QImage::Format_RGB888);
   else
-    changeFormat(width,height,getFormat(_mode,pixel_size));
+     changeFormat(width,height,getFormat(_mode,pixel_size));
 }
 
 QImage::Format ImageViewWidget::getFormat(frame_mode_t mode,int pixel_size)
@@ -170,7 +158,7 @@ QImage::Format ImageViewWidget::getFormat(frame_mode_t mode,int pixel_size)
   return QImage::Format_Invalid;
 }
 
-void ImageViewWidget::addRawImage(QString mode, int pixel_size,  int width,  int height,const char* pbuffer)
+void ImageViewWidget::addRawImage(const QString &mode, int pixel_size,  int width,  int height,const char* pbuffer)
 {
     std::string temp = mode.toStdString();
     base::samples::frame::frame_mode_t _mode = Frame::toFrameMode(temp);
@@ -179,63 +167,46 @@ void ImageViewWidget::addRawImage(QString mode, int pixel_size,  int width,  int
     
     //convert bayer pattern to rgb24 (rgb888) 
     if(_mode == MODE_BAYER_RGGB || _mode == MODE_BAYER_GRBG || _mode == MODE_BAYER_BGGR || _mode == MODE_BAYER_GBRG)
-        FrameHelper::convertBayerToRGB24((const uint8_t*)pbuffer,(uint8_t*) this->image->bits(), width, height ,_mode);
+        FrameHelper::convertBayerToRGB24((const uint8_t*)pbuffer,(uint8_t*) this->image.bits(), width, height ,_mode);
     else
     {
 	QImage::Format format = getFormat(_mode,pixel_size);
-	memcpy( this->image->bits(),pbuffer,width*height*pixel_size);
+	memcpy( this->image.bits(),pbuffer,width*height*pixel_size);
     }
     repaint();
 }
 
-void ImageViewWidget::addImage(QImage* image)
+void ImageViewWidget::addImage(const QImage &image)
 {
-    addImage(image->bits(), image->numBytes());
+    memcpy(this->image.bits(), image.bits(),  image.numBytes());
+    repaint();
 }
 
-void ImageViewWidget::addImageAndScale(uchar* data, int numBytes, int origWidth, int origHeight)
+void ImageViewWidget::addDrawItemsToWidget(QImage &shownImage)
 {
-    // dont scale if not needed
-    if(origHeight == height && origWidth == width)
+    if(!items.empty())
     {
-       addImage(data, numBytes);
-    }
-    else
-    {
-      QImage tempImage(data, origWidth, origHeight, format);
-      QImage scaled = tempImage.scaled(width, height);
-      addImage(&scaled);
-    }
-}
-
-
-void ImageViewWidget::addDrawItemsToWidget(QImage* shownImage)
-{
-    if(items.size() > 0)
-    {
-        QPainter painter(shownImage);
+        QPainter painter(&shownImage);
         painter.setRenderHint(QPainter::TextAntialiasing, true);
-        for(int i=0;i<items.size();i++)
+	QList<DrawItem*>::iterator iter = items.begin();
+        for(;iter != items.end();++iter)
         {
-            DrawItem* item = items[i];
-            if(!disabledGroups.contains(item->getGroupNr()))
-            {
-                item->draw(&painter);
-            }
+	  if(!disabledGroups.contains((*iter)->getGroupNr()))
+                (*iter)->draw(&painter);
         }
     }
 }
 
 void ImageViewWidget::paintEvent(QPaintEvent* event)
 {
-    // always paint on a copy of the actual QImage as otherwise
-    // you cant go back to the correct image without lines, texts
-    // and the like
-    QImage shownImage(*image);
-    addDrawItemsToWidget(&shownImage);
+   /* QImage shownImage(image);
+    addDrawItemsToWidget(shownImage);
     QPainter qpainter(this);
     qpainter.drawImage(0, 0, shownImage);
-//    delete image;
+    */
+    addDrawItemsToWidget(image);
+    QPainter qpainter(this);
+    qpainter.drawImage(0, 0, image);
 }
 
 

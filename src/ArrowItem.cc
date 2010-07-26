@@ -7,11 +7,10 @@
 
 #include "ArrowItem.h"
 
-ArrowItem::ArrowItem(int posX, int posY, int groupNr, QColor* color, int endX, int endY)
-    : FillItem(posX, posY, groupNr, color)
+ArrowItem::ArrowItem(int posX, int posY, int groupNr, const QColor &color, int endX, int endY)
+      :FillItem(posX, posY, groupNr, color),endX(endX),endY(endY)
 {
-    this->endX = endX;
-    this->endY = endY;
+
 }
 
 ArrowItem::~ArrowItem()

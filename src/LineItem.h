@@ -26,7 +26,7 @@ public:
      * @param endX the x position of the endpoint
      * @param endY the y position of the end point
      */
-    LineItem(int posX, int posY, int groupNr, QColor* color, int endX, int endY);
+    LineItem(int posX, int posY, int groupNr, const QColor &color, int endX, int endY);
 
     /**
      * Destructor
