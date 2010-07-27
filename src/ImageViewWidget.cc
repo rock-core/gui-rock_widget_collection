@@ -124,7 +124,17 @@ void ImageViewWidget::changeFormat2(QString mode, int pixel_size, int width, int
   if(_mode == MODE_BAYER_RGGB || _mode == MODE_BAYER_GRBG || _mode == MODE_BAYER_BGGR || _mode == MODE_BAYER_GBRG)
      changeFormat(width,height,QImage::Format_RGB888);
   else
-     changeFormat(width,height,getFormat(_mode,pixel_size));
+  {
+    QImage::Format format = getFormat(_mode,pixel_size);
+    changeFormat(width,height,format);
+    //change colors to grayscale
+    if(format == QImage::Format_Indexed8)
+    {
+      image.setColorCount(255);
+      for(int i = 0;i<255;++i)
+	image.setColor(i,qRgb(i,i,i));
+    }
+  }
 }
 
 QImage::Format ImageViewWidget::getFormat(frame_mode_t mode,int pixel_size)
@@ -204,9 +214,20 @@ void ImageViewWidget::paintEvent(QPaintEvent* event)
     QPainter qpainter(this);
     qpainter.drawImage(0, 0, shownImage);
     */
-    addDrawItemsToWidget(image);
+   
+    QImage* pimage = NULL;
+    if(image.format() == QImage::Format_Indexed8)
+    {
+      //convert image to RGB
+      temp_image = image.convertToFormat (QImage::Format_RGB888);
+      pimage = &temp_image;
+    }
+    else
+      pimage = &image;
+   
+    addDrawItemsToWidget(*pimage);
     QPainter qpainter(this);
-    qpainter.drawImage(0, 0, image);
+    qpainter.drawImage(0, 0, *pimage);
 }
 
 

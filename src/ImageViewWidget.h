@@ -225,6 +225,7 @@ protected:
     
     /** The image currently shown*/
     QImage image;
+    QImage temp_image;
     /** The format used in the widget*/
     QImage::Format format;
     /** The width of the widgets images*/
