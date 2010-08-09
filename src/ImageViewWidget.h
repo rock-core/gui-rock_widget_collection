@@ -78,7 +78,7 @@ public:
      * @param height the height of images put onto the widget
      * @param format the format from QImage
      */
-    ImageViewWidget(int width=640, int height=480, QImage::Format format=QImage::Format_RGB888);
+    ImageViewWidget(int width=64, int height=64, QImage::Format format=QImage::Format_RGB888);
 
     /**
      * Destructor cleaning up
