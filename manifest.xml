@@ -7,5 +7,6 @@
   <logo>http://</logo>
   <depend package="libs/frame_helper" />
   <rosdep name="qt4" />
+  <rosdep name="qwt" />
   <versioncontrol type="git" url="" />
 </package>
