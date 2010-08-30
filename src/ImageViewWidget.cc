@@ -146,18 +146,26 @@ void ImageViewWidget::changeFormat2(QString mode, int pixel_size, int width, int
 {
   std::string temp = mode.toStdString();
   base::samples::frame::frame_mode_t _mode = Frame::toFrameMode(temp);
-  if(_mode == MODE_BAYER_RGGB || _mode == MODE_BAYER_GRBG || _mode == MODE_BAYER_BGGR || _mode == MODE_BAYER_GBRG)
-     changeFormat(width,height,QImage::Format_RGB888);
-  else
+  switch(_mode)
   {
-    QImage::Format format = getFormat(_mode,pixel_size);
-    changeFormat(width,height,format);
-    //change colors to grayscale
-    if(format == QImage::Format_Indexed8)
+    case MODE_BAYER_RGGB:
+    case MODE_BAYER_GRBG:
+    case MODE_BAYER_BGGR:
+    case MODE_BAYER_GBRG:
+      changeFormat(width,height,QImage::Format_RGB888);
+      break;
+      
+    default:
     {
-      image.setColorCount(255);
-      for(int i = 0;i<255;++i)
-	image.setColor(i,qRgb(i,i,i));
+      QImage::Format format = getFormat(_mode,pixel_size);
+      changeFormat(width,height,format);
+      //change colors to grayscale
+      if(format == QImage::Format_Indexed8)
+      {
+	image.setColorCount(256);
+	for(int i = 0;i<256;++i)
+	  image.setColor(i,qRgb(i,i,i));
+      }
     }
   }
 }
