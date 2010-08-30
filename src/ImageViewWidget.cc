@@ -8,17 +8,42 @@
 #include "ImageViewWidget.h"
 #include <stdexcept>
 
+
 using namespace base::samples::frame;
 
 ImageViewWidget::ImageViewWidget(int width, int height, QImage::Format format):
 format(format),width(width),height(height),image(width, height, format)
 {
     setMinimumSize(QSize(width, height));
+    
+    //create actions
+    save_image_act = new QAction(tr("&Save Image"),this);
+    save_image_act->setStatusTip(tr("Save the image to disk"));
+    connect(save_image_act,SIGNAL(triggered()),this,SLOT(saveImage()));
 }
 
 ImageViewWidget::~ImageViewWidget()
 {
 //   items.clear();
+}
+
+void ImageViewWidget::contextMenuEvent ( QContextMenuEvent * event )
+{
+   QMenu menu(this);
+   menu.addAction(save_image_act);
+   menu.exec(event->globalPos());
+}
+
+void ImageViewWidget::saveImage()
+{
+    QString path = QFileDialog::getSaveFileName(this, tr("Save File"),
+                            save_path,
+                            tr("Images (*.png)"));
+    if(path.length() > 0)	
+    {
+      save_path = path;
+      image.save(save_path,"PNG",100);
+    }
 }
 
 QObject* ImageViewWidget::addText(int xPos, int yPos, int groupNr, const QString &text)

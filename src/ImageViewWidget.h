@@ -19,6 +19,8 @@
 #include "PolygonItem.h"
 #include "PolylineItem.h"
 #include "frame_helper/FrameHelper.h"
+#include <qfiledialog.h>
+#include <QMenu>
 
 #ifndef IMAGEVIEWWIDGET_H
 #define	IMAGEVIEWWIDGET_H
@@ -92,8 +94,13 @@ public:
      */
     void paintEvent(QPaintEvent* event);
     
+    void contextMenuEvent ( QContextMenuEvent * event );
+    
     
 public slots:
+    void saveImage();
+    
+  
     /**
      * Changes the format and dimensions of the widget so images with
      * other dimensions or formats can be added
@@ -236,6 +243,9 @@ protected:
     QList<DrawItem*> items;
     /** List of group numbers currently disabled*/
     QList<int> disabledGroups;
+    
+    QAction *save_image_act;
+    QString save_path;
 };
 
 #endif	/* IMAGEVIEWWIDGET_H */
