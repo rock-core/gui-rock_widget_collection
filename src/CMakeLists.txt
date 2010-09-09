@@ -20,8 +20,8 @@ add_library(${PROJECT_NAME} SHARED ${image_view_widget_SOURCES} ${image_view_wid
 add_executable(${PROJECT_NAME}_EXEC main.cc)
 
 
-target_link_libraries(${PROJECT_NAME} QtCore QtGui frame_helper)
-target_link_libraries(${PROJECT_NAME}_EXEC ${PROJECT_NAME} QtCore QtGui)
+target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} ${FRAMEHELPER_LIBRARIES})
+target_link_libraries(${PROJECT_NAME}_EXEC ${PROJECT_NAME} ${QT_LIBRARIES})
 
 
 
