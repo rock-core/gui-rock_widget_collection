@@ -23,7 +23,7 @@ public:
      * @param points array of Qpoint creating of the polygons edges
      * @param numberOfpoints the number of points in the points array
      */
-    PolygonItem(const QColor &color, int groupNr, QPoint* points, int numberOfpoints);
+    PolygonItem(const QColor &color, int groupNr, const QList<QPoint> &points);
 
     /**
      * Destructor

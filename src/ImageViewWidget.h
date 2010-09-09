@@ -181,7 +181,7 @@ public slots:
      * @param numberOfPoints the number of points in the points array
      * @return pointer to a DrawItem
      */
-    QObject* addPolyline(int groupNr, const QColor &color, QPoint* points, int numberOfPoints);
+    QObject* addPolyline(int groupNr, const QColor &color, const QList<QPoint> &points);
 
     /**
      * Adds a Polygon with the given points. An additional line will be drawn between
@@ -192,7 +192,7 @@ public slots:
      * @param numberOfPoints the number of points in the points array
      * @return a DrawItem containing the Polygon
      */
-    QObject* addPolygon(int groupNr, const QColor &color, QPoint* points, int numberOfPoints);
+    QObject* addPolygon(int groupNr, const QColor &color, const QList<QPoint> &points);
 
     /**
      * Remobves a shape from the image

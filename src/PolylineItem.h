@@ -25,7 +25,7 @@ public:
      * @param points array of QPoint
      * @param numberOfpoints the number of QPoint objects in the points array
      */
-    PolylineItem(const QColor &color, int groupNr, QPoint* points, int numberOfpoints);
+    PolylineItem(const QColor &color, int groupNr, const QList<QPoint> &points);
 
     /**
      * Destructor

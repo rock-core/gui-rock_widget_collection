@@ -73,17 +73,16 @@ QObject* ImageViewWidget::addRectangle(int xPos, int yPos, int groupNr, const QC
     items.push_back(item);
     return item;
 }
-
-QObject* ImageViewWidget::addPolyline(int groupNr, const QColor &color, QPoint* points, int numberOfPoints)
+QObject* ImageViewWidget::addPolyline(int groupNr, const QColor &color, const QList<QPoint> &points)
 {
-    PolylineItem* item = new PolylineItem(color, groupNr, points, numberOfPoints);
+    PolylineItem* item = new PolylineItem(color, groupNr, points);
     items.push_back(item);
     return item;
 }
 
-QObject* ImageViewWidget::addPolygon(int groupNr, const QColor &color, QPoint* points, int numberOfPoints)
+QObject* ImageViewWidget::addPolygon(int groupNr, const QColor &color, const QList<QPoint> &points)
 {
-    PolygonItem* item = new PolygonItem(color, groupNr, points, numberOfPoints);
+    PolygonItem* item = new PolygonItem(color, groupNr, points);
     items.push_back(item);
     return item;
 }

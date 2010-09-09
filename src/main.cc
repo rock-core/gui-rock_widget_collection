@@ -41,7 +41,7 @@ int main(int argc, char** argv)
     ArrowItem* arrowItem = new ArrowItem(10, 20, 0, QColor(255, 0, 0), 10, 120);
     arrowItem->setInteriorColor(new QColor(255, 0, 0));
     arrowItem->setLineWidth(2);
-    PolygonItem* polygonItem = new PolygonItem(QColor(255, 0, 0), 0, points, 3);
+ //   PolygonItem* polygonItem = new PolygonItem(QColor(255, 0, 0), 0, points, 3);
 //    polygonItem->setDrawBorder(false);
 //    polygonItem->setInteriorColor(new QColor(0, 0, 255));
     widget->addItem(arrowItem);
