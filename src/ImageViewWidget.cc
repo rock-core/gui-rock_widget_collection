@@ -161,7 +161,7 @@ void ImageViewWidget::changeFormat2(QString mode, int pixel_size, int width, int
       //change colors to grayscale
       if(format == QImage::Format_Indexed8)
       {
-	image.setColorCount(256);
+//	image.setColorCount(256);
 	for(int i = 0;i<256;++i)
 	  image.setColor(i,qRgb(i,i,i));
       }
