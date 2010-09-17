@@ -100,7 +100,22 @@ public:
 public slots:
     void saveImage();
     
-  
+/*   QString getRubyCode()
+    {
+      return    "def test; "
+                      " puts 'ja';"
+                      "end ";
+    };*/
+
+    QWidget *newInstance()
+    {
+      return new ImageViewWidget();
+    }
+    void deleteInstance(QWidget *widget)
+    {
+      delete widget;
+    }
+
     /**
      * Changes the format and dimensions of the widget so images with
      * other dimensions or formats can be added

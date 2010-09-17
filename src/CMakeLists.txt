@@ -28,3 +28,4 @@ target_link_libraries(${PROJECT_NAME}_EXEC ${PROJECT_NAME} ${QT_LIBRARIES})
 install(TARGETS ${PROJECT_NAME} 
 		LIBRARY DESTINATION lib
     )
+install(FILES libimage_view_widget.so.rb DESTINATION lib)

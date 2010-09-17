@@ -7,9 +7,10 @@
 
 #include "ImageViewWidget.h"
 #include <stdexcept>
-
+#include <QtPlugin>
 
 using namespace base::samples::frame;
+Q_EXPORT_PLUGIN2(ImageViewWidget, ImageViewWidget)
 
 ImageViewWidget::ImageViewWidget(int width, int height, QImage::Format format):
 format(format),width(width),height(height),image(width, height, format)
