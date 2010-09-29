@@ -1,0 +1,344 @@
+/* 
+ * File:   PlotWidget.h
+ * Author: blueck
+ *
+ * Created on 17. August 2010, 12:24
+ */
+
+#ifndef PLOTWIDGET_H
+#define	PLOTWIDGET_H
+
+#include "PlottingWidget.h"
+#include "QtExporter.h"
+
+#include <QtGui/QResizeEvent>
+#include <QtGui/QPushButton>
+#include <Qt/qtimer.h>
+#include <QtGui/QGridLayout>
+
+#include <qwt-qt4/qwt_slider.h>
+#include <qwt-qt4/qwt_plot.h>
+#include <qwt-qt4/qwt_plot_zoomer.h>
+#include <qwt-qt4/qwt_plot_marker.h>
+#include <qwt-qt4/qwt_plot_curve.h>
+#include <qwt-qt4/qwt_plot_grid.h>
+
+#include <iostream>
+#include <vector>
+#include <limits>
+#include <algorithm>
+
+
+/**
+ * Widget which displays a plot. When simply constructing the plot
+ * will have one x and one y axis (the left y axis and the bottom x axis)<br>
+ * <h1>Zooming</h1>
+ * Via selecting a rectangle with the left mouse button, one can zoom to the
+ * rectangle selected. The axis descriptions will change accordingly.<br>
+ * Pressing the right mouse button will unzoom to the axis given at start, or
+ * the dimensions automatically calculated if none were specified. Currently
+ * only zooming the xBottom and yLeft axis is supported. Other axis will not be
+ * zoomed or changed in any way. Using the mouse wheel zooming further in or away
+ * from the current point can be done. The axis will change accordingly.<br>
+ * When zooming via the rectangle multple times, the middle mouse button will
+ * go one zoom step back. So you can zoom in multiple times and "undo" the
+ * selections one at a time.
+ * <h1>Border Lines</h1>
+ * One can add borderlines to the plot. Those can be vertical or horizontal
+ * and have various style components, managed via QPen Objects. The underlying
+ * QwtMarker object can be retrieved to use all of the QwtMArker functionality
+ * even though it may not be wrapped here.
+ * <h1>Axis</h1>
+ * There are possibly 4 Axis in the plot. Generally two are shown by default, which
+ * are the left y axis and the bottom x axis. Axis can have titles which can
+ * be set manually. The boundaries and step sizes of axis can be set by the
+ * setAxisBoundaries methods. Note that setting very small step sizes in
+ * relation to the lower and upper boundaries will result in a very ugly visual.<br>
+ * If you don't specify any boundaries the plot will try to specify them by itself
+ * according to the data given to the plot. In most cases this is the preferred solution.
+ * <h1>Data</h1>
+ * Data can be added via the addData method. This will create a curve on the plot
+ * on the specified axis. The method returns an id with which the curve can afterwards be altered, be
+ * it style, via setDataStyle or enabling it via setDataEnabled. One can also retrieve the QwtPlotCurve
+ * object for a data id, if for any reason more functionality for the plot curves is required,<br>
+ * With addData data can also be added. simply call addData with an existing dataId and the data will
+ * be added to the already existing curve.
+ * which is not wrapped.
+ * <h1>Autoscrolling</h1>
+ * One can set autoscrolling to true. If data goes beyond the current x or y axis
+ * scope, the axis will scroll to the maximum value automatically. While autoscrolling
+ * is enabled, neither zooming nor using the sliders is available. Set autoscrolling to false
+ * when your data is complete and you can freely scroll and zoom the plot as usual.
+ * <h1>Grid</h1>
+ * One can add a grid via the setDrawGrid method, which will take a boolean to enable
+ * and two optional parameters for the x and y axis. So its possible to
+ * have an x or y grid only. The default s to have one with both.
+ * <h1>Exporting the Plot</h1>
+ * The plot can easily be exported via exportAsImage. This will open a
+ * save dialog with the option to select a fileformat and location. For more information
+ * #see QtExporter
+ * <h1>TODO:</h1>
+ * <ul>
+ * <li>Zooming of all Axis, xRight and yTop are not scrollable at the moment</li>
+ * </ul>
+ *
+ * @author Bjoern Lueck <blueck@dfki.de>
+ * @version 0.1
+ */
+class PlotWidget : public QWidget
+{
+
+    Q_OBJECT
+
+public:
+    /**
+     * Standard constructor
+     */
+    PlotWidget(QWidget* parent=0);
+
+    /**
+     * Standard destructor
+     */
+    virtual ~PlotWidget();
+
+    // --> Grid related methods
+
+    /**
+     * Sets if a grid shall be drawn on the plot
+     * @param drawGrid if a grid shall be drawn, if false the next arguments will be ignored
+     * @param enableX if the x grid will be drawn, defaults to true
+     * @param enableY if the y grid will be drawn, defaults to true
+     */
+    void setDrawGrid(bool drawGrid, bool enableX=true, bool enableY=true);
+
+    // --> Slider realted methods
+
+    /** Enables or disables a slider
+     * @param axis teh slider of which axis to enable/disable
+     * @param enable, if the slider shall be anabled or disabled, defaults to true
+     */
+    void enableSlider(QwtPlot::Axis axis, bool enable=true);
+
+    // --> Border Line related methods
+
+    /**
+     * Adds a fixed line to the plot
+     * @param value the value at which the line will be drawn. y Value for horizontal lines, x value for vertical ones
+     * @param orientation If its a horizontal or vertical line, either Qt::Horizontal or Qt::Vertical, default is Qt::Horizontak
+     * @param pen a pen used to onfigure the view of teh line, defaults to a red dashed line with width 2
+     * @return the id of the border line to access it later on. The id will be unique.
+     */
+    int addBorderLine(double value, Qt::Orientation orientation = Qt::Horizontal, QPen pen=QPen(QColor(255, 0, 0), 2, Qt::DashLine));
+
+    /**
+     * Sets if a borderLine is enabled (shown). Defaults to true.
+     * @param borderLineId the id of the borderLine which shall be en-/disabled
+     * @param enable if the borderLine shall be enabled or disabled, defaults to true
+     */
+    void enableBorderLine(int borderLineId, bool enable=true);
+    /**
+     * Changes the look of an existing line. One can reset the line to teh default look by simply
+     * calling the method with the id.
+     * @param borderLineId the id of an existing border line
+     * @param pen the pen with the new look for the line, defaults to a red dashed line with width 2
+     */
+    void setBorderLineStyle(int borderLineId, QPen pen=QPen(QColor(255, 0, 0), 2, Qt::DashLine));
+    /**
+     * Returns a QwtMarker Pointer to a marker on the plot. This method can be used if
+     * qwt methods on the marker which are not wrapped are needed.
+     * @param dataId the id of an existing marker
+     * @return pointer to a QwtMarker object
+     */
+    QwtPlotMarker* getBorderLineForId(int dataId) {return markers[dataId];};
+
+    // --> Axis related methods
+
+    /**
+     * Sets the title of the x and y Axis in a two dimensional grid.
+     * Giving an empty string will result in no title.
+     * @param xAxisTitle the title of the xAxis
+     * @param yAxisTitle the title of the yAxis
+     */
+    void setAxisTitles(QString xAxisTitle, QString yAxisTitle);
+    /**
+     * Sets the boundaries of an axis. If no step size is given (or 0) teh step size
+     * will automatically be calculated. If yRight or xTop is given the axis will also
+     * automatically be enabled. Calling this method also automatically disables
+     * autoscaling of the axis.
+     * @param axis the axis to set the boundaries
+     * @param lower lower value of the axis
+     * @param upper upper value of the axis
+     * @param step step size shown, 0 indicating automatic step size.  Defaults to 0.
+     */
+    void setAxisBoundaries(QwtPlot::Axis axis, double lower, double upper, double step=0);
+
+    /**
+     * Sets if the specified axis shall be shown or hidden
+     * @param axis the axis to be shown or hidden
+     * @param enable true if the axis shall be shown, false otherwise
+     */
+    void setAxisShown(QwtPlot::Axis axis, bool enable=true);
+
+    /**
+     * Sets the axs to auto scaling. Whnever data is added the axis
+     * may reorganize itself. Calling setAxisBoundaries will stop the
+     * automatic scaling. as will setAxisAutoScale(false)
+     * @param enable enable enable or disable auto scaling, defaults to true
+     */
+    void setAxisAutoScale(QwtPlot::Axis axis, bool enable=true);
+
+    // -->Actual Data related methods
+
+    /**
+     * Adds Data as a curve to the plot. The curev will be painted as black dots by default
+     * but can be changed via setDataSytle with the returned int id.<br>
+     * If the dataId is given data will be added to an existing data set.<br>
+     * The x and y Axis which shall be used for the data can be specified too.
+     * @param xPoints the x coordinates of the points
+     * @param yPoints the y coordinates of the points
+     * @param length the length of the x and y points
+     * @param dataId the dataid of an existing data set, defaults to 0
+     * @param xAxis the x axis the data refers to, defaults to QwtPlot::xBottom
+     * @param yAxis the y axis the data refers to, defaults to QwtPlot::yLeft
+     * @return a unique id identifying the data. if existing data was modifyied this will be the same as the dataId given
+     */
+    int addData(double* xPoints, double* yPoints, int length, int dataId=-1,
+        QwtPlot::Axis xAxis=QwtPlot::xBottom, QwtPlot::Axis yAxis=QwtPlot::yLeft);
+    /**
+     * Show or hides the data specified by dataId
+     * @param dataId the id of teh data to hide or show
+     * @param enable if the data shall be shown, defaults to true
+     */
+    void enableData(int dataId, bool enable=true);
+    /**
+     * Sets the style of data.
+     * @param dataId the id of the data which shall be changed
+     * @param pen the pen to use for the data
+     * @param curveStlye the curveStyle for the data
+     */
+    void setDataStyle(int dataId, QPen pen, QwtPlotCurve::CurveStyle curveStlye=QwtPlotCurve::Dots);
+    /**
+     * Returns the QwtPlotCurve for the id given. this is only usefull if any
+     * methods available to QwtPlotCurve are needed which are not wrapped here.
+     * @param dataId the id of the data set to return
+     * @return the QwtPlotCurve for the given id
+     */
+    QwtPlotCurve* getDataForId(int dataId) { return curves[dataId];};
+
+    /**
+     * Returns whether autoscrolling is enabled
+     * @return true if enabled, false otherwise
+     */
+    bool isAutoscrolling() {return autoscrolling;};
+    
+
+    // --> Exporting functions
+
+public slots:
+    /**
+     * Exports the plot as an image. A save dialog will be displayed where
+     * one can choose the filename and the type of image.
+     * Currently supported image formats can be viewed in the QtExporter class
+     */
+    void exportPlotAsImage();
+
+    /**
+     * Sets autoscrolling on or off. By default it enables
+     * autoscrolling.
+     * @param enable enable autoscrolling, defaults to true
+     */
+    void setAutoscrolling(bool enable=true);
+    
+protected slots:
+    /**
+     * Slot handling change of the xBottom slider. You should
+     * never need to call this manually
+     * @param newValue the new value of the slider
+     */
+    void xBottomSliderValueChanged(double newValue);
+
+    /** Slot handling change of the yLeft slider. You should
+     * never need to call this manually
+     * @param newValue the new value of the slider
+     */
+    void yLeftSliderValueChanged(double newValue);
+
+    /**
+     * Slot when the plot was zoomed. this will automatically
+     * set all sliders and such. You should never need to call this manually
+     * @param rect  teh rect to which the plot was zoomed
+     */
+    void zoomed(const QwtDoubleRect& rect);
+
+protected:
+
+    // --> helper methods
+
+    /**
+     * Sets the zoom base of the zoomer to the actual boundary values.
+     */
+    void setZoomBase();
+    /**
+     * Sets the min and max values of the sliders according to the current grid
+     */
+    void setSliderValues();
+
+    /**
+     * Sets the minimum and maximum point if the given points are max or min
+     * @param xPoint the x point to check
+     * @param yPoint the y point to check
+     */
+    void setMinMaxPoints(double xPoint, double yPoint);
+
+    /** Slider in x direction*/
+    QwtSlider xBottomSlider;
+    /** Slider in y direction*/
+    QwtSlider yLeftSlider;
+    /** layout used*/
+    QGridLayout layout;
+    /** the plot widget*/
+    PlottingWidget plot;
+    /** the grid*/
+    QwtPlotGrid grid;
+    /** general zoomer zooming in via selecting a rect with the mouse*/
+    QwtPlotZoomer zoomer;
+    /** vector containing all border lines*/
+    std::vector<QwtPlotMarker*> markers;
+    /** the currentid of the marker*/
+    int plotMarkerId;
+    /** vector containing all curves*/
+    std::vector<QwtPlotCurve*> curves;
+    /** currentId of the curve*/
+    int curveId;
+    /** The span of the x axis*/
+    double xSpan;
+    /** The span of the y axis*/
+    double ySpan;
+    /** the minimum value of a point in x direction*/
+    double minXBottom;
+    /** the maximum value of a point in x direction*/
+    double maxXBottom;
+    /** the minimum value of a point in y direction*/
+    double minYLeft;
+    /** the maximum value of a point in y direction*/
+    double maxYLeft;
+    /** Whether autoscrolling is turned on*/
+    bool autoscrolling;
+    /** If scrolling in x direction is enabled*/
+    bool scrollX;
+    /** If scrolling in y direction is enabled*/
+    bool scrollY;
+    /** If autoscaling of the axis is enabled*/
+    bool autoScale;
+    /** If the plot is currently zoomed*/
+    bool isZoomed;
+    /** the xSpan when zoomed*/
+    double zoomXSpan;
+    /** the y span when zoomed*/
+    double zoomYSpan;
+    /** The rect which was initially used to display the plot*/
+    QwtDoubleRect initialRect;
+};
+
+#endif	/* PLOTWIDGET_H */
+

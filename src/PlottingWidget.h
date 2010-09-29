@@ -9,60 +9,71 @@
 #define	PLOTTINGWIDGET_H
 
 #include <qwt-qt4/qwt_plot.h>
-#include <qwt-qt4/qwt_plot_curve.h>
-#include <qwt-qt4/qwt_plot_grid.h>
-#include <qwt-qt4/qwt_plot_zoomer.h>
-#include <qwt-qt4/qwt_plot_marker.h>
-#include <QtGui/QWidget>
-#include <QtGui/QBoxLayout>
-#include <QtGui/QPen>
 #include <QtGui/QWheelEvent>
-#include <vector>
-#include <QTimer>
+#include <qwt-qt4/qwt_scale_div.h>
 #include <iostream>
-#include <qwt-qt4/qwt_slider.h>
 
-enum PlotStyle {Dot, Line};
-
+/**
+ * Plotting widget which extends qwtPlot to add mouse wheel
+ * functionality. When scrolling the mouse wheel a signal will be emitted
+ * which contains the new dimension the plot shall be scrolled to.
+ * A mouseZoomed signal will be emitted containing the new
+ * dimensions the plot shall be scrolled to. Note that the given rectangle
+ * will not contain pixel data, instead it will contain x and y axis
+ * data in the coordinate system the plot is currently showing.
+ * <br>
+ * Currently only zooming of the yLeft and xBottom axis is supported.
+ *
+ * <p>
+ * TODO:<br>
+ * <ul>
+ * <li>Support for all axis</li>
+ * </ul>
+ *
+ * @author Bjoern Lueck <blueck@dfki.de>
+ * @version 0.1
+ */
 class PlottingWidget : public QwtPlot
 {
 
     Q_OBJECT
 
 public:
-    PlottingWidget(bool drawGrid);
+    /**
+     * Creates the widget
+     * @param parent the parent of the widget
+     */
+    PlottingWidget(QWidget* parent);
+
+    /**
+     * Destroys the widget
+     */
     virtual ~PlottingWidget();
 
-    bool isDrawGrid() { return drawGrid; };
-    void setDrawGrid(bool drawGrid);
-    void setDataStyle(int dataId, QColor color, int width, PlotStyle plotStyle);
-    void setAxisTitles(QString xAxisTitle, QString yAxisTitle);
-    void setAxisBoundaries(double xLower, double xUpper, double yLower, double yUpper);
-    void setAxisAutoScaleOn();
-    QwtPlotCurve* getPlotCurveForData(int dataId);
-    void setAutoscrolling(bool enabled);
-    bool getAutoscrolling() {return autoscrolling;};
-    void zoomToVisibleRange(double xLower, double xUpper, double yLower, double yUpper);
+    /**
+     * Event which will be called when the mouse whell is stirred
+     * @param event the event that occured
+     */
     void wheelEvent(QWheelEvent* event);
-    void setMouseZoomAxis(bool xAxis, bool yAxis) {zoomXAxis = xAxis, zoomYAxis = yAxis;};
-    void addHorizontalBorderLine(QColor color, double value);
-public slots:
-    int addData(double* xPoints, double* yPoints, int length);
-    void addDataToExisting(int dataId, double* xPoints, double* yPoints, int length);
-    void removeData(int dataId);
-    void testData();
+
+    /**
+     * Sets which axis can be zoomed via the mouse wheel
+     * @param xAxis whether the x axis can be zoomed, defaults to true
+     * @param yAxis whether the y axis can be zoomed, defaults to true
+     */
+    void setMouseWheelZoomAxis(bool xAxis=true, bool yAxis=true) {zoomXAxis = xAxis, zoomYAxis = yAxis;};
+ signals:
+    /**
+     * Signal which will be emitted when the mouse wheel was zoomed and the
+     * axis can be zoomed.
+     * @param rect the rect to ehich shall be zoomed
+     */
+    void mouseZoomed(const QwtDoubleRect& rect);
 private:
-    std::vector<QwtPlotCurve*> allCurves;
-    std::vector<double> minPoints;
-    QwtPlotGrid grid;
-    int currentId;
-    bool drawGrid;
-    QTimer timer;
-    bool autoscrolling;
+    /** whether the x axis shall be zoomed*/
     bool zoomXAxis;
+    /** whether the y axis shall be zoomed*/
     bool zoomYAxis;
-    QwtPlotZoomer zoomer;
-    QwtSlider* xSlider;
 };
 
 #endif	/* PLOTTINGWIDGET_H */

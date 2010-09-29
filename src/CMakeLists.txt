@@ -2,7 +2,7 @@
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 SET(plotting_widget_MOC_HDRS
-  PlottingWidget.h
+  PlottingWidget.h PlotWidget.h
 )
 QT4_WRAP_CPP(plotting_widget_MOC_SRCS ${plotting_widget_MOC_HDRS})
 
