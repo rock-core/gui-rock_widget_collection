@@ -52,4 +52,28 @@ include(${QT_USE_FILE})
 # Process CMakeLists.txt in the following subdirectory
 add_subdirectory(src)
 
+##### COPY Configuration files into build directory
+execute_process(COMMAND ${CMAKE_COMMAND} -E copy_directory ${PROJECT_SOURCE_DIR}/configuration ${PROJECT_BINARY_DIR}/configuration)
+
+# Workaround: Cleanup the in file from build directory
+execute_process(COMMAND ${CMAKE_COMMAND} -E remove -f ${PROJECT_BINARY_DIR}/configuration/${PROJECT_NAME}.pc.in)
+
+##### INSTALL Configuration ####################################################
+
+# include/
+# TODO: recursive copy with directories
+install(DIRECTORY ${PROJECT_SOURCE_DIR}/src/ DESTINATION include/${PROJECT_NAME}
+	FILES_MATCHING PATTERN "*.h")
+
+# configuration/<projectname>.pc
+configure_file(${PROJECT_SOURCE_DIR}/configuration/${PROJECT_NAME}.pc.in
+		${PROJECT_BINARY_DIR}/configuration/${PROJECT_NAME}.pc @ONLY)
+
+# Install pkg-config file
+install(FILES ${CMAKE_BINARY_DIR}/configuration/${PROJECT_NAME}.pc DESTINATION lib/pkgconfig)
+
+# Dont' forget to add an install for your target, when you create your executable or library
+   
+
+##### End INSTALL Configuration ################################################
 
