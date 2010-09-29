@@ -6,6 +6,9 @@
  */
 
 #include "PlotWidget.h"
+#include <QtPlugin>
+
+Q_EXPORT_PLUGIN2(PlotWidget,PlotWidget)
 
 PlotWidget::PlotWidget(QWidget* parent) : QWidget(parent),
         xBottomSlider(NULL), yLeftSlider(NULL, Qt::Vertical), plot(this),

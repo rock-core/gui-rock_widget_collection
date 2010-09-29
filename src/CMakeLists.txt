@@ -22,7 +22,7 @@ target_link_libraries(${PROJECT_NAME} QtCore QtGui qwt-qt4)
 target_link_libraries(${PROJECT_NAME}_EXEC ${PROJECT_NAME} QtCore QtGui)
 
 
-
+install(FILES libplotting_widget.so.rb DESTINATION lib)
 install(TARGETS ${PROJECT_NAME} 
 		LIBRARY DESTINATION lib
     )

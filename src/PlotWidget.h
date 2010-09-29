@@ -190,7 +190,7 @@ public:
     // -->Actual Data related methods
 
     /**
-     * Adds Data as a curve to the plot. The curev will be painted as black dots by default
+     * Adds Data as a curve to the plot. The curve will be painted as black dots by default
      * but can be changed via setDataSytle with the returned int id.<br>
      * If the dataId is given data will be added to an existing data set.<br>
      * The x and y Axis which shall be used for the data can be specified too.
@@ -235,6 +235,11 @@ public:
     // --> Exporting functions
 
 public slots:
+    QObject* newInstance()
+    {
+       return new PlotWidget();
+    };
+
     /**
      * Exports the plot as an image. A save dialog will be displayed where
      * one can choose the filename and the type of image.
