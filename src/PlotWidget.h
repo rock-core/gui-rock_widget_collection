@@ -14,6 +14,7 @@
 #include <QtGui/QResizeEvent>
 #include <QtGui/QPushButton>
 #include <Qt/qtimer.h>
+#include <Qt/qlist.h>
 #include <QtGui/QGridLayout>
 
 #include <qwt-qt4/qwt_slider.h>
@@ -27,6 +28,22 @@
 #include <vector>
 #include <limits>
 #include <algorithm>
+
+// AXIS DEFINES
+
+#define X_BOTTOM 0
+#define Y_LEFT 1
+#define X_TOP 2
+#define Y_RIGHT 3
+
+// STYLE DEFINES
+
+#define NO_CURVE 0
+#define LINES 1
+#define STICKS 2
+#define STEPS 3
+#define DOTS 4
+#define USER_CURVE 100
 
 
 /**
@@ -101,6 +118,17 @@ public:
      */
     virtual ~PlotWidget();
 
+    
+
+    // --> Exporting functions
+
+public slots:
+    QObject* newInstance()
+    {
+       return new PlotWidget();
+    };
+
+
     // --> Grid related methods
 
     /**
@@ -117,7 +145,7 @@ public:
      * @param axis teh slider of which axis to enable/disable
      * @param enable, if the slider shall be anabled or disabled, defaults to true
      */
-    void enableSlider(QwtPlot::Axis axis, bool enable=true);
+    void enableSlider(int axisId, bool enable=true);
 
     // --> Border Line related methods
 
@@ -170,14 +198,14 @@ public:
      * @param upper upper value of the axis
      * @param step step size shown, 0 indicating automatic step size.  Defaults to 0.
      */
-    void setAxisBoundaries(QwtPlot::Axis axis, double lower, double upper, double step=0);
+    void setAxisBoundaries(int axisId, double lower, double upper, double step=0);
 
     /**
      * Sets if the specified axis shall be shown or hidden
      * @param axis the axis to be shown or hidden
      * @param enable true if the axis shall be shown, false otherwise
      */
-    void setAxisShown(QwtPlot::Axis axis, bool enable=true);
+    void setAxisShown(int axisId, bool enable=true);
 
     /**
      * Sets the axs to auto scaling. Whnever data is added the axis
@@ -185,7 +213,7 @@ public:
      * automatic scaling. as will setAxisAutoScale(false)
      * @param enable enable enable or disable auto scaling, defaults to true
      */
-    void setAxisAutoScale(QwtPlot::Axis axis, bool enable=true);
+    void setAxisAutoScale(int axisId, bool enable=true);
 
     // -->Actual Data related methods
 
@@ -203,7 +231,14 @@ public:
      * @return a unique id identifying the data. if existing data was modifyied this will be the same as the dataId given
      */
     int addData(double* xPoints, double* yPoints, int length, int dataId=-1,
-        QwtPlot::Axis xAxis=QwtPlot::xBottom, QwtPlot::Axis yAxis=QwtPlot::yLeft);
+		int xAxisId=X_BOTTOM, int yAxisId=Y_LEFT);
+
+    int addData(const QList<double>& xPoints, const QList<double>& yPoints, int dataId=-1,
+                int xAxisId=X_BOTTOM, int yAxisId=Y_LEFT);
+
+    int addData(double xPoints, double yPoints, int dataId=-1,
+		int xAxisId=X_BOTTOM, int yAxisId=Y_LEFT);
+
     /**
      * Show or hides the data specified by dataId
      * @param dataId the id of teh data to hide or show
@@ -216,7 +251,7 @@ public:
      * @param pen the pen to use for the data
      * @param curveStlye the curveStyle for the data
      */
-    void setDataStyle(int dataId, QPen pen, QwtPlotCurve::CurveStyle curveStlye=QwtPlotCurve::Dots);
+    void setDataStyle(int dataId, QPen pen, int curveStlye=DOTS);
     /**
      * Returns the QwtPlotCurve for the id given. this is only usefull if any
      * methods available to QwtPlotCurve are needed which are not wrapped here.
@@ -230,15 +265,7 @@ public:
      * @return true if enabled, false otherwise
      */
     bool isAutoscrolling() {return autoscrolling;};
-    
 
-    // --> Exporting functions
-
-public slots:
-    QObject* newInstance()
-    {
-       return new PlotWidget();
-    };
 
     /**
      * Exports the plot as an image. A save dialog will be displayed where
@@ -262,7 +289,8 @@ protected slots:
      */
     void xBottomSliderValueChanged(double newValue);
 
-    /** Slot handling change of the yLeft slider. You should
+    /**
+     *  Slot handling change of the yLeft slider. You should
      * never need to call this manually
      * @param newValue the new value of the slider
      */
@@ -278,6 +306,8 @@ protected slots:
 protected:
 
     // --> helper methods
+
+    QwtPlot::Axis getAxisForInt(int axis);
 
     /**
      * Sets the zoom base of the zoomer to the actual boundary values.

@@ -46,6 +46,22 @@ PlotWidget::~PlotWidget()
     curves.clear();
 }
 
+QwtPlot::Axis PlotWidget::getAxisForInt(int axis)
+{
+  switch(axis)
+    {
+    case X_BOTTOM:
+      return QwtPlot::xBottom;
+    case Y_LEFT:
+      return QwtPlot::yLeft;
+    case X_TOP:
+      return QwtPlot::xTop;
+    case Y_RIGHT:
+      return QwtPlot::yRight;
+    }
+  return QwtPlot::xBottom;
+}
+
 void PlotWidget::setDrawGrid(bool drawGrid, bool enableX, bool enableY)
 {
     if(drawGrid)
@@ -79,8 +95,9 @@ int PlotWidget::addBorderLine(double value, Qt::Orientation orientation, QPen pe
     return plotMarkerId++;
 }
 
-void PlotWidget::enableSlider(QwtPlot::Axis axis, bool enable)
+void PlotWidget::enableSlider(int axisId, bool enable)
 {
+  QwtPlot::Axis axis = getAxisForInt(axisId);
     if(axis == QwtPlot::xBottom)
     {
         xBottomSlider.setVisible(enable);
@@ -157,8 +174,9 @@ void PlotWidget::setBorderLineStyle(int borderLineId, QPen pen)
     }
 }
 
-void PlotWidget::setAxisAutoScale(QwtPlot::Axis axis, bool enable)
+void PlotWidget::setAxisAutoScale(int axisId, bool enable)
 {
+  QwtPlot::Axis axis = getAxisForInt(axisId);
     if(enable)
     {
         plot.setAxisAutoScale(axis);
@@ -178,8 +196,9 @@ void PlotWidget::setAxisTitles(QString xAxisTitle, QString yAxisTitle)
     plot.setAxisTitle(QwtPlot::xBottom, xAxisTitle);
 }
 
-void PlotWidget::setAxisBoundaries(QwtPlot::Axis axis, double lower, double upper, double step)
+void PlotWidget::setAxisBoundaries(int axisId, double lower, double upper, double step)
 {
+  QwtPlot::Axis axis = getAxisForInt(axisId);
     plot.enableAxis(axis);
     plot.setAxisScale(axis, lower, upper, step);
     plot.replot();
@@ -241,8 +260,9 @@ void PlotWidget::yLeftSliderValueChanged(double newValue)
     plot.replot();
 }
 
-void PlotWidget::setAxisShown(QwtPlot::Axis axis, bool enable)
+void PlotWidget::setAxisShown(int axisId, bool enable)
 {
+  QwtPlot::Axis axis = getAxisForInt(axisId);
     plot.enableAxis(axis, enable);
 }
 
@@ -255,11 +275,29 @@ void PlotWidget::setAutoscrolling(bool enable)
     plot.setMouseWheelZoomAxis(!enable, !enable);
 }
 
-int PlotWidget::addData(double* xPoints, double* yPoints, int length, int dataId,
-        QwtPlot::Axis xAxis, QwtPlot::Axis yAxis)
+int PlotWidget::addData(const QList<double>& xPoints, const QList<double>& yPoints, int dataId,
+        int xAxisId, int yAxisId)
 {
+  addData(xPoints.toVector().data(), yPoints.toVector().data(), xPoints.size(), dataId, xAxisId, yAxisId);
+}
+
+int PlotWidget::addData(double xPoint, double yPoint, int dataId,
+        int xAxisId, int yAxisId)
+{
+  double xPoints[1];
+  double yPoints[1];
+  xPoints[0] = xPoint;
+  yPoints[0] = yPoint;
+  addData(xPoints, yPoints, 1, dataId, xAxisId, yAxisId);
+}
+
+int PlotWidget::addData(double* xPoints, double* yPoints, int length, int dataId,
+        int xAxisId, int yAxisId)
+{
+  QwtPlot::Axis xAxis = getAxisForInt(xAxisId);
+  QwtPlot::Axis yAxis = getAxisForInt(yAxisId);
     // new data
-    if(dataId < 0)
+    if(dataId < 0 || curves[dataId] == NULL)
     {
         QwtPlotCurve* curve = new QwtPlotCurve();
         curve->setStyle(QwtPlotCurve::Dots);
@@ -350,13 +388,32 @@ void PlotWidget::enableData(int dataId, bool enable)
     }
 }
 
-void PlotWidget::setDataStyle(int dataId, QPen pen, QwtPlotCurve::CurveStyle curveStyle)
+void PlotWidget::setDataStyle(int dataId, QPen pen, int curveStyle)
 {
     QwtPlotCurve* curve = curves[dataId];
     if(curve != NULL)
     {
         curve->setPen(pen);
-        curve->setStyle(curveStyle);
+	switch(curveStyle)
+	  {
+	  case NO_CURVE:
+	    curve->setStyle(QwtPlotCurve::NoCurve);
+	    break;
+	  case LINES:
+	    curve->setStyle(QwtPlotCurve::Lines);
+	    break;
+	  case STICKS:
+	    curve->setStyle(QwtPlotCurve::Sticks);
+	    break;
+	  case STEPS:
+	    curve->setStyle(QwtPlotCurve::Steps);
+	    break;
+	  case DOTS:
+	    curve->setStyle(QwtPlotCurve::Dots);
+	    break;
+	  default:
+	    curve->setStyle(QwtPlotCurve::UserCurve);
+	  }
     }
 }
 
