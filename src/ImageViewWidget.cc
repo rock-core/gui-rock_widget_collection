@@ -253,11 +253,13 @@ void ImageViewWidget::paintEvent(QPaintEvent* event)
     {
       //convert image to RGB
       temp_image = image.convertToFormat (QImage::Format_RGB888);
-      pimage = &temp_image;
+      pimage = &temp_image.scaledToWidth(640);
     }
     else
-      pimage = &image;
+      pimage = &image.scaledToWidth(640);
+
    
+
     addDrawItemsToWidget(*pimage);
     QPainter qpainter(this);
     qpainter.drawImage(0, 0, *pimage);
