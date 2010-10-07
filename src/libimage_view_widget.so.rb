@@ -12,6 +12,7 @@
       options[:time_overlay] = true
       options[:fps_overlay] = true
       options[:display_first] = true
+      options[:scale_factor] = 1
       return options
   end
 
@@ -36,12 +37,14 @@
     if(@options[:do_init]==true)
       width = [frame.size.width,@options[:min_width]].max
       height = [frame.size.height,@options[:min_height]].max
+      setScaleFactor(@options[:scale_factor])
+     
       changeFormat2(frame.frame_mode.to_s,frame.pixel_size,width,height)
-      setFixedSize(width,height)
-      @time_overlay_object = addText(width-150,height-5,0,"time")
+      
+      @time_overlay_object = addText(width*@options[:scale_factor]-150,height*@options[:scale_factor]-5,0,"time")
       @time_overlay_object.setColor(Qt::Color.new(255,255,0))
       @time_overlay_object.setBackgroundColor(Qt::Color.new(0,0,0,40))
-      @fps_overlay_object = addText(5,height-5,0,"   ")
+      @fps_overlay_object = addText(5,height*@options[:scale_factor]-5,0,"   ")
       @fps_overlay_object.setColor(Qt::Color.new(255,255,0))
       @fps_overlay_object.setBackgroundColor(Qt::Color.new(0,0,0,40))
 
@@ -62,7 +65,7 @@
       frame.attributes.to_a.each do |x|
         stat =x.data_.to_s if x.name_ == 'StatFps'
         stat_valid =x.data_.to_s if x.name_ == 'StatValidFps'
-        stat_invalid =x.data_.to_s if x.name_ == 'StatInvalidFps'
+        stat_invalid =x.data_.to_s if x.name_ == 'StatInValidFps'
       end
       @fps_overlay_object.setText(" stat fps: #{stat},  valid #{stat_valid}, invalid #{stat_invalid}")
     end

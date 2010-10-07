@@ -116,6 +116,18 @@ public slots:
       delete widget;
     }
 
+    void setScaleFactor(float factor)
+    {
+       scale_factor = factor;
+       setMinimumSize(QSize(width*scale_factor, height*scale_factor));
+    }
+
+    void setFreeScale(bool free)
+    {
+
+
+    }
+
     /**
      * Changes the format and dimensions of the widget so images with
      * other dimensions or formats can be added
@@ -261,6 +273,8 @@ protected:
     
     QAction *save_image_act;
     QString save_path;
+
+    float scale_factor;
 };
 
 #endif	/* IMAGEVIEWWIDGET_H */

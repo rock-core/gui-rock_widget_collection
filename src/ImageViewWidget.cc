@@ -13,7 +13,7 @@ using namespace base::samples::frame;
 Q_EXPORT_PLUGIN2(ImageViewWidget, ImageViewWidget)
 
 ImageViewWidget::ImageViewWidget(int width, int height, QImage::Format format):
-format(format),width(width),height(height),image(width, height, format)
+format(format),width(width),height(height),image(width, height, format),scale_factor(1)
 {
     setMinimumSize(QSize(width, height));
     
@@ -137,9 +137,12 @@ void ImageViewWidget::clearGroups()
 }
 
 
-void ImageViewWidget::changeFormat(int width, int height, QImage::Format format)
+void ImageViewWidget::changeFormat(int _width, int _height, QImage::Format format)
 {
+    height = _height;
+    width = _width;
     image = QImage(width, height, format);
+    setMinimumSize(QSize(width*scale_factor, height*scale_factor));
 }
 
 void ImageViewWidget::changeFormat2(QString mode, int pixel_size, int width, int height)
@@ -162,7 +165,6 @@ void ImageViewWidget::changeFormat2(QString mode, int pixel_size, int width, int
       //change colors to grayscale
       if(format == QImage::Format_Indexed8)
       {
-//	image.setColorCount(256);
 	for(int i = 0;i<256;++i)
 	  image.setColor(i,qRgb(i,i,i));
       }
@@ -247,19 +249,19 @@ void ImageViewWidget::paintEvent(QPaintEvent* event)
     QPainter qpainter(this);
     qpainter.drawImage(0, 0, shownImage);
     */
-   
-    QImage* pimage = NULL;
-    if(image.format() == QImage::Format_Indexed8)
+    QImage* pimage = &image;;
+    if (scale_factor != 1)
     {
-      //convert image to RGB
-      temp_image = image.convertToFormat (QImage::Format_RGB888);
+      temp_image = pimage->scaledToHeight(height * 0.5);
       pimage = &temp_image;
     }
-    else
-      pimage = &image;
 
-   
-
+    if(pimage->format() == QImage::Format_Indexed8)
+    {
+      //convert image to RGB
+      temp_image = pimage->convertToFormat (QImage::Format_RGB888);
+      pimage = &temp_image;
+    }
     addDrawItemsToWidget(*pimage);
     QPainter qpainter(this);
     qpainter.drawImage(0, 0, *pimage);
