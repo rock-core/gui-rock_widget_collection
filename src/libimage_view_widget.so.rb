@@ -10,6 +10,7 @@
       options[:min_width] = 140
       options[:min_height] = 140
       options[:time_overlay] = true
+      options[:fps_overlay] = true
       options[:display_first] = true
       return options
   end
@@ -40,6 +41,10 @@
       @time_overlay_object = addText(width-150,height-5,0,"time")
       @time_overlay_object.setColor(Qt::Color.new(255,255,0))
       @time_overlay_object.setBackgroundColor(Qt::Color.new(0,0,0,40))
+      @fps_overlay_object = addText(5,20,0,"")
+      @fps_overlay_object.setColor(Qt::Color.new(255,255,0))
+      @fps_overlay_object.setBackgroundColor(Qt::Color.new(0,0,0,40))
+
       @options[:do_init] = false
     end
     if @options[:time_overlay] == true
@@ -49,6 +54,11 @@
         time = Time.at(frame.time.seconds,frame.time.microseconds)
       end
       @time_overlay_object.setText(time.strftime("%b %d %Y %H:%M:%S"))
+    end
+    if @options[:fps_overlay]
+      frame.attributes.to_a.each do |x|
+        @fps_overlay_object.setText("stat fps: " +  x.data_.to_s) if x.name_ == 'StatFrameRate'
+      end
     end
     addRawImage(frame.frame_mode.to_s,frame.pixel_size,frame.size.width,frame.size.height,frame.image.to_byte_array[8..-1])
   end
