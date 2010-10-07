@@ -41,7 +41,7 @@
       @time_overlay_object = addText(width-150,height-5,0,"time")
       @time_overlay_object.setColor(Qt::Color.new(255,255,0))
       @time_overlay_object.setBackgroundColor(Qt::Color.new(0,0,0,40))
-      @fps_overlay_object = addText(5,20,0,"")
+      @fps_overlay_object = addText(5,height-5,0,"   ")
       @fps_overlay_object.setColor(Qt::Color.new(255,255,0))
       @fps_overlay_object.setBackgroundColor(Qt::Color.new(0,0,0,40))
 
@@ -56,9 +56,15 @@
       @time_overlay_object.setText(time.strftime("%b %d %Y %H:%M:%S"))
     end
     if @options[:fps_overlay]
+      stat = ''
+      stat_valid = ''
+      stat_invalid = ''
       frame.attributes.to_a.each do |x|
-        @fps_overlay_object.setText("stat fps: " +  x.data_.to_s) if x.name_ == 'StatFrameRate'
+        stat =x.data_.to_s if x.name_ == 'StatFps'
+        stat_valid =x.data_.to_s if x.name_ == 'StatValidFps'
+        stat_invalid =x.data_.to_s if x.name_ == 'StatInvalidFps'
       end
+      @fps_overlay_object.setText(" stat fps: #{stat},  valid #{stat_valid}, invalid #{stat_invalid}")
     end
     addRawImage(frame.frame_mode.to_s,frame.pixel_size,frame.size.width,frame.size.height,frame.image.to_byte_array[8..-1])
   end
