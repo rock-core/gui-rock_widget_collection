@@ -44,12 +44,12 @@ void ImageViewWidget::saveImage()
     if(path.length() > 0)	
     {
       save_path = path;
-      act_image->save(save_path,"PNG",100);
+      act_image->save(save_path,"PNG",80);
     }
 }
 bool ImageViewWidget::saveImage2(QString path)
 {
-    act_image->save(path,"PNG",100);
+    act_image->save(path,"PNG",80);
 }
 
 bool ImageViewWidget::saveImage3(const QString &mode, int pixel_size,  int width,  int height,const char* pbuffer, QString path)
@@ -57,7 +57,7 @@ bool ImageViewWidget::saveImage3(const QString &mode, int pixel_size,  int width
     QImage image;
     configQImage(image,width,height,pixel_size,mode);
     copyToQImage(image, mode, pixel_size,width,height,pbuffer);
-    image.save(path,"PNG",100);
+    image.save(path,"PNG",80);
 }
 
 QObject* ImageViewWidget::addText(int xPos, int yPos, int groupNr, const QString &text)
