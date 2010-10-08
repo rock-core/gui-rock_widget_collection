@@ -19,8 +19,9 @@
 #include "PolygonItem.h"
 #include "PolylineItem.h"
 #include "frame_helper/FrameHelper.h"
-#include <qfiledialog.h>
-#include <QMenu>
+#include <QtGui/qfiledialog.h>
+#include <QtGui/QMenu>
+#include <QtCore/QString>
 
 #ifndef IMAGEVIEWWIDGET_H
 #define	IMAGEVIEWWIDGET_H
@@ -99,6 +100,8 @@ public:
     
 public slots:
     void saveImage();
+    bool saveImage2(QString path);
+    bool saveImage3(const QString &mode, int pixel_size,  int width,  int height,const char* pbuffer, QString path);
     
 /*   QString getRubyCode()
     {
@@ -119,7 +122,7 @@ public slots:
     void setScaleFactor(float factor)
     {
        scale_factor = factor;
-       setMinimumSize(QSize(width*scale_factor, height*scale_factor));
+       setMinimumSize(QSize(image.width()*scale_factor, image.height()*scale_factor));
     }
 
     void setFreeScale(bool free)
@@ -245,9 +248,9 @@ public slots:
      */
     void clearGroups();
 
-    int getHeight(){return height;};
-    int getWidth(){return width;};
-    int getFormat(){return format;};
+    int getHeight()const {return image.height();};
+    int getWidth()const {return image.width();};
+    int getFormat()const {return image.format();};
   
 protected:
     /**
@@ -255,17 +258,15 @@ protected:
      * @param shownImage teh iamge to add the shapes to
      */
     void addDrawItemsToWidget(QImage &shownImage);
+    void copyToQImage(QImage &image,const QString &mode, int pixel_size,  int width,  int height,const char* pbuffer);
+    void configQImage(QImage &image, int width, int height,int pixel_size, QString mode);
+    QImage* prepareForDrawing(QImage &image,QImage &temp,float scale_factor,bool overlay);
     QImage::Format getFormat(base::samples::frame::frame_mode_t mode,int pixel_size);
     
     /** The image currently shown*/
     QImage image;
     QImage temp_image;
     /** The format used in the widget*/
-    QImage::Format format;
-    /** The width of the widgets images*/
-    int width;
-    /** The height of the widgets images*/
-    int height;
     /** List of all Draw Items*/
     QList<DrawItem*> items;
     /** List of group numbers currently disabled*/
@@ -273,6 +274,7 @@ protected:
     
     QAction *save_image_act;
     QString save_path;
+    QImage *act_image;
 
     float scale_factor;
 };

@@ -26,6 +26,14 @@
     return @options
   end
 
+  def __plugin_widget__.save(path)
+	saveImage2(path)
+  end
+
+  def __plugin_widget__.save_frame(frame,path)
+        saveImage3(frame.frame_mode.to_s,frame.pixel_size,frame.size.width,frame.size.height,frame.image.to_byte_array[8..-1],path)
+  end
+
   #diplay is called each time new data are available on the orocos output port
   #this functions translates the orocos data struct to the widget specific format
   def __plugin_widget__.display(port,frame)

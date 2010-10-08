@@ -7,21 +7,22 @@
 
 #include "ImageViewWidget.h"
 #include <stdexcept>
-#include <QtPlugin>
+#include <QtCore/QtPlugin>
 
 using namespace base::samples::frame;
 Q_EXPORT_PLUGIN2(ImageViewWidget, ImageViewWidget)
 
 ImageViewWidget::ImageViewWidget(int width, int height, QImage::Format format):
-format(format),width(width),height(height),image(width, height, format),scale_factor(1)
+image(width, height, format),scale_factor(1)
 {
     setMinimumSize(QSize(width, height));
-    
+    act_image = & image;
     //create actions
     save_image_act = new QAction(tr("&Save Image"),this);
     save_image_act->setStatusTip(tr("Save the image to disk"));
     connect(save_image_act,SIGNAL(triggered()),this,SLOT(saveImage()));
 }
+
 
 ImageViewWidget::~ImageViewWidget()
 {
@@ -43,8 +44,20 @@ void ImageViewWidget::saveImage()
     if(path.length() > 0)	
     {
       save_path = path;
-      image.save(save_path,"PNG",100);
+      act_image->save(save_path,"PNG",100);
     }
+}
+bool ImageViewWidget::saveImage2(QString path)
+{
+    act_image->save(path,"PNG",100);
+}
+
+bool ImageViewWidget::saveImage3(const QString &mode, int pixel_size,  int width,  int height,const char* pbuffer, QString path)
+{
+    QImage image;
+    configQImage(image,width,height,pixel_size,mode);
+    copyToQImage(image, mode, pixel_size,width,height,pbuffer);
+    image.save(path,"PNG",100);
 }
 
 QObject* ImageViewWidget::addText(int xPos, int yPos, int groupNr, const QString &text)
@@ -137,40 +150,21 @@ void ImageViewWidget::clearGroups()
 }
 
 
-void ImageViewWidget::changeFormat(int _width, int _height, QImage::Format format)
+void ImageViewWidget::changeFormat(int width, int height, QImage::Format format)
 {
-    height = _height;
-    width = _width;
     image = QImage(width, height, format);
     setMinimumSize(QSize(width*scale_factor, height*scale_factor));
 }
 
+
+
 void ImageViewWidget::changeFormat2(QString mode, int pixel_size, int width, int height)
 {
-  std::string temp = mode.toStdString();
-  base::samples::frame::frame_mode_t _mode = Frame::toFrameMode(temp);
-  switch(_mode)
-  {
-    case MODE_BAYER_RGGB:
-    case MODE_BAYER_GRBG:
-    case MODE_BAYER_BGGR:
-    case MODE_BAYER_GBRG:
-      changeFormat(width,height,QImage::Format_RGB888);
-      break;
-      
-    default:
-    {
-      QImage::Format format = getFormat(_mode,pixel_size);
-      changeFormat(width,height,format);
-      //change colors to grayscale
-      if(format == QImage::Format_Indexed8)
-      {
-	for(int i = 0;i<256;++i)
-	  image.setColor(i,qRgb(i,i,i));
-      }
-    }
-  }
+  configQImage(image,width,height,pixel_size,mode);
+  setMinimumSize(QSize(width*scale_factor, height*scale_factor));
 }
+
+
 
 QImage::Format ImageViewWidget::getFormat(frame_mode_t mode,int pixel_size)
 {
@@ -203,21 +197,26 @@ QImage::Format ImageViewWidget::getFormat(frame_mode_t mode,int pixel_size)
   return QImage::Format_Invalid;
 }
 
+void ImageViewWidget::copyToQImage(QImage &image,const QString &mode, int pixel_size,  int width,  int height,const char* pbuffer)
+{
+  std::string temp = mode.toStdString();
+  base::samples::frame::frame_mode_t _mode = Frame::toFrameMode(temp);
+  if(_mode == MODE_UNDEFINED)
+    throw std::runtime_error(" ImageViewWidget::addRawImage: Wrong mode");
+
+  //convert bayer pattern to rgb24 (rgb888)
+  if(_mode == MODE_BAYER_RGGB || _mode == MODE_BAYER_GRBG || _mode == MODE_BAYER_BGGR || _mode == MODE_BAYER_GBRG)
+      FrameHelper::convertBayerToRGB24((const uint8_t*)pbuffer,(uint8_t*) image.bits(), width, height ,_mode);
+  else
+  {
+      QImage::Format format = getFormat(_mode,pixel_size);
+      memcpy( image.bits(),pbuffer,width*height*pixel_size);
+  }
+}
+
 void ImageViewWidget::addRawImage(const QString &mode, int pixel_size,  int width,  int height,const char* pbuffer)
 {
-    std::string temp = mode.toStdString();
-    base::samples::frame::frame_mode_t _mode = Frame::toFrameMode(temp);
-    if(_mode == MODE_UNDEFINED)
-      throw std::runtime_error(" ImageViewWidget::addRawImage: Wrong mode");
-    
-    //convert bayer pattern to rgb24 (rgb888) 
-    if(_mode == MODE_BAYER_RGGB || _mode == MODE_BAYER_GRBG || _mode == MODE_BAYER_BGGR || _mode == MODE_BAYER_GBRG)
-        FrameHelper::convertBayerToRGB24((const uint8_t*)pbuffer,(uint8_t*) this->image.bits(), width, height ,_mode);
-    else
-    {
-	QImage::Format format = getFormat(_mode,pixel_size);
-	memcpy( this->image.bits(),pbuffer,width*height*pixel_size);
-    }
+    copyToQImage(image, mode, pixel_size,width,height,pbuffer);
     repaint();
 }
 
@@ -242,6 +241,53 @@ void ImageViewWidget::addDrawItemsToWidget(QImage &shownImage)
     }
 }
 
+void ImageViewWidget::configQImage(QImage &image, int width, int height,int pixel_size, QString mode)
+{
+  std::string temp = mode.toStdString();
+  base::samples::frame::frame_mode_t _mode = Frame::toFrameMode(temp);
+  switch(_mode)
+  {
+    case MODE_BAYER_RGGB:
+    case MODE_BAYER_GRBG:
+    case MODE_BAYER_BGGR:
+    case MODE_BAYER_GBRG:
+      image = QImage(width, height, QImage::Format_RGB888);
+      break;
+
+    default:
+    {
+      QImage::Format format = getFormat(_mode,pixel_size);
+      image = QImage(width, height,format);
+      //change colors to grayscale
+      if(format == QImage::Format_Indexed8)
+      {
+        for(int i = 0;i<256;++i)
+          image.setColor(i,qRgb(i,i,i));
+      }
+    }
+  }
+}
+
+QImage* ImageViewWidget::prepareForDrawing(QImage &image,QImage &temp,float scale_factor,bool overlay)
+{
+   QImage* pimage = &image;
+   if (scale_factor != 1)
+   {
+     temp = pimage->scaledToHeight(image.height() * 0.5);
+     pimage = &temp;
+   }
+
+   if(pimage->format() == QImage::Format_Indexed8)
+   {
+     //convert image to RGB
+     temp = pimage->convertToFormat (QImage::Format_RGB888);
+     pimage = &temp;
+   }
+   if(overlay)
+     addDrawItemsToWidget(*pimage);
+   return pimage;
+}
+
 void ImageViewWidget::paintEvent(QPaintEvent* event)
 {
    /* QImage shownImage(image);
@@ -249,22 +295,9 @@ void ImageViewWidget::paintEvent(QPaintEvent* event)
     QPainter qpainter(this);
     qpainter.drawImage(0, 0, shownImage);
     */
-    QImage* pimage = &image;;
-    if (scale_factor != 1)
-    {
-      temp_image = pimage->scaledToHeight(height * 0.5);
-      pimage = &temp_image;
-    }
-
-    if(pimage->format() == QImage::Format_Indexed8)
-    {
-      //convert image to RGB
-      temp_image = pimage->convertToFormat (QImage::Format_RGB888);
-      pimage = &temp_image;
-    }
-    addDrawItemsToWidget(*pimage);
     QPainter qpainter(this);
-    qpainter.drawImage(0, 0, *pimage);
+    act_image = prepareForDrawing(image,temp_image,scale_factor,true);
+    qpainter.drawImage(0, 0, *act_image);
 }
 
 
