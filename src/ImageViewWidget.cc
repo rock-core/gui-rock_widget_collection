@@ -13,7 +13,9 @@ using namespace base::samples::frame;
 Q_EXPORT_PLUGIN2(ImageViewWidget, ImageViewWidget)
 
 ImageViewWidget::ImageViewWidget(int width, int height, QImage::Format format):
-image(width, height, format),scale_factor(1)
+image(width, height, format),
+scale_factor(1),
+contextMenu(this)
 {
     setMinimumSize(QSize(width, height));
     act_image = & image;
@@ -21,6 +23,7 @@ image(width, height, format),scale_factor(1)
     save_image_act = new QAction(tr("&Save Image"),this);
     save_image_act->setStatusTip(tr("Save the image to disk"));
     connect(save_image_act,SIGNAL(triggered()),this,SLOT(saveImage()));
+    contextMenu.addAction(save_image_act);
 }
 
 
@@ -33,9 +36,7 @@ ImageViewWidget::~ImageViewWidget()
 
 void ImageViewWidget::contextMenuEvent ( QContextMenuEvent * event )
 {
-   QMenu menu(this);
-   menu.addAction(save_image_act);
-   menu.exec(event->globalPos());
+   contextMenu.exec(event->globalPos());
 }
 
 void ImageViewWidget::saveImage()

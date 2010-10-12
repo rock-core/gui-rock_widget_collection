@@ -271,7 +271,8 @@ protected:
     QList<DrawItem*> items;
     /** List of group numbers currently disabled*/
     QList<int> disabledGroups;
-    
+
+    QMenu contextMenu;
     QAction *save_image_act;
     QString save_path;
     QImage *act_image;
