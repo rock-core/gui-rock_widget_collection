@@ -26,6 +26,8 @@ image(width, height, format),scale_factor(1)
 
 ImageViewWidget::~ImageViewWidget()
 {
+    disconnect(save_image_act, 0, 0, 0);
+    delete save_image_act;
 //   items.clear();
 }
 
