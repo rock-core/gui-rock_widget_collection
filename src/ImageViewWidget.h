@@ -23,6 +23,8 @@
 #include <QtGui/QMenu>
 #include <QtCore/QString>
 
+#include <QtOpenGL/QGLWidget>   //opengl support
+
 #ifndef IMAGEVIEWWIDGET_H
 #define	IMAGEVIEWWIDGET_H
 
@@ -69,7 +71,7 @@
  * @author Bjoern Lueck
  * @version 0.1
  */
-class ImageViewWidget : public QWidget
+class ImageViewWidget : public QGLWidget
 {
     Q_OBJECT
 
@@ -98,6 +100,9 @@ public:
     void contextMenuEvent ( QContextMenuEvent * event );
     
     
+    void paintGL();
+    void resizeGL(int w, int h);
+
 public slots:
     void saveImage();
     bool saveImage2(QString path);
@@ -278,6 +283,7 @@ protected:
     QImage *act_image;
 
     float scale_factor;
+    QImage glImage; ///< Displayed image
 };
 
 #endif	/* IMAGEVIEWWIDGET_H */

@@ -17,7 +17,7 @@ image(width, height, format),
 scale_factor(1),
 contextMenu(this)
 {
-    setMinimumSize(QSize(width, height));
+ //   setMinimumSize(QSize(width, height));
     act_image = & image;
     //create actions
     save_image_act = new QAction(tr("&Save Image"),this);
@@ -156,7 +156,7 @@ void ImageViewWidget::clearGroups()
 void ImageViewWidget::changeFormat(int width, int height, QImage::Format format)
 {
     image = QImage(width, height, format);
-    setMinimumSize(QSize(width*scale_factor, height*scale_factor));
+ //   setMinimumSize(QSize(width*scale_factor, height*scale_factor));
 }
 
 
@@ -164,7 +164,8 @@ void ImageViewWidget::changeFormat(int width, int height, QImage::Format format)
 void ImageViewWidget::changeFormat2(QString mode, int pixel_size, int width, int height)
 {
   configQImage(image,width,height,pixel_size,mode);
-  setMinimumSize(QSize(width*scale_factor, height*scale_factor));
+ // setMinimumSize(QSize(width*scale_factor, height*scale_factor));
+
 }
 
 
@@ -219,8 +220,13 @@ void ImageViewWidget::copyToQImage(QImage &image,const QString &mode, int pixel_
 
 void ImageViewWidget::addRawImage(const QString &mode, int pixel_size,  int width,  int height,const char* pbuffer)
 {
-    copyToQImage(image, mode, pixel_size,width,height,pbuffer);
-    repaint();
+   copyToQImage(image, mode, pixel_size,width,height,pbuffer);
+ //   act_image = prepareForDrawing(image,temp_image,scale_factor,true);
+  //  glImage = QGLWidget::convertToGLFormat(image);
+ //   repaint();
+
+
+    updateGL();
 }
 
 void ImageViewWidget::addImage(const QImage &image)
@@ -298,9 +304,27 @@ void ImageViewWidget::paintEvent(QPaintEvent* event)
     QPainter qpainter(this);
     qpainter.drawImage(0, 0, shownImage);
     */
-    QPainter qpainter(this);
+ /*   QPainter qpainter(this);
     act_image = prepareForDrawing(image,temp_image,scale_factor,true);
-    qpainter.drawImage(0, 0, *act_image);
+    qpainter.drawImage(0, 0, *act_image);*/
+}
+
+void ImageViewWidget::paintGL()
+{
+
+  glDrawPixels(image.width(), image.height(), GL_RGB, GL_UNSIGNED_BYTE, image.bits());
+}
+
+void ImageViewWidget::resizeGL(int w, int h)
+{
+    glPixelZoom(((float)width())/ image.width(),-((float)height())/ image.height());
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glOrtho(0, w, 0, h, 0, 1);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    glViewport(0, 0, w, h);
+    glRasterPos2i(0,height());
 }
 
 

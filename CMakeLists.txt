@@ -31,7 +31,7 @@ link_directories(${FRAMEHELPER_LIBDIR})
 ### Uncomment if you want to use Qt
 
 #set(QT_SEARCH_PATH /opt)
-find_package(Qt4 REQUIRED QtCore QtGui)
+find_package(Qt4 REQUIRED QtCore QtGui QtOpengl)
 
 # Definitions to use when compiling code that uses Qt
 add_definitions(${QT_DEFINITIONS})
