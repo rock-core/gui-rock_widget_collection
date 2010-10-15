@@ -18,12 +18,13 @@
 #include "EllipseItem.h"
 #include "PolygonItem.h"
 #include "PolylineItem.h"
-#include "frame_helper/FrameHelper.h"
 #include <QtGui/qfiledialog.h>
 #include <QtGui/QMenu>
 #include <QtCore/QString>
 
 #include <QtOpenGL/QGLWidget>   //opengl support
+
+#include <frame_helper/FrameQImageConverter.h>
 
 #ifndef IMAGEVIEWWIDGET_H
 #define	IMAGEVIEWWIDGET_H
@@ -81,25 +82,14 @@ public:
      * For format parameters @seeQImage
      * @param width the width of images put onto the widget
      * @param height the height of images put onto the widget
-     * @param format the format from QImage
      */
-    ImageViewWidget(int width=64, int height=64, QImage::Format format=QImage::Format_RGB888);
+    ImageViewWidget(int width=64, int height=64);
 
     /**
      * Destructor cleaning up
      */
     virtual ~ImageViewWidget();
-    
-    
-    /**
-     * Overwritten method paints the image given to the widget
-     * @param event the Event which occured
-     */
-    void paintEvent(QPaintEvent* event);
-    
     void contextMenuEvent ( QContextMenuEvent * event );
-    
-    
     void paintGL();
     void resizeGL(int w, int h);
 
@@ -119,32 +109,14 @@ public slots:
     {
       return new ImageViewWidget();
     }
-    void deleteInstance(QWidget *widget)
-    {
-      delete widget;
-    }
 
-    void setScaleFactor(float factor)
-    {
-       scale_factor = factor;
-       setMinimumSize(QSize(image.width()*scale_factor, image.height()*scale_factor));
-    }
 
     void setFreeScale(bool free)
     {
-
+      //    setMinimumSize(QSize(image.width()*scale_factor, image.height()*scale_factor));
 
     }
 
-    /**
-     * Changes the format and dimensions of the widget so images with
-     * other dimensions or formats can be added
-     * @param width the new width
-     * @param height the new height
-     * @param format the new image format
-     */
-    void changeFormat(int width, int height, QImage::Format format);
-    void changeFormat2(QString mode, int pixel_size, int width, int height);
     void addRawImage(const QString &mode, int pixel_size, int width, int height,const char* pbuffer);
 
     /**
@@ -256,6 +228,18 @@ public slots:
     int getHeight()const {return image.height();};
     int getWidth()const {return image.width();};
     int getFormat()const {return image.format();};
+
+    void setAspectRatio(bool value)
+    {
+      aspect_ratio = value;
+    }
+    void setFixedSize(bool value)
+    {
+      fixed_size = value;
+      QWidget::setFixedSize(width(),height());
+    }
+    int heightForWidth( int w ) { return height(); }
+
   
 protected:
     /**
@@ -263,14 +247,8 @@ protected:
      * @param shownImage teh iamge to add the shapes to
      */
     void addDrawItemsToWidget(QImage &shownImage);
-    void copyToQImage(QImage &image,const QString &mode, int pixel_size,  int width,  int height,const char* pbuffer);
-    void configQImage(QImage &image, int width, int height,int pixel_size, QString mode);
-    QImage* prepareForDrawing(QImage &image,QImage &temp,float scale_factor,bool overlay);
-    QImage::Format getFormat(base::samples::frame::frame_mode_t mode,int pixel_size);
-    
-    /** The image currently shown*/
-    QImage image;
-    QImage temp_image;
+    void setScaleFactor();
+
     /** The format used in the widget*/
     /** List of all Draw Items*/
     QList<DrawItem*> items;
@@ -280,10 +258,11 @@ protected:
     QMenu contextMenu;
     QAction *save_image_act;
     QString save_path;
-    QImage *act_image;
+    QImage image;
+    bool aspect_ratio;
+    bool fixed_size;
 
-    float scale_factor;
-    QImage glImage; ///< Displayed image
+    FrameQImageConverter frame_converter;
 };
 
 #endif	/* IMAGEVIEWWIDGET_H */

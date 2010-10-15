@@ -12,13 +12,11 @@
 using namespace base::samples::frame;
 Q_EXPORT_PLUGIN2(ImageViewWidget, ImageViewWidget)
 
-ImageViewWidget::ImageViewWidget(int width, int height, QImage::Format format):
-image(width, height, format),
-scale_factor(1),
-contextMenu(this)
+ImageViewWidget::ImageViewWidget(int width, int height):
+image(width, height, QImage::Format_RGB888),contextMenu(this),
+aspect_ratio(true),fixed_size(false)
 {
  //   setMinimumSize(QSize(width, height));
-    act_image = & image;
     //create actions
     save_image_act = new QAction(tr("&Save Image"),this);
     save_image_act->setStatusTip(tr("Save the image to disk"));
@@ -47,19 +45,18 @@ void ImageViewWidget::saveImage()
     if(path.length() > 0)	
     {
       save_path = path;
-      act_image->save(save_path,"PNG",80);
+      image.save(save_path,"PNG",80);
     }
 }
 bool ImageViewWidget::saveImage2(QString path)
 {
-    act_image->save(path,"PNG",80);
+    image.save(path,"PNG",80);
 }
 
 bool ImageViewWidget::saveImage3(const QString &mode, int pixel_size,  int width,  int height,const char* pbuffer, QString path)
 {
     QImage image;
-    configQImage(image,width,height,pixel_size,mode);
-    copyToQImage(image, mode, pixel_size,width,height,pbuffer);
+    frame_converter.copyFrameToQImageRGB888(image,mode, pixel_size, width, height,pbuffer);
     image.save(path,"PNG",80);
 }
 
@@ -152,87 +149,24 @@ void ImageViewWidget::clearGroups()
     disabledGroups.clear();
 }
 
-
-void ImageViewWidget::changeFormat(int width, int height, QImage::Format format)
-{
-    image = QImage(width, height, format);
- //   setMinimumSize(QSize(width*scale_factor, height*scale_factor));
-}
-
-
-
-void ImageViewWidget::changeFormat2(QString mode, int pixel_size, int width, int height)
-{
-  configQImage(image,width,height,pixel_size,mode);
- // setMinimumSize(QSize(width*scale_factor, height*scale_factor));
-
-}
-
-
-
-QImage::Format ImageViewWidget::getFormat(frame_mode_t mode,int pixel_size)
-{
-  switch (Frame::getChannelCount(mode))
-  {
-  case 1:
-      switch (pixel_size)
-      {
-	case 1:
-	  return QImage::Format_Indexed8;
-	default:
-	  throw "Unknown format. Can not convert Frame "
-		"to QImage.";
-      }
-      break;
-  case 3:
-	switch (pixel_size)
-	{
-	case 3:
-	    return QImage::Format_RGB888;
-	default:
-	    throw "Unknown format. Can not convert Frame "
-	    "to QImage.";
-	}
-	break;
-  default:
-      throw "Unknown format. Can not convert Frame "
-	    "to QImage.";
-  }
-  return QImage::Format_Invalid;
-}
-
-void ImageViewWidget::copyToQImage(QImage &image,const QString &mode, int pixel_size,  int width,  int height,const char* pbuffer)
-{
-  std::string temp = mode.toStdString();
-  base::samples::frame::frame_mode_t _mode = Frame::toFrameMode(temp);
-  if(_mode == MODE_UNDEFINED)
-    throw std::runtime_error(" ImageViewWidget::addRawImage: Wrong mode");
-
-  //convert bayer pattern to rgb24 (rgb888)
-  if(_mode == MODE_BAYER_RGGB || _mode == MODE_BAYER_GRBG || _mode == MODE_BAYER_BGGR || _mode == MODE_BAYER_GBRG)
-      FrameHelper::convertBayerToRGB24((const uint8_t*)pbuffer,(uint8_t*) image.bits(), width, height ,_mode);
-  else
-  {
-      QImage::Format format = getFormat(_mode,pixel_size);
-      memcpy( image.bits(),pbuffer,width*height*pixel_size);
-  }
-}
-
 void ImageViewWidget::addRawImage(const QString &mode, int pixel_size,  int width,  int height,const char* pbuffer)
 {
-   copyToQImage(image, mode, pixel_size,width,height,pbuffer);
- //   act_image = prepareForDrawing(image,temp_image,scale_factor,true);
-  //  glImage = QGLWidget::convertToGLFormat(image);
- //   repaint();
-
-
-    updateGL();
+  //check if image size has changed
+  //zoom factor must be recalculated
+  if(image.width() != width || image.height() != height)
+    setScaleFactor();
+  frame_converter.copyFrameToQImageRGB888(image,mode, pixel_size, width, height,pbuffer);
+  updateGL();
 }
 
 void ImageViewWidget::addImage(const QImage &image)
 {
-    memcpy(this->image.bits(), image.bits(),  image.numBytes());
-    repaint();
+  //check if image size has changed
+  //zoom factor must be recalculated
+  if(image.width() != this->image.width() || image.height() != this->image.height())
+    setScaleFactor();
+  this->image = image;
+  updateGL();
 }
 
 void ImageViewWidget::addDrawItemsToWidget(QImage &shownImage)
@@ -250,81 +184,27 @@ void ImageViewWidget::addDrawItemsToWidget(QImage &shownImage)
     }
 }
 
-void ImageViewWidget::configQImage(QImage &image, int width, int height,int pixel_size, QString mode)
+void ImageViewWidget::setScaleFactor()
 {
-  std::string temp = mode.toStdString();
-  base::samples::frame::frame_mode_t _mode = Frame::toFrameMode(temp);
-  switch(_mode)
-  {
-    case MODE_BAYER_RGGB:
-    case MODE_BAYER_GRBG:
-    case MODE_BAYER_BGGR:
-    case MODE_BAYER_GBRG:
-      image = QImage(width, height, QImage::Format_RGB888);
-      break;
-
-    default:
-    {
-      QImage::Format format = getFormat(_mode,pixel_size);
-      image = QImage(width, height,format);
-      //change colors to grayscale
-      if(format == QImage::Format_Indexed8)
-      {
-        for(int i = 0;i<256;++i)
-          image.setColor(i,qRgb(i,i,i));
-      }
-    }
-  }
-}
-
-QImage* ImageViewWidget::prepareForDrawing(QImage &image,QImage &temp,float scale_factor,bool overlay)
-{
-   QImage* pimage = &image;
-   if (scale_factor != 1)
-   {
-     temp = pimage->scaledToHeight(image.height() * 0.5);
-     pimage = &temp;
-   }
-
-   if(pimage->format() == QImage::Format_Indexed8)
-   {
-     //convert image to RGB
-     temp = pimage->convertToFormat (QImage::Format_RGB888);
-     pimage = &temp;
-   }
-   if(overlay)
-     addDrawItemsToWidget(*pimage);
-   return pimage;
-}
-
-void ImageViewWidget::paintEvent(QPaintEvent* event)
-{
-   /* QImage shownImage(image);
-    addDrawItemsToWidget(shownImage);
-    QPainter qpainter(this);
-    qpainter.drawImage(0, 0, shownImage);
-    */
- /*   QPainter qpainter(this);
-    act_image = prepareForDrawing(image,temp_image,scale_factor,true);
-    qpainter.drawImage(0, 0, *act_image);*/
+    glPixelZoom(((float)width())/ image.width(),-((float)height())/ image.height());
 }
 
 void ImageViewWidget::paintGL()
 {
-
-  glDrawPixels(image.width(), image.height(), GL_RGB, GL_UNSIGNED_BYTE, image.bits());
+    glDrawPixels(image.width(), image.height(), GL_RGB, GL_UNSIGNED_BYTE, image.bits());
+ // renderText(10,10,"Test");
 }
 
 void ImageViewWidget::resizeGL(int w, int h)
 {
-    glPixelZoom(((float)width())/ image.width(),-((float)height())/ image.height());
+    setScaleFactor();
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     glOrtho(0, w, 0, h, 0, 1);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
     glViewport(0, 0, w, h);
-    glRasterPos2i(0,height());
+    glRasterPos2i(0,h);
 }
 
 

@@ -26,7 +26,7 @@ int main(int argc, char** argv)
 {
     QApplication* app = new QApplication(argc, argv);
     QImage* image = new QImage("/home/blueck/pics/test.jpg");
-    ImageViewWidget* widget = new ImageViewWidget(image->width(), image->height(), image->format());
+    ImageViewWidget* widget = new ImageViewWidget(image->width(), image->height());
     QMainWindow* mainwindow = new QMainWindow();
     mainwindow->setFixedSize(640, 480);
     QScrollArea* area = new QScrollArea();

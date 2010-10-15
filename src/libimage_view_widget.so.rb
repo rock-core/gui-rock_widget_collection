@@ -7,12 +7,13 @@
   def __plugin_widget__.default_options()
       options = Hash.new
       options[:do_init] = true
-      options[:min_width] = 140
-      options[:min_height] = 140
+      options[:min_width] = 640
+      options[:min_height] = 480
+      options[:aspect_ratio] = true
+      options[:fixed_size] = false
       options[:time_overlay] = true
       options[:fps_overlay] = true
       options[:display_first] = true
-      options[:scale_factor] = 1
       return options
   end
 
@@ -45,20 +46,20 @@
     if(@options[:do_init]==true)
       width = [frame.size.width,@options[:min_width]].max
       height = [frame.size.height,@options[:min_height]].max
-      setScaleFactor(@options[:scale_factor])
-     
-      changeFormat2(frame.frame_mode.to_s,frame.pixel_size,width,height)
+      setMinimumSize(width,height)
+      setAspectRatio(@options[:aspect_ratio]);
+      setFixedSize(@options[:fixed_size]);	
       
-      @time_overlay_object = addText(width*@options[:scale_factor]-150,height*@options[:scale_factor]-5,0,"time")
-      @time_overlay_object.setColor(Qt::Color.new(255,255,0))
-      @time_overlay_object.setBackgroundColor(Qt::Color.new(0,0,0,40))
-      @fps_overlay_object = addText(5,height*@options[:scale_factor]-5,0,"   ")
-      @fps_overlay_object.setColor(Qt::Color.new(255,255,0))
-      @fps_overlay_object.setBackgroundColor(Qt::Color.new(0,0,0,40))
+ #     @time_overlay_object = addText(width*@options[:scale_factor]-150,height*@options[:scale_factor]-5,0,"time")
+ #     @time_overlay_object.setColor(Qt::Color.new(255,255,0))
+ #     @time_overlay_object.setBackgroundColor(Qt::Color.new(0,0,0,40))
+ #     @fps_overlay_object = addText(5,height*@options[:scale_factor]-5,0,"   ")
+ #     @fps_overlay_object.setColor(Qt::Color.new(255,255,0))
+ #     @fps_overlay_object.setBackgroundColor(Qt::Color.new(0,0,0,40))
 
       @options[:do_init] = false
     end
-    if @options[:time_overlay] == true
+    if @options[:time_overlay1] == true
       if frame.time.instance_of?(Time)
         time = frame.time
       else
@@ -66,7 +67,7 @@
       end
       @time_overlay_object.setText(time.strftime("%b %d %Y %H:%M:%S"))
     end
-    if @options[:fps_overlay]
+    if @options[:fps_overlay1]
       stat = ''
       stat_valid = ''
       stat_invalid = ''
