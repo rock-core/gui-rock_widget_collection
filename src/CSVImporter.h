@@ -20,7 +20,7 @@ class CSVImporter
 public:
     CSVImporter();
     virtual ~CSVImporter();
-    static std::vector< std::vector<double> > getDoubleArrayFromFile(std::string filename);
+    static std::vector< std::vector<double> > getDoubleArrayFromFile(std::string filename, char delimiter);
 private:
 
 };

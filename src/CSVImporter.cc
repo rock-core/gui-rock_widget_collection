@@ -16,7 +16,7 @@ CSVImporter::~CSVImporter()
 {
 }
 
-std::vector< std::vector<double> > CSVImporter::getDoubleArrayFromFile(std::string filename)
+std::vector< std::vector<double> > CSVImporter::getDoubleArrayFromFile(std::string filename, char delimiter)
 {
     std::ifstream inFile (filename.c_str());
     std::string line;
@@ -29,7 +29,7 @@ std::vector< std::vector<double> > CSVImporter::getDoubleArrayFromFile(std::stri
         std::string item;
         int itemnum = 0;
         std::vector<double> lineResult(10);
-        while (getline (linestream, item, ' '))
+        while (getline (linestream, item, delimiter))
         {
             lineResult[itemnum] = atof(item.c_str());
             itemnum++;

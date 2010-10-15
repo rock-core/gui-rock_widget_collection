@@ -2,10 +2,11 @@
 
 OptionsDialog::OptionsDialog(QWidget* parent, Qt::WindowFlags f): QDialog(parent, f),
   okButton("Ok"), cancelButton("Cancel"), curveWidgets(500), markerWidgets(500),
-        exportLabel(QString("Export")), csvLabel(QString("CSV"))
+        exportLabel(QString("Export")), csvLabel(QString("CSV Delimiter"))
 {
-  setMinimumSize(300, 200);
-  setFixedSize(300, 200);
+  setMinimumSize(300, 400);
+  setFixedSize(300, 400);
+  csvEdit.setMaxLength(1);
   connect(&okButton, SIGNAL(clicked()), this, SLOT(okPressed()));
   connect(&cancelButton, SIGNAL(clicked()), this, SLOT(cancelPressed()));
 }
@@ -41,9 +42,20 @@ void OptionsDialog::cancelPressed()
   setVisible(false);
 }
 
+char OptionsDialog::getCSVDelimiter()
+{
+    if(csvEdit.text().size() > 0)
+    {
+        return csvEdit.text().at(0).toAscii();
+    }
+    return ' ';
+}
+
 void OptionsDialog::initializeLayout(std::vector<QwtPlotCurve*> curves, std::vector<QwtPlotMarker*> markers)
 {
   int yValue = 0;
+  DataManager* dataManager = DataManager::getInstance();
+  csvEdit.setText(QString(dataManager->getCSVDelimter()));
 
   gridLayout.addWidget(&exportLabel, yValue, 0, 1, 2);
   yValue++;

@@ -11,6 +11,7 @@
 #include <qwt-qt4/qwt_plot_marker.h>
 
 #include "PlotItemOptionWidget.h"
+#include "DataManager.h"
 
 #include <iostream>
 
@@ -24,6 +25,7 @@ class OptionsDialog : public QDialog
     void initializeLayout(std::vector<QwtPlotCurve*> curves, std::vector<QwtPlotMarker*> markers);
     std::map<int, QColor> getCurveColorMap();
     std::map<int, QColor> getMarkerColorMap();
+    char getCSVDelimiter();
     
   public slots:
     void newCurveColorSelected(int curveId, const QColor& color);

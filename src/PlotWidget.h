@@ -12,6 +12,8 @@
 #include "QtExporter.h"
 #include "OptionsDialog.h"
 #include "CSVExporter.h"
+#include "DataManager.h"
+#include "CSVImporter.h"
 
 #include <QtGui/QResizeEvent>
 #include <QtGui/QPushButton>
@@ -275,6 +277,8 @@ public slots:
     void showOptionsDialog();
     
     void exportAsCSV();
+
+    void gridChanged();
     
 protected slots:
     /**
@@ -299,8 +303,10 @@ protected slots:
     void zoomed(const QwtDoubleRect& rect);
     
     void optionsChanged();
-    
 
+    void sliderActionChecked();
+
+    void importFromCSV();
 
 protected:
 
@@ -320,7 +326,7 @@ protected:
     int addData(double* xPoints, double* yPoints, int length, int dataId=-1,
 		int xAxisId=X_BOTTOM, int yAxisId=Y_LEFT);
 
-    int addData(const QList<double>& xPoints, const QList<double>& yPoints, int dataId=-1,
+    int addData(QList<double> xPoints, QList<double> yPoints, int dataId=-1,
                 int xAxisId=X_BOTTOM, int yAxisId=Y_LEFT);
 
     // --> helper methods
@@ -394,14 +400,23 @@ protected:
     QMenuBar menuBar;
     QMenu fileMenu;
     QMenu exportMenu;
+    QMenu importMenu;
     QMenu plotMenu;
+    QMenu sliderMenu;
+    QMenu gridMenu;
+    QAction xGridAction;
+    QAction yGridAction;
+    QAction leftSliderAction;
+    QAction bottomSliderAction;
     QAction exportImageAction;
     QAction exportCSVAction;
     QAction autoscrollAction;
     QAction fitAction;
     QAction optionsAction;
+    QAction importCSVAction;
     
     OptionsDialog optionsDialog;
+    DataManager* dataManager;
 };
 
 #endif	/* PLOTWIDGET_H */

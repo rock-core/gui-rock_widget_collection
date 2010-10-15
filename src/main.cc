@@ -34,9 +34,8 @@ int main(int argc, char *argv[]) {
 //    widget.setAxisBoundaries(QwtPlot::xTop, 0, 100);
     // uncomment to show another axis
 //    widget.setAxisShown(QwtPlot::xTop, false);
-    widget.setDrawGrid(true);
-    int id = widget.addData(10, 2);
-    widget.addData(15, 4, id);
+//    int id = widget.addData(10, 2);
+//    widget.addData(15, 4, id);
     //widget.addData(11, 3, id);
     // uncomment if you have any data
 //    int dataId = widget.addData(xPoints, yPoints, size);

@@ -28,8 +28,8 @@ void ColorPickerButton::paintEvent(QPaintEvent* event)
     
     int width = size().width();
     int height = size().height();
-    int widthPercentage = width * 0.1;
-    int heightPercentage = height * 0.2;
+    int widthPercentage = width * 0.15;
+    int heightPercentage = height * 0.3;
     
     painter.fillRect(widthPercentage, heightPercentage, width - (2*widthPercentage), height - (2*heightPercentage), displayColor);
 }
