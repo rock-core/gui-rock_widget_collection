@@ -1,7 +1,7 @@
-/* 
+/*
  * File:   PlotWidget.cc
  * Author: blueck
- * 
+ *
  * Created on 17. August 2010, 12:24
  */
 
@@ -12,24 +12,33 @@ Q_EXPORT_PLUGIN2(PlotWidget,PlotWidget)
 
 PlotWidget::PlotWidget(QWidget* parent) : QWidget(parent),
         xBottomSlider(NULL), yLeftSlider(NULL, Qt::Vertical), plot(this),
-        zoomer(plot.canvas(), true), markers(100), curves(100), initialRect(-1, -1, -1, -1)
+        zoomer(plot.canvas(), true), markers(100), curves(100), initialRect(-1, -1, -1, -1),
+        optionsDialog(this),
+        fileMenu(tr("&File")), plotMenu(tr("&Plot")), exportMenu(tr("&Export")),
+        exportImageAction(tr("Export as &image"), this), autoscrollAction(tr("&Autoscrolling"), this),
+        fitAction(tr("&Fit to Graph"), this), optionsAction(tr("&Options..."), this),
+        exportCSVAction(tr("Export as &CSV"), this)
 {
     plotMarkerId = 0;
     curveId = 0;
-    layout.addWidget(&yLeftSlider, 0, 0);
-    layout.addWidget(&plot, 0, 1);
-    layout.addWidget(&xBottomSlider, 1, 1);
+    layout.addWidget(&menuBar, 0, 0, 1, 2);
+    layout.addWidget(&yLeftSlider, 1, 0);
+    layout.addWidget(&plot, 1, 1);
+    layout.addWidget(&xBottomSlider, 2, 1);
     this->setLayout(&layout);
+    addMenu();
     minXBottom = INT_MAX;
     maxXBottom = INT_MIN;
     minYLeft = INT_MAX;
     maxYLeft = INT_MIN;
     autoScale = true;
     isZoomed = false;
+    autoscrolling = false;
     QObject::connect(&xBottomSlider, SIGNAL(valueChanged(double)), this, SLOT(xBottomSliderValueChanged(double)));
     QObject::connect(&yLeftSlider, SIGNAL(valueChanged(double)), this, SLOT(yLeftSliderValueChanged(double)));
     QObject::connect(&zoomer, SIGNAL(zoomed(const QwtDoubleRect&)), this, SLOT(zoomed(const QwtDoubleRect&)));
     QObject::connect(&plot, SIGNAL(mouseZoomed(const QwtDoubleRect&)), this, SLOT(zoomed(const QwtDoubleRect&)));
+    QObject::connect(&optionsDialog, SIGNAL(accepted()), this, SLOT(optionsChanged()));
 }
 
 PlotWidget::~PlotWidget()
@@ -44,6 +53,76 @@ PlotWidget::~PlotWidget()
         delete(curves[i]);
     }
     curves.clear();
+}
+
+void PlotWidget::addMenu()
+{
+  menuBar.addMenu(&fileMenu);
+  // File Menu
+  fileMenu.addMenu(&exportMenu);
+  exportMenu.addAction(&exportImageAction);
+  exportMenu.addAction(&exportCSVAction);
+  connect(&exportImageAction, SIGNAL(triggered()), this, SLOT(exportPlotAsImage()));
+  connect(&exportCSVAction, SIGNAL(triggered()), this, SLOT(exportAsCSV()));
+  // Plot Menu
+  menuBar.addMenu(&plotMenu);
+  autoscrollAction.setCheckable(true);
+  plotMenu.addAction(&autoscrollAction);
+  plotMenu.addAction(&fitAction);
+  plotMenu.addAction(&optionsAction);
+  connect(&autoscrollAction, SIGNAL(triggered(bool)), this, SLOT(setAutoscrolling(bool)));
+  connect(&fitAction, SIGNAL(triggered()), this, SLOT(fitPlotToGraph()));
+  connect(&optionsAction, SIGNAL(triggered()), this, SLOT(showOptionsDialog()));
+}
+
+void PlotWidget::exportAsCSV()
+{
+  CSVExporter::exportCurveAsCSV(*curves[0], ',');
+}
+
+
+void PlotWidget::fitPlotToGraph()
+{
+  setAxisAutoScale(QwtPlot::xBottom, true);
+  setAxisAutoScale(QwtPlot::yLeft, true);
+  plot.replot();
+}
+
+void PlotWidget::showOptionsDialog()
+{
+  optionsDialog.initializeLayout(curves, markers);
+  optionsDialog.show();
+}
+
+
+
+void PlotWidget::optionsChanged()
+{
+  std::map<int, QColor> colorMap = optionsDialog.getCurveColorMap();
+  for(int i=0;i<curves.size();i++)
+  {
+    QwtPlotCurve* curve = curves[i];
+    if(curve != NULL)
+    {
+      QPen pen = curve->pen();
+      QColor newColor = colorMap[i];
+      pen.setColor(newColor);
+      curve->setPen(pen);
+    }
+  }
+  std::map<int, QColor> markerColorMap = optionsDialog.getMarkerColorMap();
+  for(int i=0;i<markers.size();i++)
+  {
+    QwtPlotMarker* marker = markers[i];
+    if(marker != NULL)
+    {
+      QPen pen = marker->linePen();
+      QColor newColor = markerColorMap[i];
+      pen.setColor(newColor);
+      marker->setLinePen(pen);
+    }
+  }
+  plot.replot();
 }
 
 QwtPlot::Axis PlotWidget::getAxisForInt(int axis)
@@ -198,7 +277,7 @@ void PlotWidget::setAxisTitles(QString xAxisTitle, QString yAxisTitle)
 
 void PlotWidget::setAxisBoundaries(int axisId, double lower, double upper, double step)
 {
-  QwtPlot::Axis axis = getAxisForInt(axisId);
+    QwtPlot::Axis axis = getAxisForInt(axisId);
     plot.enableAxis(axis);
     plot.setAxisScale(axis, lower, upper, step);
     plot.replot();
@@ -216,10 +295,15 @@ void PlotWidget::setAxisBoundaries(int axisId, double lower, double upper, doubl
 
 void PlotWidget::setSliderValues()
 {
+    std::cout << "Slider Values" << std::endl;
     xBottomSlider.setScalePosition(QwtSlider::BottomScale);
-    xBottomSlider.setRange(minXBottom, maxXBottom);
+    double currentMinX = plot.axisScaleDiv(QwtPlot::xBottom)->lowerBound();
+    double currentMaxX = plot.axisScaleDiv(QwtPlot::xBottom)->upperBound();
+    double currentMinY = plot.axisScaleDiv(QwtPlot::yLeft)->lowerBound();
+    double currentMaxY = plot.axisScaleDiv(QwtPlot::yLeft)->upperBound();
+    xBottomSlider.setRange(minXBottom < currentMinX ? minXBottom : currentMinX, maxXBottom > currentMaxX ? maxXBottom : currentMaxX);
     yLeftSlider.setScalePosition(QwtSlider::LeftScale);
-    yLeftSlider.setRange(minYLeft, maxYLeft);
+    yLeftSlider.setRange(minYLeft < currentMinY ? minYLeft : currentMinY, maxYLeft > currentMaxY ? maxYLeft : currentMaxY);
 }
 
 void PlotWidget::setZoomBase()
@@ -262,13 +346,18 @@ void PlotWidget::yLeftSliderValueChanged(double newValue)
 
 void PlotWidget::setAxisShown(int axisId, bool enable)
 {
-  QwtPlot::Axis axis = getAxisForInt(axisId);
+    QwtPlot::Axis axis = getAxisForInt(axisId);
     plot.enableAxis(axis, enable);
 }
 
 void PlotWidget::setAutoscrolling(bool enable)
 {
+    std::cout << "Autoscrolling set to:" << enable << std::endl;
     this->autoscrolling = enable;
+    if(autoscrollAction.isChecked() != enable)
+    {
+      autoscrollAction.setChecked(enable);
+    }
     xBottomSlider.setEnabled(!enable);
     yLeftSlider.setEnabled(!enable);
     zoomer.setEnabled(!enable);
@@ -284,6 +373,7 @@ int PlotWidget::addData(const QList<double>& xPoints, const QList<double>& yPoin
 int PlotWidget::addData(double xPoint, double yPoint, int dataId,
         int xAxisId, int yAxisId)
 {
+  std::cout << "Point at:" << xPoint << "|" << yPoint << std::endl;
   double xPoints[1];
   double yPoints[1];
   xPoints[0] = xPoint;
@@ -312,8 +402,16 @@ int PlotWidget::addData(double* xPoints, double* yPoints, int length, int dataId
             setMinMaxPoints(xPoints[i], yPoints[i]);
         }
         plot.replot();
-        curves[curveId] = curve;
-        dataId = curveId++;
+	if(dataId > 0)
+	  {
+	    curves[dataId] = curve;
+	    curveId++;
+	  }
+	else
+	  {
+	    curves[curveId] = curve;
+	    dataId = curveId++;
+	  }
     }
     // existing data
     else
@@ -337,8 +435,14 @@ int PlotWidget::addData(double* xPoints, double* yPoints, int length, int dataId
             // set the max to the last value and add 5% off the total span
             double finalMaxX = maxXBottom*1.05;
             double finalMaxY = maxYLeft * 1.05;
-            plot.setAxisScale(QwtPlot::yLeft, finalMaxY - ySpan, finalMaxY);
-            plot.setAxisScale(QwtPlot::xBottom, finalMaxX - xSpan, finalMaxX);
+	    if(maxXBottom > plot.axisScaleDiv(QwtPlot::xBottom)->upperBound())
+	      {
+		plot.setAxisScale(QwtPlot::xBottom, finalMaxX - xSpan, finalMaxX);
+	      }
+	    if(maxYLeft > plot.axisScaleDiv(QwtPlot::yLeft)->upperBound())
+	      {
+		plot.setAxisScale(QwtPlot::yLeft, finalMaxY - ySpan, finalMaxY);
+	      }
         }
         plot.replot();
     }
@@ -358,7 +462,7 @@ void PlotWidget::setMinMaxPoints(double xPoint, double yPoint)
     {
         minXBottom = xPoint;
     }
-    else if(xPoint > maxXBottom)
+    if(xPoint > maxXBottom)
     {
         maxXBottom = xPoint;
     }
@@ -366,7 +470,7 @@ void PlotWidget::setMinMaxPoints(double xPoint, double yPoint)
     {
         minYLeft = yPoint;
     }
-    else if(yPoint > maxYLeft)
+    if(yPoint > maxYLeft)
     {
         maxYLeft = yPoint;
     }

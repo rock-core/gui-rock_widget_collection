@@ -10,12 +10,16 @@
 
 #include "PlottingWidget.h"
 #include "QtExporter.h"
+#include "OptionsDialog.h"
+#include "CSVExporter.h"
 
 #include <QtGui/QResizeEvent>
 #include <QtGui/QPushButton>
 #include <Qt/qtimer.h>
 #include <Qt/qlist.h>
 #include <QtGui/QGridLayout>
+#include <QtGui/QMenuBar>
+#include <QtGui/QStyleOptionMenuItem>
 
 #include <qwt-qt4/qwt_slider.h>
 #include <qwt-qt4/qwt_plot.h>
@@ -127,6 +131,10 @@ public slots:
     {
        return new PlotWidget();
     };
+    
+    // --> Widget related methods
+    
+    void addMenu();
 
 
     // --> Grid related methods
@@ -217,25 +225,6 @@ public slots:
 
     // -->Actual Data related methods
 
-    /**
-     * Adds Data as a curve to the plot. The curve will be painted as black dots by default
-     * but can be changed via setDataSytle with the returned int id.<br>
-     * If the dataId is given data will be added to an existing data set.<br>
-     * The x and y Axis which shall be used for the data can be specified too.
-     * @param xPoints the x coordinates of the points
-     * @param yPoints the y coordinates of the points
-     * @param length the length of the x and y points
-     * @param dataId the dataid of an existing data set, defaults to 0
-     * @param xAxis the x axis the data refers to, defaults to QwtPlot::xBottom
-     * @param yAxis the y axis the data refers to, defaults to QwtPlot::yLeft
-     * @return a unique id identifying the data. if existing data was modifyied this will be the same as the dataId given
-     */
-    int addData(double* xPoints, double* yPoints, int length, int dataId=-1,
-		int xAxisId=X_BOTTOM, int yAxisId=Y_LEFT);
-
-    int addData(const QList<double>& xPoints, const QList<double>& yPoints, int dataId=-1,
-                int xAxisId=X_BOTTOM, int yAxisId=Y_LEFT);
-
     int addData(double xPoints, double yPoints, int dataId=-1,
 		int xAxisId=X_BOTTOM, int yAxisId=Y_LEFT);
 
@@ -281,6 +270,12 @@ public slots:
      */
     void setAutoscrolling(bool enable=true);
     
+    void fitPlotToGraph();
+    
+    void showOptionsDialog();
+    
+    void exportAsCSV();
+    
 protected slots:
     /**
      * Slot handling change of the xBottom slider. You should
@@ -302,8 +297,31 @@ protected slots:
      * @param rect  teh rect to which the plot was zoomed
      */
     void zoomed(const QwtDoubleRect& rect);
+    
+    void optionsChanged();
+    
+
 
 protected:
+
+    /**
+     * Adds Data as a curve to the plot. The curve will be painted as black dots by default
+     * but can be changed via setDataSytle with the returned int id.<br>
+     * If the dataId is given data will be added to an existing data set.<br>
+     * The x and y Axis which shall be used for the data can be specified too.
+     * @param xPoints the x coordinates of the points
+     * @param yPoints the y coordinates of the points
+     * @param length the length of the x and y points
+     * @param dataId the dataid of an existing data set, defaults to 0
+     * @param xAxis the x axis the data refers to, defaults to QwtPlot::xBottom
+     * @param yAxis the y axis the data refers to, defaults to QwtPlot::yLeft
+     * @return a unique id identifying the data. if existing data was modifyied this will be the same as the dataId given
+     */
+    int addData(double* xPoints, double* yPoints, int length, int dataId=-1,
+		int xAxisId=X_BOTTOM, int yAxisId=Y_LEFT);
+
+    int addData(const QList<double>& xPoints, const QList<double>& yPoints, int dataId=-1,
+                int xAxisId=X_BOTTOM, int yAxisId=Y_LEFT);
 
     // --> helper methods
 
@@ -373,6 +391,17 @@ protected:
     double zoomYSpan;
     /** The rect which was initially used to display the plot*/
     QwtDoubleRect initialRect;
+    QMenuBar menuBar;
+    QMenu fileMenu;
+    QMenu exportMenu;
+    QMenu plotMenu;
+    QAction exportImageAction;
+    QAction exportCSVAction;
+    QAction autoscrollAction;
+    QAction fitAction;
+    QAction optionsAction;
+    
+    OptionsDialog optionsDialog;
 };
 
 #endif	/* PLOTWIDGET_H */

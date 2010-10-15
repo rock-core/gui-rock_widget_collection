@@ -23,16 +23,21 @@ int main(int argc, char *argv[]) {
     QApplication app(argc, argv);
 
     PlotWidget widget(NULL);
-    widget.setAxisTitles(QString("Time (s)"), QString(""));
+    widget.setAutoscrolling(false);
+    widget.setAxisTitles(QString("Time (s)"), QString("Temperature"));
     // uncomment to set boundaries for the axis
-//    widget.setAxisBoundaries(QwtPlot::xBottom, 0, 30);
-//    widget.setAxisBoundaries(QwtPlot::yLeft, -2, 4);
+    widget.setAxisBoundaries(0, -20, 30);
+    //widget.setAutoscaling(true);
+    widget.setAxisBoundaries(1, -2, 4);
+    widget.addBorderLine(2.5);
 //    widget.setAxisBoundaries(QwtPlot::yRight, -4.0, 5);
 //    widget.setAxisBoundaries(QwtPlot::xTop, 0, 100);
     // uncomment to show another axis
 //    widget.setAxisShown(QwtPlot::xTop, false);
     widget.setDrawGrid(true);
-    widget.addBorderLine(3.5f);
+    int id = widget.addData(10, 2);
+    widget.addData(15, 4, id);
+    //widget.addData(11, 3, id);
     // uncomment if you have any data
 //    int dataId = widget.addData(xPoints, yPoints, size);
 //    widget.addData(xPoints, yPoints, size, dataId);

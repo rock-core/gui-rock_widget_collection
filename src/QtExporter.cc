@@ -50,7 +50,7 @@ void QtExporter::exportWidgetAsImagWithDialog(QWidget* widget)
     QString filter;
     // Suffix for the files
     QString jpegExt=".jpeg", pngExt=".png", bmpExt=".bmp", svgExt=".svg", pdfExt=".pdf";
-    QString fn = QFileDialog::getSaveFileName(widget, QString("Save Image"), QString("/home"), types, &filter);
+    QString fn = QFileDialog::getSaveFileName(widget, QString("Save Image"), QDir::homePath(), types, &filter);
     if(!fn.isEmpty())
     {
       // If filename is not a null
