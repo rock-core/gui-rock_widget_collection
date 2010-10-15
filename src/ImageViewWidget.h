@@ -92,6 +92,8 @@ public:
     void contextMenuEvent ( QContextMenuEvent * event );
     void paintGL();
     void resizeGL(int w, int h);
+    int heightForWidth( int w ) {return w*image.height()/image.width(); };
+    void mouseDoubleClickEvent ( QMouseEvent * event );
 
 public slots:
     void saveImage();
@@ -229,17 +231,24 @@ public slots:
     int getWidth()const {return image.width();};
     int getFormat()const {return image.format();};
 
+
     void setAspectRatio(bool value)
     {
       aspect_ratio = value;
+      if(value)
+      {
+        QSizePolicy policy(QSizePolicy::Preferred,QSizePolicy::Fixed,QSizePolicy::Slider);
+        policy.setHeightForWidth(true);
+        setSizePolicy(policy);
+      }
     }
+
     void setFixedSize(bool value)
     {
       fixed_size = value;
-      QWidget::setFixedSize(width(),height());
+      if(value)
+        QWidget::setFixedSize(width(),height());
     }
-    int heightForWidth( int w ) { return height(); }
-
   
 protected:
     /**
@@ -247,7 +256,7 @@ protected:
      * @param shownImage teh iamge to add the shapes to
      */
     void addDrawItemsToWidget(QImage &shownImage);
-    void setScaleFactor();
+    int setDisplaySize();
 
     /** The format used in the widget*/
     /** List of all Draw Items*/
@@ -261,7 +270,6 @@ protected:
     QImage image;
     bool aspect_ratio;
     bool fixed_size;
-
     FrameQImageConverter frame_converter;
 };
 

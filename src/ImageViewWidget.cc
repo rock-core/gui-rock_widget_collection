@@ -151,11 +151,11 @@ void ImageViewWidget::clearGroups()
 
 void ImageViewWidget::addRawImage(const QString &mode, int pixel_size,  int width,  int height,const char* pbuffer)
 {
-  //check if image size has changed
+  //check if image size has been changed
   //zoom factor must be recalculated
-  if(image.width() != width || image.height() != height)
-    setScaleFactor();
-  frame_converter.copyFrameToQImageRGB888(image,mode, pixel_size, width, height,pbuffer);
+  if(frame_converter.copyFrameToQImageRGB888(image,mode, pixel_size, width, height,pbuffer))
+    setDisplaySize();
+  addDrawItemsToWidget(image);
   updateGL();
 }
 
@@ -164,9 +164,14 @@ void ImageViewWidget::addImage(const QImage &image)
   //check if image size has changed
   //zoom factor must be recalculated
   if(image.width() != this->image.width() || image.height() != this->image.height())
-    setScaleFactor();
-  this->image = image;
+  {
+      this->image = image;
+      setDisplaySize();
+  }
+  else
+    this->image = image;
   updateGL();
+
 }
 
 void ImageViewWidget::addDrawItemsToWidget(QImage &shownImage)
@@ -179,25 +184,74 @@ void ImageViewWidget::addDrawItemsToWidget(QImage &shownImage)
         for(;iter != items.end();++iter)
         {
 	  if(!disabledGroups.contains((*iter)->getGroupNr()))
+	    if(!(*iter)->getRenderOnOpenGl())
                 (*iter)->draw(&painter);
         }
     }
 }
 
-void ImageViewWidget::setScaleFactor()
+int ImageViewWidget::setDisplaySize()
 {
-    glPixelZoom(((float)width())/ image.width(),-((float)height())/ image.height());
+  int iresult = 0;
+  float x = ((float)width())/ image.width();
+  float y = ((float)height())/ image.height();
+
+  //check if size is set to the correct values
+  if(aspect_ratio)
+  {
+      if( x != y)
+      {
+         iresult = 1;
+         if(fixed_size)
+         {
+             QWidget::setMinimumSize(width(),x* image.height());
+             QWidget::setFixedSize(width(),x* image.height());
+         }
+         else
+         {
+           QWidget::setMinimumSize(64,x* image.height());
+           QWidget *_parent =  (QWidget*)parent();
+           if(_parent)
+           {
+             int diff_y = _parent->height() - height();
+             _parent->resize(_parent->width(),x*image.height()+diff_y);
+           }
+           else
+             resize(width(),x* image.height());
+         }
+         y = x;
+      }
+  }
+  glPixelZoom(x,-y);
+  return iresult;
 }
 
 void ImageViewWidget::paintGL()
 {
     glDrawPixels(image.width(), image.height(), GL_RGB, GL_UNSIGNED_BYTE, image.bits());
- // renderText(10,10,"Test");
+    QList<DrawItem*>::iterator iter = items.begin();
+    for(;iter != items.end();++iter)
+    {
+      if(!disabledGroups.contains((*iter)->getGroupNr()))
+        if((*iter)->getRenderOnOpenGl())
+          (*iter)->renderOnGl(*this);
+    }
 }
+
+void ImageViewWidget::mouseDoubleClickEvent ( QMouseEvent * event )
+{
+    setDisplaySize();
+}
+
+
 
 void ImageViewWidget::resizeGL(int w, int h)
 {
-    setScaleFactor();
+    if(setDisplaySize())
+    {
+       w = width();
+       h = height();
+    }
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     glOrtho(0, w, 0, h, 0, 1);
@@ -205,6 +259,7 @@ void ImageViewWidget::resizeGL(int w, int h)
     glLoadIdentity();
     glViewport(0, 0, w, h);
     glRasterPos2i(0,h);
+    paintGL();
 }
 
 

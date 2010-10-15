@@ -9,7 +9,8 @@
 int DrawItem::_ID = 0;
 
 DrawItem::DrawItem(int posX, int posY, int groupNr, const QColor &color):
-groupNr(groupNr),posX(posX),posY(posY),color(color),lineWidth(0),penCapStyle(Qt::SquareCap),penStyle(Qt::SolidLine),m_id(_ID++)
+groupNr(groupNr),posX(posX),posY(posY),color(color),lineWidth(0),penCapStyle(Qt::SquareCap),
+penStyle(Qt::SolidLine),m_id(_ID++),brender_on_opengl(false),position_factor_x(0),position_factor_y(0)
 {
  
 }

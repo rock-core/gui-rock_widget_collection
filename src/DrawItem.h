@@ -7,9 +7,11 @@
 
 #include <QtGui/QColor>
 #include <QtGui/QPainter>
+#include <QtOpenGL/QGLWidget>
 
 #ifndef DRAWITEM_H
 #define	DRAWITEM_H
+
 
 /**
  * Enumeration for DrawTypes
@@ -56,6 +58,9 @@ class DrawItem : public QObject
     {
       return (getID() == other.getID());
     }
+
+    virtual void renderOnGl(QGLWidget &widget){};
+
   
   Q_OBJECT
   public slots:
@@ -149,6 +154,20 @@ class DrawItem : public QObject
       return m_id;
     };
 
+    void setRenderOnOpenGl(bool value)
+    {
+      brender_on_opengl = value;
+    };
+
+    bool getRenderOnOpenGl(){return brender_on_opengl;};
+
+    /**
+         * Set the facor to calculate the pos during scaling
+         * x = posx +  fx*window_width
+         * x = posx +  fy*window_height
+         */
+    void setPosFactor(float fx, float fy){position_factor_x=fx;position_factor_y=fy;};
+
 protected:
     /**
      * Adds a pen to the given painter with the parameters given to the item
@@ -171,6 +190,10 @@ protected:
     Qt::PenCapStyle penCapStyle;
     int m_id;
     static int _ID;
+    float position_factor_x;
+    float position_factor_y;
+
+    bool brender_on_opengl;
 };
 
 #endif	/* DRAWITEM_H */

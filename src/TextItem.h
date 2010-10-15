@@ -8,6 +8,7 @@
 #include "DrawItem.h"
 #include <QtGui/QFont>
 
+
 #ifndef TEXTITEM_H
 #define	TEXTITEM_H
 
@@ -38,6 +39,7 @@ public:
      * @see DrawItem#draw
      */
     void draw(QPainter* painter);
+    virtual void renderOnGl(QGLWidget &widget);
 
   public slots:
     /**
@@ -68,8 +70,9 @@ public:
      * Sets the font of the item
      * @param font the font of the item
      */
-    void setFont(const QFont &font) {this->font = font;};
+    void setFont(const QFont &font) {this->font = font; original_point_size = font.pointSizeF();};
     void setBackgroundColor(QColor color) {this->background_color = color;background=true;};
+
 
 private:
     /** The text of the item*/
@@ -78,6 +81,7 @@ private:
     QFont font;
     bool background;
     QColor background_color;
+    float original_point_size;
 };
 
 #endif	/* TEXTITEM_H */
