@@ -29,7 +29,6 @@ void TextItem::draw(QPainter* painter)
 
 void TextItem::renderOnGl(QGLWidget &widget)
 {
-  widget.makeOverlayCurrent();
   widget.qglColor(color);
   widget.renderText(position_factor_x*widget.width()+posX,position_factor_y*widget.height()+posY,text,font);
 }

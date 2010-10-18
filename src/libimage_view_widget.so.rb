@@ -1,10 +1,11 @@
 #prepares the c++ qt widget for the use in ruby with widget_grid
   
-  def __plugin_widget__.types
+WidgetFactory::extend_widget do
+  def types
     return ['/base/samples/frame/Frame','/base/samples/frame/FramePair']
   end
 
-  def __plugin_widget__.default_options()
+  def default_options()
       options = Hash.new
       options[:do_init] = true
       options[:min_width] = 320
@@ -17,27 +18,27 @@
       return options
   end
 
-  def __plugin_widget__.default_display_widget
+  def default_display_widget
     types
   end
 
-  def __plugin_widget__.config(options= Hash.new)
+  def config(options= Hash.new)
     @options ||= default_options()
     @options = @options.merge(options)
     return @options
   end
 
-  def __plugin_widget__.save(path)
+  def save(path)
 	saveImage2(path)
   end
 
-  def __plugin_widget__.save_frame(frame,path)
+  def save_frame(frame,path)
         saveImage3(frame.frame_mode.to_s,frame.pixel_size,frame.size.width,frame.size.height,frame.image.to_byte_array[8..-1],path)
   end
 
   #diplay is called each time new data are available on the orocos output port
   #this functions translates the orocos data struct to the widget specific format
-  def __plugin_widget__.display(port,frame)
+  def display(port,frame)
     #check if type is frame_pair
     if frame.respond_to?(:first)
       frame = @options[:display_first] == true ? frame.first : frame.second
@@ -84,3 +85,4 @@
     end
     addRawImage(frame.frame_mode.to_s,frame.pixel_size,frame.size.width,frame.size.height,frame.image.to_byte_array[8..-1])
   end
+end
