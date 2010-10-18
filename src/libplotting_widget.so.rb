@@ -1,6 +1,6 @@
 #prepares the c++ qt widget for the use in ruby with widget_grid
 
-WidgetFactory::extend_widget do
+WidgetFactory::extend_cplusplus_widget do
   def types
     return []
   end
