@@ -243,8 +243,6 @@ void ImageViewWidget::mouseDoubleClickEvent ( QMouseEvent * event )
     setDisplaySize();
 }
 
-
-
 void ImageViewWidget::resizeGL(int w, int h)
 {
     if(setDisplaySize())
