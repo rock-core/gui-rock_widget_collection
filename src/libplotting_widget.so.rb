@@ -2,11 +2,12 @@
 
 require 'Qt4'
 
-  def __plugin_widget__.types
+WidgetFactory::extend_cplusplus_widget do 
+  def types
     return []
   end
 
-  def __plugin_widget__.default_options()
+  def default_options()
     options = Hash.new
     options[:min_width] = 200
     options[:min_height] = 200
@@ -25,11 +26,11 @@ require 'Qt4'
     return options
   end
 
-  def __plugin_widget__.default_display_widget
+  def default_display_widget
     types
   end
 
-  def __plugin_widget__.config(options= Hash.new)
+  def config(options= Hash.new)
     puts "Configuring Plotting widget"
     @time_base = -1
     @options ||= default_options()
@@ -45,7 +46,7 @@ require 'Qt4'
 
   #diplay is called each time new data are available on the orocos output port
   #this functions translates the orocos data struct to the widget specific format
-  def __plugin_widget__.display(port,frame)
+  def display(port,frame)
     all_methods =  frame.methods
     puts @options[:y_value_method]
     y_value = 0
@@ -67,3 +68,4 @@ require 'Qt4'
     end
     addData((x_value - @time_base)/100, y_value, 20)
   end
+end
