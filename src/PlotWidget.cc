@@ -34,7 +34,8 @@ PlotWidget::PlotWidget(QWidget* parent) : QWidget(parent),
     this->enableSlider(QwtPlot::xBottom, dataManager->isShowBottomSlider());
     this->enableSlider(QwtPlot::yLeft, dataManager->isShowLeftSlider());
     this->setDrawGrid(true, dataManager->isDrawXGrid(), dataManager->isDrawYGrid());
-    std::cout << dataManager->isDrawXGrid() << std::endl;
+    dataManager->setBGColor(plot.canvasBackground());
+    std::cout << "R:" << plot.canvasBackground().red() << "G:" << plot.canvasBackground().green() << "B" << plot.canvasBackground().blue() << std::endl;
     minXBottom = INT_MAX;
     maxXBottom = INT_MIN;
     minYLeft = INT_MAX;
@@ -169,32 +170,33 @@ void PlotWidget::showOptionsDialog()
 
 void PlotWidget::optionsChanged()
 {
-  std::map<int, QColor> colorMap = optionsDialog.getCurveColorMap();
-  for(int i=0;i<curves.size();i++)
-  {
-    QwtPlotCurve* curve = curves[i];
-    if(curve != NULL)
-    {
-      QPen pen = curve->pen();
-      QColor newColor = colorMap[i];
-      pen.setColor(newColor);
-      curve->setPen(pen);
-    }
-  }
-  std::map<int, QColor> markerColorMap = optionsDialog.getMarkerColorMap();
-  for(int i=0;i<markers.size();i++)
-  {
-    QwtPlotMarker* marker = markers[i];
-    if(marker != NULL)
-    {
-      QPen pen = marker->linePen();
-      QColor newColor = markerColorMap[i];
-      pen.setColor(newColor);
-      marker->setLinePen(pen);
-    }
-  }
-  plot.replot();
-  dataManager->setCSVDelimiter(optionsDialog.getCSVDelimiter());
+//  std::map<int, QColor> colorMap = optionsDialog.getCurveColorMap();
+//  for(int i=0;i<curves.size();i++)
+//  {
+//    QwtPlotCurve* curve = curves[i];
+//    if(curve != NULL)
+//    {
+//      QPen pen = curve->pen();
+//      QColor newColor = colorMap[i];
+//      pen.setColor(newColor);
+//      curve->setPen(pen);
+//    }
+//  }
+//  std::map<int, QColor> markerColorMap = optionsDialog.getMarkerColorMap();
+//  for(int i=0;i<markers.size();i++)
+//  {
+//    QwtPlotMarker* marker = markers[i];
+//    if(marker != NULL)
+//    {
+//      QPen pen = marker->linePen();
+//      QColor newColor = markerColorMap[i];
+//      pen.setColor(newColor);
+//      marker->setLinePen(pen);
+//    }
+//  }
+    plot.setCanvasBackground(dataManager->getBGColor());
+    setAxisTitles(dataManager->getXAxisTitle(), dataManager->getYAxisTitle());
+    plot.replot();
 }
 
 QwtPlot::Axis PlotWidget::getAxisForInt(int axis)
@@ -346,6 +348,8 @@ void PlotWidget::setAxisTitles(QString xAxisTitle, QString yAxisTitle)
 {
     plot.setAxisTitle(QwtPlot::yLeft, yAxisTitle);
     plot.setAxisTitle(QwtPlot::xBottom, xAxisTitle);
+    dataManager->setXAxisTitle(xAxisTitle);
+    dataManager->setYAxisTitle(yAxisTitle);
 }
 
 void PlotWidget::setAxisBoundaries(int axisId, double lower, double upper, double step)
@@ -569,7 +573,9 @@ void PlotWidget::setDataStyle(int dataId, QPen pen, int curveStyle)
     QwtPlotCurve* curve = curves[dataId];
     if(curve != NULL)
     {
-        curve->setPen(pen);
+        QPen cPen = curve->pen();
+        cPen.setColor(pen.color());
+        curve->setPen(cPen);
 	switch(curveStyle)
 	  {
 	  case NO_CURVE:
@@ -585,6 +591,7 @@ void PlotWidget::setDataStyle(int dataId, QPen pen, int curveStyle)
 	    curve->setStyle(QwtPlotCurve::Steps);
 	    break;
 	  case DOTS:
+              std::cout << "Setting Dots" << std::endl;
 	    curve->setStyle(QwtPlotCurve::Dots);
 	    break;
 	  default:

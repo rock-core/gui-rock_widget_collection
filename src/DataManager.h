@@ -9,6 +9,7 @@
 #define	DATAMANAGER_H
 
 #include <stddef.h>
+#include <qt4/Qt/qcolor.h>
 
 class DataManager
 {
@@ -25,6 +26,13 @@ public:
     void setDrawXGrid(bool drawXGrid) { this->drawXGrid = drawXGrid; };
     bool isDrawYGrid() { return drawYGrid; };
     void setDrawYGrid(bool drawYGrid) { this->drawYGrid = drawYGrid; };
+    QColor getBGColor() { return bgColor; };
+    void setBGColor(QColor color) { bgColor = color; };
+    QString getXAxisTitle() { return xAxisTitle; };
+    void setXAxisTitle(QString newTitle) { xAxisTitle = newTitle; };
+    QString getYAxisTitle() { return yAxisTitle; };
+    void setYAxisTitle(QString newTitle) { yAxisTitle = newTitle; };
+
 
 protected:
     static DataManager* INSTANCE;
@@ -33,6 +41,9 @@ protected:
     bool showBottomSlider;
     bool drawXGrid;
     bool drawYGrid;
+    QColor bgColor;
+    QString xAxisTitle;
+    QString yAxisTitle;
 
 private:
 

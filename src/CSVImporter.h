@@ -14,6 +14,7 @@
 #include <sstream>
 #include <stdlib.h>
 #include <vector>
+#include <locale>
 
 class CSVImporter
 {

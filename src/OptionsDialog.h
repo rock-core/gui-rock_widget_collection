@@ -6,12 +6,14 @@
 #include <QtGui/QPushButton>
 #include <QtGui/QGridLayout>
 #include <QtGui/QLineEdit>
+#include <QtGui/QTabWidget>
 
 #include <qwt-qt4/qwt_plot_curve.h>
 #include <qwt-qt4/qwt_plot_marker.h>
 
 #include "PlotItemOptionWidget.h"
 #include "DataManager.h"
+#include "GeneralOptionsWidget.h"
 
 #include <iostream>
 
@@ -33,6 +35,7 @@ class OptionsDialog : public QDialog
     void okPressed();
     void cancelPressed();
   protected:
+    QTabWidget tabWidget;
     QPushButton okButton;
     QPushButton cancelButton;
     QGridLayout gridLayout;
@@ -41,6 +44,7 @@ class OptionsDialog : public QDialog
     QLabel exportLabel;
     QLabel csvLabel;
     QLineEdit csvEdit;
+    GeneralOptionsWidget generalWidget;
     std::vector<PlotItemOptionWidget*> curveWidgets;
     std::vector<PlotItemOptionWidget*> markerWidgets;
     std::map<int, QColor> curveColorMap;
