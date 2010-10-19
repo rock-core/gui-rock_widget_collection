@@ -23,6 +23,7 @@ WidgetFactory::extend_cplusplus_widget do
     options[:y_max] = 30
     options[:x] = nil
     options[:y] = nil
+    options[:pen] = Qt::Pen.new(Qt::Color.new(0,255,255))
     return options
   end
 
@@ -31,6 +32,9 @@ WidgetFactory::extend_cplusplus_widget do
   end
 
   def config(options= Hash.new)
+    @plots ||= Array.new
+    @id ||= 1
+
     puts "Configuring Plotting widget"
     @time_base = -1
     @options ||= default_options()
@@ -39,6 +43,11 @@ WidgetFactory::extend_cplusplus_widget do
     setAxisBoundaries(0, @options[:x_min], @options[:x_max])
     setAxisBoundaries(1, @options[:y_min], @options[:y_max])
     setAutoscrolling(@options[:autoscrolling])
+    setBorderLineStyle(@id,@options[:pen]) if @options.has_key?(:pen)
+    #saving plot settings
+    @plots << {:x => @options[:x],:y => @options[:y],:id => @id}
+    @id += 1
+
   #  @options[:y] = :temperatureFrontLeft
   #  @options[:x] = :timestamp
     return @options
@@ -62,11 +71,13 @@ WidgetFactory::extend_cplusplus_widget do
   #diplay is called each time new data are available on the orocos output port
   #this functions translates the orocos data struct to the widget specific format
   def display(port,data)
-    x_value = value(data,@options[:x])
-    y_value = value(data,@options[:y])
-    if(@time_base == -1)
-      @time_base = x_value
+    @plots.each do |plot| 
+      x_value = value(data,plot[:x])
+      y_value = value(data,plot[:y])
+      if(@time_base == -1)
+        @time_base = x_value
+      end
+      addData((x_value - @time_base), y_value, plot[:id])
     end
-    addData((x_value - @time_base), y_value, 10)
   end
 end
