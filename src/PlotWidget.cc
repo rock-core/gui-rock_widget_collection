@@ -15,12 +15,13 @@ PlotWidget::PlotWidget(QWidget* parent) : QWidget(parent),
         zoomer(plot.canvas(), true), markers(100), curves(100), initialRect(-1, -1, -1, -1),
         optionsDialog(this),
         fileMenu(tr("&File")), plotMenu(tr("&Plot")), exportMenu(tr("&Export")), sliderMenu(tr("&Show Sliders")),
-        gridMenu(tr("&Grid")), importMenu(tr("&Import")),
+        gridMenu(tr("&Grid")), importMenu(tr("&Import")), clearMenu(tr("&Clear")),
         exportImageAction(tr("Export as &image"), this), autoscrollAction(tr("&Autoscrolling"), this),
         fitAction(tr("&Fit to Graph"), this), optionsAction(tr("&Options..."), this),
         exportCSVAction(tr("Export as &CSV"), this), leftSliderAction(tr("&Left Slider"), this),
         bottomSliderAction(tr("&Bottom Slider"), this), xGridAction(tr("X"), this),
-        yGridAction(tr("Y"), this), importCSVAction(tr("Import &CSV"), this)
+        yGridAction(tr("Y"), this), importCSVAction(tr("Import &CSV"), this), clearBorderLineAction(tr("Clear &Border Lines"), this),
+        clearCurveAction(tr("Clear &Curves"), this), clearAllAction(tr("Clear &All"), this)
 {
     plotMarkerId = 0;
     curveId = 0;
@@ -64,18 +65,65 @@ PlotWidget::~PlotWidget()
     curves.clear();
 }
 
+void PlotWidget::clearBorderLines()
+{
+    std::cout << markers.size() << std::endl;
+    for(int i=0;i<markers.size();i++)
+    {
+        QwtPlotMarker* marker = markers[i];
+        if(marker != NULL)
+        {
+            marker->detach();
+            delete(marker);
+        }
+    }
+    markers.clear();
+    markers.resize(100);
+    plotMarkerId = 0;
+    plot.replot();
+}
+
+void PlotWidget::clearCurves()
+{
+    for(int i=0;i<curves.size();i++)
+    {
+        QwtPlotCurve* curve = curves[i];
+        if(curve != NULL)
+        {
+            curve->detach();
+            delete(curve);
+        }
+    }
+    curves.clear();
+    curves.resize(100);
+    plot.replot();
+}
+
+void PlotWidget::clearAll()
+{
+    clearBorderLines();
+    clearCurves();
+}
+
 void PlotWidget::addMenu()
 {
   menuBar.addMenu(&fileMenu);
   // File Menu
+  fileMenu.addMenu(&clearMenu);
   fileMenu.addMenu(&exportMenu);
   fileMenu.addMenu(&importMenu);
+  clearMenu.addAction(&clearBorderLineAction);
+  clearMenu.addAction(&clearCurveAction);
+  clearMenu.addAction(&clearAllAction);
   exportMenu.addAction(&exportImageAction);
   exportMenu.addAction(&exportCSVAction);
   importMenu.addAction(&importCSVAction);
   connect(&exportImageAction, SIGNAL(triggered()), this, SLOT(exportPlotAsImage()));
   connect(&exportCSVAction, SIGNAL(triggered()), this, SLOT(exportAsCSV()));
   connect(&importCSVAction, SIGNAL(triggered()), this, SLOT(importFromCSV()));
+  connect(&clearBorderLineAction, SIGNAL(triggered()), this, SLOT(clearBorderLines()));
+  connect(&clearCurveAction, SIGNAL(triggered()), this, SLOT(clearCurves()));
+  connect(&clearAllAction, SIGNAL(triggered()), this, SLOT(clearAll()));
   // Plot Menu
   menuBar.addMenu(&plotMenu);
   autoscrollAction.setCheckable(true);
@@ -170,32 +218,19 @@ void PlotWidget::showOptionsDialog()
 
 void PlotWidget::optionsChanged()
 {
-//  std::map<int, QColor> colorMap = optionsDialog.getCurveColorMap();
-//  for(int i=0;i<curves.size();i++)
-//  {
-//    QwtPlotCurve* curve = curves[i];
-//    if(curve != NULL)
-//    {
-//      QPen pen = curve->pen();
-//      QColor newColor = colorMap[i];
-//      pen.setColor(newColor);
-//      curve->setPen(pen);
-//    }
-//  }
-//  std::map<int, QColor> markerColorMap = optionsDialog.getMarkerColorMap();
-//  for(int i=0;i<markers.size();i++)
-//  {
-//    QwtPlotMarker* marker = markers[i];
-//    if(marker != NULL)
-//    {
-//      QPen pen = marker->linePen();
-//      QColor newColor = markerColorMap[i];
-//      pen.setColor(newColor);
-//      marker->setLinePen(pen);
-//    }
-//  }
     plot.setCanvasBackground(dataManager->getBGColor());
     setAxisTitles(dataManager->getXAxisTitle(), dataManager->getYAxisTitle());
+    std::vector<QwtPlotMarker*> newMarkers = optionsDialog.getNewMarkers();
+    for(int i=0;i<newMarkers.size();i++)
+    {
+        QwtPlotMarker* marker = newMarkers[i];
+        if(marker != NULL)
+        {
+            marker->attach(&plot);
+            markers[plotMarkerId] = marker;
+            plotMarkerId++;
+        }
+    }
     plot.replot();
 }
 
@@ -232,6 +267,7 @@ void PlotWidget::setDrawGrid(bool drawGrid, bool enableX, bool enableY)
 
 int PlotWidget::addBorderLine(double value, Qt::Orientation orientation, QPen pen)
 {
+    markers.reserve(plotMarkerId + 1);
     QwtPlotMarker* marker = new QwtPlotMarker();
     if(orientation == Qt::Horizontal)
     {

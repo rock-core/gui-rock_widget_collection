@@ -308,6 +308,10 @@ protected slots:
 
     void importFromCSV();
 
+    void clearBorderLines();
+    void clearCurves();
+    void clearAll();
+
 protected:
 
     /**
@@ -404,6 +408,7 @@ protected:
     QMenu plotMenu;
     QMenu sliderMenu;
     QMenu gridMenu;
+    QMenu clearMenu;
     QAction xGridAction;
     QAction yGridAction;
     QAction leftSliderAction;
@@ -414,6 +419,9 @@ protected:
     QAction fitAction;
     QAction optionsAction;
     QAction importCSVAction;
+    QAction clearBorderLineAction;
+    QAction clearCurveAction;
+    QAction clearAllAction;
     
     OptionsDialog optionsDialog;
     DataManager* dataManager;

@@ -23,7 +23,7 @@ class GeneralOptionsWidget : public QWidget
     Q_OBJECT
 
 public:
-    GeneralOptionsWidget(QColor currentBGColor);
+    GeneralOptionsWidget();
     virtual ~GeneralOptionsWidget();
     void initializeLayout();
     QString getXAxisTitle() { return xAxisTextEdit.text(); };

@@ -8,8 +8,8 @@
 #include "GeneralOptionsWidget.h"
 #include "DataManager.h"
 
-GeneralOptionsWidget::GeneralOptionsWidget(QColor currentBGColor) : 
-    bgButton(currentBGColor), layout(this), xAxisText(tr("X Title")),
+GeneralOptionsWidget::GeneralOptionsWidget() : 
+    bgButton(QColor(0, 0, 0)), layout(this), xAxisText(tr("X Title")),
         yAxisText(tr("Y Title")), bgLabel(tr("Background color")),
         csvDelimiter(tr("CSV Delimiter"))
 {

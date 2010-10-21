@@ -1,13 +1,15 @@
 #include "OptionsDialog.h"
 
 OptionsDialog::OptionsDialog(QWidget* parent, Qt::WindowFlags f): QDialog(parent, f),
-  okButton("Ok"), cancelButton("Cancel"), curveWidgets(500), markerWidgets(500),
-        exportLabel(QString("Export")), csvLabel(QString("CSV Delimiter")), tabWidget(this),
-        generalWidget(QColor(255, 0, 0))
+  okButton("Ok"), cancelButton("Cancel"),
+        exportLabel(QString("Export")), csvLabel(QString("CSV Delimiter")), tabWidget(this)
 {
-  setMinimumSize(300, 400);
-  setFixedSize(300, 400);
+  setMinimumSize(400, 400);
+  setFixedSize(400, 400);
   setWindowTitle(tr("Options"));
+  generalWidget = new GeneralOptionsWidget();
+  borderWidget = new BorderLineOptionDialog();
+  curveWidget = new CurveOptionWidget();
 //  csvEdit.setMaxLength(1);
   connect(&okButton, SIGNAL(clicked()), this, SLOT(okPressed()));
   connect(&cancelButton, SIGNAL(clicked()), this, SLOT(cancelPressed()));
@@ -36,17 +38,26 @@ std::map<int, QColor> OptionsDialog::getMarkerColorMap()
 void OptionsDialog::okPressed()
 {
     DataManager* dataManager = DataManager::getInstance();
-    dataManager->setBGColor(generalWidget.getBGColor());
-    dataManager->setXAxisTitle(generalWidget.getXAxisTitle());
-    dataManager->setYAxisTitle(generalWidget.getYAxisTitle());
-    dataManager->setCSVDelimiter(generalWidget.getCSVDelimiter());
-  setVisible(false);
-  emit accepted();
+    dataManager->setBGColor(generalWidget->getBGColor());
+    dataManager->setXAxisTitle(generalWidget->getXAxisTitle());
+    dataManager->setYAxisTitle(generalWidget->getYAxisTitle());
+    dataManager->setCSVDelimiter(generalWidget->getCSVDelimiter());
+    borderWidget->updateExistingMarkers();
+
+    curveWidget->updateExistingCurves();
+
+    setVisible(false);
+    emit accepted();
 }
 
 void OptionsDialog::cancelPressed()
 {
   setVisible(false);
+}
+
+std::vector<QwtPlotMarker*> OptionsDialog::getNewMarkers()
+{
+    return borderWidget->getNewMarkers();
 }
 
 char OptionsDialog::getCSVDelimiter()
@@ -108,11 +119,19 @@ void OptionsDialog::initializeLayout(std::vector<QwtPlotCurve*> curves, std::vec
 //  }
 //  gridLayout.addWidget(&okButton, yValue, 0);
 //  gridLayout.addWidget(&cancelButton, yValue, 1);
+    delete(borderWidget);
+    delete(curveWidget);
+    delete(generalWidget);
+    borderWidget = new BorderLineOptionDialog();
+    curveWidget = new CurveOptionWidget();
+    generalWidget = new GeneralOptionsWidget();
     tabWidget.clear();
-    generalWidget.initializeLayout();
-    tabWidget.addTab(&generalWidget, tr("General"));
-    tabWidget.addTab(new QWidget(), tr("Border Lines"));
-    tabWidget.addTab(new QWidget(), tr("Curves"));
+    curveWidget->initializeLayout(curves);
+    generalWidget->initializeLayout();
+    borderWidget->initializeLayout(markers);
+    tabWidget.addTab(generalWidget, tr("General"));
+    tabWidget.addTab(borderWidget, tr("Border Lines"));
+    tabWidget.addTab(curveWidget, tr("Curves"));
     gridLayout.addWidget(&tabWidget, 0, 0, 1, 2);
     gridLayout.addWidget(&okButton, 1, 0, 1, 1);
     gridLayout.addWidget(&cancelButton, 1, 1, 1, 1);

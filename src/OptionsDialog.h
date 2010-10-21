@@ -11,9 +11,10 @@
 #include <qwt-qt4/qwt_plot_curve.h>
 #include <qwt-qt4/qwt_plot_marker.h>
 
-#include "PlotItemOptionWidget.h"
 #include "DataManager.h"
 #include "GeneralOptionsWidget.h"
+#include "BorderLineOptionDialog.h"
+#include "CurveOptionWidget.h"
 
 #include <iostream>
 
@@ -28,6 +29,7 @@ class OptionsDialog : public QDialog
     std::map<int, QColor> getCurveColorMap();
     std::map<int, QColor> getMarkerColorMap();
     char getCSVDelimiter();
+    std::vector<QwtPlotMarker*> getNewMarkers();
     
   public slots:
     void newCurveColorSelected(int curveId, const QColor& color);
@@ -44,9 +46,9 @@ class OptionsDialog : public QDialog
     QLabel exportLabel;
     QLabel csvLabel;
     QLineEdit csvEdit;
-    GeneralOptionsWidget generalWidget;
-    std::vector<PlotItemOptionWidget*> curveWidgets;
-    std::vector<PlotItemOptionWidget*> markerWidgets;
+    GeneralOptionsWidget* generalWidget;
+    BorderLineOptionDialog* borderWidget;
+    CurveOptionWidget* curveWidget;
     std::map<int, QColor> curveColorMap;
     std::map<int, QColor> markerColorMap;
 };
