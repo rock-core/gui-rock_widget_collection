@@ -17,7 +17,6 @@ BorderLineOptionDialog::BorderLineOptionDialog() : QWidget(),
 
 BorderLineOptionDialog::~BorderLineOptionDialog()
 {
-    std::cout << "Destructor" << std::endl;
     for(int i=0;i<buttons.size();i++)
     {
         ColorPickerButton* button = buttons[i];
@@ -27,7 +26,7 @@ BorderLineOptionDialog::~BorderLineOptionDialog()
         }
     }
     buttons.clear();
-    std::cout << "Deleted Buttons" << std::endl;
+    
     for(int i=0;i<xSpinBoxes.size();i++)
     {
         QDoubleSpinBox* spinBox = xSpinBoxes[i];
@@ -37,7 +36,7 @@ BorderLineOptionDialog::~BorderLineOptionDialog()
         }
     }
     xSpinBoxes.clear();
-    std::cout << "SpinBoxes deleted" << std::endl;
+    
     for(int i=0;i<ySpinBoxes.size();i++)
     {
         QDoubleSpinBox* spinBox = ySpinBoxes[i];
@@ -47,7 +46,7 @@ BorderLineOptionDialog::~BorderLineOptionDialog()
         }
     }
     ySpinBoxes.clear();
-    std::cout << "SpinBoxes deleted" << std::endl;
+    
     for(int i=0;i<comboBoxes.size();i++)
     {
         QComboBox* comboBox = comboBoxes[i];
@@ -57,7 +56,7 @@ BorderLineOptionDialog::~BorderLineOptionDialog()
         }
     }
     comboBoxes.clear();
-    std::cout << "ComboBoxes deleted" << std::endl;
+    
     for(int i=0;i<styleBoxes.size();i++)
     {
         QComboBox* styleBox = styleBoxes[i];
@@ -67,7 +66,7 @@ BorderLineOptionDialog::~BorderLineOptionDialog()
         }
     }
     styleBoxes.clear();
-    std::cout << "StyleBoxes deleted" << std::endl;
+    
     for(int i=0;i<weightBoxes.size();i++)
     {
         QSpinBox* weightBox = weightBoxes[i];
@@ -77,7 +76,8 @@ BorderLineOptionDialog::~BorderLineOptionDialog()
         }
     }
     weightBoxes.clear();
-    std::cout << "WeightBoxes deleted" << std::endl;
+    newMarkers.clear();
+    oldMarkers.clear();
 }
 
 void BorderLineOptionDialog::addMarker()
@@ -201,7 +201,7 @@ void BorderLineOptionDialog::addMarkerToLayout(QwtPlotMarker* marker, int i)
     styleBox->setCurrentIndex(current);
     styleBoxes[i] = styleBox;
 
-    layout.setAlignment(Qt::AlignTop);
+    topLevelLayout.setAlignment(Qt::AlignTop);
 
     frameLayout->addWidget(label, yValue, 0, 2, 1);
     frameLayout->addWidget(xSpinBox, yValue, 3, 1, 1);
@@ -212,9 +212,10 @@ void BorderLineOptionDialog::addMarkerToLayout(QwtPlotMarker* marker, int i)
     frameLayout->addWidget(button, yValue+1, 6, 1, 1);
 
     frame->setLayout(frameLayout);
-    layout.addWidget(frame, yValue, 0, 1, 1);
+    topLevelLayout.addWidget(frame, yValue, 0, 1, 1);
 
     yValue += 2;
+
 }
 
 void BorderLineOptionDialog::initializeLayout(std::vector<QwtPlotMarker*> markers)
@@ -238,7 +239,13 @@ void BorderLineOptionDialog::initializeLayout(std::vector<QwtPlotMarker*> marker
             oldSize++;
         }
     }
-    layout.addWidget(&addButton, yValue, 0, 5, 1);
+    topLevelLayout.setSizeConstraint(QLayout::SetMinAndMaxSize);
+    layoutFrame.setLayout(&topLevelLayout);
+    layoutFrame.setMinimumSize(320, 250);
+    scrollArea.setWidget(&layoutFrame);
+    scrollArea.setWidgetResizable(true);
+    layout.addWidget(&scrollArea, 0, 0, 1, 1);
+    layout.addWidget(&addButton, 1, 0, 1, 1);
     connect(&addButton, SIGNAL(clicked()), this, SLOT(addMarker()));
     setLayout(&layout);
 }

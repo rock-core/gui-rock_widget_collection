@@ -1,10 +1,3 @@
-/* 
- * File:   CurveOptionWidget.h
- * Author: blueck
- *
- * Created on 21. Oktober 2010, 10:37
- */
-
 #ifndef CURVEOPTIONWIDGET_H
 #define	CURVEOPTIONWIDGET_H
 

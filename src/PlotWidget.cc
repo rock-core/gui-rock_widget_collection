@@ -366,7 +366,7 @@ void PlotWidget::setBorderLineStyle(int borderLineId, QPen pen)
 
 void PlotWidget::setAxisAutoScale(int axisId, bool enable)
 {
-  QwtPlot::Axis axis = getAxisForInt(axisId);
+    QwtPlot::Axis axis = getAxisForInt(axisId);
     if(enable)
     {
         plot.setAxisAutoScale(axis);

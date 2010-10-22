@@ -16,16 +16,26 @@ bool CSVExporter::exportCurveAsCSV(const QwtPlotCurve& curve, const char delimit
       {
         fn += extension;
       }
-      std::fstream file;
-      file.open(fn.toStdString().c_str(), std::ios::out);
       QwtArrayData& currentData  = (QwtArrayData&)curve.data();
-      for(int i=0;i<currentData.size();i++)
-      {
-        double xValue = currentData.x(i);
-        double yValue = currentData.y(i);
-        file << xValue << delimiter << yValue << std::endl;
-      }
-      file.close();
+      return CSVExporter::exportDataAsCSV(fn.toStdString().c_str(),
+              currentData.xData().toStdVector(),
+              currentData.yData().toStdVector(),
+              delimiter);
   }
   return true;
+}
+
+bool CSVExporter::exportDataAsCSV(const char* filename, const std::vector<double> xValues, 
+        const std::vector<double> yValues, const char delimiter)
+{
+    std::fstream file;
+    file.open(filename, std::ios::out);
+    for(int i=0;i<xValues.size();i++)
+    {
+        double xValue = xValues[i];
+        double yValue = yValues[i];
+        file << xValue << delimiter << yValue << std::endl;
+    }
+    file.close();
+    return true;
 }

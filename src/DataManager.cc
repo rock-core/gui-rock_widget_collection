@@ -30,7 +30,9 @@ DataManager::DataManager()
     drawYGrid = true;
 }
 
-DataManager::DataManager(const DataManager& orig) { }
-
-DataManager::~DataManager() { }
+DataManager::~DataManager()
+{
+    delete INSTANCE;
+    INSTANCE = NULL;
+}
 

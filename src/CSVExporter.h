@@ -1,23 +1,3 @@
-/*
-    <one line to give the library's name and an idea of what it does.>
-    Copyright (C) <year>  <name of author>
-
-    This library is free software; you can redistribute it and/or
-    modify it under the terms of the GNU Lesser General Public
-    License as published by the Free Software Foundation; either
-    version 2.1 of the License, or (at your option) any later version.
-
-    This library is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-    Lesser General Public License for more details.
-
-    You should have received a copy of the GNU Lesser General Public
-    License along with this library; if not, write to the Free Software
-    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
-
-*/
-
 #ifndef CSVEXPORTER_H
 #define CSVEXPORTER_H
 
@@ -27,12 +7,54 @@
 #include <string>
 #include <QtGui/QFileDialog>
 
+/**
+ * Class which contains static methods to export data to a csv file.
+ *
+ * <h1>History</h1>
+ * 2010-10-22 Initial revision
+ *
+ * <h1>Known Issues</h1>
+ * Decimal values will be exported with the '.' character, so using
+ * the '.' character as a delimiter will result in undesired behaviour or
+ * not working at all.
+ *
+ * <h1>To-Do</h1>
+ * Remove the qwt specific method and put them in a derived/different class, so
+ * the exporter can be used even without any QT/QWT linking
+ *
+ * @author Bjoern Lueck <blueck@dfki.de>
+ * @version 0.1
+ */
 class CSVExporter
 {
   
   public:
-    
-  static bool exportCurveAsCSV(const QwtPlotCurve& curve, const char delimiter);
+      /**
+       * Exports a QwtPlotCurve as a csv file. All points whithin the
+       * plot will be exported, visible or not.
+       * Note that doubles will be exported with a dot as floating point. Thus
+       * exporting with the '.' character as a delimiter will NOT work properly
+       * with dloating point values.
+       * The method will display a FileDialog to choose a filename from. It
+       * therefore won't work with console applications.
+       * @param curve The curve to export
+       * @param delimiter the delimiter which shall be used within the csv file, ',' being the default
+       * @return true if successfull, false otherwise
+       */
+      static bool exportCurveAsCSV(const QwtPlotCurve& curve, const char delimiter=',');
+
+      /**
+       * Exports the specified x/y data to a file. Note that floating point
+       * data will use the '.' character. So using a '.' character as delimiter will
+       * NOT work. Note that the xVectors size is used in determining the length of the
+       * list, e.g. if there are more y Values than x values, these will be ignored.
+       * @param filename the file to be written
+       * @param xValues the x values
+       * @param yValues the y Values
+       * @param delimiter the delimiter to use ',' being the default
+       * @return true if successfull, false otherwise
+       */
+      static bool exportDataAsCSV(const char* filename, const std::vector<double> xValues, const std::vector<double> yValues, const char delimiter=',');
   
 };
 
