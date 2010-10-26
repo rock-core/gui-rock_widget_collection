@@ -209,7 +209,7 @@ int ImageViewWidget::setDisplaySize()
          }
          else
          {
-           QWidget::setMinimumSize(64,x* image.height());
+           QWidget::setMinimumSize(minimumWidth(),x* image.height());
            QWidget *_parent =  (QWidget*)parent();
            if(_parent)
            {
