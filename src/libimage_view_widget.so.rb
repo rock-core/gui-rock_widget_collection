@@ -8,8 +8,8 @@ WidgetFactory::extend_cplusplus_widget do
   def default_options()
       options = Hash.new
       options[:do_init] = true
-      options[:min_width] = 320
-      options[:min_height] = 240
+      options[:min_width] = 960
+      options[:min_height] = 540
       options[:aspect_ratio] = true
       options[:fixed_size] = false
       options[:time_overlay] = true
