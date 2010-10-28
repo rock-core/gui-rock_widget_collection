@@ -1,10 +1,3 @@
-/* 
- * File:   PlottingWidget.h
- * Author: blueck
- *
- * Created on 5. August 2010, 10:25
- */
-
 #ifndef PLOTTINGWIDGET_H
 #define	PLOTTINGWIDGET_H
 
@@ -24,11 +17,13 @@
  * <br>
  * Currently only zooming of the yLeft and xBottom axis is supported.
  *
- * <p>
- * TODO:<br>
- * <ul>
- * <li>Support for all axis</li>
- * </ul>
+ *  <h1>History</h1>
+ * 2010-08-18 Initial revision
+ *
+ * <h1>Known Issues</h1>
+ *
+ * <h1>To-Do</h1>
+ * Support for all axis
  *
  * @author Bjoern Lueck <blueck@dfki.de>
  * @version 0.1

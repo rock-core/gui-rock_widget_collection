@@ -18,7 +18,7 @@ PlotWidget::PlotWidget(QWidget* parent) : QWidget(parent),
         gridMenu(tr("&Grid")), importMenu(tr("&Import")), clearMenu(tr("&Clear")),
         exportImageAction(tr("Export as &image"), this), autoscrollAction(tr("&Autoscrolling"), this),
         fitAction(tr("&Fit to Graph"), this), optionsAction(tr("&Options..."), this),
-        exportCSVAction(tr("Export as &CSV"), this), leftSliderAction(tr("&Left Slider"), this),
+        leftSliderAction(tr("&Left Slider"), this), exportCSVAction(tr("Export as &CSV"), this),
         bottomSliderAction(tr("&Bottom Slider"), this), xGridAction(tr("X"), this),
         yGridAction(tr("Y"), this), importCSVAction(tr("Import &CSV"), this), clearBorderLineAction(tr("Clear &Border Lines"), this),
         clearCurveAction(tr("Clear &Curves"), this), clearAllAction(tr("Clear &All"), this)
@@ -36,7 +36,6 @@ PlotWidget::PlotWidget(QWidget* parent) : QWidget(parent),
     this->enableSlider(QwtPlot::yLeft, dataManager->isShowLeftSlider());
     this->setDrawGrid(true, dataManager->isDrawXGrid(), dataManager->isDrawYGrid());
     dataManager->setBGColor(plot.canvasBackground());
-    std::cout << "R:" << plot.canvasBackground().red() << "G:" << plot.canvasBackground().green() << "B" << plot.canvasBackground().blue() << std::endl;
     minXBottom = INT_MAX;
     maxXBottom = INT_MIN;
     minYLeft = INT_MAX;
@@ -119,11 +118,11 @@ void PlotWidget::addMenu()
   exportMenu.addAction(&exportCSVAction);
   importMenu.addAction(&importCSVAction);
   connect(&exportImageAction, SIGNAL(triggered()), this, SLOT(exportPlotAsImage()));
-  connect(&exportCSVAction, SIGNAL(triggered()), this, SLOT(exportAsCSV()));
   connect(&importCSVAction, SIGNAL(triggered()), this, SLOT(importFromCSV()));
   connect(&clearBorderLineAction, SIGNAL(triggered()), this, SLOT(clearBorderLines()));
   connect(&clearCurveAction, SIGNAL(triggered()), this, SLOT(clearCurves()));
   connect(&clearAllAction, SIGNAL(triggered()), this, SLOT(clearAll()));
+  connect(&exportCSVAction, SIGNAL(triggered()), this, SLOT(exportAsCSV()));
   // Plot Menu
   menuBar.addMenu(&plotMenu);
   autoscrollAction.setCheckable(true);
@@ -495,7 +494,6 @@ int PlotWidget::addData(double xPoint, double yPoint, int dataId,
 int PlotWidget::addData(double* xPoints, double* yPoints, int length, int dataId,
         int xAxisId, int yAxisId)
 {
-    std::cout << "Adding multiple" << std::endl;
   QwtPlot::Axis xAxis = getAxisForInt(xAxisId);
   QwtPlot::Axis yAxis = getAxisForInt(yAxisId);
     // new data
@@ -524,6 +522,7 @@ int PlotWidget::addData(double* xPoints, double* yPoints, int length, int dataId
 	    curves[curveId] = curve;
 	    dataId = curveId++;
 	  }
+        curve->setTitle(QString::number(dataId));
     }
     // existing data
     else

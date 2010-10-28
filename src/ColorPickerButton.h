@@ -39,7 +39,7 @@ class ColorPickerButton : public QPushButton
     ColorPickerButton(QColor displayColor = QColor(0, 0, 0), QWidget* parent = 0);
 
     /**
-     * @seeQPushButton#paintEvent()
+     * @see QPushButton#paintEvent()
      */
     void paintEvent(QPaintEvent* event);
 

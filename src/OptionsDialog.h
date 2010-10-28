@@ -18,39 +18,63 @@
 
 #include <iostream>
 
+/**
+ * Options widget which is merely a container for three other wodgets.
+ * Those are displayed within a tab widget
+ */
 class OptionsDialog : public QDialog
 {
   
   Q_OBJECT
   
   public:
+      /**
+       * Constructor
+       * @param parent parent of the widget if any
+       * @param f flags, defaults to 0
+       */
     OptionsDialog(QWidget* parent, Qt::WindowFlags f = 0);
+
+    /**
+     * Initializes the widget with the currently existing curves and markers
+     * @param curves teh existing curves
+     * @param markers the existing markers
+     */
     void initializeLayout(std::vector<QwtPlotCurve*> curves, std::vector<QwtPlotMarker*> markers);
-    std::map<int, QColor> getCurveColorMap();
-    std::map<int, QColor> getMarkerColorMap();
-    char getCSVDelimiter();
+
+    /**
+     * Retunr snew markers, created by an underlying widget. Returns an empty
+     * vector if there are no markers.
+     * @return the new markers, if any
+     */
     std::vector<QwtPlotMarker*> getNewMarkers();
     
   public slots:
-    void newCurveColorSelected(int curveId, const QColor& color);
-    void newMarkerColorSelected(int curveId, const QColor& color);
+      /**
+       * Updates all data with the content of the widgets, when the ok button
+       * was pressed.
+       */
     void okPressed();
+
+    /**
+     * Closes the dialog, but does not save anything
+     */
     void cancelPressed();
   protected:
+      /** The tab widget to display the option widgets*/
     QTabWidget tabWidget;
+    /** Button to confirm options*/
     QPushButton okButton;
+    /** Button to cancel options*/
     QPushButton cancelButton;
+    /** The layout of the widget*/
     QGridLayout gridLayout;
-    QLabel curveLabel;
-    QLabel borderLineLabel;
-    QLabel exportLabel;
-    QLabel csvLabel;
-    QLineEdit csvEdit;
+    /** Generla widget to display general options*/
     GeneralOptionsWidget* generalWidget;
+    /** Widget to display the Borderlines*/
     BorderLineOptionDialog* borderWidget;
+    /** Widget to display the curves*/
     CurveOptionWidget* curveWidget;
-    std::map<int, QColor> curveColorMap;
-    std::map<int, QColor> markerColorMap;
 };
 
 #endif // OPTIONSDIALOG_H

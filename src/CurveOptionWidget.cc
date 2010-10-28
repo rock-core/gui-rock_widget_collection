@@ -12,6 +12,37 @@ CurveOptionWidget::CurveOptionWidget()
     
 }
 
+CurveOptionWidget::~CurveOptionWidget()
+{
+    for(int i=0;i<buttons.size();i++)
+    {
+        ColorPickerButton* button = buttons[i];
+        if(button != NULL)
+        {
+            delete(button);
+        }
+    }
+    buttons.clear();
+    for(int i=0;i<boxes.size();i++)
+    {
+        QComboBox* box = boxes[i];
+        if(box != NULL)
+        {
+            delete(box);
+        }
+    }
+    boxes.clear();
+    for(int i=0;i<spinBoxes.size();i++)
+    {
+        QSpinBox* spinBox = spinBoxes[i];
+        if(spinBox != NULL)
+        {
+            delete(spinBox);
+        }
+    }
+    spinBoxes.clear();
+}
+
 void CurveOptionWidget::updateExistingCurves()
 {
     for(int i=0;i<curves.size();i++)
@@ -31,12 +62,20 @@ void CurveOptionWidget::updateExistingCurves()
 
 void CurveOptionWidget::initializeLayout(std::vector<QwtPlotCurve*> curves)
 {
+    QFrame* layoutFrame = new QFrame();
+    QGridLayout* baseLayout = new QGridLayout();
     this->curves = curves;
     buttons.resize(curves.size());
     boxes.resize(curves.size());
     spinBoxes.resize(curves.size());
+    layout.setAlignment(Qt::AlignTop);
+    baseLayout->setSizeConstraint(QLayout::SetMinAndMaxSize);
     for(int i=0;i<curves.size();i++)
     {
+        QFrame* outerFrame = new QFrame();
+        outerFrame->setFrameStyle(QFrame::StyledPanel | QFrame::Raised);
+        outerFrame->setLineWidth(2);
+        QGridLayout* outerGridLayout = new QGridLayout();
         QwtPlotCurve* curve = curves[i];
         if(curve != NULL)
         {
@@ -59,15 +98,21 @@ void CurveOptionWidget::initializeLayout(std::vector<QwtPlotCurve*> curves)
             combo->setCurrentIndex(curve->style());
             boxes[i] = combo;
 
-            layout.setAlignment(Qt::AlignTop);
-            layout.addWidget(label, i, 0, 1, 1);
-            layout.addWidget(spinBox, i, 1, 1, 1);
-            layout.addWidget(combo, i, 2, 1, 1);
-            layout.addWidget(button, i, 3, 1, 1);
+            outerGridLayout->setAlignment(Qt::AlignTop);
+            outerGridLayout->addWidget(label, i, 0, 1, 1);
+            outerGridLayout->addWidget(spinBox, i, 1, 1, 1);
+            outerGridLayout->addWidget(combo, i, 2, 1, 1);
+            outerGridLayout->addWidget(button, i, 3, 1, 1);
+
+            outerFrame->setLayout(outerGridLayout);
+            outerFrame->setMinimumSize(320, 250);
+            baseLayout->addWidget(outerFrame, i, 0, 1, 1);
         }
     }
+    layoutFrame->setLayout(baseLayout);
+    scrollArea.setWidget(layoutFrame);
+    scrollArea.setWidgetResizable(true);
+    layout.addWidget(&scrollArea);
     setLayout(&layout);
 }
-
-CurveOptionWidget::~CurveOptionWidget() { }
 

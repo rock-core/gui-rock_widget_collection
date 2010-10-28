@@ -116,6 +116,7 @@ class PlotWidget : public QWidget
 public:
     /**
      * Standard constructor
+     * @param parent the parent widget, defaults to 0
      */
     PlotWidget(QWidget* parent=0);
 
@@ -129,13 +130,21 @@ public:
     // --> Exporting functions
 
 public slots:
+
+    /**
+     * Returns an instance of teh PlotWidget
+     * @return  a new instance
+     */
     QObject* newInstance()
     {
        return new PlotWidget();
     };
     
     // --> Widget related methods
-    
+
+    /**
+     * Adds all menu entries
+     */
     void addMenu();
 
 
@@ -152,8 +161,8 @@ public slots:
     // --> Slider realted methods
 
     /** Enables or disables a slider
-     * @param axis teh slider of which axis to enable/disable
-     * @param enable, if the slider shall be anabled or disabled, defaults to true
+     * @param axisId the slider of which axis to enable/disable
+     * @param enable if the slider shall be anabled or disabled, defaults to true
      */
     void enableSlider(int axisId, bool enable=true);
 
@@ -203,7 +212,7 @@ public slots:
      * will automatically be calculated. If yRight or xTop is given the axis will also
      * automatically be enabled. Calling this method also automatically disables
      * autoscaling of the axis.
-     * @param axis the axis to set the boundaries
+     * @param axisId the id of axis to set the boundaries
      * @param lower lower value of the axis
      * @param upper upper value of the axis
      * @param step step size shown, 0 indicating automatic step size.  Defaults to 0.
@@ -212,7 +221,7 @@ public slots:
 
     /**
      * Sets if the specified axis shall be shown or hidden
-     * @param axis the axis to be shown or hidden
+     * @param axisId the axis to be shown or hidden
      * @param enable true if the axis shall be shown, false otherwise
      */
     void setAxisShown(int axisId, bool enable=true);
@@ -221,12 +230,22 @@ public slots:
      * Sets the axs to auto scaling. Whnever data is added the axis
      * may reorganize itself. Calling setAxisBoundaries will stop the
      * automatic scaling. as will setAxisAutoScale(false)
+     * @param axisId the id of the axis
      * @param enable enable enable or disable auto scaling, defaults to true
      */
     void setAxisAutoScale(int axisId, bool enable=true);
 
     // -->Actual Data related methods
 
+    /**
+     * Adds data to the plot
+     * @param xPoints an xpoint
+     * @param yPoints an y point
+     * @param dataId id of an existing line or -1 otherwise, defaults to -1
+     * @param xAxisId the id of the xaxis, defaults to X_BOTTOM
+     * @param yAxisId the id of the y axis, defaults to Y_LEFT
+     * @return the id of the newly created line, or the id of the existing one
+     */
     int addData(double xPoints, double yPoints, int dataId=-1,
 		int xAxisId=X_BOTTOM, int yAxisId=Y_LEFT);
 
@@ -271,13 +290,25 @@ public slots:
      * @param enable enable autoscrolling, defaults to true
      */
     void setAutoscrolling(bool enable=true);
-    
+
+    /**
+     * Sets the plot to exactly fit the currently visible lines
+     */
     void fitPlotToGraph();
-    
+
+    /**
+     * Displays the options dialog
+     */
     void showOptionsDialog();
-    
+
+    /**
+     * Exports the currently visible curve as csv
+     */
     void exportAsCSV();
 
+    /**
+     * Called when the gir is changed
+     */
     void gridChanged();
     
 protected slots:
@@ -301,15 +332,37 @@ protected slots:
      * @param rect  teh rect to which the plot was zoomed
      */
     void zoomed(const QwtDoubleRect& rect);
-    
+
+    /**
+     * Called when the options dialog ok button was clicked
+     */
     void optionsChanged();
 
+    /**
+     * Called when the slider menu items are clicked
+     */
     void sliderActionChecked();
 
+    /**
+     * Imports a curve from a csv file, displays a dialog to
+     * choose a csv file from
+     */
     void importFromCSV();
 
+    /**
+     * Removes all borderlines
+     */
     void clearBorderLines();
+
+    /**
+     * Removes all curves
+     */
     void clearCurves();
+
+    /**
+     * Removes all borderlines and all curves, simply
+     * calls @see clearCurves and @see clearBorderLines
+     */
     void clearAll();
 
 protected:
@@ -323,18 +376,37 @@ protected:
      * @param yPoints the y coordinates of the points
      * @param length the length of the x and y points
      * @param dataId the dataid of an existing data set, defaults to 0
-     * @param xAxis the x axis the data refers to, defaults to QwtPlot::xBottom
-     * @param yAxis the y axis the data refers to, defaults to QwtPlot::yLeft
+     * @param xAxisId the x axis the data refers to, defaults to the constant X_BOTTOM
+     * @param yAxisId the y axis the data refers to, defaults to the constant Y_LEFT
      * @return a unique id identifying the data. if existing data was modifyied this will be the same as the dataId given
      */
     int addData(double* xPoints, double* yPoints, int length, int dataId=-1,
 		int xAxisId=X_BOTTOM, int yAxisId=Y_LEFT);
 
+    /**
+     * Adds Data as a curve to the plot. The curve will be painted as black dots by default
+     * but can be changed via setDataSytle with the returned int id.<br>
+     * If the dataId is given data will be added to an existing data set.<br>
+     * The x and y Axis which shall be used for the data can be specified too.
+     * @param xPoints the x coordinates of the points
+     * @param yPoints the y coordinates of the points
+     * @param length the length of the x and y points
+     * @param dataId the dataid of an existing data set, defaults to 0
+     * @param xAxisId the x axis the data refers to, defaults to the constant X_BOTTOM
+     * @param yAxisId the y axis the data refers to, defaults to the constant Y_LEFT
+     * @return a unique id identifying the data. if existing data was modifyied this will be the same as the dataId given
+     */
     int addData(QList<double> xPoints, QList<double> yPoints, int dataId=-1,
                 int xAxisId=X_BOTTOM, int yAxisId=Y_LEFT);
 
     // --> helper methods
 
+    /**
+     * Returns the axis constant for an internal constant, this
+     * is necessary as ruby cannnot call the qwtplot enums directly
+     * @param axis the constant defined in this class
+     * @return the QwtPlot::Axis 
+     */
     QwtPlot::Axis getAxisForInt(int axis);
 
     /**
@@ -401,29 +473,51 @@ protected:
     double zoomYSpan;
     /** The rect which was initially used to display the plot*/
     QwtDoubleRect initialRect;
+    /** MenuBar of the widget*/
     QMenuBar menuBar;
+    /** File menu*/
     QMenu fileMenu;
+    /** Export menu*/
     QMenu exportMenu;
+    /** Import menu*/
     QMenu importMenu;
+    /** Plot menu*/
     QMenu plotMenu;
+    /** Slider menu*/
     QMenu sliderMenu;
+    /** Grid menu*/
     QMenu gridMenu;
+    /** Clear menu*/
     QMenu clearMenu;
+    /** Action to show or hide the x grid*/
     QAction xGridAction;
+    /** Action to show or hide the y grid*/
     QAction yGridAction;
+    /** Action to show/hide the left slider*/
     QAction leftSliderAction;
+    /** Action to show/hide the bottom slider*/
     QAction bottomSliderAction;
+    /** Action to export the plot as image*/
     QAction exportImageAction;
+    /** Action to rexport the curve as csv*/
     QAction exportCSVAction;
+    /** Action to toggle autoscrolling*/
     QAction autoscrollAction;
+    /** Action to fit the plot to the currently visible graphs*/
     QAction fitAction;
+    /** Action to open the options dialog*/
     QAction optionsAction;
+    /** Action to import a curve from a csv file*/
     QAction importCSVAction;
+    /** Action to delete all BorderLines*/
     QAction clearBorderLineAction;
+    /** Action to delete all curves*/
     QAction clearCurveAction;
+    /** Action to delete all curves and borderlines*/
     QAction clearAllAction;
-    
+    /** Dialog with options*/
     OptionsDialog optionsDialog;
+    /** Datamanager containing all variables*/
     DataManager* dataManager;
 };
 
