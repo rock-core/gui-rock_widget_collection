@@ -23,16 +23,14 @@ void OptionsDialog::okPressed()
     dataManager->setYAxisTitle(generalWidget->getYAxisTitle());
     dataManager->setCSVDelimiter(generalWidget->getCSVDelimiter());
     borderWidget->updateExistingMarkers();
-
     curveWidget->updateExistingCurves();
-
     setVisible(false);
     emit accepted();
 }
 
 void OptionsDialog::cancelPressed()
 {
-  setVisible(false);
+    setVisible(false);
 }
 
 std::vector<QwtPlotMarker*> OptionsDialog::getNewMarkers()

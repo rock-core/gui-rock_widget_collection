@@ -44,6 +44,23 @@ class CSVExporter
       static bool exportCurveAsCSV(const QwtPlotCurve& curve, const char delimiter=',');
 
       /**
+       * Exports multiple QwtPlotCurve as multiple csv files. All points whithin the
+       * plot will be exported, visible or not.
+       * Note that doubles will be exported with a dot as floating point. Thus
+       * exporting with the '.' character as a delimiter will NOT work properly
+       * with dloating point values.
+       * The method will display a FileDialog to choose a filename from. It
+       * therefore won't work with console applications. The choosen file will
+       * be extended with the curves name. For example if the curves titles are
+       * temperature and height and the filename given was log, then this would result in
+       * two files written, one called log_temperature.csv and one called log_height.csv.
+       * @param curves The curves to export
+       * @param delimiter the delimiter which shall be used within the csv file, ',' being the default
+       * @return true if successfull, false otherwise
+       */
+      static bool exportCurveAsCSV(std::vector<QwtPlotCurve*> curves, const char delimiter=',');
+
+      /**
        * Exports the specified x/y data to a file. Note that floating point
        * data will use the '.' character. So using a '.' character as delimiter will
        * NOT work. Note that the xVectors size is used in determining the length of the

@@ -14,6 +14,7 @@
 #include "CSVExporter.h"
 #include "DataManager.h"
 #include "CSVImporter.h"
+#include "CurveSelectionDialog.h"
 
 #include <QtGui/QResizeEvent>
 #include <QtGui/QPushButton>
@@ -365,6 +366,9 @@ protected slots:
      */
     void clearAll();
 
+    /** Called when curves were selected to be exorted*/
+    void curvesSelected();
+
 protected:
 
     /**
@@ -390,7 +394,6 @@ protected:
      * The x and y Axis which shall be used for the data can be specified too.
      * @param xPoints the x coordinates of the points
      * @param yPoints the y coordinates of the points
-     * @param length the length of the x and y points
      * @param dataId the dataid of an existing data set, defaults to 0
      * @param xAxisId the x axis the data refers to, defaults to the constant X_BOTTOM
      * @param yAxisId the y axis the data refers to, defaults to the constant Y_LEFT
@@ -519,6 +522,8 @@ protected:
     OptionsDialog optionsDialog;
     /** Datamanager containing all variables*/
     DataManager* dataManager;
+    /** Dialog to select which curves shall be exported*/
+    CurveSelectionDialog curveSelectionDialog;
 };
 
 #endif	/* PLOTWIDGET_H */

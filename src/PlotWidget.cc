@@ -6,6 +6,7 @@
  */
 
 #include "PlotWidget.h"
+#include "CurveSelectionDialog.h"
 #include <QtPlugin>
 
 Q_EXPORT_PLUGIN2(PlotWidget,PlotWidget)
@@ -151,6 +152,7 @@ void PlotWidget::addMenu()
   connect(&bottomSliderAction, SIGNAL(triggered()), this, SLOT(sliderActionChecked()));
   connect(&xGridAction, SIGNAL(triggered()), this, SLOT(gridChanged()));
   connect(&yGridAction, SIGNAL(triggered()), this, SLOT(gridChanged()));
+  connect(&curveSelectionDialog, SIGNAL(accepted()), this, SLOT(curvesSelected()));
 }
 
 void PlotWidget::importFromCSV()
@@ -160,7 +162,6 @@ void PlotWidget::importFromCSV()
     std::vector< std::vector<double> > points = CSVImporter::getDoubleArrayFromFile(filename.toStdString(), dataManager->getCSVDelimter());
     QList<double> xPoints;
     QList<double> yPoints;
-    std::cout << "Complete: " << points.size() << std::endl;
     for(int i=0;i<points.size();i++)
     {
         std::vector<double> linePoints = points[i];
@@ -168,10 +169,13 @@ void PlotWidget::importFromCSV()
         {
             xPoints.append(linePoints[0]);
             yPoints.append(linePoints[1]);
-            std::cout << linePoints[0] << "|" << linePoints[1] << std::endl;
         }
     }
-    this->addData(xPoints, yPoints);
+    //only if we have something, else do nothing
+    if(xPoints.size() > 0)
+    {
+        this->addData(xPoints, yPoints);
+    }
 }
 
 void PlotWidget::gridChanged()
@@ -196,7 +200,17 @@ void PlotWidget::sliderActionChecked()
 
 void PlotWidget::exportAsCSV()
 {
-  CSVExporter::exportCurveAsCSV(*curves[0], dataManager->getCSVDelimter());
+    curveSelectionDialog.initializeLayout(curves);
+    curveSelectionDialog.show();
+}
+
+void PlotWidget::curvesSelected()
+{
+    std::vector<QwtPlotCurve*> selectedCurves = curveSelectionDialog.getSelectedCurves();
+    if(selectedCurves.size() > 0)
+    {
+        CSVExporter::exportCurveAsCSV(selectedCurves, dataManager->getCSVDelimter());
+    }
 }
 
 
