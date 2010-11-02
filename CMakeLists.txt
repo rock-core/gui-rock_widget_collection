@@ -21,6 +21,14 @@ pkg_check_modules(BASE "base-types" )
 include_directories(${BASE_INCLUDE_DIRS})
 link_directories(${BASE_LIBDIR})
 
+pkg_check_modules(VWRITER "video_writer" )
+include_directories(${VWRITER_INCLUDE_DIRS})
+link_directories(${VWRITER_LIBDIR})
+
+pkg_check_modules(OPENCV REQUIRED "opencv")
+include_directories(${OPENCV_INCLUDE_DIRS})
+link_directories(${OPENCV_LIBDIR})
+
 # command line output on, you can also use make VERBOSE=1
 # set(CMAKE_VERBOSE_MAKEFILE on)
 

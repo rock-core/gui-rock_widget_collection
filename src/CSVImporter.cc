@@ -7,21 +7,14 @@
 
 #include "CSVImporter.h"
 
-CSVImporter::CSVImporter()
-{
-}
-
-
-CSVImporter::~CSVImporter()
-{
-}
-
-std::vector< std::vector<double> > CSVImporter::getDoubleArrayFromFile(std::string filename)
+std::vector< std::vector<double> > CSVImporter::getDoubleArrayFromFile(std::string filename, char delimiter)
 {
     std::ifstream inFile (filename.c_str());
     std::string line;
     int linenum = 0;
     std::vector< std::vector<double> > result(500);
+    char* currentLocale = setlocale(LC_ALL, NULL);
+    setlocale(LC_ALL, "C");
     while (getline (inFile, line))
     {
         linenum++;
@@ -29,13 +22,14 @@ std::vector< std::vector<double> > CSVImporter::getDoubleArrayFromFile(std::stri
         std::string item;
         int itemnum = 0;
         std::vector<double> lineResult(10);
-        while (getline (linestream, item, ' '))
+        while (getline (linestream, item, delimiter))
         {
             lineResult[itemnum] = atof(item.c_str());
             itemnum++;
         }
         result[linenum-1] = lineResult;
     }
+    setlocale(LC_ALL, currentLocale);
     return result;
 }
 

@@ -14,13 +14,38 @@
 #include <sstream>
 #include <stdlib.h>
 #include <vector>
+#include <locale>
 
+/**
+ * Class which contains static methods to import data from a
+ * csv file.
+ *
+ * <h1>History</h1>
+ * 2010-10-22 Initial revision
+ *
+ * <h1>Known Issues</h1>
+ * Usually decimal values will be exported with the '.' character, so using
+ * the '.' character as a delimiter will result in undesired behaviour or
+ * not working at all.
+ *
+ * <h1>To-Do</h1>
+ *
+ * @author Bjoern Lueck <blueck@dfki.de>
+ * @version 0.1
+ */
 class CSVImporter
 {
 public:
-    CSVImporter();
-    virtual ~CSVImporter();
-    static std::vector< std::vector<double> > getDoubleArrayFromFile(std::string filename);
+    /**
+     * Takes the input csv file and returns a vector of double vectors which contain the
+     * data within the csv file. Each containing vector contains one column of
+     * the source csv file. Note that floating point data will use the
+     * '.' character.
+     * @param filename location of the file to be read
+     * @param delimiter the delimiter in the csv file, ',' being the default
+     * @return a vector containing each column as double vector
+     */
+    static std::vector< std::vector<double> > getDoubleArrayFromFile(std::string filename, char delimiter=',');
 private:
 
 };

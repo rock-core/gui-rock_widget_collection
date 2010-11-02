@@ -1,10 +1,3 @@
-/* 
- * File:   QtExporter.h
- * Author: blueck
- *
- * Created on 18. August 2010, 15:02
- */
-
 #ifndef QTEXPORTER_H
 #define	QTEXPORTER_H
 
@@ -41,6 +34,13 @@
  * <li>"PNG"</li>
  * <li>"BMP"</li>
  * </ul>
+ *
+ * <h1>History</h1>
+ * 2010-08-18 Initial revision
+ *
+ * <h1>Known Issues</h1>
+ *
+ * <h1>To-Do</h1>
  *
  * @author Bjoern Lueck <blueck@dfki.de>
  * @version 0.1
