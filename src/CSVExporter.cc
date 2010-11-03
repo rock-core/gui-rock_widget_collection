@@ -38,7 +38,7 @@ bool CSVExporter::exportCurveAsCSV(std::vector<QwtPlotCurve*> curves, const char
         fn.remove(extension);
       }
       bool addExtension = filter.contains(extension);
-      for(int i=0;i<curves.size();i++)
+      for(unsigned int i=0;i<curves.size();i++)
       {
           QwtPlotCurve* curve = curves[i];
           if(curve != NULL)
@@ -66,7 +66,7 @@ bool CSVExporter::exportDataAsCSV(const char* filename, const std::vector<double
 {
     std::fstream file;
     file.open(filename, std::ios::out);
-    for(int i=0;i<xValues.size();i++)
+    for(unsigned int i=0;i<xValues.size();i++)
     {
         double xValue = xValues[i];
         double yValue = yValues[i];

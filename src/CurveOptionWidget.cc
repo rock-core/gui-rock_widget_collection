@@ -14,7 +14,7 @@ CurveOptionWidget::CurveOptionWidget()
 
 CurveOptionWidget::~CurveOptionWidget()
 {
-    for(int i=0;i<buttons.size();i++)
+    for(unsigned int i=0;i<buttons.size();i++)
     {
         ColorPickerButton* button = buttons[i];
         if(button != NULL)
@@ -23,7 +23,7 @@ CurveOptionWidget::~CurveOptionWidget()
         }
     }
     buttons.clear();
-    for(int i=0;i<boxes.size();i++)
+    for(unsigned int i=0;i<boxes.size();i++)
     {
         QComboBox* box = boxes[i];
         if(box != NULL)
@@ -32,7 +32,7 @@ CurveOptionWidget::~CurveOptionWidget()
         }
     }
     boxes.clear();
-    for(int i=0;i<spinBoxes.size();i++)
+    for(unsigned int i=0;i<spinBoxes.size();i++)
     {
         QSpinBox* spinBox = spinBoxes[i];
         if(spinBox != NULL)
@@ -45,7 +45,7 @@ CurveOptionWidget::~CurveOptionWidget()
 
 void CurveOptionWidget::updateExistingCurves()
 {
-    for(int i=0;i<curves.size();i++)
+    for(unsigned int i=0;i<curves.size();i++)
     {
         QwtPlotCurve* curve = curves[i];
         if(curve != NULL)
@@ -70,7 +70,7 @@ void CurveOptionWidget::initializeLayout(std::vector<QwtPlotCurve*> curves)
     spinBoxes.resize(curves.size());
     layout.setAlignment(Qt::AlignTop);
     baseLayout->setSizeConstraint(QLayout::SetMinAndMaxSize);
-    for(int i=0;i<curves.size();i++)
+    for(unsigned int i=0;i<curves.size();i++)
     {
         QFrame* outerFrame = new QFrame();
         outerFrame->setFrameStyle(QFrame::StyledPanel | QFrame::Raised);

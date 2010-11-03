@@ -73,6 +73,19 @@ public:
     char getCSVDelimiter();
 
 protected:
+
+
+    /**Button to change the color*/
+    ColorPickerButton bgButton;
+    /** Layout of the widget*/
+    QFormLayout layout;
+    /**Line edit for the x axis text*/
+    QLineEdit xAxisTextEdit;
+    /**Line edit for the y axis text*/
+    QLineEdit yAxisTextEdit;
+    /**Line edit for a delimiter only 1 character can be entered*/
+    QLineEdit csvDelimiterEdit;
+
     /** Label for the bg color*/
     QLabel bgLabel;
     /** Label for the x axis text*/
@@ -81,18 +94,6 @@ protected:
     QLabel yAxisText;
     /** LAbel for the delimiter*/
     QLabel csvDelimiter;
-
-    /**Button to change the color*/
-    ColorPickerButton bgButton;
-    /**Line edit for the x axis text*/
-    QLineEdit xAxisTextEdit;
-    /**Line edit for the y axis text*/
-    QLineEdit yAxisTextEdit;
-    /**Line edit for a delimiter only 1 character can be entered*/
-    QLineEdit csvDelimiterEdit;
-
-    /** Layout of the widget*/
-    QFormLayout layout;
 
 private:
 

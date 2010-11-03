@@ -61,12 +61,12 @@ class OptionsDialog : public QDialog
      */
     void cancelPressed();
   protected:
-      /** The tab widget to display the option widgets*/
-    QTabWidget tabWidget;
     /** Button to confirm options*/
     QPushButton okButton;
     /** Button to cancel options*/
     QPushButton cancelButton;
+      /** The tab widget to display the option widgets*/
+    QTabWidget tabWidget;
     /** The layout of the widget*/
     QGridLayout gridLayout;
     /** Generla widget to display general options*/

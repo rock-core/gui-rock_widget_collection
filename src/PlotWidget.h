@@ -478,38 +478,41 @@ protected:
     QwtDoubleRect initialRect;
     /** MenuBar of the widget*/
     QMenuBar menuBar;
+    /** Dialog with options*/
+    OptionsDialog optionsDialog;
     /** File menu*/
     QMenu fileMenu;
-    /** Export menu*/
-    QMenu exportMenu;
-    /** Import menu*/
-    QMenu importMenu;
     /** Plot menu*/
     QMenu plotMenu;
+    /** Export menu*/
+    QMenu exportMenu;
     /** Slider menu*/
     QMenu sliderMenu;
     /** Grid menu*/
     QMenu gridMenu;
+    /** Import menu*/
+    QMenu importMenu;
     /** Clear menu*/
     QMenu clearMenu;
-    /** Action to show or hide the x grid*/
-    QAction xGridAction;
-    /** Action to show or hide the y grid*/
-    QAction yGridAction;
-    /** Action to show/hide the left slider*/
-    QAction leftSliderAction;
-    /** Action to show/hide the bottom slider*/
-    QAction bottomSliderAction;
+
     /** Action to export the plot as image*/
     QAction exportImageAction;
-    /** Action to rexport the curve as csv*/
-    QAction exportCSVAction;
     /** Action to toggle autoscrolling*/
     QAction autoscrollAction;
     /** Action to fit the plot to the currently visible graphs*/
     QAction fitAction;
     /** Action to open the options dialog*/
     QAction optionsAction;
+    /** Action to show/hide the left slider*/
+    QAction leftSliderAction;
+    /** Action to rexport the curve as csv*/
+    QAction exportCSVAction;
+    /** Action to show/hide the bottom slider*/
+    QAction bottomSliderAction;
+    /** Action to show or hide the x grid*/
+    QAction xGridAction;
+    /** Action to show or hide the y grid*/
+    QAction yGridAction;
     /** Action to import a curve from a csv file*/
     QAction importCSVAction;
     /** Action to delete all BorderLines*/
@@ -518,8 +521,7 @@ protected:
     QAction clearCurveAction;
     /** Action to delete all curves and borderlines*/
     QAction clearAllAction;
-    /** Dialog with options*/
-    OptionsDialog optionsDialog;
+
     /** Datamanager containing all variables*/
     DataManager* dataManager;
     /** Dialog to select which curves shall be exported*/

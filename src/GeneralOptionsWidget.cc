@@ -9,8 +9,9 @@
 #include "DataManager.h"
 
 GeneralOptionsWidget::GeneralOptionsWidget() : 
-    bgButton(QColor(0, 0, 0)), layout(this), xAxisText(tr("X Title")),
-        yAxisText(tr("Y Title")), bgLabel(tr("Background color")),
+    bgButton(QColor(0, 0, 0)), layout(this), bgLabel(tr("Background color")),
+        xAxisText(tr("X Title")),
+        yAxisText(tr("Y Title")),
         csvDelimiter(tr("CSV Delimiter"))
 {
 }

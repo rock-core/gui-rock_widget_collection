@@ -17,7 +17,7 @@ BorderLineOptionDialog::BorderLineOptionDialog() : QWidget(),
 
 BorderLineOptionDialog::~BorderLineOptionDialog()
 {
-    for(int i=0;i<buttons.size();i++)
+    for(unsigned int i=0;i<buttons.size();i++)
     {
         ColorPickerButton* button = buttons[i];
         if(button != NULL)
@@ -27,7 +27,7 @@ BorderLineOptionDialog::~BorderLineOptionDialog()
     }
     buttons.clear();
     
-    for(int i=0;i<xSpinBoxes.size();i++)
+    for(unsigned int i=0;i<xSpinBoxes.size();i++)
     {
         QDoubleSpinBox* spinBox = xSpinBoxes[i];
         if(spinBox != NULL)
@@ -37,7 +37,7 @@ BorderLineOptionDialog::~BorderLineOptionDialog()
     }
     xSpinBoxes.clear();
     
-    for(int i=0;i<ySpinBoxes.size();i++)
+    for(unsigned int i=0;i<ySpinBoxes.size();i++)
     {
         QDoubleSpinBox* spinBox = ySpinBoxes[i];
         if(spinBox != NULL)
@@ -47,7 +47,7 @@ BorderLineOptionDialog::~BorderLineOptionDialog()
     }
     ySpinBoxes.clear();
     
-    for(int i=0;i<comboBoxes.size();i++)
+    for(unsigned int i=0;i<comboBoxes.size();i++)
     {
         QComboBox* comboBox = comboBoxes[i];
         if(comboBox != NULL)
@@ -57,7 +57,7 @@ BorderLineOptionDialog::~BorderLineOptionDialog()
     }
     comboBoxes.clear();
     
-    for(int i=0;i<styleBoxes.size();i++)
+    for(unsigned int i=0;i<styleBoxes.size();i++)
     {
         QComboBox* styleBox = styleBoxes[i];
         if(styleBox != NULL)
@@ -67,7 +67,7 @@ BorderLineOptionDialog::~BorderLineOptionDialog()
     }
     styleBoxes.clear();
     
-    for(int i=0;i<weightBoxes.size();i++)
+    for(unsigned int i=0;i<weightBoxes.size();i++)
     {
         QSpinBox* weightBox = weightBoxes[i];
         if(weightBox != NULL)
@@ -100,7 +100,7 @@ void BorderLineOptionDialog::addMarker()
 
 std::vector<QwtPlotMarker*> BorderLineOptionDialog::getNewMarkers()
 {
-    for(int i=0;i<newMarkers.size();i++)
+    for(unsigned int i=0;i<newMarkers.size();i++)
     {
         QwtPlotMarker* marker = newMarkers[i];
         if(marker != NULL)
@@ -127,7 +127,7 @@ std::vector<QwtPlotMarker*> BorderLineOptionDialog::getNewMarkers()
 void BorderLineOptionDialog::updateExistingMarkers()
 {
     std::cout << oldMarkers.size() << "|" << buttons.size() << std::endl;
-    for(int i=0;i<oldMarkers.size();i++)
+    for(unsigned int i=0;i<oldMarkers.size();i++)
     {
         QwtPlotMarker* marker = oldMarkers[i];
         if(marker != NULL)

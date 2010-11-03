@@ -53,12 +53,12 @@ PlotWidget::PlotWidget(QWidget* parent) : QWidget(parent),
 
 PlotWidget::~PlotWidget()
 {
-    for(int i=0;i<markers.size();i++)
+    for(unsigned int i=0;i<markers.size();i++)
     {
         delete(markers[i]);
     }
     markers.clear();
-    for(int i=0;i<curves.size();i++)
+    for(unsigned int i=0;i<curves.size();i++)
     {
         delete(curves[i]);
     }
@@ -68,7 +68,7 @@ PlotWidget::~PlotWidget()
 void PlotWidget::clearBorderLines()
 {
     std::cout << markers.size() << std::endl;
-    for(int i=0;i<markers.size();i++)
+    for(unsigned int i=0;i<markers.size();i++)
     {
         QwtPlotMarker* marker = markers[i];
         if(marker != NULL)
@@ -85,7 +85,7 @@ void PlotWidget::clearBorderLines()
 
 void PlotWidget::clearCurves()
 {
-    for(int i=0;i<curves.size();i++)
+    for(unsigned int i=0;i<curves.size();i++)
     {
         QwtPlotCurve* curve = curves[i];
         if(curve != NULL)
@@ -162,7 +162,7 @@ void PlotWidget::importFromCSV()
     std::vector< std::vector<double> > points = CSVImporter::getDoubleArrayFromFile(filename.toStdString(), dataManager->getCSVDelimter());
     QList<double> xPoints;
     QList<double> yPoints;
-    for(int i=0;i<points.size();i++)
+    for(unsigned int i=0;i<points.size();i++)
     {
         std::vector<double> linePoints = points[i];
         if(linePoints.size() > 1)
@@ -234,7 +234,7 @@ void PlotWidget::optionsChanged()
     plot.setCanvasBackground(dataManager->getBGColor());
     setAxisTitles(dataManager->getXAxisTitle(), dataManager->getYAxisTitle());
     std::vector<QwtPlotMarker*> newMarkers = optionsDialog.getNewMarkers();
-    for(int i=0;i<newMarkers.size();i++)
+    for(unsigned int i=0;i<newMarkers.size();i++)
     {
         QwtPlotMarker* marker = newMarkers[i];
         if(marker != NULL)
@@ -491,7 +491,7 @@ void PlotWidget::setAutoscrolling(bool enable)
 int PlotWidget::addData(QList<double> xPoints, QList<double> yPoints, int dataId,
         int xAxisId, int yAxisId)
 {
-  addData(xPoints.toVector().data(), yPoints.toVector().data(), xPoints.size(), dataId, xAxisId, yAxisId);
+  return addData(xPoints.toVector().data(), yPoints.toVector().data(), xPoints.size(), dataId, xAxisId, yAxisId);
 }
 
 int PlotWidget::addData(double xPoint, double yPoint, int dataId,
@@ -502,7 +502,7 @@ int PlotWidget::addData(double xPoint, double yPoint, int dataId,
   double yPoints[1];
   xPoints[0] = xPoint;
   yPoints[0] = yPoint;
-  addData(xPoints, yPoints, 1, dataId, xAxisId, yAxisId);
+  return addData(xPoints, yPoints, 1, dataId, xAxisId, yAxisId);
 }
 
 int PlotWidget::addData(double* xPoints, double* yPoints, int length, int dataId,
@@ -576,6 +576,8 @@ int PlotWidget::addData(double* xPoints, double* yPoints, int length, int dataId
     {
         setAxisBoundaries(QwtPlot::yLeft, minYLeft, maxYLeft*1.05);
         setAxisBoundaries(QwtPlot::xBottom, minXBottom, maxXBottom*1.05);
+        // TODO: set x and y spans here
+        
     }
     setZoomBase();
     return dataId;

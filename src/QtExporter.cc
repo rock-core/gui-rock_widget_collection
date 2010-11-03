@@ -9,7 +9,7 @@
 
 void QtExporter::exportWidgetAsImage(QString filename, QWidget* widget, const char* format)
 {
-    if(format == "PDF")
+    if(strcmp(format, "PDF") == 0)
     {
         QPrinter printer(QPrinter::ScreenResolution);
         printer.setOutputFileName(filename.toStdString().c_str());
@@ -17,7 +17,7 @@ void QtExporter::exportWidgetAsImage(QString filename, QWidget* widget, const ch
         printer.setOrientation(QPrinter::Landscape);
         widget->render(&printer);
     }
-    else if(format == "SVG")
+    else if(strcmp(format,"SVG") == 0)
     {
         QSvgGenerator generator;
         generator.setFileName(filename);

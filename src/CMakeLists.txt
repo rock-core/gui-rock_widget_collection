@@ -12,6 +12,8 @@ QT4_WRAP_CPP(plotting_widget_MOC_SRCS ${plotting_widget_MOC_HDRS})
 file(GLOB plotting_widget_SOURCES *.cc)
 #file(GLOB image_view_widget_SOURCES main.cc)
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2 -Wall")
+
 
 # Create an executable file called helloworld from sources:
 add_library(${PROJECT_NAME} SHARED ${plotting_widget_SOURCES} ${plotting_widget_MOC_SRCS})

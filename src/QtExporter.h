@@ -63,6 +63,7 @@ public:
      * @param widget the widget to export
      */
     static void exportWidgetAsImagWithDialog(QWidget* widget);
+    
 
 };
 

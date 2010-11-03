@@ -20,7 +20,7 @@ void CurveSelectionDialog::initializeLayout(std::vector<QwtPlotCurve*> curves)
 {
     int count = 0;
     listWidget.clear();
-    for(int i=0;i<curves.size();i++)
+    for(unsigned int i=0;i<curves.size();i++)
     {
         QwtPlotCurve* curve = curves[i];
         if(curve != NULL)
