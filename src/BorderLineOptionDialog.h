@@ -9,7 +9,7 @@
 #include <QtGui/QPushButton>
 #include <QtGui/QScrollArea>
 
-#include <qwt-qt4/qwt_plot_marker.h>
+#include <qwt_plot_marker.h>
 
 #include "ColorPickerButton.h"
 

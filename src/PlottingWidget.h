@@ -1,9 +1,9 @@
 #ifndef PLOTTINGWIDGET_H
 #define	PLOTTINGWIDGET_H
 
-#include <qwt-qt4/qwt_plot.h>
+#include <qwt_plot.h>
 #include <QtGui/QWheelEvent>
-#include <qwt-qt4/qwt_scale_div.h>
+#include <qwt_scale_div.h>
 #include <iostream>
 
 /**

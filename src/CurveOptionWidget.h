@@ -9,7 +9,7 @@
 #include <QtGui/QFrame>
 #include <QtGui/QScrollArea>
 
-#include <qwt-qt4/qwt_plot_curve.h>
+#include <qwt_plot_curve.h>
 
 #include "ColorPickerButton.h"
 

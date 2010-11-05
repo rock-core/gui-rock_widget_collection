@@ -1,7 +1,7 @@
 #ifndef CSVEXPORTER_H
 #define CSVEXPORTER_H
 
-#include <qwt-qt4/qwt_plot_curve.h>
+#include <qwt_plot_curve.h>
 #include <fstream>
 #include <iostream>
 #include <string>

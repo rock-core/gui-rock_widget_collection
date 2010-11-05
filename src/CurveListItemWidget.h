@@ -10,7 +10,7 @@
 
 #include <QtGui/QListWidgetItem>
 
-#include <qwt-qt4/qwt_plot_curve.h>
+#include <qwt_plot_curve.h>
 
 /**
  * Class which extends QListWidget item, to make it easier to select curves

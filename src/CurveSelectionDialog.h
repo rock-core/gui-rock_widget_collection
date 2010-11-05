@@ -16,7 +16,7 @@
 
 #include <iostream>
 
-#include <qwt-qt4/qwt_plot_curve.h>
+#include <qwt_plot_curve.h>
 
 #include "CurveListItemWidget.h"
 
