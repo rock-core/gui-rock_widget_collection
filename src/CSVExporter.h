@@ -5,7 +5,7 @@
 #include <fstream>
 #include <iostream>
 #include <string>
-#include <QtGui/QFileDialog>
+#include <QFileDialog>
 
 /**
  * Class which contains static methods to export data to a csv file.

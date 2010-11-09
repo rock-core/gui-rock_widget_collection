@@ -1,17 +1,17 @@
 #ifndef QTEXPORTER_H
 #define	QTEXPORTER_H
 
-#include <Qt/qstring.h>
-#include <QtGui/QWidget>
-#include <QtGui/QPixmap>
-#include <QtSvg/QSvgGenerator>
-#include <QtGui/QPainter>
-#include <QtGui/QPaintEngine>
-#include <QtGui/QPaintEvent>
-#include <QtGui/QPrintDialog>
-#include <Qt/qapplication.h>
-#include <QtGui/QFileDialog>
-#include <Qt/qprinter.h>
+#include <qstring.h>
+#include <QWidget>
+#include <QPixmap>
+#include <QSvgGenerator>
+#include <QPainter>
+#include <QPaintEngine>
+#include <QPaintEvent>
+#include <QPrintDialog>
+#include <qapplication.h>
+#include <QFileDialog>
+#include <qprinter.h>
 
 #include <iostream>
 

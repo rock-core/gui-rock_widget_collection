@@ -8,12 +8,12 @@
 #ifndef GENERALOPTIONSWIDGET_H
 #define	GENERALOPTIONSWIDGET_H
 
-#include <QtGui/QWidget>
-#include <QtGui/QLineEdit>
-#include <QtGui/QLabel>
-#include <QtGui/QFormLayout>
-#include <QtGui/QCheckBox>
-#include <QtGui/QComboBox>
+#include <QWidget>
+#include <QLineEdit>
+#include <QLabel>
+#include <QFormLayout>
+#include <QCheckBox>
+#include <QComboBox>
 
 #include "ColorPickerButton.h"
 

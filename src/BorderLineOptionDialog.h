@@ -1,13 +1,14 @@
 #ifndef BORDERLINEOPTIONDIALOG_H
 #define	BORDERLINEOPTIONDIALOG_H
 
-#include <QtGui/QWidget>
-#include <QtGui/QLabel>
-#include <QtGui/QGridLayout>
-#include <QtGui/QDoubleSpinBox>
-#include <QtGui/QComboBox>
-#include <QtGui/QPushButton>
-#include <QtGui/QScrollArea>
+
+#include <QWidget>
+#include <QLabel>
+#include <QGridLayout>
+#include <QDoubleSpinBox>
+#include <QComboBox>
+#include <QPushButton>
+#include <QScrollArea>
 
 #include <qwt_plot_marker.h>
 

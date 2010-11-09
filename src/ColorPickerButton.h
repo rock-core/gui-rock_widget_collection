@@ -1,10 +1,10 @@
 #ifndef COLORPICKERBUTTON_H
 #define COLORPICKERBUTTON_H
 
-#include <QtGui/QPushButton>
-#include <QtGui/QPainter>
-#include <QtGui/QPaintEvent>
-#include <QtGui/QColorDialog>
+#include <QPushButton>
+#include <QPainter>
+#include <QPaintEvent>
+#include <QColorDialog>
 
 #include <iostream>
 

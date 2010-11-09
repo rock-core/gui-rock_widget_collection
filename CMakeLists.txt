@@ -46,13 +46,17 @@ link_directories(${QWT_LIBRARY_DIRS})
 ### Uncomment if you want to use Qt
 
 #set(QT_SEARCH_PATH /opt)
-find_package(Qt4 REQUIRED QtCore QtGui)
+find_package(Qt4 REQUIRED QtCore QtGui, QtSvg)
 
 # Definitions to use when compiling code that uses Qt
 add_definitions(${QT_DEFINITIONS})
 
 # Set your desired Qt-Version here
-include_directories(${QT_INCLUDE_DIR})
+include_directories(${QT_INCLUDE_DIR}
+	${QT_QT_INCLUDE_DIR}
+	${QT_QTCORE_INCLUDE_DIR}
+	${QT_QTGUI_INCLUDE_DIR}
+        ${QT_QTSVG_INCLUDE_DIR})
 
 # Path to a Cmake file that can be included to compile Qt4 applications and libraries
 include(${QT_USE_FILE})

@@ -1,13 +1,13 @@
 #ifndef CURVEOPTIONWIDGET_H
 #define	CURVEOPTIONWIDGET_H
 
-#include <QtGui/QWidget>
-#include <QtGui/QGridLayout>
-#include <QtGui/QLabel>
-#include <QtGui/QComboBox>
-#include <QtGui/QSpinBox>
-#include <QtGui/QFrame>
-#include <QtGui/QScrollArea>
+#include <QWidget>
+#include <QGridLayout>
+#include <QLabel>
+#include <QComboBox>
+#include <QSpinBox>
+#include <QFrame>
+#include <QScrollArea>
 
 #include <qwt_plot_curve.h>
 

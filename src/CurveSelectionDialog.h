@@ -8,11 +8,11 @@
 #ifndef CURVESELECTIONDIALOG_H
 #define	CURVESELECTIONDIALOG_H
 
-#include <QtGui/QDialog>
-#include <QtGui/QListWidget>
-#include <QtGui/QGridLayout>
-#include <QtGui/QPushButton>
-#include <QtGui/QCheckBox>
+#include <QDialog>
+#include <QListWidget>
+#include <QGridLayout>
+#include <QPushButton>
+#include <QCheckBox>
 
 #include <iostream>
 

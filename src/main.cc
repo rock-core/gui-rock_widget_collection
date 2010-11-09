@@ -5,10 +5,10 @@
  * Created on 4. August 2010, 14:15
  */
 
-#include <QtGui/QApplication>
+#include <QApplication>
 #include <qwt_plot.h>
 #include <qwt_plot_curve.h>
-#include <QtGui/QPen>
+#include <QPen>
 #include <time.h>
 #include <iostream>
 #include <qwt_plot_grid.h>

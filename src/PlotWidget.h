@@ -16,13 +16,14 @@
 #include "CSVImporter.h"
 #include "CurveSelectionDialog.h"
 
-#include <QtGui/QResizeEvent>
-#include <QtGui/QPushButton>
-#include <Qt/qtimer.h>
-#include <Qt/qlist.h>
-#include <QtGui/QGridLayout>
-#include <QtGui/QMenuBar>
-#include <QtGui/QStyleOptionMenuItem>
+#include <QResizeEvent>
+#include <QPushButton>
+#include <qtimer.h>
+#include <qlist.h>
+#include <QGridLayout>
+#include <QMenuBar>
+#include <QStyleOptionMenuItem>
+
 
 #include <qwt_slider.h>
 #include <qwt_plot.h>
@@ -30,6 +31,7 @@
 #include <qwt_plot_marker.h>
 #include <qwt_plot_curve.h>
 #include <qwt_plot_grid.h>
+#include <qwt_legend.h>
 
 #include <iostream>
 #include <vector>

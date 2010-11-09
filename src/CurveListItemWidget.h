@@ -8,7 +8,7 @@
 #ifndef CURVELISTITEMWIDGET_H
 #define	CURVELISTITEMWIDGET_H
 
-#include <QtGui/QListWidgetItem>
+#include <QListWidgetItem>
 
 #include <qwt_plot_curve.h>
 

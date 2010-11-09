@@ -2,7 +2,7 @@
 #define	PLOTTINGWIDGET_H
 
 #include <qwt_plot.h>
-#include <QtGui/QWheelEvent>
+#include <QWheelEvent>
 #include <qwt_scale_div.h>
 #include <iostream>
 

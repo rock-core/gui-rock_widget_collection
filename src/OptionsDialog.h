@@ -2,11 +2,11 @@
 #ifndef OPTIONSDIALOG_H
 #define OPTIONSDIALOG_H
 
-#include <QtGui/QDialog>
-#include <QtGui/QPushButton>
-#include <QtGui/QGridLayout>
-#include <QtGui/QLineEdit>
-#include <QtGui/QTabWidget>
+#include <QDialog>
+#include <QPushButton>
+#include <QGridLayout>
+#include <QLineEdit>
+#include <QTabWidget>
 
 #include <qwt_plot_curve.h>
 #include <qwt_plot_marker.h>

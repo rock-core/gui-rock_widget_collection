@@ -9,7 +9,7 @@
 #define	DATAMANAGER_H
 
 #include <stddef.h>
-#include <qt4/Qt/qcolor.h>
+#include <qcolor.h>
 
 /**
  * Singleton class which contains various settings needed throughout the widget.
