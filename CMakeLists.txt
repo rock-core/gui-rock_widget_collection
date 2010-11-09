@@ -10,6 +10,11 @@ set(PROJECT_DESCRIPTION "Widget for plotting graphs")
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake")
 include(CommonSetup)
 
+set (CMAKE_MODULE_PATH
+	${CMAKE_MODULE_PATH}
+	${CMAKE_HOME_DIRECTORY}
+)
+
 # Include headers within source
 # If you create subdirectories within source include headers with subdirectory, i.e. 
 # #include "subdirectory/myheader.h"
@@ -28,6 +33,12 @@ link_directories(${VWRITER_LIBDIR})
 pkg_check_modules(OPENCV REQUIRED "opencv")
 include_directories(${OPENCV_INCLUDE_DIRS})
 link_directories(${OPENCV_LIBDIR})
+
+#Need qwt as include
+find_package(QWT REQUIRED)
+include_directories(${QWT_INCLUDE_DIRS})
+link_directories(${QWT_LIBRARY_DIRS})
+
 
 # command line output on, you can also use make VERBOSE=1
 # set(CMAKE_VERBOSE_MAKEFILE on)

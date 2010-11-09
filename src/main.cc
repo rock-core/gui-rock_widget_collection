@@ -6,12 +6,12 @@
  */
 
 #include <QtGui/QApplication>
-#include <qwt-qt4/qwt_plot.h>
-#include <qwt-qt4/qwt_plot_curve.h>
+#include <qwt_plot.h>
+#include <qwt_plot_curve.h>
 #include <QtGui/QPen>
 #include <time.h>
 #include <iostream>
-#include <qwt-qt4/qwt_plot_grid.h>
+#include <qwt_plot_grid.h>
 #include "PlottingWidget.h"
 #include "CSVImporter.h"
 #include "PlotWidget.h"

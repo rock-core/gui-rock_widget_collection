@@ -8,8 +8,8 @@
 #include <QtGui/QLineEdit>
 #include <QtGui/QTabWidget>
 
-#include <qwt-qt4/qwt_plot_curve.h>
-#include <qwt-qt4/qwt_plot_marker.h>
+#include <qwt_plot_curve.h>
+#include <qwt_plot_marker.h>
 
 #include "DataManager.h"
 #include "GeneralOptionsWidget.h"

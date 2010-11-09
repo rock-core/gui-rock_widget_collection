@@ -24,13 +24,12 @@
 #include <QtGui/QMenuBar>
 #include <QtGui/QStyleOptionMenuItem>
 
-#include <qwt-qt4/qwt_slider.h>
-#include <qwt-qt4/qwt_plot.h>
-#include <qwt-qt4/qwt_plot_zoomer.h>
-#include <qwt-qt4/qwt_plot_marker.h>
-#include <qwt-qt4/qwt_plot_curve.h>
-#include <qwt-qt4/qwt_plot_grid.h>
-#include <qwt-qt4/qwt_legend.h>
+#include <qwt_slider.h>
+#include <qwt_plot.h>
+#include <qwt_plot_zoomer.h>
+#include <qwt_plot_marker.h>
+#include <qwt_plot_curve.h>
+#include <qwt_plot_grid.h>
 
 #include <iostream>
 #include <vector>
