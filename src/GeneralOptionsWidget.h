@@ -12,6 +12,8 @@
 #include <QtGui/QLineEdit>
 #include <QtGui/QLabel>
 #include <QtGui/QFormLayout>
+#include <QtGui/QCheckBox>
+#include <QtGui/QComboBox>
 
 #include "ColorPickerButton.h"
 
@@ -94,6 +96,10 @@ protected:
     QLabel yAxisText;
     /** LAbel for the delimiter*/
     QLabel csvDelimiter;
+    /** CheckBox whether legends shall be displayed*/
+    QCheckBox legendCheckBox;
+    /** ComboBox, where the legend shall be displayed*/
+    QComboBox legendBox;
 
 private:
 

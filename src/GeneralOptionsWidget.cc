@@ -12,8 +12,15 @@ GeneralOptionsWidget::GeneralOptionsWidget() :
     bgButton(QColor(0, 0, 0)), layout(this), bgLabel(tr("Background color")),
         xAxisText(tr("X Title")),
         yAxisText(tr("Y Title")),
-        csvDelimiter(tr("CSV Delimiter"))
+        csvDelimiter(tr("CSV Delimiter")),
+        legendCheckBox(tr("Draw Legend"))
 {
+    legendBox.addItem("Left", QVariant(0));
+    legendBox.addItem("Right", QVariant(1));
+    legendBox.addItem("Bottom", QVariant(2));
+    legendBox.addItem("Top", QVariant(3));
+    legendBox.setEnabled(false);
+    connect(&legendCheckBox, SIGNAL(clicked(bool)), &legendBox, SLOT(setEnabled(bool)));
 }
 
 
@@ -30,6 +37,7 @@ void GeneralOptionsWidget::initializeLayout()
     layout.addRow(&yAxisText, &yAxisTextEdit);
     layout.addRow(&bgLabel, &bgButton);
     layout.addRow(&csvDelimiter, &csvDelimiterEdit);
+    layout.addRow(&legendCheckBox, &legendBox);
     setLayout(&layout);
 }
 

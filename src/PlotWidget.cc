@@ -33,8 +33,8 @@ PlotWidget::PlotWidget(QWidget* parent) : QWidget(parent),
     this->setLayout(&layout);
     dataManager = DataManager::getInstance();
     addMenu();
-    this->enableSlider(QwtPlot::xBottom, dataManager->isShowBottomSlider());
-    this->enableSlider(QwtPlot::yLeft, dataManager->isShowLeftSlider());
+    this->enableSlider(X_BOTTOM, dataManager->isShowBottomSlider());
+    this->enableSlider(Y_LEFT, dataManager->isShowLeftSlider());
     this->setDrawGrid(true, dataManager->isDrawXGrid(), dataManager->isDrawYGrid());
     dataManager->setBGColor(plot.canvasBackground());
     minXBottom = INT_MAX;
@@ -49,6 +49,10 @@ PlotWidget::PlotWidget(QWidget* parent) : QWidget(parent),
     QObject::connect(&zoomer, SIGNAL(zoomed(const QwtDoubleRect&)), this, SLOT(zoomed(const QwtDoubleRect&)));
     QObject::connect(&plot, SIGNAL(mouseZoomed(const QwtDoubleRect&)), this, SLOT(zoomed(const QwtDoubleRect&)));
     QObject::connect(&optionsDialog, SIGNAL(accepted()), this, SLOT(optionsChanged()));
+    zoomer.setTrackerMode(QwtPlotZoomer::AlwaysOn);
+    legend.setItemMode(QwtLegend::CheckableItem);
+    plot.insertLegend(&legend, QwtPlot::RightLegend);
+
 }
 
 PlotWidget::~PlotWidget()
@@ -167,6 +171,7 @@ void PlotWidget::importFromCSV()
         std::vector<double> linePoints = points[i];
         if(linePoints.size() > 1)
         {
+            std::cout << linePoints[0] << "|" << linePoints[1] << std::endl;
             xPoints.append(linePoints[0]);
             yPoints.append(linePoints[1]);
         }
@@ -216,8 +221,8 @@ void PlotWidget::curvesSelected()
 
 void PlotWidget::fitPlotToGraph()
 {
-  setAxisAutoScale(QwtPlot::xBottom, true);
-  setAxisAutoScale(QwtPlot::yLeft, true);
+  setAxisAutoScale(X_BOTTOM, true);
+  setAxisAutoScale(Y_LEFT, true);
   plot.replot();
 }
 
@@ -256,7 +261,10 @@ QwtPlot::Axis PlotWidget::getAxisForInt(int axis)
     case Y_LEFT:
       return QwtPlot::yLeft;
     case X_TOP:
-      return QwtPlot::xTop;
+    {
+        std::cout << "TOP" << std::endl;
+        return QwtPlot::xTop;
+    }
     case Y_RIGHT:
       return QwtPlot::yRight;
     }
@@ -491,6 +499,7 @@ void PlotWidget::setAutoscrolling(bool enable)
 int PlotWidget::addData(QList<double> xPoints, QList<double> yPoints, int dataId,
         int xAxisId, int yAxisId)
 {
+    std::cout << xAxisId << "|" << yAxisId << std::endl;
   return addData(xPoints.toVector().data(), yPoints.toVector().data(), xPoints.size(), dataId, xAxisId, yAxisId);
 }
 
@@ -510,6 +519,7 @@ int PlotWidget::addData(double* xPoints, double* yPoints, int length, int dataId
 {
   QwtPlot::Axis xAxis = getAxisForInt(xAxisId);
   QwtPlot::Axis yAxis = getAxisForInt(yAxisId);
+  std::cout << xAxisId << "|" << yAxisId << std::endl;
     // new data
     if(dataId < 0 || curves[dataId] == NULL)
     {
@@ -574,8 +584,8 @@ int PlotWidget::addData(double* xPoints, double* yPoints, int length, int dataId
     setSliderValues();
     if(autoScale)
     {
-        setAxisBoundaries(QwtPlot::yLeft, minYLeft, maxYLeft*1.05);
-        setAxisBoundaries(QwtPlot::xBottom, minXBottom, maxXBottom*1.05);
+        setAxisBoundaries(Y_LEFT, minYLeft, maxYLeft*1.05);
+        setAxisBoundaries(X_BOTTOM, minXBottom, maxXBottom*1.05);
         // TODO: set x and y spans here
         
     }

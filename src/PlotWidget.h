@@ -30,6 +30,7 @@
 #include <qwt-qt4/qwt_plot_marker.h>
 #include <qwt-qt4/qwt_plot_curve.h>
 #include <qwt-qt4/qwt_plot_grid.h>
+#include <qwt-qt4/qwt_legend.h>
 
 #include <iostream>
 #include <vector>
@@ -526,6 +527,8 @@ protected:
     DataManager* dataManager;
     /** Dialog to select which curves shall be exported*/
     CurveSelectionDialog curveSelectionDialog;
+
+    QwtLegend legend;
 };
 
 #endif	/* PLOTWIDGET_H */

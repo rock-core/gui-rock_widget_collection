@@ -43,6 +43,7 @@ WidgetFactory::extend_cplusplus_widget do
     setAxisBoundaries(0, @options[:x_min], @options[:x_max])
     setAxisBoundaries(1, @options[:y_min], @options[:y_max])
     setAutoscrolling(@options[:autoscrolling])
+    port = @options[:port]
     setDataStyle(@id,@options[:pen]) if @options.has_key?(:pen)
     #saving plot settings
     @plots << {:x => @options[:x],:y => @options[:y],:id => @id}
