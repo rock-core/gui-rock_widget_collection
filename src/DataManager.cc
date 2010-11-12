@@ -28,6 +28,8 @@ DataManager::DataManager()
     showLeftSlider = false;
     drawXGrid = true;
     drawYGrid = true;
+    drawLegend = false;
+    legendPosition = 0;
 }
 
 DataManager::~DataManager()

@@ -5,6 +5,9 @@
  * Created on 21. Oktober 2010, 10:37
  */
 
+#include <qwt-qt4/qwt_plot_item.h>
+#include <QtGui/qlineedit.h>
+
 #include "CurveOptionWidget.h"
 
 CurveOptionWidget::CurveOptionWidget()
@@ -41,6 +44,16 @@ CurveOptionWidget::~CurveOptionWidget()
         }
     }
     spinBoxes.clear();
+    for(unsigned int i=0;i<nameEdits.size();i++)
+    {
+        QLineEdit* nameEdit = nameEdits[i];
+        if(nameEdit != NULL)
+        {
+            delete(nameEdit);
+        }
+    }
+    nameEdits.clear();
+
 }
 
 void CurveOptionWidget::updateExistingCurves()
@@ -54,6 +67,7 @@ void CurveOptionWidget::updateExistingCurves()
             pen.setColor(buttons[i]->getDisplayColor());
             pen.setWidth(spinBoxes[i]->value());
             curve->setPen(pen);
+            curve->setTitle(nameEdits[i]->text());
             QwtPlotCurve::CurveStyle style = (QwtPlotCurve::CurveStyle)boxes[i]->currentIndex();
             curve->setStyle(style);
         }
@@ -68,6 +82,7 @@ void CurveOptionWidget::initializeLayout(std::vector<QwtPlotCurve*> curves)
     buttons.resize(curves.size());
     boxes.resize(curves.size());
     spinBoxes.resize(curves.size());
+    nameEdits.resize(curves.size());
     layout.setAlignment(Qt::AlignTop);
     baseLayout->setSizeConstraint(QLayout::SetMinAndMaxSize);
     for(unsigned int i=0;i<curves.size();i++)
@@ -79,7 +94,8 @@ void CurveOptionWidget::initializeLayout(std::vector<QwtPlotCurve*> curves)
         QwtPlotCurve* curve = curves[i];
         if(curve != NULL)
         {
-            QLabel* label = new QLabel(QString::number(i));
+            QLineEdit* name = new QLineEdit(curve->title().text());
+            nameEdits[i] = name;
             QPen pen = curve->pen();
             
             ColorPickerButton* button = new ColorPickerButton(pen.color());
@@ -99,7 +115,7 @@ void CurveOptionWidget::initializeLayout(std::vector<QwtPlotCurve*> curves)
             boxes[i] = combo;
 
             outerGridLayout->setAlignment(Qt::AlignTop);
-            outerGridLayout->addWidget(label, i, 0, 1, 1);
+            outerGridLayout->addWidget(name, i, 0, 1, 1);
             outerGridLayout->addWidget(spinBox, i, 1, 1, 1);
             outerGridLayout->addWidget(combo, i, 2, 1, 1);
             outerGridLayout->addWidget(button, i, 3, 1, 1);

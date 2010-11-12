@@ -9,6 +9,9 @@
 #include <QComboBox>
 #include <QPushButton>
 #include <QScrollArea>
+#include <QIcon>
+#include <QCheckBox>
+#include <QMessageBox>
 
 #include <qwt_plot_marker.h>
 
@@ -35,8 +38,6 @@
  * <h1>Known Issues</h1>
  *
  * <h1>To-Do</h1>
- * Add possibility to remove a borderline, be it an existing one or
- * a newly created one.
  *
  * @author Bjoern Lueck <blueck@dfki.de>
  * @version 0.1
@@ -71,6 +72,12 @@ public:
     std::vector<QwtPlotMarker*> getNewMarkers();
 
     /**
+     * Returns a vector of amrkers which shall be deleted
+     * @return vector conatining all markers that shall be deleted
+     */
+    std::vector<QwtPlotMarker*> getDeletedMarkers();
+
+    /**
      * Updates the existing markers with the values changed withn the dialog
      */
     void updateExistingMarkers();
@@ -82,6 +89,11 @@ public slots:
      * @see#getNewMarkers()
      */
     void addMarker();
+
+    /**
+     * Called when the link on the close label is activated
+     */
+    void linkActivated();
 
 protected:
     /**
@@ -106,6 +118,14 @@ protected:
     std::vector<QComboBox*> styleBoxes;
     /** SpinBoxes to cahnge the markers width*/
     std::vector<QSpinBox*> weightBoxes;
+    /** All exit Labels*/
+    std::vector<QLabel*> exitLabels;
+    /** Contains whether a Marker was deleted*/
+    std::vector<bool> markerDeleted;
+    /** Vector with all checkboxes to simply hide the Border Line*/
+    std::vector<QCheckBox*> hiddenBoxes;
+    /** All Frames*/
+    std::vector<QFrame*> frames;
 
     /** Vector containing newly created Markers*/
     std::vector<QwtPlotMarker*> newMarkers;

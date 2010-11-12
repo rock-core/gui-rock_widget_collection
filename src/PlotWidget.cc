@@ -6,7 +6,6 @@
  */
 
 #include "PlotWidget.h"
-#include "CurveSelectionDialog.h"
 #include <QtPlugin>
 
 Q_EXPORT_PLUGIN2(PlotWidget,PlotWidget)
@@ -51,8 +50,6 @@ PlotWidget::PlotWidget(QWidget* parent) : QWidget(parent),
     QObject::connect(&optionsDialog, SIGNAL(accepted()), this, SLOT(optionsChanged()));
     zoomer.setTrackerMode(QwtPlotZoomer::AlwaysOn);
     legend.setItemMode(QwtLegend::CheckableItem);
-    plot.insertLegend(&legend, QwtPlot::RightLegend);
-
 }
 
 PlotWidget::~PlotWidget()
@@ -236,8 +233,24 @@ void PlotWidget::showOptionsDialog()
 
 void PlotWidget::optionsChanged()
 {
+    std::cout << "Changed" << std::endl;
     plot.setCanvasBackground(dataManager->getBGColor());
     setAxisTitles(dataManager->getXAxisTitle(), dataManager->getYAxisTitle());
+    std::vector<QwtPlotMarker*> toDelete = optionsDialog.getDeletedMarkers();
+    std::cout << toDelete.size() << std::endl;
+    for(unsigned int i=0;i<toDelete.size();i++)
+    {
+        QwtPlotMarker* deleteMarker = toDelete[i];
+        for(unsigned int j=0;j<markers.size();j++)
+        {
+            if(deleteMarker == markers[j])
+            {
+                markers[j]->detach();
+                delete(markers[i]);
+                markers[i] = NULL;
+            }
+        }
+    }
     std::vector<QwtPlotMarker*> newMarkers = optionsDialog.getNewMarkers();
     for(unsigned int i=0;i<newMarkers.size();i++)
     {
@@ -248,6 +261,25 @@ void PlotWidget::optionsChanged()
             markers[plotMarkerId] = marker;
             plotMarkerId++;
         }
+    }
+    if(dataManager->isDrawLegend())
+    {
+        QList<QWidget*> legendItems = legend.legendItems();
+        for(int i=0;i<legendItems.size();i++)
+        {
+            legendItems[i]->setVisible(true);
+        }
+        legend.setVisible(true);
+        plot.insertLegend(&legend, (QwtPlot::LegendPosition)dataManager->getLegendPosition());
+    }
+    else
+    {
+        QList<QWidget*> legendItems = legend.legendItems();
+        for(int i=0;i<legendItems.size();i++)
+        {
+            legendItems[i]->setVisible(false);
+        }
+        legend.setVisible(false);
     }
     plot.replot();
 }
@@ -590,7 +622,19 @@ int PlotWidget::addData(double* xPoints, double* yPoints, int length, int dataId
         
     }
     setZoomBase();
+    connect(&plot, SIGNAL(legendChecked(QwtPlotItem *, bool)), this, SLOT(showCurve(QwtPlotItem *, bool)));
     return dataId;
+}
+
+void PlotWidget::showCurve(QwtPlotItem* item, bool checked)
+{
+    item->setVisible(!checked);
+    QWidget *w = plot.legend()->find(item);
+    if ( w && w->inherits("QwtLegendItem") )
+    {
+         ((QwtLegendItem*)w)->setChecked(checked);
+    }
+    plot.replot();
 }
 
 void PlotWidget::setMinMaxPoints(double xPoint, double yPoint)

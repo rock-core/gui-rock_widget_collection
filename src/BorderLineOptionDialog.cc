@@ -5,6 +5,14 @@
  * Created on 19. Oktober 2010, 14:36
  */
 
+#include <QtCore/qnamespace.h>
+#include <QtGui/qwidget.h>
+#include <QtGui/qlabel.h>
+#include <QtGui/qpushbutton.h>
+#include <qwt-qt4/qwt_plot_item.h>
+#include <qwt-qt4/qwt_plot_marker.h>
+#include <QtGui/qspinbox.h>
+
 #include "BorderLineOptionDialog.h"
 
 BorderLineOptionDialog::BorderLineOptionDialog() : QWidget(),
@@ -80,9 +88,57 @@ BorderLineOptionDialog::~BorderLineOptionDialog()
     oldMarkers.clear();
 }
 
+void BorderLineOptionDialog::linkActivated()
+{
+    QMessageBox msgBox;
+    msgBox.setText(tr("Do you really want to delete this border line?"));
+    msgBox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
+    msgBox.setDefaultButton(QMessageBox::Ok);
+    int ret = msgBox.exec();
+    if(ret == QMessageBox::Ok)
+    {
+        // hide the frame and mark it as deleted
+        QLabel* sender = (QLabel*)QObject::sender();
+        for(int i=0;i<oldMarkers.size();i++)
+        {
+            QwtPlotMarker* marker = oldMarkers[i];
+            if(marker != NULL)
+            {
+                if(sender == exitLabels[i])
+                {
+                    // remove
+                    std::cout << "Remove old" << std::endl;
+                    frames[i]->setVisible(false);
+                    markerDeleted[i] = true;
+                }
+            }
+        }
+        for(int i=0;i<newMarkers.size();i++)
+        {
+            QwtPlotMarker* marker = newMarkers[i+oldSize];
+            if(marker != NULL)
+            {
+                if(sender == exitLabels[i+oldSize])
+                {
+                    // remove
+                    std::cout << "Remove new" << std::endl;
+                    frames[i+oldSize]->setVisible(false);
+                    markerDeleted[i+oldSize] = true;
+                }
+            }
+        }
+    }
+}
+
 void BorderLineOptionDialog::addMarker()
 {
     QwtPlotMarker* marker = new QwtPlotMarker();
+    // set default values here
+    QPen pen = marker->linePen();
+    pen.setWidth(2);
+    pen.setStyle(Qt::DotLine);
+    marker->setLinePen(pen);
+    marker->setLineStyle(QwtPlotMarker::HLine);
     std::cout << "Push Back" << std::endl;
     newMarkers.push_back(marker);
     layout.removeWidget(&addButton);
@@ -92,6 +148,8 @@ void BorderLineOptionDialog::addMarker()
     ySpinBoxes.reserve(ySpinBoxes.size()+1);
     styleBoxes.reserve(styleBoxes.size()+1);
     weightBoxes.reserve(weightBoxes.size() +1);
+    exitLabels.reserve(exitLabels.size() + 1);
+    markerDeleted.resize(markerDeleted.size() + 1, false);
     addMarkerToLayout(marker, currentIndex);
     layout.addWidget(&addButton, yValue, 0, 5, 1);
     std::cout << "Done" << std::endl;
@@ -105,23 +163,50 @@ std::vector<QwtPlotMarker*> BorderLineOptionDialog::getNewMarkers()
         QwtPlotMarker* marker = newMarkers[i];
         if(marker != NULL)
         {
-            QColor color = buttons[i + oldSize]->getDisplayColor();
-            double xValue = xSpinBoxes[i + oldSize]->value();
-            double yValue = ySpinBoxes[i + oldSize]->value();
-            QwtPlotMarker::LineStyle style = (QwtPlotMarker::LineStyle)comboBoxes[i + oldSize]->currentIndex();
-            Qt::PenStyle penStyle = (Qt::PenStyle)styleBoxes[i + oldSize]->currentIndex();
-            QPen pen = marker->linePen();
-            pen.setStyle(penStyle);
-            pen.setColor(color);
-            pen.setWidth(weightBoxes[i + oldSize]->value());
-            marker->setLinePen(pen);
-            marker->setXValue(xValue);
-            marker->setYValue(yValue);
-            marker->setLineStyle(style);
+            bool deleted = markerDeleted[i + oldSize];
+            std::cout << "Deleted: " << deleted << std::endl;
+            if(!deleted)
+            {
+                QColor color = buttons[i + oldSize]->getDisplayColor();
+                double xValue = xSpinBoxes[i + oldSize]->value();
+                double yValue = ySpinBoxes[i + oldSize]->value();
+                QwtPlotMarker::LineStyle style = (QwtPlotMarker::LineStyle)comboBoxes[i + oldSize]->currentIndex();
+                Qt::PenStyle penStyle = (Qt::PenStyle)styleBoxes[i + oldSize]->currentIndex();
+                QPen pen = marker->linePen();
+                pen.setStyle(penStyle);
+                pen.setColor(color);
+                pen.setWidth(weightBoxes[i + oldSize]->value());
+                marker->setLinePen(pen);
+                marker->setXValue(xValue);
+                marker->setYValue(yValue);
+                marker->setLineStyle(style);
+                marker->setVisible(hiddenBoxes[i]->isChecked());
+            }
+            else
+            {
+                newMarkers[i] = NULL;
+            }
         }
     }
     std::cout << "Returning new Markers" << std::endl;
     return newMarkers;
+}
+
+std::vector<QwtPlotMarker*> BorderLineOptionDialog::getDeletedMarkers()
+{
+    std::vector<QwtPlotMarker*> toDelete;
+    for(unsigned int i=0;i<oldMarkers.size();i++)
+    {
+        QwtPlotMarker* marker = oldMarkers[i];
+        if(marker != NULL)
+        {
+            if(markerDeleted[i])
+            {
+                toDelete.push_back(oldMarkers[i]);
+            }
+        }
+    }
+    return toDelete;
 }
 
 void BorderLineOptionDialog::updateExistingMarkers()
@@ -147,6 +232,8 @@ void BorderLineOptionDialog::updateExistingMarkers()
             marker->setXValue(xValue);
             marker->setYValue(yValue);
             marker->setLineStyle(style);
+            marker->setVisible(hiddenBoxes[i]->isChecked());
+
         }
     }
     std::cout << "Update success" << std::endl;
@@ -173,12 +260,16 @@ void BorderLineOptionDialog::addMarkerToLayout(QwtPlotMarker* marker, int i)
 
     QDoubleSpinBox* ySpinBox = new QDoubleSpinBox();
     ySpinBox->setSingleStep(0.01);
+    ySpinBox->setDecimals(4);
+    ySpinBox->setMaximum(10000.00);
     ySpinBox->setValue(marker->value().y());
     ySpinBoxes[i] = ySpinBox;
 
     QDoubleSpinBox* xSpinBox = new QDoubleSpinBox();
     xSpinBox->setValue(marker->value().x());
     xSpinBox->setSingleStep(0.01);
+    xSpinBox->setDecimals(4);
+    xSpinBox->setMaximum(10000.00);
     xSpinBoxes[i] = xSpinBox;
 
     QComboBox* combo = new QComboBox();
@@ -201,19 +292,33 @@ void BorderLineOptionDialog::addMarkerToLayout(QwtPlotMarker* marker, int i)
     styleBox->setCurrentIndex(current);
     styleBoxes[i] = styleBox;
 
+    QCheckBox* hiddenBox = new QCheckBox();
+    hiddenBox->setChecked(marker->isVisible());
+    hiddenBoxes[i] = hiddenBox;
+
     topLevelLayout.setAlignment(Qt::AlignTop);
 
-    frameLayout->addWidget(label, yValue, 0, 2, 1);
-    frameLayout->addWidget(xSpinBox, yValue, 3, 1, 1);
-    frameLayout->addWidget(ySpinBox, yValue+1, 3, 1, 1);
-    frameLayout->addWidget(combo, yValue, 4, 1, 2);
-    frameLayout->addWidget(styleBox, yValue+1, 4, 1, 2);
-    frameLayout->addWidget(weightBox, yValue, 6, 1, 1);
-    frameLayout->addWidget(button, yValue+1, 6, 1, 1);
+    frameLayout->addWidget(label, yValue, 0, 1, 2);
+    frameLayout->addWidget(hiddenBox, yValue+1, 0, 1, 2);
+    frameLayout->addWidget(xSpinBox, yValue, 4, 1, 2);
+    frameLayout->addWidget(ySpinBox, yValue+1, 4, 1, 2);
+    frameLayout->addWidget(combo, yValue, 6, 1, 3);
+    frameLayout->addWidget(styleBox, yValue+1, 6, 1, 3);
+    frameLayout->addWidget(weightBox, yValue, 9, 1, 2);
+    frameLayout->addWidget(button, yValue+1, 9, 1, 2);
+    
 
+    // BEGIN TEST
+
+    QLabel* exitLabel = new QLabel(QString("<a href=\"1\"><img src=\"/home/blueck/temp/window-close.png\"></a>"));
+    exitLabel->setAlignment(Qt::AlignRight);
+    frameLayout->addWidget(exitLabel, yValue, 11, 1, 1);
+    exitLabels[i] = exitLabel;
+    connect(exitLabel, SIGNAL(linkActivated(const QString&)), this, SLOT(linkActivated()));
+    // END TEST
     frame->setLayout(frameLayout);
     topLevelLayout.addWidget(frame, yValue, 0, 1, 1);
-
+    frames[i] = frame;
     yValue += 2;
 
 }
@@ -229,6 +334,10 @@ void BorderLineOptionDialog::initializeLayout(std::vector<QwtPlotMarker*> marker
     ySpinBoxes.reserve(size);
     styleBoxes.reserve(size);
     weightBoxes.reserve(size);
+    exitLabels.reserve(size);
+    hiddenBoxes.reserve(size);
+    frames.reserve(size);
+    markerDeleted.resize(size, false);
     for(int i=0;i<size;i++)
     {
         QwtPlotMarker* marker = markers[i];

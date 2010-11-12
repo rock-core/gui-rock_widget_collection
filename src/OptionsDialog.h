@@ -48,6 +48,12 @@ class OptionsDialog : public QDialog
      * @return the new markers, if any
      */
     std::vector<QwtPlotMarker*> getNewMarkers();
+
+    /**
+     * Returns a vector of amrkers which shall be deleted
+     * @return vector conatining all markers that shall be deleted
+     */
+    std::vector<QwtPlotMarker*> getDeletedMarkers();
     
   public slots:
       /**

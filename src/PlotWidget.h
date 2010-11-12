@@ -32,6 +32,7 @@
 #include <qwt_plot_curve.h>
 #include <qwt_plot_grid.h>
 #include <qwt_legend.h>
+#include <qwt_legend_item.h>
 
 #include <iostream>
 #include <vector>
@@ -133,6 +134,8 @@ public:
     // --> Exporting functions
 
 public slots:
+
+    void showCurve(QwtPlotItem* item, bool checekd);
 
     /**
      * Returns an instance of teh PlotWidget

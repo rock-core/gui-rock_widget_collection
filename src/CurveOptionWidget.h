@@ -8,6 +8,7 @@
 #include <QSpinBox>
 #include <QFrame>
 #include <QScrollArea>
+#include <QLineEdit>
 
 #include <qwt_plot_curve.h>
 
@@ -40,7 +41,7 @@ public:
 
     /**
      * Initializes the widget with the given curves
-     * displaying thei properties
+     * displaying their properties
      * @param curves the curves to display
      */
     void initializeLayout(std::vector<QwtPlotCurve*> curves);
@@ -64,6 +65,8 @@ protected:
     std::vector<QSpinBox*> spinBoxes;
     /** Scroll Area if there are mor curves than are displayable*/
     QScrollArea scrollArea;
+    /** Edit Fields to change the name*/
+    std::vector<QLineEdit*> nameEdits;
 
 private:
 

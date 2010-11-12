@@ -5,6 +5,9 @@
  * Created on 19. Oktober 2010, 12:20
  */
 
+#include <QtGui/qwidget.h>
+#include <QtGui/qcombobox.h>
+
 #include "GeneralOptionsWidget.h"
 #include "DataManager.h"
 
@@ -19,7 +22,6 @@ GeneralOptionsWidget::GeneralOptionsWidget() :
     legendBox.addItem("Right", QVariant(1));
     legendBox.addItem("Bottom", QVariant(2));
     legendBox.addItem("Top", QVariant(3));
-    legendBox.setEnabled(false);
     connect(&legendCheckBox, SIGNAL(clicked(bool)), &legendBox, SLOT(setEnabled(bool)));
 }
 
@@ -33,6 +35,8 @@ void GeneralOptionsWidget::initializeLayout()
     layout.setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
     xAxisTextEdit.setText(dataManager->getXAxisTitle());
     yAxisTextEdit.setText(dataManager->getYAxisTitle());
+    legendBox.setCurrentIndex(dataManager->getLegendPosition());
+    legendCheckBox.setChecked(dataManager->isDrawLegend());
     layout.addRow(&xAxisText, &xAxisTextEdit);
     layout.addRow(&yAxisText, &yAxisTextEdit);
     layout.addRow(&bgLabel, &bgButton);

@@ -21,6 +21,8 @@
  * <h1>Known Issues</h1>
  *
  * <h1>To-Do</h1>
+ * The percentages of the button used with the display color
+ * are currently a "good guess". Should be configurable somehow
  *
  * @author Bjoern Lueck <blueck@dfki.de>
  * @version 0.1

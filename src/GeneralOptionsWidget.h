@@ -74,6 +74,9 @@ public:
      */
     char getCSVDelimiter();
 
+    bool isDrawLegend() { return legendCheckBox.isChecked(); };
+    int getLegendPosition() { return legendBox.currentIndex(); };
+
 protected:
 
 

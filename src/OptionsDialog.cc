@@ -22,6 +22,8 @@ void OptionsDialog::okPressed()
     dataManager->setXAxisTitle(generalWidget->getXAxisTitle());
     dataManager->setYAxisTitle(generalWidget->getYAxisTitle());
     dataManager->setCSVDelimiter(generalWidget->getCSVDelimiter());
+    dataManager->setDrawLegend(generalWidget->isDrawLegend());
+    dataManager->setLegendPosition(generalWidget->getLegendPosition());
     borderWidget->updateExistingMarkers();
     curveWidget->updateExistingCurves();
     setVisible(false);
@@ -36,6 +38,11 @@ void OptionsDialog::cancelPressed()
 std::vector<QwtPlotMarker*> OptionsDialog::getNewMarkers()
 {
     return borderWidget->getNewMarkers();
+}
+
+std::vector<QwtPlotMarker*> OptionsDialog::getDeletedMarkers()
+{
+    return borderWidget->getDeletedMarkers();
 }
 
 void OptionsDialog::initializeLayout(std::vector<QwtPlotCurve*> curves, std::vector<QwtPlotMarker*> markers)

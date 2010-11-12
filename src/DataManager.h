@@ -21,7 +21,7 @@
  *
  * <h1>To-Do</h1>
  * Add the ability to store all or most of those settings to a file (QSettings or
- * key-value pair or ...)
+ * key-value pair or XML or...)
  *
  * @author Bjoern Lueck <blueck@dfki.de>
  * @version 0.1
@@ -136,6 +136,30 @@ public:
      */
     void setYAxisTitle(QString newTitle) { yAxisTitle = newTitle; };
 
+    /**
+     * Sets if a legend shall be drawn
+     * @param drawLegend if a legend shall be drawn
+     */
+    void setDrawLegend(bool drawLegend) { this->drawLegend = drawLegend; };
+
+    /**
+     * Return swhether a legend shall be drawn
+     * @return whether a legend shall be drawn
+     */
+    bool isDrawLegend() { return drawLegend; };
+
+    /**
+     * Sets the legendposition
+     * @param legendPosition the legend position
+     */
+    void setLegendPosition(int legendPosition) { this->legendPosition = legendPosition; };
+
+    /**
+     * Returns the legend position
+     * @return the legend poistion
+     */
+    int getLegendPosition() { return legendPosition; };
+
 
 protected:
     /** The singleton instance */
@@ -156,6 +180,10 @@ protected:
     QString xAxisTitle;
     /** the title of the y axis*/
     QString yAxisTitle;
+    /** Whether to draw a legend or not*/
+    bool drawLegend;
+    /** The position of the legend if any*/
+    int legendPosition;
 
 private:
     /** private constructor*/
