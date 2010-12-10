@@ -116,7 +116,7 @@ bool PlotXMLWriter::writeContent()
         writeNode("type", "horizontal");
         writeNode("width", "3");
 
-        QColor lineColor = markers[i]->linePen().color()
+        QColor lineColor = markers[i]->linePen().color();
 
         startNode("linecolor");
         char temp[3];
