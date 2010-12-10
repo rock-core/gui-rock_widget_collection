@@ -22,22 +22,16 @@ set (CMAKE_MODULE_PATH
 include_directories(${PROJECT_SOURCE_DIR}/src)
 
 include(FindPkgConfig)
-pkg_check_modules(BASE "base-types" )
-include_directories(${BASE_INCLUDE_DIRS})
-link_directories(${BASE_LIBDIR})
 
-pkg_check_modules(VWRITER "video_writer" )
-include_directories(${VWRITER_INCLUDE_DIRS})
-link_directories(${VWRITER_LIBDIR})
-
-pkg_check_modules(OPENCV REQUIRED "opencv")
-include_directories(${OPENCV_INCLUDE_DIRS})
-link_directories(${OPENCV_LIBDIR})
 
 #Need qwt as include
 find_package(QWT REQUIRED)
 include_directories(${QWT_INCLUDE_DIRS})
 link_directories(${QWT_LIBRARY_DIRS})
+
+find_package(LIBXML2 REQUIRED)
+include_directories(${LIBXML2_INCLUDE_DIRS})
+link_directories(${LIBXML2_LIBRARY_DIRS})
 
 
 # command line output on, you can also use make VERBOSE=1
