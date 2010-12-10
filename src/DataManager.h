@@ -160,6 +160,18 @@ public:
      */
     int getLegendPosition() { return legendPosition; };
 
+    /**
+     * Sets whether autoscrolling is enabled
+     * @param autoscrolling whether autoscrolling is enabled
+     */
+    void setAutoscrolling(bool autoscrolling) { this->autoscrolling = autoscrolling; };
+
+    /**
+     * Return swhether autoscrolling is enabled
+     * @return whether autoscrolling is enabled
+     */
+    bool isAutoscrolling() { return autoscrolling; };
+
 
 protected:
     /** The singleton instance */
@@ -184,6 +196,8 @@ protected:
     bool drawLegend;
     /** The position of the legend if any*/
     int legendPosition;
+    /** if autoscrolling is turned on*/
+    bool autoscrolling;
 
 private:
     /** private constructor*/

@@ -15,6 +15,8 @@
 #include "DataManager.h"
 #include "CSVImporter.h"
 #include "CurveSelectionDialog.h"
+#include "PlotXMLReader.h"
+#include "PlotXMLWriter.h"
 
 #include <QResizeEvent>
 #include <QPushButton>
@@ -316,8 +318,16 @@ public slots:
      * Called when the gir is changed
      */
     void gridChanged();
+
     
 protected slots:
+
+     /**
+     * Refreshes teh complete plot with the data currently stored within the datamanager
+     * @param newValue
+     */
+    void refreshFromDataManager();
+
     /**
      * Slot handling change of the xBottom slider. You should
      * never need to call this manually
@@ -373,6 +383,16 @@ protected slots:
 
     /** Called when curves were selected to be exorted*/
     void curvesSelected();
+
+    /**
+     * Loads a profile
+     */
+    void loadProfile();
+
+    /**
+     * Saves a Profile
+     */
+    void saveProfile();
 
 protected:
 
@@ -526,6 +546,10 @@ protected:
     QAction clearCurveAction;
     /** Action to delete all curves and borderlines*/
     QAction clearAllAction;
+    /** Action to retrieve stored sessions*/
+    QAction loadProfileAction;
+    /** Action to save the profile*/
+    QAction saveProfileAction;
 
     /** Datamanager containing all variables*/
     DataManager* dataManager;

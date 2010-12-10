@@ -6,6 +6,7 @@
  */
 
 #include "PlotWidget.h"
+#include "XMLConfigWriter.h"
 #include <QtPlugin>
 
 Q_EXPORT_PLUGIN2(PlotWidget,PlotWidget)
@@ -21,7 +22,8 @@ PlotWidget::PlotWidget(QWidget* parent) : QWidget(parent),
         leftSliderAction(tr("&Left Slider"), this), exportCSVAction(tr("Export as &CSV"), this),
         bottomSliderAction(tr("&Bottom Slider"), this), xGridAction(tr("X"), this),
         yGridAction(tr("Y"), this), importCSVAction(tr("Import &CSV"), this), clearBorderLineAction(tr("Clear &Border Lines"), this),
-        clearCurveAction(tr("Clear &Curves"), this), clearAllAction(tr("Clear &All"), this)
+        clearCurveAction(tr("Clear &Curves"), this), clearAllAction(tr("Clear &All"), this),
+        loadProfileAction(tr("&Load Profile"), this), saveProfileAction(tr("&Save Profile"), this)
 {
     plotMarkerId = 0;
     curveId = 0;
@@ -119,12 +121,16 @@ void PlotWidget::addMenu()
   exportMenu.addAction(&exportImageAction);
   exportMenu.addAction(&exportCSVAction);
   importMenu.addAction(&importCSVAction);
+  fileMenu.addAction(&loadProfileAction);
+  fileMenu.addAction(&saveProfileAction);
   connect(&exportImageAction, SIGNAL(triggered()), this, SLOT(exportPlotAsImage()));
   connect(&importCSVAction, SIGNAL(triggered()), this, SLOT(importFromCSV()));
   connect(&clearBorderLineAction, SIGNAL(triggered()), this, SLOT(clearBorderLines()));
   connect(&clearCurveAction, SIGNAL(triggered()), this, SLOT(clearCurves()));
   connect(&clearAllAction, SIGNAL(triggered()), this, SLOT(clearAll()));
   connect(&exportCSVAction, SIGNAL(triggered()), this, SLOT(exportAsCSV()));
+  connect(&loadProfileAction, SIGNAL(triggered()), this, SLOT(loadProfile()));
+  connect(&saveProfileAction, SIGNAL(triggered()), this, SLOT(saveProfile()));
   // Plot Menu
   menuBar.addMenu(&plotMenu);
   autoscrollAction.setCheckable(true);
@@ -154,6 +160,70 @@ void PlotWidget::addMenu()
   connect(&xGridAction, SIGNAL(triggered()), this, SLOT(gridChanged()));
   connect(&yGridAction, SIGNAL(triggered()), this, SLOT(gridChanged()));
   connect(&curveSelectionDialog, SIGNAL(accepted()), this, SLOT(curvesSelected()));
+}
+
+void PlotWidget::loadProfile()
+{
+    PlotXMLReader reader;
+    if(reader.validateXMLFile("/home/blueck/temp/config1.xml", "/home/blueck/temp/configuration.xml"))
+    {
+        std::cout << "Hurray" << std::endl;
+    }
+    else
+    {
+        std::cout << "Naaay" << std::endl;
+    }
+    reader.readXMLFile("/home/blueck/temp/config1.xml");
+    std::vector<QwtPlotMarker*> newMarkers = reader.getMarker();
+    for(unsigned int i=0;i<newMarkers.size();i++)
+    {
+        std::cout << "Style: " << newMarkers[i]->xValue() << std::endl;
+        newMarkers[i]->attach(&plot);
+        markers[plotMarkerId] = newMarkers[i];
+        plotMarkerId++;
+    }
+    int minX = reader.getMinX();
+    int maxX = reader.getMaxX();
+    int minY = reader.getMinY();
+    int maxY = reader.getMaxY();
+    setAxisBoundaries(X_BOTTOM, minX, maxX);
+    setAxisBoundaries(Y_LEFT, minY, maxY);
+    refreshFromDataManager();
+    plot.replot();
+}
+
+void PlotWidget::saveProfile()
+{
+    PlotXMLWriter writer;
+    writer.writeConfigFile("/home/blueck/temp/testWrite.xml");
+}
+
+void PlotWidget::refreshFromDataManager()
+{
+    plot.setCanvasBackground(dataManager->getBGColor());
+    setAxisTitles(dataManager->getXAxisTitle(), dataManager->getYAxisTitle());
+    if(dataManager->isDrawLegend())
+    {
+        QList<QWidget*> legendItems = legend.legendItems();
+        for(int i=0;i<legendItems.size();i++)
+        {
+            legendItems[i]->setVisible(true);
+        }
+        legend.setVisible(true);
+        plot.insertLegend(&legend, (QwtPlot::LegendPosition)dataManager->getLegendPosition());
+    }
+    else
+    {
+        QList<QWidget*> legendItems = legend.legendItems();
+        for(int i=0;i<legendItems.size();i++)
+        {
+            legendItems[i]->setVisible(false);
+        }
+        legend.setVisible(false);
+    }
+    setAutoscrolling(dataManager->isAutoscrolling());
+    std::cout << dataManager->isDrawXGrid() << std::endl;
+    setDrawGrid(true, dataManager->isDrawXGrid(), dataManager->isDrawYGrid());
 }
 
 void PlotWidget::importFromCSV()
@@ -220,6 +290,12 @@ void PlotWidget::fitPlotToGraph()
 {
   setAxisAutoScale(X_BOTTOM, true);
   setAxisAutoScale(Y_LEFT, true);
+  double lower = plot.axisScaleDiv(QwtPlot::xBottom)->lowerBound();
+  double upper = plot.axisScaleDiv(QwtPlot::xBottom)->upperBound();
+  setAxisBoundaries(X_BOTTOM, lower, upper);
+  lower = plot.axisScaleDiv(QwtPlot::yLeft)->lowerBound();
+  upper = plot.axisScaleDiv(QwtPlot::yLeft)->upperBound();
+  setAxisBoundaries(Y_LEFT, lower, upper);
   plot.replot();
 }
 
@@ -696,7 +772,6 @@ void PlotWidget::setDataStyle(int dataId, QPen pen, int curveStyle)
 	    curve->setStyle(QwtPlotCurve::Steps);
 	    break;
 	  case DOTS:
-              std::cout << "Setting Dots" << std::endl;
 	    curve->setStyle(QwtPlotCurve::Dots);
 	    break;
 	  default:

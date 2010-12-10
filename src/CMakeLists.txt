@@ -20,8 +20,8 @@ add_library(${PROJECT_NAME} SHARED ${plotting_widget_SOURCES} ${plotting_widget_
 add_executable(${PROJECT_NAME}_EXEC main.cc)
 
 
-target_link_libraries(${PROJECT_NAME} ${QWT_LIBRARIES} ${QT_LIBRARIES})
-target_link_libraries(${PROJECT_NAME}_EXEC ${PROJECT_NAME} ${QWT_LIBRARIES} ${QT_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} ${QWT_LIBRARIES} ${QT_LIBRARIES} ${LIBXML2_LIBRARIES})
+target_link_libraries(${PROJECT_NAME}_EXEC ${PROJECT_NAME} ${QWT_LIBRARIES} ${QT_LIBRARIES} ${LIBXML2_LIBRARIES})
 
 
 install(FILES libplotting_widget.so.rb DESTINATION lib)

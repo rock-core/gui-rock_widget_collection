@@ -278,6 +278,7 @@ void BorderLineOptionDialog::addMarkerToLayout(QwtPlotMarker* marker, int i)
     combo->addItem(tr("Vertical"), QVariant(2));
     combo->addItem(tr("Cross"), QVariant(3));
     int current = marker->lineStyle();
+    std::cout << "StyleI: " << current << std::endl;
     combo->setCurrentIndex(current);
     comboBoxes[i] = combo;
 
