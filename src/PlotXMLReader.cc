@@ -38,9 +38,6 @@ bool PlotXMLReader::readXMLSpecifica()
         if(nodeset->nodeNr == 1)
         {
             xmlNodePtr currentNode = nodeset->nodeTab[0];
-            std::cout << currentNode->name << std::endl;
-
-            std::cout << "Plot node" << std::endl;
             xmlNodePtr childNode = currentNode->xmlChildrenNode;
             // next the children and if there is an element we know about handle it
             xmlNodePtr nextNode = childNode;
@@ -61,19 +58,15 @@ bool PlotXMLReader::readXMLSpecifica()
                         contents = xmlNodeListGetString(document, nextNode->xmlChildrenNode, 1);
                         manager->setYAxisTitle((const char*)contents);
                     }
-
-                    std::cout << contents << std::endl;
                 }
                 else if(!xmlStrcmp(name, (const xmlChar*)"csvDelimiter"))
                 {
                     const char* contents = (const char*)xmlNodeListGetString(document, nextNode->xmlChildrenNode, 1);
-                    std::cout << contents << std::endl;
                     manager->setCSVDelimiter(contents[0]);
                 }
                 else if(!xmlStrcmp(name, (const xmlChar*)"autoscrolling"))
                 {
                     const char* contents = (const char*)xmlNodeListGetString(document, nextNode->xmlChildrenNode, 1);
-                    std::cout << contents << std::endl;
                     manager->setAutoscrolling((bool)contents);
                 }
                 else if(!xmlStrcmp(name, (const xmlChar*)"showGrid"))
@@ -90,23 +83,21 @@ bool PlotXMLReader::readXMLSpecifica()
                         contents = (const char*)xmlNodeListGetString(document, nextNode->xmlChildrenNode, 1);
                         manager->setDrawYGrid((bool)atoi(contents));
                     }
-                    std::cout << "Grid:" << (bool)atoi(contents) << std::endl;
                 }
                 else if(!xmlStrcmp(name, (const xmlChar*)"showSlider"))
                 {
                     const xmlChar* property = xmlGetProp(nextNode, (const xmlChar*)"axis");
-                    const xmlChar* contents;
+                    const char* contents;
                     if(!xmlStrcmp(property, (const xmlChar*)"x"))
                     {
-                        contents = xmlNodeListGetString(document, nextNode->xmlChildrenNode, 1);
-                        manager->setShowBottomSlider((bool)contents);
+                        contents = (const char*)xmlNodeListGetString(document, nextNode->xmlChildrenNode, 1);
+                        manager->setShowBottomSlider((bool)atoi(contents));
                     }
                     else if(!xmlStrcmp(property, (const xmlChar*)"y"))
                     {
-                        contents = xmlNodeListGetString(document, nextNode->xmlChildrenNode, 1);
-                        manager->setShowLeftSlider((bool)contents);
+                        contents = (const char*)xmlNodeListGetString(document, nextNode->xmlChildrenNode, 1);
+                        manager->setShowLeftSlider((bool)atoi(contents));
                     }
-                    std::cout << "Slider:" << contents << std::endl;
                 }
                 else if(!xmlStrcmp(name, (const xmlChar*)"legend"))
                 {
@@ -131,7 +122,6 @@ bool PlotXMLReader::readXMLSpecifica()
                     {
                         manager->setLegendPosition(1);
                     }
-                    std::cout << "Legend:" << contents << std::endl;
                 }
                 else if(!xmlStrcmp(name, (const xmlChar*)"axisrange"))
                 {
@@ -139,11 +129,9 @@ bool PlotXMLReader::readXMLSpecifica()
                     const xmlChar* contents;
                     const xmlChar* sContents;
                     xmlNodePtr subNode = nextNode->xmlChildrenNode->next;
-                    std::cout << subNode->name << std::endl;
                     contents = xmlNodeListGetString(document, subNode->xmlChildrenNode, 1);
 
                     subNode = subNode->next->next;
-                    std::cout << subNode->name << std::endl;
                     sContents = xmlNodeListGetString(document, subNode->xmlChildrenNode, 1);
                     if(!xmlStrcmp(property, (const xmlChar*)"x"))
                     {
@@ -155,8 +143,6 @@ bool PlotXMLReader::readXMLSpecifica()
                         minY = atoi((const char*)contents);
                         maxY = atoi((const char*)sContents);
                     }
-
-                    std::cout << "Range:" << contents << "/" << sContents <<  std::endl;
                 }
                 else if(!xmlStrcmp(name, (const xmlChar*)"bgcolor"))
                 {
@@ -164,19 +150,14 @@ bool PlotXMLReader::readXMLSpecifica()
                     const xmlChar* gContents;
                     const xmlChar* bContents;
                     xmlNodePtr subNode = nextNode->xmlChildrenNode->next;
-                    std::cout << subNode->name << std::endl;
                     rContents = xmlNodeListGetString(document, subNode->xmlChildrenNode, 1);
                     subNode = subNode->next->next;
-                    std::cout << subNode->name << std::endl;
                     gContents = xmlNodeListGetString(document, subNode->xmlChildrenNode, 1);
                     subNode = subNode->next->next;
-                    std::cout << subNode->name << std::endl;
                     bContents = xmlNodeListGetString(document, subNode->xmlChildrenNode, 1);
 
                     QColor color(atoi((const char*)rContents), atoi((const char*)gContents), atoi((const char*)bContents));
                     manager->setBGColor(color);
-
-                    std::cout << rContents << "|" << gContents << "|" << bContents << std::endl;
                 }
                 nextNode = nextNode->next;
             }
@@ -198,7 +179,6 @@ bool PlotXMLReader::readXMLSpecifica()
     {
         xmlNodeSetPtr nodeset;
         nodeset = result->nodesetval;
-        std::cout << "Have " << nodeset->nodeNr << " BorderLines" << std::endl;
         for(int i=0;i<nodeset->nodeNr;i++)
         {
             QwtPlotMarker* marker = new QwtPlotMarker();
@@ -214,19 +194,16 @@ bool PlotXMLReader::readXMLSpecifica()
                 if(!xmlStrcmp(name, (const xmlChar*)"xposition"))
                 {
                     const char* contents = (const char*)xmlNodeListGetString(document, nextNode->xmlChildrenNode, 1);
-                    std::cout << atof((const char*)contents) << std::endl;
-                    marker->setYValue(atof((const char*)contents));
+                    marker->setXValue(atof((const char*)contents));
                 }
                 else if(!xmlStrcmp(name, (const xmlChar*)"yposition"))
                 {
                     const char* contents = (const char*)xmlNodeListGetString(document, nextNode->xmlChildrenNode, 1);
-                    std::cout << contents << std::endl;
-                    marker->setXValue(atof((const char*)contents));
+                    marker->setYValue(atof((const char*)contents));
                 }
                 else if(!xmlStrcmp(name, (const xmlChar*)"type"))
                 {
                     const xmlChar* contents = xmlNodeListGetString(document, nextNode->xmlChildrenNode, 1);
-                    std::cout << contents << std::endl;
                     if(!xmlStrcmp(contents, (const xmlChar*)"horizontal"))
                     {
                         marker->setLineStyle(QwtPlotMarker::HLine);
@@ -247,7 +224,6 @@ bool PlotXMLReader::readXMLSpecifica()
                 else if(!xmlStrcmp(name, (const xmlChar*)"width"))
                 {
                     const char* contents = (const char*)xmlNodeListGetString(document, nextNode->xmlChildrenNode, 1);
-                    std::cout << contents << std::endl;
                     linePen.setWidth(atoi((const char*)contents));
                 }
                 else if(!xmlStrcmp(name, (const xmlChar*)"lineColor"))
@@ -256,17 +232,13 @@ bool PlotXMLReader::readXMLSpecifica()
                     const xmlChar* gContents;
                     const xmlChar* bContents;
                     xmlNodePtr subNode = nextNode->xmlChildrenNode->next;
-                    std::cout << subNode->name << std::endl;
                     rContents = xmlNodeListGetString(document, subNode->xmlChildrenNode, 1);
                     subNode = subNode->next->next;
-                    std::cout << subNode->name << std::endl;
                     gContents = xmlNodeListGetString(document, subNode->xmlChildrenNode, 1);
                     subNode = subNode->next->next;
-                    std::cout << subNode->name << std::endl;
                     bContents = xmlNodeListGetString(document, subNode->xmlChildrenNode, 1);
                     QColor color(atoi((const char*)rContents), atoi((const char*)gContents), atoi((const char*)bContents));
                     linePen.setColor(color);
-                    std::cout << rContents << "|" << gContents << "|" << bContents << std::endl;
                 }
                 nextNode = nextNode->next;
             }

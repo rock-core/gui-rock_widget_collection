@@ -41,8 +41,9 @@ bool PlotXMLWriter::writeContent()
     writeNode("blue", temp);
     endNode();
 
-    char delim[1] = {manager->getCSVDelimter()};
-    writeNode("csvDelimiter", delim);
+    sprintf(temp, "%c", manager->getCSVDelimter());
+    std::cout << "{" << temp << "}" << std::endl;
+    writeNode("csvDelimiter", temp);
 
     startNode("legend");
     writeAttribute("visible", manager->isDrawLegend() ? "1" : "0");
@@ -51,10 +52,10 @@ bool PlotXMLWriter::writeContent()
     switch(iPosition)
     {
         case 0:
-            position = "horizontal";
+            position = "left";
             break;
         case 1:
-            position = "vertical";
+            position = "right";
             break;
         case 2:
             position = "bottom";
@@ -102,24 +103,48 @@ bool PlotXMLWriter::writeContent()
     sprintf(range, "%d", maxY);
     writeNode("max", range);
     endNode();
-
     // end plot
     endNode();
 
+    std::cout << "Writing " << markers.size() << " Borderlines" << std::endl;
+
     for(int i=0;i<markers.size();i++)
     {
+        QwtPlotMarker* marker = markers[i];
+        if(marker == NULL)
+        {
+            continue;
+        }
+        std::cout << "Have not NULL" << std::endl;
         // begin the borderlines
         startNode("borderline");
         writeAttribute("visible", "1");
-        writeNode("xposition", "25");
-        writeNode("yposition", "12");
-        writeNode("type", "horizontal");
+
+        char temp[10];
+        sprintf(temp, "%f", marker->xValue());
+        writeNode("xposition", temp);
+        sprintf(temp, "%f", marker->yValue());
+        writeNode("yposition", temp);
+        switch(marker->lineStyle())
+        {
+            case QwtPlotMarker::HLine:
+                writeNode("type", "horizontal");
+                break;
+            case QwtPlotMarker::VLine:
+                writeNode("type", "vertical");
+                break;
+            case QwtPlotMarker::Cross:
+                writeNode("type", "cross");
+                break;
+            case QwtPlotMarker::NoLine:
+                writeNode("type", "none");
+                break;
+        }
+        sprintf(temp, "%d", marker->linePen().width());
         writeNode("width", "3");
 
-        QColor lineColor = markers[i]->linePen().color();
-
-        startNode("linecolor");
-        char temp[3];
+        QColor lineColor = marker->linePen().color();
+        startNode("lineColor");
         sprintf(temp, "%d", lineColor.red());
         writeNode("red", temp);
         sprintf(temp, "%d", lineColor.green());

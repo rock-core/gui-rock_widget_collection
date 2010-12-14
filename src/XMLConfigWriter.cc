@@ -17,6 +17,8 @@ bool XMLConfigWriter::writeConfigFile(char* filename)
 {
     // compression deactivated
     // TODO make compression configurable
+    char* currentLocale = setlocale(LC_ALL, NULL);
+    setlocale(LC_ALL, "C");
     writer = xmlNewTextWriterFilename(filename, 0);
     xmlTextWriterSetIndent(writer, 1);
     if (writer == NULL)
@@ -47,6 +49,7 @@ bool XMLConfigWriter::writeConfigFile(char* filename)
         return false;
     }
     xmlFreeTextWriter(writer);
+    setlocale(LC_ALL, currentLocale);
     return true;
 }
 

@@ -165,7 +165,7 @@ void PlotWidget::addMenu()
 void PlotWidget::loadProfile()
 {
     PlotXMLReader reader;
-    if(reader.validateXMLFile("/home/blueck/temp/config1.xml", "/home/blueck/temp/configuration.xml"))
+    if(reader.validateXMLFile("/home/blueck/temp/testWrite2.xml", "/home/blueck/temp/configuration.xml"))
     {
         std::cout << "Hurray" << std::endl;
     }
@@ -173,11 +173,10 @@ void PlotWidget::loadProfile()
     {
         std::cout << "Naaay" << std::endl;
     }
-    reader.readXMLFile("/home/blueck/temp/config1.xml");
+    reader.readXMLFile("/home/blueck/temp/testWrite2.xml");
     std::vector<QwtPlotMarker*> newMarkers = reader.getMarker();
     for(unsigned int i=0;i<newMarkers.size();i++)
     {
-        std::cout << "Style: " << newMarkers[i]->xValue() << std::endl;
         newMarkers[i]->attach(&plot);
         markers[plotMarkerId] = newMarkers[i];
         plotMarkerId++;
@@ -195,7 +194,9 @@ void PlotWidget::loadProfile()
 void PlotWidget::saveProfile()
 {
     PlotXMLWriter writer;
-    writer.writeConfigFile("/home/blueck/temp/testWrite.xml");
+    writer.setRanges(0, 1000, 0, 1000);
+    writer.setMarker(markers);
+    writer.writeConfigFile("/home/blueck/temp/testWrite2.xml");
 }
 
 void PlotWidget::refreshFromDataManager()
@@ -222,8 +223,10 @@ void PlotWidget::refreshFromDataManager()
         legend.setVisible(false);
     }
     setAutoscrolling(dataManager->isAutoscrolling());
-    std::cout << dataManager->isDrawXGrid() << std::endl;
     setDrawGrid(true, dataManager->isDrawXGrid(), dataManager->isDrawYGrid());
+    std::cout << dataManager->isShowBottomSlider() << "|" << dataManager->isShowLeftSlider() << std::endl;
+    enableSlider(X_BOTTOM, dataManager->isShowBottomSlider());
+    enableSlider(Y_LEFT, dataManager->isShowLeftSlider());
 }
 
 void PlotWidget::importFromCSV()
@@ -370,7 +373,6 @@ QwtPlot::Axis PlotWidget::getAxisForInt(int axis)
       return QwtPlot::yLeft;
     case X_TOP:
     {
-        std::cout << "TOP" << std::endl;
         return QwtPlot::xTop;
     }
     case Y_RIGHT:
@@ -385,10 +387,14 @@ void PlotWidget::setDrawGrid(bool drawGrid, bool enableX, bool enableY)
     {
         grid.enableX(enableX);
         grid.enableY(enableY);
+        xGridAction.setChecked(enableX);
+        yGridAction.setChecked(enableY);
         grid.attach(&plot);
     }
     else
     {
+        xGridAction.setChecked(false);
+        yGridAction.setChecked(false);
         grid.detach();
     }
     plot.replot();
@@ -416,14 +422,16 @@ int PlotWidget::addBorderLine(double value, Qt::Orientation orientation, QPen pe
 
 void PlotWidget::enableSlider(int axisId, bool enable)
 {
-  QwtPlot::Axis axis = getAxisForInt(axisId);
+    QwtPlot::Axis axis = getAxisForInt(axisId);
     if(axis == QwtPlot::xBottom)
     {
         xBottomSlider.setVisible(enable);
+        bottomSliderAction.setChecked(enable);
     }
     else
     {
         yLeftSlider.setVisible(enable);
+        leftSliderAction.setChecked(enable);
     }
 }
 
@@ -594,10 +602,7 @@ void PlotWidget::setAxisShown(int axisId, bool enable)
 void PlotWidget::setAutoscrolling(bool enable)
 {
     this->autoscrolling = enable;
-    if(autoscrollAction.isChecked() != enable)
-    {
-      autoscrollAction.setChecked(enable);
-    }
+    autoscrollAction.setChecked(enable);
     xBottomSlider.setEnabled(!enable);
     yLeftSlider.setEnabled(!enable);
     zoomer.setEnabled(!enable);

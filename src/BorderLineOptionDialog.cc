@@ -266,10 +266,10 @@ void BorderLineOptionDialog::addMarkerToLayout(QwtPlotMarker* marker, int i)
     ySpinBoxes[i] = ySpinBox;
 
     QDoubleSpinBox* xSpinBox = new QDoubleSpinBox();
-    xSpinBox->setValue(marker->value().x());
     xSpinBox->setSingleStep(0.01);
     xSpinBox->setDecimals(4);
     xSpinBox->setMaximum(10000.00);
+    xSpinBox->setValue(marker->value().x());
     xSpinBoxes[i] = xSpinBox;
 
     QComboBox* combo = new QComboBox();
