@@ -1,10 +1,3 @@
-/* 
- * File:   XMLConfigWriter.h
- * Author: blueck
- *
- * Created on 24. November 2010, 13:37
- */
-
 #ifndef XMLCONFIGWRITER_H
 #define	XMLCONFIGWRITER_H
 
@@ -12,23 +5,139 @@
 #include <encoding.h>
 #include <xmlwriter.h>
 
-
+/**
+ * Abstract XML Writer class for configuration files.
+ * The method writeContent must be overwritten in subclasses.
+ * When calling writeConfigFile a simple xml file will be written with one
+ * configuration tag. After this tag the abstract writeContent method will be
+ * called. If it is empty a simple xml document with exactly one configuration tag
+ * will result.
+ * To add nodes some convenient methods are available:<p>
+ * <b>writeTag(char* name, char* content)<b><br>
+ * This method will write a tag and close it. In between the content, if any
+ * will be written, like this: <tag>content</tag>. This method is best
+ * used for simple tags.
+ * <p>
+ * <b>startTag(name)</b>
+ * This will start a tag but offers the ability via other methods to write attributes
+ * and subnodes to the xml file.<p>
+ * <b>endTag</b>
+ * This will end the last node opened with startTag.<p>
+ * <b>writeAttribute(name, value)</b>
+ * this will write an attribute to a node opened via startTag. The name of
+ * the attribute and its value will be given, resulting in something like
+ * this: <tag name="value"> <p>
+ * <b>writeTagContent(content)</b>
+ * This will write the content between a node, like <tag>content</tag>. It uses
+ * the last opened node, opened by startTag.
+ *
+ * <p>
+ * <h1>Example</h1>
+ *
+ * startTag("tag1");<br>
+ * writeTag("subtag1", "SubContent");<br>
+ * startTag("subtag2");<br>
+ * writeAttribute("subattribute", "att");<br>
+ * writeTagContent("SubContent2");<br>
+ * endTag();<br>
+ * endTag();<br>
+ * <p>
+ *
+ * This code results in:
+ *
+ * <tag1>
+ *  <subtag1>SubContent</subtag1>
+ *  <subtag2 subattribute="att">SubContent2</subtag2>
+ * </tag1>
+ *
+ * <p>
+ * <h1>History</h1>
+ * 12-15-2010 renamed all node methods to tag method for clarity
+ * 12-15-2010 created documentation
+ * <p>
+ *
+ * <h1>ToDo</h1>
+ * <ul>
+ * <li>Handle different encodings, currently only "ISO-8859-1" is used</li>
+ * <li>Handle different floating points (locale dependent), currently only . is allowed</li>
+ * <li>Typesafe methods, currently only char values</li>
+ * <li>Compression of the file may be configurable</li>
+ * <li>Do not start with configuration tag, to create multiple configuration file formats</li>
+ * </ul>
+ */
 class XMLConfigWriter
 {
 public:
+    /**
+     * Empty constructor
+     */
     XMLConfigWriter();
+
+    /**
+     * Destructor
+     */
     virtual ~XMLConfigWriter();
+
+    /**
+     * Writes a configuration file by specifying xml header
+     * information and starting with a configuration tag.
+     * Then the abstract writeContent will be called and if
+     * successfull, teh configuration tag will be closed and
+     * the xml file written.
+     * @param filename the name of the file to write the xml document to
+     * @return true if successfull, false otherwise
+     */
     bool writeConfigFile(char* filename);
+
+    /**
+     * Abstract method which needs to be overwritten in
+     * subclasses. This will be called from within writeConfigFile and all
+     * Node writing should take place here.
+     * @return true if successfull, false otherwise
+     */
     virtual bool writeContent() = 0;
-    bool startNode(const char* name);
-    bool writeNode(const char* name, const char* content = 0);
-    bool writeNodeContent(const char* content);
+
+    /**
+     * Starts a Tag with the given name
+     * @param name the name of the tag
+     * @return true if successfull, false otherwise
+     */
+    bool startTag(const char* name);
+
+    /**
+     * Starts and ends a tag with simple content (no attributes or sub nodes)
+     * @param name the name of the tag
+     * @param content teh content of the tag
+     * @return true if successfull, false otherwise
+     */
+    bool writeTag(const char* name, const char* content = 0);
+
+    /**
+     * Writes the content for a node whioch was opened via
+     * satrtNode.
+     * @param content the content to be written
+     * @return true if successfull, false otehrwise
+     */
+    bool writeTagContent(const char* content);
+
+    /**
+     * Writes an attrribute to a tag which was opened by startTag
+     * @param name the anem of the attribute
+     * @param value the value of the attribute
+     * @return true if successfull, false otherwise
+     */
     bool writeAttribute(const char* name, const char* value);
-    bool endNode();
+
+    /**
+     * Ends a tag. Afterwards nothing can be added to it via the writer
+     * @return true if successfull, false otherwise
+     */
+    bool endTag();
 protected:
+    /** The actual writer*/
     xmlTextWriterPtr writer;
-private:
-    static char* encoding;
+    /** static encoding*/
+    const char* encoding;
 
 };
 

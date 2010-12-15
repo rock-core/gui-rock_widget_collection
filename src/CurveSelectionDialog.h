@@ -20,24 +20,56 @@
 
 #include "CurveListItemWidget.h"
 
+/**
+ * Dialog to select curves to export
+ */
 class CurveSelectionDialog : public QDialog
 {
 
     Q_OBJECT
 
 public:
+    /**
+     * Constructor
+     * @param parent parent widget of the widget
+     */
     CurveSelectionDialog(QWidget* parent=0);
+
+    /**
+     * Destructor
+     */
     virtual ~CurveSelectionDialog();
+
+    /**
+     * Initializes the layout of the dialog with the given curves
+     * @param curves teh curves currently available
+     */
     void initializeLayout(std::vector<QwtPlotCurve*> curves);
+
+    /**
+     * Returns teh curves which are currently selected
+     * @return vector of QwtPlotCurve objects
+     */
     std::vector<QwtPlotCurve*> getSelectedCurves();
 public slots:
+    /**
+     * Called when the okButton was pressed
+     */
     void okPressed();
+
+    /**
+     * Called when the cancel button was pressed
+     */
     void cancelPressed();
     
 protected:
+    /** Layout of the dialog*/
     QGridLayout layout;
+    /** List widget to select the curves*/
     QListWidget listWidget;
+    /** Button to accept*/
     QPushButton okButton;
+    /** Button to cancel*/
     QPushButton cancelButton;
 
 private:

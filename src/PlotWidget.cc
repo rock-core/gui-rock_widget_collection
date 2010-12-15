@@ -164,16 +164,21 @@ void PlotWidget::addMenu()
 
 void PlotWidget::loadProfile()
 {
+    QString filter;
+    QString filename = QFileDialog::getOpenFileName(this, tr("Open XML File"), QDir::homePath(), tr("XML document (*.xml)"), &filter);
     PlotXMLReader reader;
-    if(reader.validateXMLFile("/home/blueck/temp/testWrite2.xml", "/home/blueck/temp/configuration.xml"))
-    {
-        std::cout << "Hurray" << std::endl;
-    }
-    else
-    {
-        std::cout << "Naaay" << std::endl;
-    }
-    reader.readXMLFile("/home/blueck/temp/testWrite2.xml");
+    // create an extra validatioon entry or make validation configurable
+//    if(reader.validateXMLFile((char*)filename.toStdString().c_str(), "/home/blueck/temp/configuration.xml"))
+//    {
+//        std::cout << "Hurray" << std::endl;
+//    }
+//    else
+//    {
+//        std::cout << "Naaay" << std::endl;
+//        // print error message dialog
+//        return;
+//    }
+    reader.readXMLFile(filename.toStdString().c_str());
     std::vector<QwtPlotMarker*> newMarkers = reader.getMarker();
     for(unsigned int i=0;i<newMarkers.size();i++)
     {
@@ -193,10 +198,36 @@ void PlotWidget::loadProfile()
 
 void PlotWidget::saveProfile()
 {
+    // Set up the possible graphics formats
+    QString types( "XML file (*.xml)");
+    // Image type filter
+    QString filter;
+    // Suffix for the files
+    QString xmlExt=".xml";
+    QString fn = QFileDialog::getSaveFileName(this, QString("Save Image"), QDir::homePath(), types, &filter);
+    if(!fn.isEmpty())
+    {
+      // If filename is not a null
+      // Remove file extension which are already there
+      if(fn.contains(xmlExt))
+      {
+        fn.remove(xmlExt);
+      }
+      // save according to filter
+      if(filter.contains(xmlExt))
+      {
+        fn += xmlExt;
+      }
+      else
+      {
+          std::cerr << "Have no File type which matches xml files." << std::endl;
+          return;
+      }
+    }
     PlotXMLWriter writer;
     writer.setRanges(0, 1000, 0, 1000);
     writer.setMarker(markers);
-    writer.writeConfigFile("/home/blueck/temp/testWrite2.xml");
+    writer.writeConfigFile((char*)fn.toStdString().c_str());
 }
 
 void PlotWidget::refreshFromDataManager()

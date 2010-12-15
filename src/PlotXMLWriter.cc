@@ -19,33 +19,33 @@ PlotXMLWriter::PlotXMLWriter()
 
 bool PlotXMLWriter::writeContent()
 {
-    startNode("plot");
+    startTag("plot");
 
-    startNode("title");
+    startTag("title");
     writeAttribute("axis", "x");
-    writeNodeContent(manager->getXAxisTitle().toStdString().c_str());
-    endNode();
-    startNode("title");
+    writeTagContent(manager->getXAxisTitle().toStdString().c_str());
+    endTag();
+    startTag("title");
     writeAttribute("axis", "y");
-    writeNodeContent(manager->getYAxisTitle().toStdString().c_str());
-    endNode();
+    writeTagContent(manager->getYAxisTitle().toStdString().c_str());
+    endTag();
 
     QColor color = manager->getBGColor();
-    startNode("bgcolor");
+    startTag("bgcolor");
     char temp[3];
     sprintf(temp, "%d", color.red());
-    writeNode("red", temp);
+    writeTag("red", temp);
     sprintf(temp, "%d", color.green());
-    writeNode("green", temp);
+    writeTag("green", temp);
     sprintf(temp, "%d", color.blue());
-    writeNode("blue", temp);
-    endNode();
+    writeTag("blue", temp);
+    endTag();
 
     sprintf(temp, "%c", manager->getCSVDelimter());
     std::cout << "{" << temp << "}" << std::endl;
-    writeNode("csvDelimiter", temp);
+    writeTag("csvDelimiter", temp);
 
-    startNode("legend");
+    startTag("legend");
     writeAttribute("visible", manager->isDrawLegend() ? "1" : "0");
     const char* position;
     int iPosition = manager->getLegendPosition();
@@ -64,51 +64,51 @@ bool PlotXMLWriter::writeContent()
             position = "top";
 
     }
-    writeNode("pos", position);
-    endNode();
+    writeTag("pos", position);
+    endTag();
 
-    writeNode("autoscrolling", manager->isAutoscrolling() ? "1" : "0");
+    writeTag("autoscrolling", manager->isAutoscrolling() ? "1" : "0");
 
-    startNode("showGrid");
+    startTag("showGrid");
     writeAttribute("axis", "x");
-    writeNodeContent(manager->isDrawXGrid() ? "1" : "0");
-    endNode();
-    startNode("showGrid");
+    writeTagContent(manager->isDrawXGrid() ? "1" : "0");
+    endTag();
+    startTag("showGrid");
     writeAttribute("axis", "y");
-    writeNodeContent(manager->isDrawYGrid() ? "1" : "0");
-    endNode();
+    writeTagContent(manager->isDrawYGrid() ? "1" : "0");
+    endTag();
 
-    startNode("showSlider");
+    startTag("showSlider");
     writeAttribute("axis", "x");
-    writeNodeContent(manager->isShowBottomSlider() ? "1" : "0");
-    endNode();
-    startNode("showSlider");
+    writeTagContent(manager->isShowBottomSlider() ? "1" : "0");
+    endTag();
+    startTag("showSlider");
     writeAttribute("axis", "y");
-    writeNodeContent(manager->isShowLeftSlider() ? "1" : "0");
-    endNode();
+    writeTagContent(manager->isShowLeftSlider() ? "1" : "0");
+    endTag();
 
-    startNode("axisrange");
+    startTag("axisrange");
     writeAttribute("axis", "x");
     char range[10];
     sprintf(range, "%d", minX);
-    writeNode("min", range);
+    writeTag("min", range);
     sprintf(range, "%d", maxX);
-    writeNode("max", range);
-    endNode();
+    writeTag("max", range);
+    endTag();
 
-    startNode("axisrange");
+    startTag("axisrange");
     writeAttribute("axis", "y");
     sprintf(range, "%d", minY);
-    writeNode("min", range);
+    writeTag("min", range);
     sprintf(range, "%d", maxY);
-    writeNode("max", range);
-    endNode();
+    writeTag("max", range);
+    endTag();
     // end plot
-    endNode();
+    endTag();
 
     std::cout << "Writing " << markers.size() << " Borderlines" << std::endl;
 
-    for(int i=0;i<markers.size();i++)
+    for(unsigned int i=0;i<markers.size();i++)
     {
         QwtPlotMarker* marker = markers[i];
         if(marker == NULL)
@@ -117,43 +117,43 @@ bool PlotXMLWriter::writeContent()
         }
         std::cout << "Have not NULL" << std::endl;
         // begin the borderlines
-        startNode("borderline");
+        startTag("borderline");
         writeAttribute("visible", "1");
 
         char temp[10];
         sprintf(temp, "%f", marker->xValue());
-        writeNode("xposition", temp);
+        writeTag("xposition", temp);
         sprintf(temp, "%f", marker->yValue());
-        writeNode("yposition", temp);
+        writeTag("yposition", temp);
         switch(marker->lineStyle())
         {
             case QwtPlotMarker::HLine:
-                writeNode("type", "horizontal");
+                writeTag("type", "horizontal");
                 break;
             case QwtPlotMarker::VLine:
-                writeNode("type", "vertical");
+                writeTag("type", "vertical");
                 break;
             case QwtPlotMarker::Cross:
-                writeNode("type", "cross");
+                writeTag("type", "cross");
                 break;
             case QwtPlotMarker::NoLine:
-                writeNode("type", "none");
+                writeTag("type", "none");
                 break;
         }
         sprintf(temp, "%d", marker->linePen().width());
-        writeNode("width", "3");
+        writeTag("width", "3");
 
         QColor lineColor = marker->linePen().color();
-        startNode("lineColor");
+        startTag("lineColor");
         sprintf(temp, "%d", lineColor.red());
-        writeNode("red", temp);
+        writeTag("red", temp);
         sprintf(temp, "%d", lineColor.green());
-        writeNode("green", temp);
+        writeTag("green", temp);
         sprintf(temp, "%d", lineColor.blue());
-        writeNode("blue", temp);
-        endNode();
+        writeTag("blue", temp);
+        endTag();
         // end borderline
-        endNode();
+        endTag();
     }
     
     return true;

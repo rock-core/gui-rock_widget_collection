@@ -555,7 +555,7 @@ protected:
     DataManager* dataManager;
     /** Dialog to select which curves shall be exported*/
     CurveSelectionDialog curveSelectionDialog;
-
+    /** Plot legend*/
     QwtLegend legend;
 };
 

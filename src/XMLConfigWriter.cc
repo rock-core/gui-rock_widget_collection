@@ -7,10 +7,9 @@
 
 #include "XMLConfigWriter.h"
 
-static char* encoding = "ISO-8859-1";
-
 XMLConfigWriter::XMLConfigWriter()
 {
+    encoding = "ISO-8859-1";
 }
 
 bool XMLConfigWriter::writeConfigFile(char* filename)
@@ -27,7 +26,7 @@ bool XMLConfigWriter::writeConfigFile(char* filename)
         return false;
     }
     // TODO: make encoding configurable
-    int retValue = xmlTextWriterStartDocument(writer, NULL, "ISO-8859-1", NULL);
+    int retValue = xmlTextWriterStartDocument(writer, NULL, encoding, NULL);
     if(retValue < 0)
     {
         std::cerr << "Could not start writing XML document" << std::endl;
@@ -53,7 +52,7 @@ bool XMLConfigWriter::writeConfigFile(char* filename)
     return true;
 }
 
-bool XMLConfigWriter::startNode(const char* name)
+bool XMLConfigWriter::startTag(const char* name)
 {
     int retValue = xmlTextWriterStartElement(writer, BAD_CAST name);
     if (retValue < 0)
@@ -64,7 +63,7 @@ bool XMLConfigWriter::startNode(const char* name)
     return true;
 }
 
-bool XMLConfigWriter::writeNode(const char* name, const char* content)
+bool XMLConfigWriter::writeTag(const char* name, const char* content)
 {
     int retValue = xmlTextWriterWriteElement(writer, BAD_CAST name, ((content == 0) ? (const xmlChar*)"" : (const xmlChar*)(content)));
     if (retValue < 0)
@@ -80,14 +79,14 @@ bool XMLConfigWriter::writeAttribute(const char* name, const char* value)
     return xmlTextWriterWriteAttribute(writer, BAD_CAST name, BAD_CAST value);
 }
 
-bool XMLConfigWriter::endNode()
+bool XMLConfigWriter::endTag()
 {
     return xmlTextWriterEndElement(writer);
 }
 
-bool XMLConfigWriter::writeNodeContent(const char* content)
+bool XMLConfigWriter::writeTagContent(const char* content)
 {
-    xmlTextWriterWriteString(writer, BAD_CAST content);
+    return xmlTextWriterWriteString(writer, BAD_CAST content);
 }
 
 
