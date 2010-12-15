@@ -323,8 +323,7 @@ public slots:
 protected slots:
 
      /**
-     * Refreshes teh complete plot with the data currently stored within the datamanager
-     * @param newValue
+     * Refreshes the complete plot with the data currently stored within the datamanager
      */
     void refreshFromDataManager();
 

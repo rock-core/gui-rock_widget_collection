@@ -13,26 +13,26 @@
  * called. If it is empty a simple xml document with exactly one configuration tag
  * will result.
  * To add nodes some convenient methods are available:<p>
- * <b>writeTag(char* name, char* content)<b><br>
+ * <b>writeTag(const char* name, const char* content)</b><br>
  * This method will write a tag and close it. In between the content, if any
- * will be written, like this: <tag>content</tag>. This method is best
+ * will be written, like this: &lt;tag&gt;content&lt;/tag&gt;. This method is best
  * used for simple tags.
  * <p>
- * <b>startTag(name)</b>
+ * <b>startTag(const char* name)</b><br>
  * This will start a tag but offers the ability via other methods to write attributes
  * and subnodes to the xml file.<p>
- * <b>endTag</b>
+ * <b>endTag()</b><br>
  * This will end the last node opened with startTag.<p>
- * <b>writeAttribute(name, value)</b>
+ * <b>writeAttribute(const char* name, const char* value)</b><br>
  * this will write an attribute to a node opened via startTag. The name of
  * the attribute and its value will be given, resulting in something like
- * this: <tag name="value"> <p>
- * <b>writeTagContent(content)</b>
- * This will write the content between a node, like <tag>content</tag>. It uses
+ * this: &lt;tag name="value"&gt; <p>
+ * <b>writeTagContent(const char* content)</b><br>
+ * This will write the content between a node, like &lt;tag>content&lt;/tag&gt;. It uses
  * the last opened node, opened by startTag.
  *
  * <p>
- * <h1>Example</h1>
+ * <h2>Example</h2>
  *
  * startTag("tag1");<br>
  * writeTag("subtag1", "SubContent");<br>
@@ -45,18 +45,18 @@
  *
  * This code results in:
  *
- * <tag1>
- *  <subtag1>SubContent</subtag1>
- *  <subtag2 subattribute="att">SubContent2</subtag2>
- * </tag1>
+ * &lt;tag1&gt;<br>
+ *  &lt;subtag1&gt;SubContent&lt;/subtag1&gt;<br>
+ *  &lt;subtag2 subattribute="att"&gt;SubContent2&lt;/subtag2&gt;<br>
+ * &lt;/tag1&gt;<br>
  *
  * <p>
- * <h1>History</h1>
+ * <h2>History</h2>
  * 12-15-2010 renamed all node methods to tag method for clarity
  * 12-15-2010 created documentation
  * <p>
  *
- * <h1>ToDo</h1>
+ * <h2>ToDo</h2>
  * <ul>
  * <li>Handle different encodings, currently only "ISO-8859-1" is used</li>
  * <li>Handle different floating points (locale dependent), currently only . is allowed</li>

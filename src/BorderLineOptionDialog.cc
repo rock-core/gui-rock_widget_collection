@@ -99,7 +99,7 @@ void BorderLineOptionDialog::linkActivated()
     {
         // hide the frame and mark it as deleted
         QLabel* sender = (QLabel*)QObject::sender();
-        for(int i=0;i<oldMarkers.size();i++)
+        for(unsigned int i=0;i<oldMarkers.size();i++)
         {
             QwtPlotMarker* marker = oldMarkers[i];
             if(marker != NULL)
@@ -113,7 +113,7 @@ void BorderLineOptionDialog::linkActivated()
                 }
             }
         }
-        for(int i=0;i<newMarkers.size();i++)
+        for(unsigned int i=0;i<newMarkers.size();i++)
         {
             QwtPlotMarker* marker = newMarkers[i+oldSize];
             if(marker != NULL)

@@ -20,7 +20,6 @@ bool PlotXMLReader::readXMLSpecifica()
 {
     // currently quite messy clean up
     borderLines.clear();
-    xmlNodePtr currentNode;
     xmlXPathContextPtr context;
     xmlXPathObjectPtr result;
     context = xmlXPathNewContext(document);
