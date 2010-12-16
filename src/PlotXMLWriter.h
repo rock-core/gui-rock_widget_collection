@@ -23,10 +23,7 @@
  * <h1>History</h1>
  * 12-15-2010 Created documentation
  * <p>
- * <h1>Todo</h1>
- * <ul>
- * <li>Put all extra data to the data manager</li>
- * </ul>
+ * @todo Put all extra data to the data manager
  */
 class PlotXMLWriter : public XMLConfigWriter
 {

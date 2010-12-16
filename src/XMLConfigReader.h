@@ -29,13 +29,9 @@
  * <h1>History</h1>
  * 15-12-2010 Created documentation
  *
- * <h1>Todo</h1>
- *
- * <ul>
- * <li>Make it work without configuration as top level entry</li>
- * <li>Handle floating points correctly according to encodings</li>
- * <li>Create convenience methods for reading</li>
- * </ul>
+ * @todo Make it work without configuration as top level entry<
+ * @todo Handle floating points correctly according to encodings
+ * @todo Create convenience methods for reading
  */
 class XMLConfigReader
 {

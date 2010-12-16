@@ -22,8 +22,7 @@
  *
  * <h1>Known Issues</h1>
  *
- * <h1>To-Do</h1>
- * Support for all axis
+ * @todo Support for all axis
  *
  * @author Bjoern Lueck <blueck@dfki.de>
  * @version 0.1

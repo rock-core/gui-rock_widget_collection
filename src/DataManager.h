@@ -19,9 +19,7 @@
  *
  * <h1>Known Issues</h1>
  *
- * <h1>To-Do</h1>
- * Add the ability to store all or most of those settings to a file (QSettings or
- * key-value pair or XML or...)
+ * @todo Add the ability to store all or most of those settings to a file (QSettings or key-value pair or XML or...)
  *
  * @author Bjoern Lueck <blueck@dfki.de>
  * @version 0.1

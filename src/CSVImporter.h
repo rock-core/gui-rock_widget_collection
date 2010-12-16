@@ -20,15 +20,14 @@
  * Class which contains static methods to import data from a
  * csv file.
  *
- * <h1>History</h1>
+ * <h2>History</h2>
  * 2010-10-22 Initial revision
  *
- * <h1>Known Issues</h1>
+ * <h2>Known Issues</h2>
  * Usually decimal values will be exported with the '.' character, so using
  * the '.' character as a delimiter will result in undesired behaviour or
  * not working at all.
  *
- * <h1>To-Do</h1>
  *
  * @author Bjoern Lueck <blueck@dfki.de>
  * @version 0.1

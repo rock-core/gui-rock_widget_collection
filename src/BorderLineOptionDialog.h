@@ -32,12 +32,12 @@
  * <li> Line width </li>
  * </ul>
  *
- * <h1>History</h1>
+ * <h2>History</h2>
  * 2010-10-22 Initial revision
  *
- * <h1>Known Issues</h1>
+ * <h2>Known Issues</h2>
  *
- * <h1>To-Do</h1>
+ * <h2>To-Do</h2>
  *
  * @author Bjoern Lueck <blueck@dfki.de>
  * @version 0.1

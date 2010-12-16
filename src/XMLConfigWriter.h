@@ -56,14 +56,12 @@
  * 12-15-2010 created documentation
  * <p>
  *
- * <h2>ToDo</h2>
- * <ul>
- * <li>Handle different encodings, currently only "ISO-8859-1" is used</li>
- * <li>Handle different floating points (locale dependent), currently only . is allowed</li>
- * <li>Typesafe methods, currently only char values</li>
- * <li>Compression of the file may be configurable</li>
- * <li>Do not start with configuration tag, to create multiple configuration file formats</li>
- * </ul>
+ * @todo Handle different encodings, currently only "ISO-8859-1" is used
+ * @todo Handle different floating points (locale dependent), currently only . is allowed
+ * @todo Typesafe methods, currently only char values<
+ * @todo Compression of the file may be configurable
+ * @todo Do not start with configuration tag, to create multiple configuration file formats
+ *
  */
 class XMLConfigWriter
 {

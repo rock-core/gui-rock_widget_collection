@@ -106,10 +106,7 @@
  * The plot can easily be exported via exportAsImage. This will open a
  * save dialog with the option to select a fileformat and location. For more information
  * #see QtExporter
- * <h1>TODO:</h1>
- * <ul>
- * <li>Zooming of all Axis, xRight and yTop are not scrollable at the moment</li>
- * </ul>
+ * @todo Zooming of all Axis, xRight and yTop are not scrollable at the moment
  *
  * @author Bjoern Lueck <blueck@dfki.de>
  * @version 0.1

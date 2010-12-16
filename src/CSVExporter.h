@@ -10,17 +10,15 @@
 /**
  * Class which contains static methods to export data to a csv file.
  *
- * <h1>History</h1>
+ * <h2>History</h2>
  * 2010-10-22 Initial revision
  *
- * <h1>Known Issues</h1>
+ * <h2>Known Issues</h2>
  * Decimal values will be exported with the '.' character, so using
  * the '.' character as a delimiter will result in undesired behaviour or
  * not working at all.
  *
- * <h1>To-Do</h1>
- * Remove the qwt specific method and put them in a derived/different class, so
- * the exporter can be used even without any QT/QWT linking
+ * @todo Remove the qwt specific method and put them in a derived/different class, so the exporter can be used even without any QT/QWT linking
  *
  * @author Bjoern Lueck <blueck@dfki.de>
  * @version 0.1
