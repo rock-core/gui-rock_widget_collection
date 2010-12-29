@@ -45,7 +45,7 @@
  * be used to edit the profiles "by hand". It can also be used to extend the possibilities of the profiles.
  *
  * @todo further documentation
- * @todo some of the classes could be in an own module as they can be used in more contexts, like the export of widgets to images
+ * @todo some of the classes could be in an own module as they can be used in more contexts, like the export of widgets to images, csv and xml exports...
  * 
  */
 

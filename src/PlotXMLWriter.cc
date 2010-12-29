@@ -103,6 +103,10 @@ bool PlotXMLWriter::writeContent()
     sprintf(range, "%d", maxY);
     writeTag("max", range);
     endTag();
+
+    char size[2];
+    sprintf(size, "%d", manager->getZoomerDecimalSize());
+    writeTag("decimalNumbers", size);
     // end plot
     endTag();
 

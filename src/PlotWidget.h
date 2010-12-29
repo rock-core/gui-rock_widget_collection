@@ -17,6 +17,7 @@
 #include "CurveSelectionDialog.h"
 #include "PlotXMLReader.h"
 #include "PlotXMLWriter.h"
+#include "ExtendedPlotZoomer.h"
 
 #include <QResizeEvent>
 #include <QPushButton>
@@ -460,7 +461,7 @@ protected:
     /** the grid*/
     QwtPlotGrid grid;
     /** general zoomer zooming in via selecting a rect with the mouse*/
-    QwtPlotZoomer zoomer;
+    ExtendedPlotZoomer zoomer;
     /** vector containing all border lines*/
     std::vector<QwtPlotMarker*> markers;
     /** the currentid of the marker*/

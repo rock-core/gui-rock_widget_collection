@@ -14,6 +14,7 @@
 #include <QFormLayout>
 #include <QCheckBox>
 #include <QComboBox>
+#include <QSpinBox>
 
 #include "ColorPickerButton.h"
 
@@ -69,12 +70,27 @@ public:
     QColor getBGColor() { return bgButton.getDisplayColor(); };
 
     /**
+     * Returns the number of numbers after the decimal point
+     * @return number of numbers after the floating poingt
+     */
+    int getZoomerDecimalPoint() { return decimalSpinBox.value(); };
+
+    /**
      * Returns the csv delimiter
      * @return the delimiter for csv files
      */
     char getCSVDelimiter();
 
+    /**
+     * Returns wehther the legend will be drawn
+     * @return whether the legend will be drawn
+     */
     bool isDrawLegend() { return legendCheckBox.isChecked(); };
+
+    /**
+     * Returns the legend position
+     * @return the legend position
+     */
     int getLegendPosition() { return legendBox.currentIndex(); };
 
 protected:
@@ -103,6 +119,10 @@ protected:
     QCheckBox legendCheckBox;
     /** ComboBox, where the legend shall be displayed*/
     QComboBox legendBox;
+    /** Label to show the decimal number after the dot*/
+    QLabel decimalPoint;
+    /** SpinBox for the decimal numbers*/
+    QSpinBox decimalSpinBox;
 
 private:
 

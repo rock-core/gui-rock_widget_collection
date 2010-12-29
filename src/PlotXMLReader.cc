@@ -64,10 +64,16 @@ bool PlotXMLReader::readXMLSpecifica()
                     const char* contents = (const char*)xmlNodeListGetString(document, nextNode->xmlChildrenNode, 1);
                     manager->setCSVDelimiter(contents[0]);
                 }
+                else if(!xmlStrcmp(name, (const xmlChar*)"decimalNumbers"))
+                {
+                    const char* contents = (const char*)xmlNodeListGetString(document, nextNode->xmlChildrenNode, 1);
+                    std::cout << atoi(contents) << std::endl;
+                    manager->setZoomerDecimalSize(atoi(contents));
+                }
                 else if(!xmlStrcmp(name, (const xmlChar*)"autoscrolling"))
                 {
                     const char* contents = (const char*)xmlNodeListGetString(document, nextNode->xmlChildrenNode, 1);
-                    manager->setAutoscrolling((bool)contents);
+                    manager->setAutoscrolling((bool)atoi(contents));
                 }
                 else if(!xmlStrcmp(name, (const xmlChar*)"showGrid"))
                 {

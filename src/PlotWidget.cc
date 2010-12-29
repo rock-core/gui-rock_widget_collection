@@ -8,6 +8,7 @@
 #include "PlotWidget.h"
 #include "XMLConfigWriter.h"
 #include <QtPlugin>
+#include <qwt-qt4/qwt_picker.h>
 
 Q_EXPORT_PLUGIN2(PlotWidget,PlotWidget)
 

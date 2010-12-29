@@ -7,6 +7,7 @@
 
 #include <QtGui/qwidget.h>
 #include <QtGui/qcombobox.h>
+#include <QtGui/qspinbox.h>
 
 #include "GeneralOptionsWidget.h"
 #include "DataManager.h"
@@ -16,7 +17,7 @@ GeneralOptionsWidget::GeneralOptionsWidget() :
         xAxisText(tr("X Title")),
         yAxisText(tr("Y Title")),
         csvDelimiter(tr("CSV Delimiter")),
-        legendCheckBox(tr("Draw Legend"))
+        legendCheckBox(tr("Draw Legend")), decimalPoint(tr("Numbers after decimal"))
 {
     legendBox.addItem("Left", QVariant(0));
     legendBox.addItem("Right", QVariant(1));
@@ -37,10 +38,12 @@ void GeneralOptionsWidget::initializeLayout()
     yAxisTextEdit.setText(dataManager->getYAxisTitle());
     legendBox.setCurrentIndex(dataManager->getLegendPosition());
     legendCheckBox.setChecked(dataManager->isDrawLegend());
+    decimalSpinBox.setValue(dataManager->getZoomerDecimalSize());
     layout.addRow(&xAxisText, &xAxisTextEdit);
     layout.addRow(&yAxisText, &yAxisTextEdit);
     layout.addRow(&bgLabel, &bgButton);
     layout.addRow(&csvDelimiter, &csvDelimiterEdit);
+    layout.addRow(&decimalPoint, &decimalSpinBox);
     layout.addRow(&legendCheckBox, &legendBox);
     setLayout(&layout);
 }

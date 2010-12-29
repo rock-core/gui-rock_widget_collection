@@ -24,6 +24,7 @@ void OptionsDialog::okPressed()
     dataManager->setCSVDelimiter(generalWidget->getCSVDelimiter());
     dataManager->setDrawLegend(generalWidget->isDrawLegend());
     dataManager->setLegendPosition(generalWidget->getLegendPosition());
+    dataManager->setZoomerDecimalSize(generalWidget->getZoomerDecimalPoint());
     borderWidget->updateExistingMarkers();
     curveWidget->updateExistingCurves();
     setVisible(false);

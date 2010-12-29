@@ -30,6 +30,7 @@ DataManager::DataManager()
     drawYGrid = true;
     drawLegend = false;
     legendPosition = 0;
+    zoomerDecimalSize = 4;
 }
 
 DataManager::~DataManager()

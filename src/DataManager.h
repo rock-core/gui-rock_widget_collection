@@ -17,9 +17,6 @@
  * <h1>History</h1>
  * 2010-10-22 Initial revision
  *
- * <h1>Known Issues</h1>
- *
- * @todo Add the ability to store all or most of those settings to a file (QSettings or key-value pair or XML or...)
  *
  * @author Bjoern Lueck <blueck@dfki.de>
  * @version 0.1
@@ -170,6 +167,18 @@ public:
      */
     bool isAutoscrolling() { return autoscrolling; };
 
+    /**
+     * Return sthe decimal size of the visible zoomer
+     * @return the number of numbers after the decimal
+     */
+    int getZoomerDecimalSize() { return zoomerDecimalSize; };
+
+    /**
+     * Sets the decimal size of the zoomer
+     * @param zoomerDecimalSize the number of characters after the decimal dot
+     */
+    void setZoomerDecimalSize(int zoomerDecimalSize) { this->zoomerDecimalSize = zoomerDecimalSize; };
+
 
 protected:
     /** The singleton instance */
@@ -196,6 +205,8 @@ protected:
     int legendPosition;
     /** if autoscrolling is turned on*/
     bool autoscrolling;
+    /** number of numbers after the decimal point of the zoomer*/
+    int zoomerDecimalSize;
 
 private:
     /** private constructor*/

@@ -80,6 +80,7 @@
 	<xs:element name="showGrid" type="showOnAxis" minOccurs="0" maxOccurs="2"/>
 	<xs:element name="showSlider" type="showOnAxis" minOccurs="0" maxOccurs="2"/>
 	<xs:element name="axisrange" type="axisrange" minOccurs="0" maxOccurs="2"/>
+	<xs:element name="decimalNumbers" type="xs:integer" minOccurs="1" maxOccurs="1"/>
       </xs:sequence>
     </xs:complexType>
   </xs:element>
