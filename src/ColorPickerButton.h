@@ -30,11 +30,11 @@ class ColorPickerButton : public QPushButton
   Q_OBJECT
   
   public:
-      /**
-       * Constructor initializing the button and setting teh initial color
-       * @param displayColor the initial color to be used, defaults to QColor(0, 0, 0)
-       * @param parent the parent widget, may be omitted
-       */
+  /**
+   * Constructor initializing the button and setting teh initial color
+   * @param displayColor the initial color to be used, defaults to QColor(0, 0, 0)
+   * @param parent the parent widget, may be omitted
+   */
     ColorPickerButton(QColor displayColor = QColor(0, 0, 0), QWidget* parent = 0);
 
     /**
