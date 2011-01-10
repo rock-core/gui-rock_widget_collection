@@ -7,7 +7,7 @@
 
 #include <cstdlib>
 #include "QtGui/qapplication.h"
-#include "ImageViewWidget.h"
+#include "ImageViewGL.h"
 #include "PolygonItem.h"
 #include "ArrowItem.h"
 #include <QtGui/QImage>
@@ -24,7 +24,7 @@ using namespace std;
  */
 int main(int argc, char** argv)
 {
-    QApplication* app = new QApplication(argc, argv);
+/*    QApplication* app = new QApplication(argc, argv);
     QImage* image = new QImage("/home/blueck/pics/test.jpg");
     ImageViewWidget* widget = new ImageViewWidget(image->width(), image->height());
     QMainWindow* mainwindow = new QMainWindow();
@@ -82,7 +82,7 @@ int main(int argc, char** argv)
 //            widget->addImage(image->bits(), image->numBytes());
 //        }
 //    }
-    app->exec();
+    app->exec();*/
     return 0;
 }
 

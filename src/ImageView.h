@@ -1,9 +1,12 @@
 /* 
- * File:   ImageViewWidget.h
+ * File:   ImageView.h
  * Author: blueck
  *
  * Created on 17. Juni 2010, 14:14
  */
+
+#ifndef IMAGEVIEW_H
+#define	IMAGEVIEW_H
 
 #include "QtGui/qwidget.h"
 #include <QtGui/QPaintEvent>
@@ -11,23 +14,16 @@
 #include <QtGui/QImage>
 #include <QtGui/QPen>
 #include <QtCore/QByteArray>
-#include <iostream>
 #include <QtCore/QList>
-#include "TextItem.h"
-#include "LineItem.h"
-#include "EllipseItem.h"
-#include "PolygonItem.h"
-#include "PolylineItem.h"
 #include <QtGui/qfiledialog.h>
 #include <QtGui/QMenu>
 #include <QtCore/QString>
+#include <QtDesigner/QDesignerExportWidget>
 
-#include <QtOpenGL/QGLWidget>   //opengl support
-
+#include <iostream>
 #include <frame_helper/FrameQImageConverter.h>
 
-#ifndef IMAGEVIEWWIDGET_H
-#define	IMAGEVIEWWIDGET_H
+#include "ImageViewGL.h"
 
 /**
  * Widget which displays an image. The dimensions and the format needs
@@ -72,7 +68,8 @@
  * @author Bjoern Lueck
  * @version 0.1
  */
-class ImageViewWidget : public QGLWidget
+
+class QDESIGNER_WIDGET_EXPORT ImageView : public QWidget
 {
     Q_OBJECT
 
@@ -83,40 +80,27 @@ public:
      * @param width the width of images put onto the widget
      * @param height the height of images put onto the widget
      */
-    ImageViewWidget(int width=64, int height=64);
+    ImageView(QWidget *parent = NULL,bool use_openGL = false);
 
     /**
      * Destructor cleaning up
      */
-    virtual ~ImageViewWidget();
+    virtual ~ImageView();
     void contextMenuEvent ( QContextMenuEvent * event );
-    void paintGL();
-    void resizeGL(int w, int h);
     int heightForWidth( int w ) {return w*image.height()/image.width(); };
     void mouseDoubleClickEvent ( QMouseEvent * event );
 
 public slots:
-    void saveImage();
-    bool saveImage2(QString path);
+    bool useOpenGL(bool flag);
+    void setDefaultImage();
+
+    void saveImage(bool overlay=true);
+    bool saveImage2(QString path,bool overlay=true);
     bool saveImage3(const QString &mode, int pixel_size,  int width,  int height,const char* pbuffer, QString path);
     
-/*   QString getRubyCode()
-    {
-      return    "def test; "
-                      " puts 'ja';"
-                      "end ";
-    };*/
-
     QWidget *newInstance()
     {
-      return new ImageViewWidget();
-    }
-
-
-    void setFreeScale(bool free)
-    {
-      //    setMinimumSize(QSize(image.width()*scale_factor, image.height()*scale_factor));
-
+      return new ImageView();
     }
 
     void addRawImage(const QString &mode, int pixel_size, int width, int height,const char* pbuffer);
@@ -231,18 +215,6 @@ public slots:
     int getWidth()const {return image.width();};
     int getFormat()const {return image.format();};
 
-
-    void setAspectRatio(bool value)
-    {
-      aspect_ratio = value;
-      if(value)
-      {
-        QSizePolicy policy(QSizePolicy::Preferred,QSizePolicy::Fixed,QSizePolicy::Slider);
-        policy.setHeightForWidth(true);
-        setSizePolicy(policy);
-      }
-    }
-
     void setFixedSize(bool value)
     {
       fixed_size = value;
@@ -255,8 +227,10 @@ protected:
      * Adds all shapes to the image
      * @param shownImage teh iamge to add the shapes to
      */
-    void addDrawItemsToWidget(QImage &shownImage);
-    int setDisplaySize();
+    void drawDrawItemsToImage(QImage &image,bool all=false);
+    void drawDrawItemsToPainter(QPainter &painter,bool all=false);
+    void resizeEvent ( QResizeEvent * event );
+    void paintEvent ( QPaintEvent * event );
 
     /** The format used in the widget*/
     /** List of all Draw Items*/
@@ -267,10 +241,13 @@ protected:
     QMenu contextMenu;
     QAction *save_image_act;
     QString save_path;
-    QImage image;
-    bool aspect_ratio;
+    
+    QImage image;          //holds the orignial image
+    bool no_input;
     bool fixed_size;
+
     FrameQImageConverter frame_converter;
+    ImageViewGL *image_view_gl;
 };
 
 #endif	/* IMAGEVIEWWIDGET_H */

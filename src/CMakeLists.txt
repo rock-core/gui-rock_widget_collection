@@ -2,7 +2,9 @@
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 SET(image_view_widget_MOC_HDRS
-  ImageViewWidget.h
+  ImageView.h
+  ImageViewGL.h
+  ImageViewPlugin.h
   DrawItem.h
   TextItem.h
 )
