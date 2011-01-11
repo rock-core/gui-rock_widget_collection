@@ -22,9 +22,9 @@ class ExtendedPlotZoomer : public QwtPlotZoomer
 {
 public:
     /**
-     * Overwritten constructor, initializing the DataManager
-     * @param canvas teh canvas the zoomer belongs to. The parameters
-     * are passed to the super class constructor.
+     * Overwritten constructor, initializing the DataManager.
+     * The parameters are passed to the super class constructor.
+     * @param canvas thh canvas the zoomer belongs to.
      * @param doReplot if a replot should be done
      */
     ExtendedPlotZoomer(QwtPlotCanvas* canvas, bool doReplot=true);

@@ -10,7 +10,7 @@
 #include <QtPlugin>
 #include <qwt-qt4/qwt_picker.h>
 
-Q_EXPORT_PLUGIN2(PlotWidget,PlotWidget)
+//Q_EXPORT_PLUGIN2(PlotWidget,PlotWidget)
 
 PlotWidget::PlotWidget(QWidget* parent) : QWidget(parent),
         xBottomSlider(NULL), yLeftSlider(NULL, Qt::Vertical), plot(this),

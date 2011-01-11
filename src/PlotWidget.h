@@ -26,6 +26,7 @@
 #include <QGridLayout>
 #include <QMenuBar>
 #include <QStyleOptionMenuItem>
+#include <QIcon>
 
 
 #include <qwt_slider.h>
@@ -117,6 +118,7 @@ class PlotWidget : public QWidget
 
     Q_OBJECT
 
+
 public:
     /**
      * Standard constructor
@@ -128,8 +130,6 @@ public:
      * Standard destructor
      */
     virtual ~PlotWidget();
-
-    
 
     // --> Exporting functions
 

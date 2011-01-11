@@ -47,7 +47,7 @@ bool PlotXMLReader::readXMLSpecifica()
                 if(!xmlStrcmp(name, (const xmlChar*)"title"))
                 {
                     const xmlChar* property = xmlGetProp(nextNode, (const xmlChar*)"axis");
-                    const xmlChar* contents;
+                    const xmlChar* contents = NULL;
                     if(!xmlStrcmp(property, (const xmlChar*)"x"))
                     {
                         contents = xmlNodeListGetString(document, nextNode->xmlChildrenNode, 1);
@@ -58,27 +58,31 @@ bool PlotXMLReader::readXMLSpecifica()
                         contents = xmlNodeListGetString(document, nextNode->xmlChildrenNode, 1);
                         manager->setYAxisTitle((const char*)contents);
                     }
+                    xmlFree((void*)contents);
+                    xmlFree((void*)property);
                 }
                 else if(!xmlStrcmp(name, (const xmlChar*)"csvDelimiter"))
                 {
                     const char* contents = (const char*)xmlNodeListGetString(document, nextNode->xmlChildrenNode, 1);
                     manager->setCSVDelimiter(contents[0]);
+                    xmlFree((void*)contents);
                 }
                 else if(!xmlStrcmp(name, (const xmlChar*)"decimalNumbers"))
                 {
                     const char* contents = (const char*)xmlNodeListGetString(document, nextNode->xmlChildrenNode, 1);
-                    std::cout << atoi(contents) << std::endl;
                     manager->setZoomerDecimalSize(atoi(contents));
+                    xmlFree((void*)contents);
                 }
                 else if(!xmlStrcmp(name, (const xmlChar*)"autoscrolling"))
                 {
                     const char* contents = (const char*)xmlNodeListGetString(document, nextNode->xmlChildrenNode, 1);
                     manager->setAutoscrolling((bool)atoi(contents));
+                    xmlFree((void*)contents);
                 }
                 else if(!xmlStrcmp(name, (const xmlChar*)"showGrid"))
                 {
                     const xmlChar* property = xmlGetProp(nextNode, (const xmlChar*)"axis");
-                    const char* contents;
+                    const char* contents = NULL;
                     if(!xmlStrcmp(property, (const xmlChar*)"x"))
                     {
                         contents = (const char*)xmlNodeListGetString(document, nextNode->xmlChildrenNode, 1);
@@ -89,11 +93,13 @@ bool PlotXMLReader::readXMLSpecifica()
                         contents = (const char*)xmlNodeListGetString(document, nextNode->xmlChildrenNode, 1);
                         manager->setDrawYGrid((bool)atoi(contents));
                     }
+                    xmlFree((void*)contents);
+                    xmlFree((void*)property);
                 }
                 else if(!xmlStrcmp(name, (const xmlChar*)"showSlider"))
                 {
                     const xmlChar* property = xmlGetProp(nextNode, (const xmlChar*)"axis");
-                    const char* contents;
+                    const char* contents = NULL;
                     if(!xmlStrcmp(property, (const xmlChar*)"x"))
                     {
                         contents = (const char*)xmlNodeListGetString(document, nextNode->xmlChildrenNode, 1);
@@ -104,11 +110,13 @@ bool PlotXMLReader::readXMLSpecifica()
                         contents = (const char*)xmlNodeListGetString(document, nextNode->xmlChildrenNode, 1);
                         manager->setShowLeftSlider((bool)atoi(contents));
                     }
+                    xmlFree((void*)contents);
+                    xmlFree((void*)property);
                 }
                 else if(!xmlStrcmp(name, (const xmlChar*)"legend"))
                 {
                     const xmlChar* property = xmlGetProp(nextNode, (const xmlChar*)"visible");
-                    const xmlChar* contents;
+                    const xmlChar* contents = NULL;
                     xmlNodePtr subNode = nextNode->xmlChildrenNode;
                     contents = xmlNodeListGetString(document, subNode->xmlChildrenNode, 1);
                     manager->setDrawLegend((bool)atoi((const char*)property));
@@ -128,6 +136,8 @@ bool PlotXMLReader::readXMLSpecifica()
                     {
                         manager->setLegendPosition(1);
                     }
+                    xmlFree((void*)contents);
+                    xmlFree((void*)property);
                 }
                 else if(!xmlStrcmp(name, (const xmlChar*)"axisrange"))
                 {
@@ -149,6 +159,9 @@ bool PlotXMLReader::readXMLSpecifica()
                         minY = atoi((const char*)contents);
                         maxY = atoi((const char*)sContents);
                     }
+                    xmlFree((void*)contents);
+                    xmlFree((void*)sContents);
+                    xmlFree((void*)property);
                 }
                 else if(!xmlStrcmp(name, (const xmlChar*)"bgcolor"))
                 {
@@ -164,6 +177,9 @@ bool PlotXMLReader::readXMLSpecifica()
 
                     QColor color(atoi((const char*)rContents), atoi((const char*)gContents), atoi((const char*)bContents));
                     manager->setBGColor(color);
+                    xmlFree((void*)rContents);
+                    xmlFree((void*)gContents);
+                    xmlFree((void*)bContents);
                 }
                 nextNode = nextNode->next;
             }
@@ -201,11 +217,13 @@ bool PlotXMLReader::readXMLSpecifica()
                 {
                     const char* contents = (const char*)xmlNodeListGetString(document, nextNode->xmlChildrenNode, 1);
                     marker->setXValue(atof((const char*)contents));
+                    xmlFree((void*)contents);
                 }
                 else if(!xmlStrcmp(name, (const xmlChar*)"yposition"))
                 {
                     const char* contents = (const char*)xmlNodeListGetString(document, nextNode->xmlChildrenNode, 1);
                     marker->setYValue(atof((const char*)contents));
+                    xmlFree((void*)contents);
                 }
                 else if(!xmlStrcmp(name, (const xmlChar*)"type"))
                 {
@@ -226,11 +244,13 @@ bool PlotXMLReader::readXMLSpecifica()
                     {
                         marker->setLineStyle(QwtPlotMarker::NoLine);
                     }
+                    xmlFree((void*)contents);
                 }
                 else if(!xmlStrcmp(name, (const xmlChar*)"width"))
                 {
                     const char* contents = (const char*)xmlNodeListGetString(document, nextNode->xmlChildrenNode, 1);
                     linePen.setWidth(atoi((const char*)contents));
+                    xmlFree((void*)contents);
                 }
                 else if(!xmlStrcmp(name, (const xmlChar*)"lineColor"))
                 {
@@ -245,6 +265,10 @@ bool PlotXMLReader::readXMLSpecifica()
                     bContents = xmlNodeListGetString(document, subNode->xmlChildrenNode, 1);
                     QColor color(atoi((const char*)rContents), atoi((const char*)gContents), atoi((const char*)bContents));
                     linePen.setColor(color);
+                    xmlFree((void*)rContents);
+                    xmlFree((void*)gContents);
+                    xmlFree((void*)bContents);
+
                 }
                 nextNode = nextNode->next;
             }
