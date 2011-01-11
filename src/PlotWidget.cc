@@ -13,8 +13,8 @@
 //Q_EXPORT_PLUGIN2(PlotWidget,PlotWidget)
 
 PlotWidget::PlotWidget(QWidget* parent) : QWidget(parent),
-        xBottomSlider(NULL), yLeftSlider(NULL, Qt::Vertical), plot(this),
-        zoomer(plot.canvas(), true), markers(100), curves(100), initialRect(-1, -1, -1, -1),
+        xBottomSlider(NULL), yLeftSlider(NULL, Qt::Vertical), plottingWidget(this),
+        zoomer(plottingWidget.canvas(), true), markers(100), curves(100), initialRect(-1, -1, -1, -1),
         optionsDialog(this),
         fileMenu(tr("&File")), plotMenu(tr("&Plot")), exportMenu(tr("&Export")), sliderMenu(tr("&Show Sliders")),
         gridMenu(tr("&Grid")), importMenu(tr("&Import")), clearMenu(tr("&Clear")),
@@ -30,7 +30,7 @@ PlotWidget::PlotWidget(QWidget* parent) : QWidget(parent),
     curveId = 0;
     layout.addWidget(&menuBar, 0, 0, 1, 2);
     layout.addWidget(&yLeftSlider, 1, 0);
-    layout.addWidget(&plot, 1, 1);
+    layout.addWidget(&plottingWidget, 1, 1);
     layout.addWidget(&xBottomSlider, 2, 1);
     this->setLayout(&layout);
     dataManager = DataManager::getInstance();
@@ -38,7 +38,7 @@ PlotWidget::PlotWidget(QWidget* parent) : QWidget(parent),
     this->enableSlider(X_BOTTOM, dataManager->isShowBottomSlider());
     this->enableSlider(Y_LEFT, dataManager->isShowLeftSlider());
     this->setDrawGrid(true, dataManager->isDrawXGrid(), dataManager->isDrawYGrid());
-    dataManager->setBGColor(plot.canvasBackground());
+    dataManager->setBGColor(plottingWidget.canvasBackground());
     minXBottom = INT_MAX;
     maxXBottom = INT_MIN;
     minYLeft = INT_MAX;
@@ -49,7 +49,7 @@ PlotWidget::PlotWidget(QWidget* parent) : QWidget(parent),
     QObject::connect(&xBottomSlider, SIGNAL(valueChanged(double)), this, SLOT(xBottomSliderValueChanged(double)));
     QObject::connect(&yLeftSlider, SIGNAL(valueChanged(double)), this, SLOT(yLeftSliderValueChanged(double)));
     QObject::connect(&zoomer, SIGNAL(zoomed(const QwtDoubleRect&)), this, SLOT(zoomed(const QwtDoubleRect&)));
-    QObject::connect(&plot, SIGNAL(mouseZoomed(const QwtDoubleRect&)), this, SLOT(zoomed(const QwtDoubleRect&)));
+    QObject::connect(&plottingWidget, SIGNAL(mouseZoomed(const QwtDoubleRect&)), this, SLOT(zoomed(const QwtDoubleRect&)));
     QObject::connect(&optionsDialog, SIGNAL(accepted()), this, SLOT(optionsChanged()));
     zoomer.setTrackerMode(QwtPlotZoomer::AlwaysOn);
     legend.setItemMode(QwtLegend::CheckableItem);
@@ -84,7 +84,7 @@ void PlotWidget::clearBorderLines()
     markers.clear();
     markers.resize(100);
     plotMarkerId = 0;
-    plot.replot();
+    plottingWidget.replot();
 }
 
 void PlotWidget::clearCurves()
@@ -100,7 +100,7 @@ void PlotWidget::clearCurves()
     }
     curves.clear();
     curves.resize(100);
-    plot.replot();
+    plottingWidget.replot();
 }
 
 void PlotWidget::clearAll()
@@ -183,7 +183,7 @@ void PlotWidget::loadProfile()
     std::vector<QwtPlotMarker*> newMarkers = reader.getMarker();
     for(unsigned int i=0;i<newMarkers.size();i++)
     {
-        newMarkers[i]->attach(&plot);
+        newMarkers[i]->attach(&plottingWidget);
         markers[plotMarkerId] = newMarkers[i];
         plotMarkerId++;
     }
@@ -194,7 +194,7 @@ void PlotWidget::loadProfile()
     setAxisBoundaries(X_BOTTOM, minX, maxX);
     setAxisBoundaries(Y_LEFT, minY, maxY);
     refreshFromDataManager();
-    plot.replot();
+    plottingWidget.replot();
 }
 
 void PlotWidget::saveProfile()
@@ -233,7 +233,7 @@ void PlotWidget::saveProfile()
 
 void PlotWidget::refreshFromDataManager()
 {
-    plot.setCanvasBackground(dataManager->getBGColor());
+    plottingWidget.setCanvasBackground(dataManager->getBGColor());
     setAxisTitles(dataManager->getXAxisTitle(), dataManager->getYAxisTitle());
     if(dataManager->isDrawLegend())
     {
@@ -243,7 +243,7 @@ void PlotWidget::refreshFromDataManager()
             legendItems[i]->setVisible(true);
         }
         legend.setVisible(true);
-        plot.insertLegend(&legend, (QwtPlot::LegendPosition)dataManager->getLegendPosition());
+        plottingWidget.insertLegend(&legend, (QwtPlot::LegendPosition)dataManager->getLegendPosition());
     }
     else
     {
@@ -325,13 +325,13 @@ void PlotWidget::fitPlotToGraph()
 {
   setAxisAutoScale(X_BOTTOM, true);
   setAxisAutoScale(Y_LEFT, true);
-  double lower = plot.axisScaleDiv(QwtPlot::xBottom)->lowerBound();
-  double upper = plot.axisScaleDiv(QwtPlot::xBottom)->upperBound();
+  double lower = plottingWidget.axisScaleDiv(QwtPlot::xBottom)->lowerBound();
+  double upper = plottingWidget.axisScaleDiv(QwtPlot::xBottom)->upperBound();
   setAxisBoundaries(X_BOTTOM, lower, upper);
-  lower = plot.axisScaleDiv(QwtPlot::yLeft)->lowerBound();
-  upper = plot.axisScaleDiv(QwtPlot::yLeft)->upperBound();
+  lower = plottingWidget.axisScaleDiv(QwtPlot::yLeft)->lowerBound();
+  upper = plottingWidget.axisScaleDiv(QwtPlot::yLeft)->upperBound();
   setAxisBoundaries(Y_LEFT, lower, upper);
-  plot.replot();
+  plottingWidget.replot();
 }
 
 void PlotWidget::showOptionsDialog()
@@ -345,7 +345,7 @@ void PlotWidget::showOptionsDialog()
 void PlotWidget::optionsChanged()
 {
     std::cout << "Changed" << std::endl;
-    plot.setCanvasBackground(dataManager->getBGColor());
+    plottingWidget.setCanvasBackground(dataManager->getBGColor());
     setAxisTitles(dataManager->getXAxisTitle(), dataManager->getYAxisTitle());
     std::vector<QwtPlotMarker*> toDelete = optionsDialog.getDeletedMarkers();
     std::cout << toDelete.size() << std::endl;
@@ -368,7 +368,7 @@ void PlotWidget::optionsChanged()
         QwtPlotMarker* marker = newMarkers[i];
         if(marker != NULL)
         {
-            marker->attach(&plot);
+            marker->attach(&plottingWidget);
             markers[plotMarkerId] = marker;
             plotMarkerId++;
         }
@@ -381,7 +381,7 @@ void PlotWidget::optionsChanged()
             legendItems[i]->setVisible(true);
         }
         legend.setVisible(true);
-        plot.insertLegend(&legend, (QwtPlot::LegendPosition)dataManager->getLegendPosition());
+        plottingWidget.insertLegend(&legend, (QwtPlot::LegendPosition)dataManager->getLegendPosition());
     }
     else
     {
@@ -392,7 +392,7 @@ void PlotWidget::optionsChanged()
         }
         legend.setVisible(false);
     }
-    plot.replot();
+    plottingWidget.replot();
 }
 
 QwtPlot::Axis PlotWidget::getAxisForInt(int axis)
@@ -421,7 +421,7 @@ void PlotWidget::setDrawGrid(bool drawGrid, bool enableX, bool enableY)
         grid.enableY(enableY);
         xGridAction.setChecked(enableX);
         yGridAction.setChecked(enableY);
-        grid.attach(&plot);
+        grid.attach(&plottingWidget);
     }
     else
     {
@@ -429,7 +429,7 @@ void PlotWidget::setDrawGrid(bool drawGrid, bool enableX, bool enableY)
         yGridAction.setChecked(false);
         grid.detach();
     }
-    plot.replot();
+    plottingWidget.replot();
 }
 
 int PlotWidget::addBorderLine(double value, Qt::Orientation orientation, QPen pen)
@@ -447,7 +447,7 @@ int PlotWidget::addBorderLine(double value, Qt::Orientation orientation, QPen pe
         marker->setXValue(value);
     }
     marker->setLinePen(pen);
-    marker->attach(&plot);
+    marker->attach(&plottingWidget);
     markers[plotMarkerId] = marker;
     return plotMarkerId++;
 }
@@ -514,7 +514,7 @@ void PlotWidget::enableBorderLine(int borderLineId, bool enable)
     {
         if(enable)
         {
-            marker->attach(&plot);
+            marker->attach(&plottingWidget);
         }
         else
         {
@@ -538,21 +538,21 @@ void PlotWidget::setAxisAutoScale(int axisId, bool enable)
     QwtPlot::Axis axis = getAxisForInt(axisId);
     if(enable)
     {
-        plot.setAxisAutoScale(axis);
+        plottingWidget.setAxisAutoScale(axis);
         initialRect.setRect(-1, -1, -1, -1);
     }
     else
     {
-        double lower = plot.axisScaleDiv(axis)->lowerBound();
-        double upper = plot.axisScaleDiv(axis)->upperBound();
+        double lower = plottingWidget.axisScaleDiv(axis)->lowerBound();
+        double upper = plottingWidget.axisScaleDiv(axis)->upperBound();
         setAxisBoundaries(axis, lower, upper);
     }
 }
 
 void PlotWidget::setAxisTitles(QString xAxisTitle, QString yAxisTitle)
 {
-    plot.setAxisTitle(QwtPlot::yLeft, yAxisTitle);
-    plot.setAxisTitle(QwtPlot::xBottom, xAxisTitle);
+    plottingWidget.setAxisTitle(QwtPlot::yLeft, yAxisTitle);
+    plottingWidget.setAxisTitle(QwtPlot::xBottom, xAxisTitle);
     dataManager->setXAxisTitle(xAxisTitle);
     dataManager->setYAxisTitle(yAxisTitle);
 }
@@ -560,9 +560,9 @@ void PlotWidget::setAxisTitles(QString xAxisTitle, QString yAxisTitle)
 void PlotWidget::setAxisBoundaries(int axisId, double lower, double upper, double step)
 {
     QwtPlot::Axis axis = getAxisForInt(axisId);
-    plot.enableAxis(axis);
-    plot.setAxisScale(axis, lower, upper, step);
-    plot.replot();
+    plottingWidget.enableAxis(axis);
+    plottingWidget.setAxisScale(axis, lower, upper, step);
+    plottingWidget.replot();
     if(axis == QwtPlot::xBottom)
     {
         xSpan = upper - lower;
@@ -578,10 +578,10 @@ void PlotWidget::setAxisBoundaries(int axisId, double lower, double upper, doubl
 void PlotWidget::setSliderValues()
 {
     xBottomSlider.setScalePosition(QwtSlider::BottomScale);
-    double currentMinX = plot.axisScaleDiv(QwtPlot::xBottom)->lowerBound();
-    double currentMaxX = plot.axisScaleDiv(QwtPlot::xBottom)->upperBound();
-    double currentMinY = plot.axisScaleDiv(QwtPlot::yLeft)->lowerBound();
-    double currentMaxY = plot.axisScaleDiv(QwtPlot::yLeft)->upperBound();
+    double currentMinX = plottingWidget.axisScaleDiv(QwtPlot::xBottom)->lowerBound();
+    double currentMaxX = plottingWidget.axisScaleDiv(QwtPlot::xBottom)->upperBound();
+    double currentMinY = plottingWidget.axisScaleDiv(QwtPlot::yLeft)->lowerBound();
+    double currentMaxY = plottingWidget.axisScaleDiv(QwtPlot::yLeft)->upperBound();
     xBottomSlider.setRange(minXBottom < currentMinX ? minXBottom : currentMinX, maxXBottom > currentMaxX ? maxXBottom : currentMaxX);
     yLeftSlider.setScalePosition(QwtSlider::LeftScale);
     yLeftSlider.setRange(minYLeft < currentMinY ? minYLeft : currentMinY, maxYLeft > currentMaxY ? maxYLeft : currentMaxY);
@@ -589,10 +589,10 @@ void PlotWidget::setSliderValues()
 
 void PlotWidget::setZoomBase()
 {
-    double xLower = plot.axisScaleDiv(QwtPlot::xBottom)->lowerBound();
-    double width = plot.axisScaleDiv(QwtPlot::xBottom)->upperBound() - plot.axisScaleDiv(QwtPlot::xBottom)->lowerBound();
-    double height = plot.axisScaleDiv(QwtPlot::yLeft)->upperBound() - plot.axisScaleDiv(QwtPlot::yLeft)->lowerBound();
-    double yLower = plot.axisScaleDiv(QwtPlot::yLeft)->lowerBound();
+    double xLower = plottingWidget.axisScaleDiv(QwtPlot::xBottom)->lowerBound();
+    double width = plottingWidget.axisScaleDiv(QwtPlot::xBottom)->upperBound() - plottingWidget.axisScaleDiv(QwtPlot::xBottom)->lowerBound();
+    double height = plottingWidget.axisScaleDiv(QwtPlot::yLeft)->upperBound() - plottingWidget.axisScaleDiv(QwtPlot::yLeft)->lowerBound();
+    double yLower = plottingWidget.axisScaleDiv(QwtPlot::yLeft)->lowerBound();
     initialRect.setRect(xLower, yLower, width, height);
     zoomer.setZoomBase(QwtDoubleRect(minXBottom, maxYLeft, maxXBottom + zoomXSpan, maxYLeft + zoomYSpan));
 }
@@ -602,13 +602,13 @@ void PlotWidget::xBottomSliderValueChanged(double newValue)
     double value = xBottomSlider.value();
     if(!isZoomed)
     {
-        plot.setAxisScale(QwtPlot::xBottom, value, value + xSpan);
+        plottingWidget.setAxisScale(QwtPlot::xBottom, value, value + xSpan);
     }
     else
     {
-        plot.setAxisScale(QwtPlot::xBottom, value, value + zoomXSpan);
+        plottingWidget.setAxisScale(QwtPlot::xBottom, value, value + zoomXSpan);
     }
-    plot.replot();
+    plottingWidget.replot();
 }
 
 void PlotWidget::yLeftSliderValueChanged(double newValue)
@@ -616,19 +616,19 @@ void PlotWidget::yLeftSliderValueChanged(double newValue)
     double value = yLeftSlider.value();
     if(!isZoomed)
     {
-        plot.setAxisScale(QwtPlot::yLeft, value, value + ySpan);
+        plottingWidget.setAxisScale(QwtPlot::yLeft, value, value + ySpan);
     }
     else
     {
-        plot.setAxisScale(QwtPlot::yLeft, value, value + zoomYSpan);
+        plottingWidget.setAxisScale(QwtPlot::yLeft, value, value + zoomYSpan);
     }
-    plot.replot();
+    plottingWidget.replot();
 }
 
 void PlotWidget::setAxisShown(int axisId, bool enable)
 {
     QwtPlot::Axis axis = getAxisForInt(axisId);
-    plot.enableAxis(axis, enable);
+    plottingWidget.enableAxis(axis, enable);
 }
 
 void PlotWidget::setAutoscrolling(bool enable)
@@ -638,7 +638,7 @@ void PlotWidget::setAutoscrolling(bool enable)
     xBottomSlider.setEnabled(!enable);
     yLeftSlider.setEnabled(!enable);
     zoomer.setEnabled(!enable);
-    plot.setMouseWheelZoomAxis(!enable, !enable);
+    plottingWidget.setMouseWheelZoomAxis(!enable, !enable);
 }
 
 int PlotWidget::addData(QList<double> xPoints, QList<double> yPoints, int dataId,
@@ -674,13 +674,13 @@ int PlotWidget::addData(double* xPoints, double* yPoints, int length, int dataId
         pen.setWidth(5);
         curve->setPen(pen);
         curve->setData(xPoints, yPoints, length);
-        curve->attach(&plot);
+        curve->attach(&plottingWidget);
         curve->setAxis(xAxis, yAxis);
         for(int i=0;i<length;i++)
         {
             setMinMaxPoints(xPoints[i], yPoints[i]);
         }
-        plot.replot();
+        plottingWidget.replot();
 	if(dataId > 0)
 	  {
 	    curves[dataId] = curve;
@@ -715,16 +715,16 @@ int PlotWidget::addData(double* xPoints, double* yPoints, int length, int dataId
             // set the max to the last value and add 5% off the total span
             double finalMaxX = maxXBottom*1.05;
             double finalMaxY = maxYLeft * 1.05;
-	    if(maxXBottom > plot.axisScaleDiv(QwtPlot::xBottom)->upperBound())
+	    if(maxXBottom > plottingWidget.axisScaleDiv(QwtPlot::xBottom)->upperBound())
 	      {
-		plot.setAxisScale(QwtPlot::xBottom, finalMaxX - xSpan, finalMaxX);
+		plottingWidget.setAxisScale(QwtPlot::xBottom, finalMaxX - xSpan, finalMaxX);
 	      }
-	    if(maxYLeft > plot.axisScaleDiv(QwtPlot::yLeft)->upperBound())
+	    if(maxYLeft > plottingWidget.axisScaleDiv(QwtPlot::yLeft)->upperBound())
 	      {
-		plot.setAxisScale(QwtPlot::yLeft, finalMaxY - ySpan, finalMaxY);
+		plottingWidget.setAxisScale(QwtPlot::yLeft, finalMaxY - ySpan, finalMaxY);
 	      }
         }
-        plot.replot();
+        plottingWidget.replot();
     }
     setSliderValues();
     if(autoScale)
@@ -735,19 +735,19 @@ int PlotWidget::addData(double* xPoints, double* yPoints, int length, int dataId
         
     }
     setZoomBase();
-    connect(&plot, SIGNAL(legendChecked(QwtPlotItem *, bool)), this, SLOT(showCurve(QwtPlotItem *, bool)));
+    connect(&plottingWidget, SIGNAL(legendChecked(QwtPlotItem *, bool)), this, SLOT(showCurve(QwtPlotItem *, bool)));
     return dataId;
 }
 
 void PlotWidget::showCurve(QwtPlotItem* item, bool checked)
 {
     item->setVisible(!checked);
-    QWidget *w = plot.legend()->find(item);
+    QWidget *w = plottingWidget.legend()->find(item);
     if ( w && w->inherits("QwtLegendItem") )
     {
          ((QwtLegendItem*)w)->setChecked(checked);
     }
-    plot.replot();
+    plottingWidget.replot();
 }
 
 void PlotWidget::setMinMaxPoints(double xPoint, double yPoint)
@@ -777,7 +777,7 @@ void PlotWidget::enableData(int dataId, bool enable)
     {
         if(enable)
         {
-            curve->attach(&plot);
+            curve->attach(&plottingWidget);
         }
         else
         {
@@ -820,5 +820,5 @@ void PlotWidget::setDataStyle(int dataId, QPen pen, int curveStyle)
 
 void PlotWidget::exportPlotAsImage()
 {
-    QtExporter::exportWidgetAsImagWithDialog(&plot);
+    QtExporter::exportWidgetAsImagWithDialog(&plottingWidget);
 }

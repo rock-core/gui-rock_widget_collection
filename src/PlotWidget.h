@@ -117,6 +117,8 @@ class PlotWidget : public QWidget
 {
 
     Q_OBJECT
+    Q_PROPERTY( bool autoscrolling READ isAutoscrolling WRITE setAutoscrolling )
+
 
 
 public:
@@ -457,7 +459,7 @@ protected:
     /** layout used*/
     QGridLayout layout;
     /** the plot widget*/
-    PlottingWidget plot;
+    PlottingWidget plottingWidget;
     /** the grid*/
     QwtPlotGrid grid;
     /** general zoomer zooming in via selecting a rect with the mouse*/

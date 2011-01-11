@@ -29,7 +29,7 @@ QIcon PlotWidgetPlugin::icon() const
 
 QString PlotWidgetPlugin::group() const
 {
-    return "Own Widgets [Plotting]";
+    return "Rock-Robotics";
 }
 
 QString PlotWidgetPlugin::includeFile() const
@@ -39,7 +39,7 @@ QString PlotWidgetPlugin::includeFile() const
 
 QString PlotWidgetPlugin::name() const
 {
-    return "PlottingWidget";
+    return "PlotWidget";
 }
 
 QString PlotWidgetPlugin::toolTip() const
