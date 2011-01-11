@@ -2,7 +2,7 @@
 #include "ImageView.h"
 
 
- Q_EXPORT_PLUGIN2(ImageViewPlugin, ImageViewPlugin)
+Q_EXPORT_PLUGIN2(ImageViewPlugin, ImageViewPlugin)
 
  ImageViewPlugin::ImageViewPlugin(QObject *parent)
      : QObject(parent)
@@ -14,7 +14,7 @@
  {
  }
 
- void ImageViewPlugin::initialize(QDesignerFormEditorInterface *)
+ void ImageViewPlugin::initialize(QDesignerFormEditorInterface *formEditor)
  {
      if (initialized)
          return;
@@ -68,16 +68,15 @@
             "  <rect>\n"
             "   <x>0</x>\n"
             "   <y>0</y>\n"
-            "   <width>100</width>\n"
-            "   <height>100</height>\n"
+            "   <width>320</width>\n"
+            "   <height>240</height>\n"
             "  </rect>\n"
             " </property>\n"
             " <property name=\"toolTip\" >\n"
-            "  <string>The current time</string>\n"
+            "  <string>ImageView</string>\n"
             " </property>\n"
             " <property name=\"whatsThis\" >\n"
-            "  <string>The analog clock widget displays "
-            "the current time.</string>\n"
+            "  <string>Widget for displaying frames.</string>\n"
             " </property>\n"
             "</widget>\n";
  }

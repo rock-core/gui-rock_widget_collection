@@ -65,13 +65,16 @@
  * ontop of it. Otherwise, if adding multiple shapes, repaint would be called very often which
  * especially when working with video would be a performance waste.
  * 
- * @author Bjoern Lueck
+ * @author Bjoern Lueck, Alexander Duda
  * @version 0.1
  */
 
 class QDESIGNER_WIDGET_EXPORT ImageView : public QWidget
 {
     Q_OBJECT
+    Q_CLASSINFO("Author", "Alexander Duda")
+    Q_PROPERTY(bool Use_OpenGL READ getOpenGl WRITE setOpenGL USER false)
+    Q_PROPERTY(bool Aspect_Ratio READ getAspectRatio WRITE setAspectRatio USER false)
 
 public:
     /**
@@ -91,17 +94,26 @@ public:
     void mouseDoubleClickEvent ( QMouseEvent * event );
 
 public slots:
-    bool useOpenGL(bool flag);
+
+    void update();
+    void update2();
     void setDefaultImage();
 
+    void setOpenGL(bool flag);
+    bool getOpenGl(){return image_view_gl;};
+    void setAspectRatio(bool value)
+    {
+      aspect_ratio=value;
+      if(image_view_gl)
+        image_view_gl->setAspectRatio(value);
+    };
+    bool getAspectRatio(){return aspect_ratio;};
+
+    //for saving displayed frames
     void saveImage(bool overlay=true);
     bool saveImage2(QString path,bool overlay=true);
     bool saveImage3(const QString &mode, int pixel_size,  int width,  int height,const char* pbuffer, QString path);
     
-    QWidget *newInstance()
-    {
-      return new ImageView();
-    }
 
     void addRawImage(const QString &mode, int pixel_size, int width, int height,const char* pbuffer);
 
@@ -215,13 +227,6 @@ public slots:
     int getWidth()const {return image.width();};
     int getFormat()const {return image.format();};
 
-    void setFixedSize(bool value)
-    {
-      fixed_size = value;
-      if(value)
-        QWidget::setFixedSize(width(),height());
-    }
-  
 protected:
     /**
      * Adds all shapes to the image
@@ -244,7 +249,7 @@ protected:
     
     QImage image;          //holds the orignial image
     bool no_input;
-    bool fixed_size;
+    bool aspect_ratio;
 
     FrameQImageConverter frame_converter;
     ImageViewGL *image_view_gl;

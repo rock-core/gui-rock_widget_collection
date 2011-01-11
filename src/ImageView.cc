@@ -15,9 +15,10 @@ using namespace base::samples::frame;
 ImageView::ImageView(QWidget *parent,bool use_openGL):
   image(0, 0, QImage::Format_RGB888),
   contextMenu(this),
-  fixed_size(false),
+  aspect_ratio(false),
   QWidget(parent)
 {
+    resize(width(),height());
     //setting up popup menue
     save_image_act = new QAction(tr("&Save Image"),this);
     save_image_act->setStatusTip(tr("Save the image to disk"));
@@ -30,7 +31,7 @@ ImageView::ImageView(QWidget *parent,bool use_openGL):
   
     //configure opengl if activated
     image_view_gl = NULL;
-    useOpenGL(use_openGL);
+    setOpenGL(use_openGL);
 }
 
 
@@ -60,25 +61,26 @@ void ImageView::setDefaultImage()
    no_input = true;
 }
 
-bool ImageView::useOpenGL(bool flag)
+void ImageView::setOpenGL(bool flag)
 {
   if(flag)
   {
     //prevent activating if it is already activated
     if(image_view_gl)
-      return true;
+      return;
 
     image_view_gl = new ImageViewGL(this,image,items,disabledGroups);
     if (!image_view_gl)
-      return false;
+      return;
     image_view_gl->resize(width(),height());
+    image_view_gl->setAspectRatio(aspect_ratio);
+    image_view_gl->show();
   }
   else
   {
     delete image_view_gl;
     image_view_gl = NULL;
   }
-  return true;
 }
 
 void ImageView::saveImage(bool overlay)
@@ -200,7 +202,9 @@ void ImageView::addRawImage(const QString &mode, int pixel_size,  int width,  in
 {
   //check if image size has been changed
   //zoom factor must be recalculated
-  frame_converter.copyFrameToQImageRGB888(image,mode, pixel_size, width, height,pbuffer);
+  if(frame_converter.copyFrameToQImageRGB888(image,mode, pixel_size, width, height,pbuffer))
+    if(image_view_gl)
+      image_view_gl->setGLViewPoint();
   no_input = false;
 }
 
@@ -224,7 +228,7 @@ void ImageView::drawDrawItemsToPainter(QPainter &painter,bool all)
         for(;iter != items.end();++iter)
         {
 	  if(!disabledGroups.contains((*iter)->getGroupNr()))
-	    if(!(*iter)->getRenderOnOpenGl())
+	    if(!(*iter)->getRenderOnOpenGl() || all == true)
                 (*iter)->draw(&painter);
         }
     }
@@ -236,7 +240,14 @@ void ImageView::drawDrawItemsToImage(QImage &image,bool all)
     drawDrawItemsToPainter(painter,all);
 }
 
-void ImageView::paintEvent(QPaintEvent *)
+//slots from base classes are shadowed in ruby therefore update2 is to
+//access ImageView::update from ruby
+void ImageView::update2()
+{
+  update();
+}
+
+void ImageView::update()
 {
   if(image_view_gl)
   {
@@ -245,13 +256,34 @@ void ImageView::paintEvent(QPaintEvent *)
   }
   else
   {
-    //calc apect ratio
-    QRectF target(0, 0, width(), height());
-    QRectF source(0.0, 0.0, image.width(), image.height());
-    QPainter painter(this);
-    painter.drawImage(target, image, source);
-    drawDrawItemsToPainter(painter,true);
+    QWidget::update();
   }
+}
+
+void ImageView::paintEvent(QPaintEvent *)
+{
+  int x_offset = 0;
+  int y_offset = 0;
+  if(aspect_ratio)
+  {
+    float x =1; 
+    float y =1; 
+    if (image.width() && image.height())
+    {
+      x = ((float)width())/ image.width();
+      y = ((float)height())/ image.height();
+    }
+    if(x < y)
+      y_offset =  -0.5f*(height()-x*image.height());
+    else
+      x_offset =  0.5f*(width()-y*image.width());
+  }
+
+  QRectF target(x_offset, y_offset, width()-x_offset*2, height()-y_offset*2);
+  QRectF source(0.0, 0.0, image.width(), image.height());
+  QPainter painter(this);
+  painter.drawImage(target, image, source);
+  drawDrawItemsToPainter(painter,true);
 }
 
 void ImageView::resizeEvent ( QResizeEvent * event )
@@ -263,7 +295,7 @@ void ImageView::resizeEvent ( QResizeEvent * event )
     image_view_gl->resize(width(),height());
 }
 
-void ImageView::mouseDoubleClickEvent ( QMouseEvent * event )
+void ImageView::mouseDoubleClickEvent( QMouseEvent * event )
 {
 }
 

@@ -2,8 +2,8 @@
 #ifndef IMAGEVIEWWIDGETPLUGIN_H
 #define IMAGEVIEWWIDGETPLUGIN_H
 
-#include "QtDesigner/QDesignerCustomWidgetInterface"
 #include <QtGui>
+#include <QtDesigner/QDesignerCustomWidgetInterface>
 
 class ImageViewPlugin : public QObject , public QDesignerCustomWidgetInterface
 {
@@ -29,5 +29,4 @@ class ImageViewPlugin : public QObject , public QDesignerCustomWidgetInterface
  private:
    bool initialized; 
 };
-
 #endif

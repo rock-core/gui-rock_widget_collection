@@ -17,6 +17,7 @@ DrawItem(posX, posY, groupNr, QColor(0,0,0)),text(text),font(QFont("Serif")),bac
 
 void TextItem::draw(QPainter* painter)
 {
+    QRect rect = painter->viewport();
     painter->setFont(font);
     painter->setPen(color);
     if(background)
@@ -24,7 +25,7 @@ void TextItem::draw(QPainter* painter)
       painter->setBackgroundMode(Qt::OpaqueMode);
       painter->setBackground(QBrush(background_color));
     }
-    painter->drawText(posX, posY, text);
+    painter->drawText(position_factor_x*rect.width()+posX,position_factor_y*rect.height(), text);
 }
 
 void TextItem::renderOnGl(QGLWidget &widget)

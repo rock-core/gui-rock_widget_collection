@@ -21,6 +21,7 @@ class ImageViewGL :public QGLWidget
   private:
     void paintGL();
     void resizeGL(int w, int h);
+    bool aspect_ratio;
 
   public:
     ImageViewGL(QWidget *parent,QImage &image,
@@ -28,6 +29,8 @@ class ImageViewGL :public QGLWidget
                 QList<int> &disabledGroups);
 
     virtual ~ImageViewGL();
+    void setGLViewPoint(int display_width=0,int display_height=0);
+    void setAspectRatio(bool value){aspect_ratio = value;};
 
   private:
     QImage &image;
