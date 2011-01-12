@@ -25,9 +25,5 @@ add_executable(${PROJECT_NAME}_EXEC main.cc)
 target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} ${FRAMEHELPER_LIBRARIES})
 target_link_libraries(${PROJECT_NAME}_EXEC ${PROJECT_NAME} ${QT_LIBRARIES})
 
-
-
-install(TARGETS ${PROJECT_NAME} 
-		LIBRARY DESTINATION lib
-    )
-install(FILES libimage_view_widget.so.rb DESTINATION lib)
+INSTALL_TARGETS(/lib/qt/designer ${PROJECT_NAME})
+INSTALL_FILES(/lib/qt/designer image_view_widget.rb)
