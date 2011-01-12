@@ -26,4 +26,3 @@ target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} ${FRAMEHELPER_LIBRARIES})
 target_link_libraries(${PROJECT_NAME}_EXEC ${PROJECT_NAME} ${QT_LIBRARIES})
 
 INSTALL_TARGETS(/lib/qt/designer ${PROJECT_NAME})
-INSTALL_FILES(/lib/qt/designer image_view_widget.rb)
