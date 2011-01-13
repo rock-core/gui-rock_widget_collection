@@ -83,6 +83,6 @@ Q_EXPORT_PLUGIN2(ImageViewPlugin, ImageViewPlugin)
 
  QString ImageViewPlugin::includeFile() const
  {
-     return "ImageView.h";
+     return "image_view_widget/ImageView.h";
  }
 
