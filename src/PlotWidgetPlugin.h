@@ -27,8 +27,6 @@ public:
     QString whatsThis() const;
     QWidget *createWidget(QWidget *parent);
     void initialize(QDesignerFormEditorInterface *core);
-    bool isAutoscrolling() { return true;};
-    void setAutoscrolling(bool enable=true) {};
 
 private:
     bool initialized;

@@ -9,6 +9,7 @@
 #include "XMLConfigWriter.h"
 #include <QtPlugin>
 #include <qwt-qt4/qwt_picker.h>
+#include <qwt-qt4/qwt_plot.h>
 
 //Q_EXPORT_PLUGIN2(PlotWidget,PlotWidget)
 
@@ -168,17 +169,6 @@ void PlotWidget::loadProfile()
     QString filter;
     QString filename = QFileDialog::getOpenFileName(this, tr("Open XML File"), QDir::homePath(), tr("XML document (*.xml)"), &filter);
     PlotXMLReader reader;
-    // create an extra validatioon entry or make validation configurable
-//    if(reader.validateXMLFile((char*)filename.toStdString().c_str(), "/home/blueck/temp/configuration.xml"))
-//    {
-//        std::cout << "Hurray" << std::endl;
-//    }
-//    else
-//    {
-//        std::cout << "Naaay" << std::endl;
-//        // print error message dialog
-//        return;
-//    }
     reader.readXMLFile(filename.toStdString().c_str());
     std::vector<QwtPlotMarker*> newMarkers = reader.getMarker();
     for(unsigned int i=0;i<newMarkers.size();i++)
@@ -229,6 +219,18 @@ void PlotWidget::saveProfile()
     writer.setRanges(0, 1000, 0, 1000);
     writer.setMarker(markers);
     writer.writeConfigFile((char*)fn.toStdString().c_str());
+}
+
+void PlotWidget::setBackgroundColor(QColor color)
+{
+    dataManager->setBGColor(color);
+    plottingWidget.setCanvasBackground(color);
+    plottingWidget.replot();
+}
+
+QColor PlotWidget::getBackgroundColor()
+{
+    return dataManager->getBGColor();
 }
 
 void PlotWidget::refreshFromDataManager()
@@ -432,6 +434,28 @@ void PlotWidget::setDrawGrid(bool drawGrid, bool enableX, bool enableY)
     plottingWidget.replot();
 }
 
+void PlotWidget::setDrawXGrid(bool drawXGrid)
+{
+    setDrawGrid(true, drawXGrid, dataManager->isDrawYGrid());
+    dataManager->setDrawXGrid(drawXGrid);
+}
+
+void PlotWidget::setDrawYGrid(bool drawYGrid)
+{
+    setDrawGrid(true, dataManager->isDrawYGrid(), drawYGrid);
+    dataManager->setDrawYGrid(drawYGrid);
+}
+
+bool PlotWidget::isDrawXGrid()
+{
+    return dataManager->isDrawXGrid();
+}
+
+bool PlotWidget::isDrawYGrid()
+{
+    return dataManager->isDrawYGrid();
+}
+
 int PlotWidget::addBorderLine(double value, Qt::Orientation orientation, QPen pen)
 {
     markers.reserve(plotMarkerId + 1);
@@ -465,6 +489,28 @@ void PlotWidget::enableSlider(int axisId, bool enable)
         yLeftSlider.setVisible(enable);
         leftSliderAction.setChecked(enable);
     }
+}
+
+void PlotWidget::setEnableXSlider(bool enable)
+{
+    enableSlider(X_BOTTOM, enable);
+    dataManager->setShowBottomSlider(enable);
+}
+
+void PlotWidget::setEnableYSlider(bool enable)
+{
+    enableSlider(Y_LEFT, enable);
+    dataManager->setShowLeftSlider(enable);
+}
+
+bool PlotWidget::isEnableXSlider()
+{
+    return dataManager->isShowBottomSlider();
+}
+
+bool PlotWidget::isEnableYSlider()
+{
+    return dataManager->isShowLeftSlider();
 }
 
 void PlotWidget::zoomed(const QwtDoubleRect& rect)
@@ -555,6 +601,26 @@ void PlotWidget::setAxisTitles(QString xAxisTitle, QString yAxisTitle)
     plottingWidget.setAxisTitle(QwtPlot::xBottom, xAxisTitle);
     dataManager->setXAxisTitle(xAxisTitle);
     dataManager->setYAxisTitle(yAxisTitle);
+}
+
+void PlotWidget::setXAxisTitle(QString title)
+{
+    setAxisTitles(title, dataManager->getYAxisTitle());
+}
+
+void PlotWidget::setYAxisTitle(QString title)
+{
+    setAxisTitles(dataManager->getXAxisTitle(), title);
+}
+
+QString PlotWidget::getXAxisTitle()
+{
+    return dataManager->getXAxisTitle();
+}
+
+QString PlotWidget::getYAxisTitle()
+{
+    return dataManager->getYAxisTitle();
 }
 
 void PlotWidget::setAxisBoundaries(int axisId, double lower, double upper, double step)

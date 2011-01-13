@@ -117,7 +117,14 @@ class PlotWidget : public QWidget
 {
 
     Q_OBJECT
-    Q_PROPERTY( bool autoscrolling READ isAutoscrolling WRITE setAutoscrolling )
+    Q_PROPERTY(bool autoscrolling READ isAutoscrolling WRITE setAutoscrolling)
+    Q_PROPERTY(QColor backgroundColor READ getBackgroundColor WRITE setBackgroundColor)
+    Q_PROPERTY(bool drawXGrid READ isDrawXGrid WRITE setDrawXGrid)
+    Q_PROPERTY(bool drawYGrid READ isDrawYGrid WRITE setDrawYGrid)
+    Q_PROPERTY(QString xAxisTitle READ getXAxisTitle WRITE setXAxisTitle)
+    Q_PROPERTY(QString yAxisTitle READ getYAxisTitle WRITE setYAxisTitle)
+    Q_PROPERTY(bool showXSlider READ isEnableXSlider WRITE setEnableXSlider)
+    Q_PROPERTY(bool showYSlider READ isEnableYSlider WRITE setEnableYSlider)
 
 
 
@@ -165,6 +172,30 @@ public slots:
      * @param enableY if the y grid will be drawn, defaults to true
      */
     void setDrawGrid(bool drawGrid, bool enableX=true, bool enableY=true);
+    
+    /**
+     * Sets whether the x grid is drawn
+     * @param drawXGrid whether the x grid is drawn
+     */
+    void setDrawXGrid(bool drawXGrid);
+
+    /**
+     * Sets whether the y grid is drawn
+     * @param drawYGrid whether the y grid is drawn
+     */
+    void setDrawYGrid(bool drawYGrid);
+
+    /**
+     * Returns if the x grid is drawn
+     * @return whether the x grid is drawn
+     */
+    bool isDrawXGrid();
+
+    /**
+     * Returns whether the y grid is drawn
+     * @return whether the y grid is drawn
+     */
+    bool isDrawYGrid();
 
     // --> Slider realted methods
 
@@ -173,6 +204,29 @@ public slots:
      * @param enable if the slider shall be anabled or disabled, defaults to true
      */
     void enableSlider(int axisId, bool enable=true);
+
+    /**
+     * Sets whether the x slider shall be enabled
+     * @param enable whether the x slider shall be enabled
+     */
+    void setEnableXSlider(bool enable);
+    /**
+     * Returns whether the x slider is enabled
+     * @return whether the x slider is enabled
+     */
+    bool isEnableXSlider();
+
+    /**
+     * Sets whether the y slider is enabled
+     * @return whether the y slider is enabled
+     */
+    void setEnableYSlider(bool enable);
+
+    /**
+     * Returns wehether the y slider is enabled
+     * @return whether the y slider is enabled
+     */
+    bool isEnableYSlider();
 
     // --> Border Line related methods
 
@@ -215,11 +269,32 @@ public slots:
      * @param yAxisTitle the title of the yAxis
      */
     void setAxisTitles(QString xAxisTitle, QString yAxisTitle);
+
     /**
-     * Sets the boundaries of an axis. If no step size is given (or 0) teh step size
-     * will automatically be calculated. If yRight or xTop is given the axis will also
-     * automatically be enabled. Calling this method also automatically disables
-     * autoscaling of the axis.
+     * Sets the title of the x axis
+     * @param title the title
+     */
+    void setXAxisTitle(QString title);
+
+    /**
+     * Sets the title of the y axis
+     * @param title the y axis
+     */
+    void setYAxisTitle(QString title);
+
+    /**
+     * Returns the title of the x axis
+     * @return the title of the x axis
+     */
+    QString getXAxisTitle();
+
+    /**
+     * Returns the y axis title
+     * @return the y axis title
+     */
+    QString getYAxisTitle();
+
+    /**
      * @param axisId the id of axis to set the boundaries
      * @param lower lower value of the axis
      * @param upper upper value of the axis
@@ -318,6 +393,18 @@ public slots:
      * Called when the gir is changed
      */
     void gridChanged();
+
+    /**
+     * Sets the canvas background color
+     * @param color the color of the canvas background
+     */
+    void setBackgroundColor(QColor color);
+
+    /**
+     * Returns the background color
+     * @return the canvas background color
+     */
+    QColor getBackgroundColor();
 
     
 protected slots:
