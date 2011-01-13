@@ -233,6 +233,28 @@ QColor PlotWidget::getBackgroundColor()
     return dataManager->getBGColor();
 }
 
+void PlotWidget::setEnableLegend(bool enable)
+{
+    dataManager->setDrawLegend(enable);
+    refreshFromDataManager();
+}
+
+bool PlotWidget::isEnableLegend()
+{
+    return dataManager->isDrawLegend();
+}
+
+QwtPlot::LegendPosition PlotWidget::getLegendPosition()
+{
+    return (QwtPlot::LegendPosition)dataManager->getLegendPosition();
+}
+
+void PlotWidget::setLegendPosition(QwtPlot::LegendPosition position)
+{
+    dataManager->setLegendPosition((int)position);
+    refreshFromDataManager();
+}
+
 void PlotWidget::refreshFromDataManager()
 {
     plottingWidget.setCanvasBackground(dataManager->getBGColor());
@@ -661,6 +683,16 @@ void PlotWidget::setZoomBase()
     double yLower = plottingWidget.axisScaleDiv(QwtPlot::yLeft)->lowerBound();
     initialRect.setRect(xLower, yLower, width, height);
     zoomer.setZoomBase(QwtDoubleRect(minXBottom, maxYLeft, maxXBottom + zoomXSpan, maxYLeft + zoomYSpan));
+}
+
+void PlotWidget::setNumberOfDecimals(int decimals)
+{
+    dataManager->setZoomerDecimalSize(decimals);
+}
+
+int PlotWidget::getNumberOfDecimals()
+{
+    return dataManager->getZoomerDecimalSize();
 }
 
 void PlotWidget::xBottomSliderValueChanged(double newValue)

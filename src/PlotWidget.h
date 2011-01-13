@@ -43,6 +43,10 @@
 #include <limits>
 #include <algorithm>
 
+// the following defines are neded
+// as ruby can't work properly with
+// enums at the moment
+
 // AXIS DEFINES
 
 #define X_BOTTOM 0
@@ -125,6 +129,9 @@ class PlotWidget : public QWidget
     Q_PROPERTY(QString yAxisTitle READ getYAxisTitle WRITE setYAxisTitle)
     Q_PROPERTY(bool showXSlider READ isEnableXSlider WRITE setEnableXSlider)
     Q_PROPERTY(bool showYSlider READ isEnableYSlider WRITE setEnableYSlider)
+    Q_PROPERTY(int zoomerDecimalSize READ getNumberOfDecimals WRITE setNumberOfDecimals)
+    Q_PROPERTY(bool showLegend READ isEnableLegend WRITE setEnableLegend)
+    
 
 
 
@@ -161,6 +168,44 @@ public slots:
      * Adds all menu entries
      */
     void addMenu();
+
+    /**
+     * Sets the number of decimals shown after a dot
+     * @param decimals the number of decimals shown after the dot
+     */
+    void setNumberOfDecimals(int decimals);
+
+    /**
+     * Returns the number of deciamls after a dot
+     * @return the number of decimals after the dot
+     */
+    int getNumberOfDecimals();
+
+    // --> legend related methods
+
+    /**
+     * Sets whether the legend shall be shown
+     * @param enable whether the legend shall be hidden or visible
+     */
+    void setEnableLegend(bool enable);
+
+    /**
+     * Returns whether the legend will be shown
+     * @return true if visible, false if hidden
+     */
+    bool isEnableLegend();
+
+    /**
+     * Sets the position of the legend
+     * @param position the position of the legend
+     */
+    void setLegendPosition(QwtPlot::LegendPosition position);
+
+    /**
+     * Returns the position of the legend
+     * @return the position of the legend
+     */
+    QwtPlot::LegendPosition getLegendPosition();
 
 
     // --> Grid related methods
@@ -390,7 +435,7 @@ public slots:
     void exportAsCSV();
 
     /**
-     * Called when the gir is changed
+     * Called when the grid is changed
      */
     void gridChanged();
 
