@@ -25,6 +25,4 @@ target_link_libraries(${PROJECT_NAME}_EXEC ${PROJECT_NAME} ${QWT_LIBRARIES} ${QT
 
 
 install(FILES libplotting_widget.so.rb DESTINATION lib)
-install(TARGETS ${PROJECT_NAME} 
-		LIBRARY DESTINATION lib
-    )
+INSTALL_TARGETS(/lib/qt/designer ${PROJECT_NAME})
