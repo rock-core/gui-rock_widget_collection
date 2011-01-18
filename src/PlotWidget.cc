@@ -149,11 +149,12 @@ void PlotWidget::addMenu()
   sliderMenu.addAction(&bottomSliderAction);
   xGridAction.setCheckable(true);
   yGridAction.setCheckable(true);
-  std::cout << dataManager->isDrawXGrid() << std::endl;
   xGridAction.setChecked(dataManager->isDrawXGrid());
   yGridAction.setChecked(dataManager->isDrawYGrid());
   gridMenu.addAction(&xGridAction);
   gridMenu.addAction(&yGridAction);
+  setAxisAutoScale(0, true);
+  setAxisAutoScale(1, true);
   connect(&autoscrollAction, SIGNAL(triggered(bool)), this, SLOT(setAutoscrolling(bool)));
   connect(&fitAction, SIGNAL(triggered()), this, SLOT(fitPlotToGraph()));
   connect(&optionsAction, SIGNAL(triggered()), this, SLOT(showOptionsDialog()));
@@ -351,7 +352,12 @@ void PlotWidget::fitPlotToGraph()
   setAxisAutoScale(Y_LEFT, true);
   double lower = plottingWidget.axisScaleDiv(QwtPlot::xBottom)->lowerBound();
   double upper = plottingWidget.axisScaleDiv(QwtPlot::xBottom)->upperBound();
-  setAxisBoundaries(X_BOTTOM, lower, upper);
+  std::cout << "Current" << std::endl;
+  std::cout << lower << "|" << upper << std::endl;
+  std::cout << "Max" << std::endl;
+  std::cout << this->minXBottom << "|" << this->maxXBottom << std::endl;
+//  setAxisBoundaries(X_BOTTOM, lower, upper);
+  setAxisBoundaries(X_BOTTOM, minXBottom, maxXBottom);
   lower = plottingWidget.axisScaleDiv(QwtPlot::yLeft)->lowerBound();
   upper = plottingWidget.axisScaleDiv(QwtPlot::yLeft)->upperBound();
   setAxisBoundaries(Y_LEFT, lower, upper);
@@ -660,7 +666,7 @@ void PlotWidget::setAxisBoundaries(int axisId, double lower, double upper, doubl
         ySpan = upper -lower;
     }
     setZoomBase();
-    autoScale = false;
+//    autoScale = false;
 }
 
 void PlotWidget::setSliderValues()
@@ -737,17 +743,18 @@ void PlotWidget::setAutoscrolling(bool enable)
     yLeftSlider.setEnabled(!enable);
     zoomer.setEnabled(!enable);
     plottingWidget.setMouseWheelZoomAxis(!enable, !enable);
+    autoScale = !enable;
 }
 
 int PlotWidget::addData(QList<double> xPoints, QList<double> yPoints, int dataId,
-        int xAxisId, int yAxisId)
+        int xAxisId, int yAxisId) throw(std::exception)
 {
     std::cout << xAxisId << "|" << yAxisId << std::endl;
   return addData(xPoints.toVector().data(), yPoints.toVector().data(), xPoints.size(), dataId, xAxisId, yAxisId);
 }
 
 int PlotWidget::addData(double xPoint, double yPoint, int dataId,
-        int xAxisId, int yAxisId)
+        int xAxisId, int yAxisId) throw(std::exception)
 {
   std::cout << "Point at:" << xPoint << "|" << yPoint << std::endl;
   double xPoints[1];
@@ -758,14 +765,18 @@ int PlotWidget::addData(double xPoint, double yPoint, int dataId,
 }
 
 int PlotWidget::addData(double* xPoints, double* yPoints, int length, int dataId,
-        int xAxisId, int yAxisId)
+        int xAxisId, int yAxisId) throw(std::exception)
 {
   QwtPlot::Axis xAxis = getAxisForInt(xAxisId);
   QwtPlot::Axis yAxis = getAxisForInt(yAxisId);
-  std::cout << xAxisId << "|" << yAxisId << std::endl;
     // new data
     if(dataId < 0 || curves[dataId] == NULL)
     {
+        if(dataId < 0 && curveId >= 100)
+        {
+            throw (IdTooLargeException());
+        }
+        std::cout << "New" << std::endl;
         QwtPlotCurve* curve = new QwtPlotCurve();
         curve->setStyle(QwtPlotCurve::Dots);
         QPen pen;
@@ -778,7 +789,6 @@ int PlotWidget::addData(double* xPoints, double* yPoints, int length, int dataId
         {
             setMinMaxPoints(xPoints[i], yPoints[i]);
         }
-        plottingWidget.replot();
 	if(dataId > 0)
 	  {
 	    curves[dataId] = curve;
@@ -794,6 +804,7 @@ int PlotWidget::addData(double* xPoints, double* yPoints, int length, int dataId
     // existing data
     else
     {
+        std::cout << "Existing" << std::endl;
         QwtPlotCurve* curve = curves[dataId];
         QwtArrayData& currentData  = (QwtArrayData&)curve->data();
         QVector<double> xVector = currentData.xData();
@@ -822,16 +833,17 @@ int PlotWidget::addData(double* xPoints, double* yPoints, int length, int dataId
 		plottingWidget.setAxisScale(QwtPlot::yLeft, finalMaxY - ySpan, finalMaxY);
 	      }
         }
-        plottingWidget.replot();
     }
     setSliderValues();
     if(autoScale)
     {
+        std::cout << "Auto" << std::endl;
         setAxisBoundaries(Y_LEFT, minYLeft, maxYLeft*1.05);
         setAxisBoundaries(X_BOTTOM, minXBottom, maxXBottom*1.05);
         // TODO: set x and y spans here
         
     }
+    plottingWidget.replot();
     setZoomBase();
     connect(&plottingWidget, SIGNAL(legendChecked(QwtPlotItem *, bool)), this, SLOT(showCurve(QwtPlotItem *, bool)));
     return dataId;

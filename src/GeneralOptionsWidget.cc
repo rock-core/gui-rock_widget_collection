@@ -39,6 +39,7 @@ void GeneralOptionsWidget::initializeLayout()
     legendBox.setCurrentIndex(dataManager->getLegendPosition());
     legendCheckBox.setChecked(dataManager->isDrawLegend());
     decimalSpinBox.setValue(dataManager->getZoomerDecimalSize());
+
     layout.addRow(&xAxisText, &xAxisTextEdit);
     layout.addRow(&yAxisText, &yAxisTextEdit);
     layout.addRow(&bgLabel, &bgButton);

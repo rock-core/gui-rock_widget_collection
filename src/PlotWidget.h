@@ -16,8 +16,9 @@
 #include "CSVImporter.h"
 #include "CurveSelectionDialog.h"
 #include "PlotXMLReader.h"
-#include "PlotXMLWriter.h"
+#include "PlotXMLWriter.h"  
 #include "ExtendedPlotZoomer.h"
+#include "IdTooLargeException.h"
 
 #include <QResizeEvent>
 #include <QPushButton>
@@ -375,7 +376,7 @@ public slots:
      * @return the id of the newly created line, or the id of the existing one
      */
     int addData(double xPoints, double yPoints, int dataId=-1,
-		int xAxisId=X_BOTTOM, int yAxisId=Y_LEFT);
+		int xAxisId=X_BOTTOM, int yAxisId=Y_LEFT) throw(std::exception);
 
     /**
      * Show or hides the data specified by dataId
@@ -541,7 +542,7 @@ protected:
      * @return a unique id identifying the data. if existing data was modifyied this will be the same as the dataId given
      */
     int addData(double* xPoints, double* yPoints, int length, int dataId=-1,
-		int xAxisId=X_BOTTOM, int yAxisId=Y_LEFT);
+		int xAxisId=X_BOTTOM, int yAxisId=Y_LEFT) throw(std::exception);
 
     /**
      * Adds Data as a curve to the plot. The curve will be painted as black dots by default
@@ -556,7 +557,7 @@ protected:
      * @return a unique id identifying the data. if existing data was modifyied this will be the same as the dataId given
      */
     int addData(QList<double> xPoints, QList<double> yPoints, int dataId=-1,
-                int xAxisId=X_BOTTOM, int yAxisId=Y_LEFT);
+                int xAxisId=X_BOTTOM, int yAxisId=Y_LEFT) throw(std::exception);
 
     // --> helper methods
 

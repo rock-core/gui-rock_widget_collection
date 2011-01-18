@@ -15,6 +15,7 @@
 #include <QCheckBox>
 #include <QComboBox>
 #include <QSpinBox>
+#include <QGridLayout>
 
 #include "ColorPickerButton.h"
 

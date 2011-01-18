@@ -15,6 +15,7 @@
 #include "GeneralOptionsWidget.h"
 #include "BorderLineOptionDialog.h"
 #include "CurveOptionWidget.h"
+#include "AxisOptionsWidget.h"
 
 #include <iostream>
 
@@ -81,6 +82,8 @@ class OptionsDialog : public QDialog
     BorderLineOptionDialog* borderWidget;
     /** Widget to display the curves*/
     CurveOptionWidget* curveWidget;
+    /** widget for axis configuration*/
+    AxisOptionsWidget* axisWidget;
 };
 
 #endif // OPTIONSDIALOG_H

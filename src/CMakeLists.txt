@@ -2,7 +2,8 @@
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 SET(plotting_widget_MOC_HDRS
-  PlottingWidget.h PlotWidget.h OptionsDialog.h ColorPickerButton.h GeneralOptionsWidget.h BorderLineOptionDialog.h CurveOptionWidget.h CurveSelectionDialog.h PlotWidgetPlugin.h
+  PlottingWidget.h PlotWidget.h OptionsDialog.h ColorPickerButton.h GeneralOptionsWidget.h BorderLineOptionDialog.h CurveOptionWidget.h
+  CurveSelectionDialog.h PlotWidgetPlugin.h AxisOptionsWidget.h
 )
 QT4_WRAP_CPP(plotting_widget_MOC_SRCS ${plotting_widget_MOC_HDRS})
 
