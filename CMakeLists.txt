@@ -3,9 +3,9 @@
 
 cmake_minimum_required(VERSION 2.6)
 
-project(image_view_widget)
+project(rock_widget_collection)
 set(PROJECT_VERSION 1.0)
-set(PROJECT_DESCRIPTION "Widget for showing frames")
+set(PROJECT_DESCRIPTION "Collection of qt widgets")
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake")
 include(CommonSetup)

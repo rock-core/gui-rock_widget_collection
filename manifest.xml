@@ -1,5 +1,5 @@
 <package>
-  <description brief="qt widget for displaying frames">
+  <description brief="Collection of qt widgets which are compatible to qt designer">
   </description>
   <author>Alexander Duda/Alexander.Duda@dfki.de</author>
   <license></license>
