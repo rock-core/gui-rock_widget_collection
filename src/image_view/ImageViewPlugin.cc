@@ -2,8 +2,6 @@
 #include "ImageView.h"
 
 
-Q_EXPORT_PLUGIN2(ImageViewPlugin, ImageViewPlugin)
-
  ImageViewPlugin::ImageViewPlugin(QObject *parent)
      : QObject(parent)
  {

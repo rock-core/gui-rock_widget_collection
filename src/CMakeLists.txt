@@ -7,6 +7,9 @@ SET(image_view_widget_MOC_HDRS
   image_view/ImageViewPlugin.h
   image_view/DrawItem.h
   image_view/TextItem.h
+  sonar_view/SonarView.h
+  sonar_view/SonarViewPlugin.h
+  RockWidgetCollection.h
 )
 QT4_WRAP_CPP(image_view_widget_MOC_SRCS ${image_view_widget_MOC_HDRS})
 
@@ -17,10 +20,7 @@ QT4_WRAP_CPP(image_view_widget_MOC_SRCS ${image_view_widget_MOC_HDRS})
 #file(GLOB image_view_widget_SOURCES main.cc)
 
 # Find all the input files
-FILE(GLOB image_view_widget_SOURCES image_view/*.cc)
-MESSAGE("${image_view_widget_SOURCES}")
-MESSAGE("${CMAKE_CURRENT_SOURCE_DIR}")
-MESSAGE("##########################################")
+FILE(GLOB image_view_widget_SOURCES image_view/*.cc sonar_view/*.cc *.cc)
 
 # Create an executable file called helloworld from sources:
 add_library(${PROJECT_NAME} SHARED ${image_view_widget_SOURCES} ${image_view_widget_MOC_SRCS})
