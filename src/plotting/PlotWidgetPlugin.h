@@ -1,20 +1,17 @@
 #ifndef PLOTWIDGETPLUGIN_H
 #define	PLOTWIDGETPLUGIN_H
 
-#include "PlotWidget.h"
-
-#include <QDesignerCustomWidgetInterface>
+#include <QtGui>
+#include <QtDesigner/QDesignerCustomWidgetInterface>
 
 class PlotWidgetPlugin : public QObject, public QDesignerCustomWidgetInterface
 {
-
     Q_OBJECT
     Q_INTERFACES(QDesignerCustomWidgetInterface)
 
 public:
     PlotWidgetPlugin(QObject* parent=0);
     virtual ~PlotWidgetPlugin();
-    // --> QT Designer specific method
 
     bool isContainer() const;
     bool isInitialized() const;

@@ -1,5 +1,7 @@
+
 #include "PlotWidgetPlugin.h"
-#include <QtPlugin>
+#include "PlotWidget.h"
+//#include <QtPlugin>
 
 
 PlotWidgetPlugin::PlotWidgetPlugin(QObject* parent) : QObject(parent)
@@ -87,5 +89,3 @@ QString PlotWidgetPlugin::domXml() const
         "</widget>\n";
 
 }
-
-Q_EXPORT_PLUGIN2(PlotWidgetPlugin, PlotWidgetPlugin)

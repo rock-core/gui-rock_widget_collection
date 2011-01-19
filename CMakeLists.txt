@@ -25,6 +25,15 @@ pkg_check_modules(FRAMEHELPER "frame_helper" )
 include_directories(${FRAMEHELPER_INCLUDE_DIRS})
 link_directories(${FRAMEHELPER_LIBDIR})
 
+#Need qwt as include
+find_package(QWT REQUIRED)
+include_directories(${QWT_INCLUDE_DIRS})
+link_directories(${QWT_LIBRARY_DIRS})
+
+find_package(LIBXML2 REQUIRED)
+include_directories(${LIBXML2_INCLUDE_DIRS})
+link_directories(${LIBXML2_LIBRARY_DIRS})
+
 # command line output on, you can also use make VERBOSE=1
 # set(CMAKE_VERBOSE_MAKEFILE on)
 
@@ -37,7 +46,12 @@ find_package(Qt4 REQUIRED QtCore QtGui QtOpengl)
 add_definitions(${QT_DEFINITIONS})
 
 # Set your desired Qt-Version here
-include_directories(${QT_INCLUDE_DIR})
+include_directories(${QT_INCLUDE_DIR}
+  	${QT_QT_INCLUDE_DIR}
+        ${QT_QTCORE_INCLUDE_DIR}
+        ${QT_QTGUI_INCLUDE_DIR}
+        ${QT_QTSVG_INCLUDE_DIR}
+        ${QT_DESIGNER_INCLUDE_DIR})
 
 # Path to a Cmake file that can be included to compile Qt4 applications and libraries
 include(${QT_USE_FILE})
