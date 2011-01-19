@@ -41,7 +41,7 @@
 
  QIcon SonarViewPlugin::icon() const
  {
-     return QIcon();
+     return QIcon(":/sonar_view/icon.png");
  }
 
  QString SonarViewPlugin::toolTip() const

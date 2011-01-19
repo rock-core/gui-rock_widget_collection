@@ -41,7 +41,7 @@
 
  QIcon ImageViewPlugin::icon() const
  {
-     return QIcon();
+     return QIcon(":/image_view/icon.png");
  }
 
  QString ImageViewPlugin::toolTip() const

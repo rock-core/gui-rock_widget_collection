@@ -10,7 +10,7 @@ class ArtificialHorizon:public QWidget
     Q_OBJECT
 
 public:
-    ArtificialHorizon();
+    ArtificialHorizon(QWidget *parent=NULL);
     ~ArtificialHorizon();
 
     void paintEvent(QPaintEvent *);

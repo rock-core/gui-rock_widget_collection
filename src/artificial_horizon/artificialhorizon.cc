@@ -3,13 +3,15 @@
 #include <QPainter>
 #include <math.h>
 #include <QtCore/QtPlugin>
+ #include <QtCore/QDir>
+#include <iostream>
 
-Q_EXPORT_PLUGIN2(ArtificialHorizon, ArtificialHorizon);
-
-ArtificialHorizon::ArtificialHorizon()
+ArtificialHorizon::ArtificialHorizon(QWidget* parent):
+QWidget(parent)
 {
     rollangle  = 0;
     pitchangle = 0;
+    setDataDir(":/");
 }
 
 void ArtificialHorizon::setDataDir(QString const& data_dir)

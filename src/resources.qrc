@@ -1,0 +1,12 @@
+<!DOCTYPE RCC><RCC version="1.0">
+ <qresource>
+    <file alias="background.svg">artificial_horizon/resources/background.svg</file>
+    <file alias="dial.svg">artificial_horizon/resources/dial.svg</file>
+    <file alias="rotate.svg">artificial_horizon/resources/rotate.svg</file>
+    <file alias="stationary.svg">artificial_horizon/resources/stationary.svg</file>
+    <file alias="artificial_horizon/icon.png">artificial_horizon/resources/icon.png</file>
+    <file alias="sonar_view/icon.png">sonar_view/resources/icon.png</file>
+    <file alias="image_view/icon.png">image_view/resources/icon.png</file>
+    <file alias="plotting/icon.png">plotting/resources/icon.png</file>
+ </qresource>
+ </RCC>
