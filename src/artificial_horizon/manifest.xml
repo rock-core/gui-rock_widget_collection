@@ -1,0 +1,10 @@
+<package>
+  <description brief="Qt widget to display pitch and roll angles">
+  </description>
+  <author>Sylvain Joyeux/sylvain.joyeux@dfki.de</author>
+  <license></license>
+  <url>http://</url>
+  <logo>http://</logo>
+  <rosdep name="qt4" />
+  <versioncontrol type="git" url="" />
+</package>
