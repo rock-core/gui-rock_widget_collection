@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  
+  <xs:complexType name="color">
+    <xs:sequence>
+      <xs:element name="red" type="xs:integer"/>
+      <xs:element name="green" type="xs:integer"/>
+      <xs:element name="blue" type="xs:integer"/>
+    </xs:sequence>
+  </xs:complexType>
+  
+  <xs:simpleType name="axisType"> 
+    <xs:restriction base="xs:string"> 
+      <xs:pattern value="[x-yX-Y]"/> 
+    </xs:restriction> 
+  </xs:simpleType>
+
+  <xs:simpleType name="position">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="top"/>
+      <xs:enumeration value="left"/>
+      <xs:enumeration value="bottom"/>
+      <xs:enumeration value="right"/>
+    </xs:restriction>
+  </xs:simpleType>
+  
+  <xs:simpleType name="type">
+    <xs:restriction base="xs:string">
+    <xs:enumeration value="none"/>
+    <xs:enumeration value="vertical"/>
+    <xs:enumeration value="horizontal"/>
+    <xs:enumeration value="cross"/>
+    </xs:restriction>
+  </xs:simpleType>
+  
+  
+  <xs:complexType name="title">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+	<xs:attribute name="axis" type="axisType" use="required"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+  
+
+  <xs:complexType name="legend">
+    <xs:sequence>
+      <xs:element name="pos" type="position"/>
+    </xs:sequence>
+    <xs:attribute name="visible" type="xs:boolean" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="showOnAxis">
+    <xs:simpleContent>
+      <xs:extension base="xs:boolean">
+	<xs:attribute name="axis" type="axisType" use="required"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+  
+
+  <xs:complexType name="axisrange">
+    <xs:sequence>
+      <xs:element name="min" type="xs:double"/>
+	<xs:element name="max" type="xs:double"/>
+    </xs:sequence>
+    <xs:attribute name="axis" type="axisType" use="required"/>
+  </xs:complexType>
+
+  
+  <xs:element name="plot">
+    <xs:complexType>
+      <xs:sequence>
+	<xs:element name="title" type="title" minOccurs="0" maxOccurs="2"/>
+	<xs:element name="bgcolor"  type="color" minOccurs="1" maxOccurs="1"/>
+	<xs:element name="csvDelimiter" type="xs:string" minOccurs="1" maxOccurs="1"/>
+	<xs:element name="legend" type="legend" minOccurs="1" maxOccurs="1"/>
+	<xs:element name="autoscrolling" type="xs:boolean" minOccurs="1" maxOccurs="1"/>
+	<xs:element name="showGrid" type="showOnAxis" minOccurs="0" maxOccurs="2"/>
+	<xs:element name="showSlider" type="showOnAxis" minOccurs="0" maxOccurs="2"/>
+	<xs:element name="axisrange" type="axisrange" minOccurs="0" maxOccurs="2"/>
+	<xs:element name="decimalNumbers" type="xs:integer" minOccurs="1" maxOccurs="1"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  
+  <xs:element name="borderline">
+    <xs:complexType>
+      <xs:sequence>
+	<xs:element name="xposition" type="xs:double" minOccurs="1" maxOccurs="1"/>
+	<xs:element name="yposition" type="xs:double" minOccurs="1" maxOccurs="1"/>
+	<xs:element name="type" type="type" minOccurs="1" maxOccurs="1"/>
+	<xs:element name="width" type="xs:integer" minOccurs="1" maxOccurs="1"/>
+	<xs:element name="lineColor" type="color" minOccurs="1" maxOccurs="1"/>
+      </xs:sequence>
+      <xs:attribute name="visible" type="xs:boolean" use="required"/>
+    </xs:complexType>
+  </xs:element>
+  
+  
+
+  <xs:element name="configuration">
+    <xs:complexType>
+      <xs:sequence>
+	<xs:element ref="plot" minOccurs="1" maxOccurs="1"/>
+	<xs:element ref="borderline" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  
+</xs:schema>

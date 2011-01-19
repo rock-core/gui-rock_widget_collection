@@ -1,0 +1,11 @@
+<package>
+  <description brief="qt widget for displaying plots">
+  </description>
+  <author>Bjoern Lueck/blueck@dfki.de</author>
+  <license></license>
+  <url>http://</url>
+  <logo>http://</logo>
+  <rosdep name="qt4" />
+  <rosdep name="qwt" />
+  <versioncontrol type="git" url="" />
+</package>
