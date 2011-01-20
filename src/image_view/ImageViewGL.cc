@@ -7,14 +7,23 @@
 #include <iostream>
 #include "ImageViewGL.h"
 
+ImageViewGL::ImageViewGL(QWidget *parent) :
+QGLWidget(parent),
+image(new QImage()),
+items(new QList<DrawItem*>()),
+disabledGroups(new QList<int>())
+{
+}
+
+
 ImageViewGL::ImageViewGL(QWidget *parent,
                          QImage &image,
                          QList<DrawItem*> &items,
                          QList<int> &disabledGroups):
   QGLWidget(parent),
-  image(image),
-  items(items),
-  disabledGroups(disabledGroups)
+  image(&image),
+  items(&items),
+  disabledGroups(&disabledGroups)
 {
 }
 
@@ -25,11 +34,11 @@ ImageViewGL::~ImageViewGL()
 void ImageViewGL::paintGL()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glDrawPixels(image.width(), image.height(), GL_RGB, GL_UNSIGNED_BYTE, image.bits());
-    QList<DrawItem*>::iterator iter = items.begin();
-    for(;iter != items.end();++iter)
+    glDrawPixels(image->width(), image->height(), GL_RGB, GL_UNSIGNED_BYTE, image->bits());
+    QList<DrawItem*>::iterator iter = items->begin();
+    for(;iter != items->end();++iter)
     {
-      if(!disabledGroups.contains((*iter)->getGroupNr()))
+      if(!disabledGroups->contains((*iter)->getGroupNr()))
         if((*iter)->getRenderOnOpenGl())
           (*iter)->renderOnGl(*this);
     }
@@ -46,10 +55,10 @@ void ImageViewGL::setGLViewPoint(int display_width,int display_height)
   float x =1; 
   float y =1; 
  
-  if (image.width() && image.height())
+  if (image->width() && image->height())
   {
-    x = ((float)display_width)/ image.width();
-    y = ((float)display_height)/ image.height();
+    x = ((float)display_width)/ image->width();
+    y = ((float)display_height)/ image->height();
   }
 
   int x_offset = 0;
@@ -58,12 +67,12 @@ void ImageViewGL::setGLViewPoint(int display_width,int display_height)
   {
     if(x < y)
     {
-      y_offset =  -0.5f*(display_height-x*image.height());
+      y_offset =  -0.5f*(display_height-x*image->height());
       y = x;
     }
     else
     {
-      x_offset =  0.5f*(display_width-y*image.width());
+      x_offset =  0.5f*(display_width-y*image->width());
       x = y;
     }
   }

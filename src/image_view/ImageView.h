@@ -83,7 +83,7 @@ public:
      * @param width the width of images put onto the widget
      * @param height the height of images put onto the widget
      */
-    ImageView(QWidget *parent = NULL,bool use_openGL = false);
+    ImageView(QWidget *parent = NULL,bool use_openGL = false,ImageViewGL *image_view_gl=0);
 
     /**
      * Destructor cleaning up
