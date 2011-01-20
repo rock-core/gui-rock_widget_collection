@@ -52,4 +52,21 @@ void SonarView::setSonarScan(base::samples::SonarScan *scan){
 	window->setData(scan->scanData,scan->angle/2.0*M_PI*6399.0);
 }
 
+void SonarView::setSonarScan(uint8_t *data_, unsigned int size, double angle, bool fromBearing){
+	SonarViewGL *window = dynamic_cast<SonarViewGL*>(image_view_gl);
+	if(!window){
+		fprintf(stderr,"Cannot set data have no widget?!\n");
+		return;
+	}
+	double bearing =angle;
+	if(!fromBearing)
+		bearing = angle/2.0*M_PI*6399.0;
+	
+	std::vector<uint8_t> data;
+	for(int i=0;i<size;i++){
+		data.push_back(data_[i]);
+	}
+	window->setData(data,bearing);
+}
+
 
