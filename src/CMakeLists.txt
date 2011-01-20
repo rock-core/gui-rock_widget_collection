@@ -1,5 +1,10 @@
 # Include the directory itself as a path to include directories
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
+
+
+find_package(GLU REQUIRED)
+
+
 SET(QtApp_RCCS resources.qrc)
 SET(image_view_widget_MOC_HDRS
   image_view/ImageView.h
@@ -40,7 +45,7 @@ FILE(GLOB image_view_widget_SOURCES image_view/*.cc sonar_view/*.cc plotting/*.c
 add_library(${PROJECT_NAME} SHARED ${image_view_widget_SOURCES} ${image_view_widget_MOC_SRCS} ${QtApp_RCC_SRCS})
 #add_executable(${PROJECT_NAME}_EXEC main.cc)
 
-target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} ${FRAMEHELPER_LIBRARIES} ${QWT_LIBRARIES} ${LIBXML2_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} ${FRAMEHELPER_LIBRARIES} ${QWT_LIBRARIES} ${LIBXML2_LIBRARIES} ${GLU_LIBRARY})
 #target_link_libraries(${PROJECT_NAME}_EXEC ${PROJECT_NAME} ${QT_LIBRARIES})
 
 INSTALL_TARGETS(/lib/qt/designer ${PROJECT_NAME})
