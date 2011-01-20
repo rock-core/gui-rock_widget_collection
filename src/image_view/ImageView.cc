@@ -12,17 +12,12 @@
 using namespace base::samples::frame;
 //Q_EXPORT_PLUGIN2(ImageView, ImageView)
 
-ImageView::ImageView(QWidget *parent,bool use_openGL, ImageViewGL *image_view_gl):
+ImageView::ImageView(QWidget *parent,bool use_openGL):
   image(0, 0, QImage::Format_RGB888),
   contextMenu(this),
   aspect_ratio(false),
   QWidget(parent)
 {
-    if(use_openGL == false && image_view_gl){	
-	fprintf(stderr,"Cannot NOT use OpenGL and use an OpenGL Widget, assuming use_opengl = true\n");
-	use_openGL = true;
-    }
-
     resize(width(),height());
     //setting up popup menue
     save_image_act = new QAction(tr("&Save Image"),this);
@@ -35,14 +30,8 @@ ImageView::ImageView(QWidget *parent,bool use_openGL, ImageViewGL *image_view_gl
     setDefaultImage();
   
     //configure opengl if activated
-    //image_view_gl = NULL;
-    if(!image_view_gl && use_openGL){
-    	setOpenGL(use_openGL);
-    }else{
-	image_view_gl->resize(width(),height());
-	image_view_gl->setAspectRatio(aspect_ratio);
-	image_view_gl->show();
-    }
+    image_view_gl = NULL;
+    setOpenGL(use_openGL);
 }
 
 

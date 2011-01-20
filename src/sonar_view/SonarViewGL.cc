@@ -13,7 +13,6 @@
 
 #include <GL/gl.h>
 #include <GL/glut.h>
-#include <qgl.h>
 #include <iostream>
 
 const float SonarViewGL::ZOOM_MAX;

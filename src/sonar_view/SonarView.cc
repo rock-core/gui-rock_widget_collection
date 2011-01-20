@@ -11,9 +11,9 @@
 #include "SonarViewGL.h"
 
 SonarView::SonarView(QWidget *parent,bool use_openGL):
-ImageView(parent,true, new SonarViewGL())
+ImageView(parent,false)
 {
-
+	setOpenGL(use_openGL);
 }
 
 
@@ -29,7 +29,7 @@ void SonarView::setOpenGL(bool flag)
     if(image_view_gl)
       return;
 
-    image_view_gl = new SonarViewGL();
+    image_view_gl = new SonarViewGL(this);
     if (!image_view_gl)
       return;
     image_view_gl->resize(width(),height());

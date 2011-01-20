@@ -83,7 +83,7 @@ public:
      * @param width the width of images put onto the widget
      * @param height the height of images put onto the widget
      */
-    ImageView(QWidget *parent = NULL,bool use_openGL = false,ImageViewGL *image_view_gl=0);
+    ImageView(QWidget *parent = NULL,bool use_openGL = false);
 
     /**
      * Destructor cleaning up
@@ -99,7 +99,7 @@ public slots:
     void update2();
     void setDefaultImage();
 
-    void setOpenGL(bool flag);
+    virtual void setOpenGL(bool flag);
     bool getOpenGl(){return image_view_gl;};
     void setAspectRatio(bool value)
     {

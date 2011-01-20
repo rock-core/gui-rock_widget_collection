@@ -16,7 +16,7 @@ class QDESIGNER_WIDGET_EXPORT SonarView : public ImageView
     Q_CLASSINFO("Author", "Matthias Goldhoorn")
 
 public:
-    SonarView(QWidget *parent = NULL,bool use_openGL = false);
+    SonarView(QWidget *parent = NULL,bool use_openGL = true);
     virtual ~SonarView();
 
 public slots:    
