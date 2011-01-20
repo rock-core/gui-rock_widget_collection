@@ -38,10 +38,10 @@ maximumBearings(maximumBearings)
      xShift = 0;
      yShift = 0;
      zShift = 0;
-     zoom = 0;
+     zoom = 40;
 	 overlay_border=0;
      medium_ableitung=1;
-     factor=10;
+     factor=1;
 	repaintTimer.setSingleShot(false);
 	repaintTimer.setInterval(100);
 	connect(&repaintTimer,SIGNAL(timeout()),this,SLOT(repaintFunc()));
@@ -580,14 +580,14 @@ void SonarViewGL::setWallDist(int bearing, int dist, int dist2){
 		setxPosition(xShift + dxt);
 		setyPosition(yShift - dyt);
      }else if (event->buttons() & Qt::RightButton) {
-    		zoom += dyt+dxt;
+    		zoom += (dyt+dxt)*0.05;
 		zoom = std::max<float>( std::min<float>( zoom, ZOOM_MAX ), ZOOM_MIN );
      }
 
      lastPos = event->pos();
      lastPosTrans = event->pos();
 
-     printf("Rot: %i,%i,%i, Pos, (%i,%i,%i), zoom: %f\n",xRot,yRot,zRot,xShift,yShift,zShift,zoom);
+//     printf("Rot: %i,%i,%i, Pos, (%i,%i,%i), zoom: %f\n",xRot,yRot,zRot,xShift,yShift,zShift,zoom);
 
  }
 
@@ -650,7 +650,7 @@ void SonarViewGL::keyPressEvent ( QKeyEvent * event ){
 
  void SonarViewGL::wheelEvent(QWheelEvent *event)
  {
-    zoom -= (2.0*(float)event->delta()/120.0)*20;
+    zoom -= (2.0*(float)event->delta()/120.0)*5;
     zoom = std::max<float>( std::min<float>( zoom, ZOOM_MAX ), ZOOM_MIN );
     event->accept();
    // updateGL();

@@ -39,6 +39,7 @@ public slots:
      void setxPosition(int value);
      void setyPosition(int value);
      void setzPosition(int value);
+     void keyPressEvent ( QKeyEvent * event );
 
 protected:
      void initializeGL();
@@ -47,7 +48,6 @@ protected:
      void mousePressEvent(QMouseEvent *event);
      void mouseMoveEvent(QMouseEvent *event);
      void wheelEvent(QWheelEvent *event);
-     void keyPressEvent ( QKeyEvent * event );
      void checkGL(const char*);
      bool deleteSurfaces;
      void drawList();

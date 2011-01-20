@@ -33,14 +33,17 @@ void SonarView::setOpenGL(bool flag)
     if (!image_view_gl)
       return;
     image_view_gl->resize(width(),height());
-    image_view_gl->setAspectRatio(aspect_ratio);
+    //image_view_gl->setAspectRatio(aspect_ratio);
     image_view_gl->show();
+    SonarViewGL *window = dynamic_cast<SonarViewGL*>(image_view_gl);
+    window->reset(0.024); //TODO hardcoded value
   }
   else
   {
     delete image_view_gl;
     image_view_gl = NULL;
   }
+   
 }
 
 void SonarView::setSonarScan2(base::samples::SonarScan *scan){
@@ -69,4 +72,7 @@ void SonarView::setSonarScan(const char *data_, int size, double angle, bool fro
 	window->setData(data,bearing);
 }
 
-
+void SonarView::keyPressEvent ( QKeyEvent * event ){
+	SonarViewGL *window = dynamic_cast<SonarViewGL*>(image_view_gl);
+	window->keyPressEvent(event);	
+}
