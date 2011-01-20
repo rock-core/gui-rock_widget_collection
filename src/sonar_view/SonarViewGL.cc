@@ -10,15 +10,14 @@
 #include <QtOpenGL>
 #include <math.h>
 #include <stdio.h>
-#include "glwidget.h"
 
 #include <GL/gl.h>
 #include <GL/glut.h>
 #include <qgl.h>
 #include <iostream>
 
-const float GLWidget::ZOOM_MAX;
-const float GLWidget::ZOOM_MIN;
+const float SonarViewGL::ZOOM_MAX;
+const float SonarViewGL::ZOOM_MIN;
 
 
 SonarViewGL::SonarViewGL(QWidget *parent,unsigned int maximumBearings):
