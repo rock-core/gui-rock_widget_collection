@@ -43,7 +43,7 @@ void SonarView::setOpenGL(bool flag)
   }
 }
 
-void SonarView::setSonarScan(base::samples::SonarScan *scan){
+void SonarView::setSonarScan2(base::samples::SonarScan *scan){
 	SonarViewGL *window = dynamic_cast<SonarViewGL*>(image_view_gl);
 	if(!window){
 		fprintf(stderr,"Cannot set data have no widget?!\n");
@@ -52,7 +52,7 @@ void SonarView::setSonarScan(base::samples::SonarScan *scan){
 	window->setData(scan->scanData,scan->angle/2.0*M_PI*6399.0);
 }
 
-void SonarView::setSonarScan(uint8_t *data_, unsigned int size, double angle, bool fromBearing){
+void SonarView::setSonarScan(const char *data_, int size, double angle, bool fromBearing){
 	SonarViewGL *window = dynamic_cast<SonarViewGL*>(image_view_gl);
 	if(!window){
 		fprintf(stderr,"Cannot set data have no widget?!\n");

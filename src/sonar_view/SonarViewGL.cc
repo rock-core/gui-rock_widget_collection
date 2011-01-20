@@ -41,7 +41,7 @@ maximumBearings(maximumBearings)
      zoom = 0;
 	 overlay_border=0;
      medium_ableitung=1;
-     factor=1;
+     factor=10;
 	repaintTimer.setSingleShot(false);
 	repaintTimer.setInterval(100);
 	connect(&repaintTimer,SIGNAL(timeout()),this,SLOT(repaintFunc()));
@@ -96,6 +96,13 @@ void SonarViewGL::reset(double currentScale){
 
 
 void SonarViewGL::setData(const std::vector<uint8_t> data,int bearing){
+//        printf("Bearing %i\n",bearing);
+        //for(int i=0;i<data.size();i++){
+         // if(data[i]!= 0){
+          //    printf("Got data value :%i\n",data[i]);
+          //}
+        //}
+          
 	if(bearing < 0 || bearing > maximumBearings){
 		fprintf(stderr,"Cannot Set bearing is out of range\n");
 	} 
@@ -275,7 +282,7 @@ void SonarViewGL::paintSonar(){
 
 void SonarViewGL::repaintFunc(){
    update();
-   //updateGL(); /TODO not calling this?
+   updateGL(); //TODO not calling this?
 
 }
 
@@ -555,6 +562,7 @@ void SonarViewGL::setWallDist(int bearing, int dist, int dist2){
  {
      lastPos = event->pos();
      lastPosTrans = event->pos();
+     printf("Mouse pressed\n");
 
  }
 
@@ -579,7 +587,7 @@ void SonarViewGL::setWallDist(int bearing, int dist, int dist2){
      lastPos = event->pos();
      lastPosTrans = event->pos();
 
-     //printf("Rot: %i,%i,%i, Pos, (%i,%i,%i), zoom: %f\n",xRot,yRot,zRot,xShift,yShift,zShift,zoom);
+     printf("Rot: %i,%i,%i, Pos, (%i,%i,%i), zoom: %f\n",xRot,yRot,zRot,xShift,yShift,zShift,zoom);
 
  }
 
@@ -599,6 +607,7 @@ void SonarViewGL::setWallDist(int bearing, int dist, int dist2){
 
 
 void SonarViewGL::keyPressEvent ( QKeyEvent * event ){
+    printf("bla taste\n");
 	switch (event->key()) {
 		case Qt::Key_W:
 			paintWall=!paintWall;

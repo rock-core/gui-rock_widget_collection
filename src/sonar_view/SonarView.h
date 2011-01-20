@@ -21,8 +21,8 @@ public:
 
 public slots:    
 	void setOpenGL(bool flag);
-        void setSonarScan(base::samples::SonarScan *scan);
-        void setSonarScan(uint8_t *data, unsigned int size, double angle, bool fromBearing=false);
+        void setSonarScan2(base::samples::SonarScan *scan);
+        void setSonarScan(const char *data, int size, double angle, bool fromBearing=false);
 };
 
 #endif	
