@@ -28,6 +28,7 @@ void OptionsDialog::okPressed()
     dataManager->setZoomerDecimalSize(generalWidget->getZoomerDecimalPoint());
     borderWidget->updateExistingMarkers();
     curveWidget->updateExistingCurves();
+    axisWidget->updateDataManager();
     setVisible(false);
     emit accepted();
 }
@@ -61,6 +62,7 @@ void OptionsDialog::initializeLayout(std::vector<QwtPlotCurve*> curves, std::vec
     curveWidget->initializeLayout(curves);
     generalWidget->initializeLayout();
     borderWidget->initializeLayout(markers);
+    axisWidget->initializeLayout();
     tabWidget.addTab(generalWidget, tr("General"));
     tabWidget.addTab(axisWidget, tr("Axis"));
     tabWidget.addTab(borderWidget, tr("Border Lines"));

@@ -526,6 +526,32 @@ protected slots:
      */
     void saveProfile();
 
+    /**
+     * Sets autoscaling, if enabled disables autoscrolling and fixed size
+     * @param autoscale true if autoscaling shall be used
+     */
+    void setAutoscale(bool autoscale);
+
+    /**
+     * Returns whether autoscale is enabled
+     * @return true if enabled, false otherwise
+     */
+    bool isAutoscale();
+
+    /**
+     * Sets if fixed size shall be enabled. If it is enabled
+     * disables autoscale and autoscrolling
+     * @param fixedSize if ficedSize shall be enabled
+     */
+    void setFixedSize(bool fixedSize);
+
+    /**
+     * Returns whether fixed size shall be used
+     * @return true if fixed size is used, false otherwise
+     */
+    bool isFixedSize();
+
+
 protected:
 
     /**
@@ -651,6 +677,8 @@ protected:
     QMenu importMenu;
     /** Clear menu*/
     QMenu clearMenu;
+    /** Size Menu*/
+    QMenu sizeMenu;
 
     /** Action to export the plot as image*/
     QAction exportImageAction;
@@ -682,6 +710,12 @@ protected:
     QAction loadProfileAction;
     /** Action to save the profile*/
     QAction saveProfileAction;
+    /** Action to set autoscaling*/
+    QAction autoscaleAction;
+    /** Action to set fixed size*/
+    QAction fixedAction;
+    /** Action Group for Sizes*/
+    QActionGroup sizeGroup;
 
     /** Datamanager containing all variables*/
     DataManager* dataManager;

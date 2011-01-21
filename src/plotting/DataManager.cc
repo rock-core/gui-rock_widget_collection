@@ -29,6 +29,9 @@ DataManager::DataManager()
     drawXGrid = true;
     drawYGrid = true;
     drawLegend = false;
+    fixedSize = false;
+    autoscrolling = false;
+    autoscaling = true;
     legendPosition = 0;
     zoomerDecimalSize = 4;
 }

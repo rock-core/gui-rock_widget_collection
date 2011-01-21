@@ -18,14 +18,16 @@ PlotWidget::PlotWidget(QWidget* parent) : QWidget(parent),
         zoomer(plottingWidget.canvas(), true), markers(100), curves(100), initialRect(-1, -1, -1, -1),
         optionsDialog(this),
         fileMenu(tr("&File")), plotMenu(tr("&Plot")), exportMenu(tr("&Export")), sliderMenu(tr("&Show Sliders")),
-        gridMenu(tr("&Grid")), importMenu(tr("&Import")), clearMenu(tr("&Clear")),
+        gridMenu(tr("&Grid")), importMenu(tr("&Import")), clearMenu(tr("&Clear")), sizeMenu(tr("S&ize")),
         exportImageAction(tr("Export as &image"), this), autoscrollAction(tr("&Autoscrolling"), this),
         fitAction(tr("&Fit to Graph"), this), optionsAction(tr("&Options..."), this),
         leftSliderAction(tr("&Left Slider"), this), exportCSVAction(tr("Export as &CSV"), this),
         bottomSliderAction(tr("&Bottom Slider"), this), xGridAction(tr("X"), this),
         yGridAction(tr("Y"), this), importCSVAction(tr("Import &CSV"), this), clearBorderLineAction(tr("Clear &Border Lines"), this),
         clearCurveAction(tr("Clear &Curves"), this), clearAllAction(tr("Clear &All"), this),
-        loadProfileAction(tr("&Load Profile"), this), saveProfileAction(tr("&Save Profile"), this)
+        loadProfileAction(tr("&Load Profile"), this), saveProfileAction(tr("&Save Profile"), this),
+        autoscaleAction(tr("A&utoscaling"), this), fixedAction(tr("&Fixed"), this),
+        sizeGroup(this)
 {
     plotMarkerId = 0;
     curveId = 0;
@@ -54,6 +56,14 @@ PlotWidget::PlotWidget(QWidget* parent) : QWidget(parent),
     QObject::connect(&optionsDialog, SIGNAL(accepted()), this, SLOT(optionsChanged()));
     zoomer.setTrackerMode(QwtPlotZoomer::AlwaysOn);
     legend.setItemMode(QwtLegend::CheckableItem);
+    double lower = plottingWidget.axisScaleDiv(QwtPlot::xBottom)->lowerBound();
+    double upper = plottingWidget.axisScaleDiv(QwtPlot::xBottom)->upperBound();
+    dataManager->setMinX(lower);
+    dataManager->setMaxX(upper);
+    lower = plottingWidget.axisScaleDiv(QwtPlot::yLeft)->lowerBound();
+    upper = plottingWidget.axisScaleDiv(QwtPlot::yLeft)->upperBound();
+    dataManager->setMinY(lower);
+    dataManager->setMaxY(upper);
 }
 
 PlotWidget::~PlotWidget()
@@ -136,7 +146,28 @@ void PlotWidget::addMenu()
   // Plot Menu
   menuBar.addMenu(&plotMenu);
   autoscrollAction.setCheckable(true);
-  plotMenu.addAction(&autoscrollAction);
+  plotMenu.addMenu(&sizeMenu);
+  sizeMenu.addAction(&autoscrollAction);
+  sizeMenu.addAction(&autoscaleAction);
+  sizeMenu.addAction(&fixedAction);
+  autoscrollAction.setCheckable(true);
+  autoscaleAction.setCheckable(true);
+  fixedAction.setCheckable(true);
+  if(dataManager->isAutoscaling())
+  {
+      autoscaleAction.setChecked(true);
+  }
+  else if(dataManager->isAutoscrolling())
+  {
+      autoscrollAction.setChecked(true);
+  }
+  else if(dataManager->isFixedSize())
+  {
+      fixedAction.setChecked(true);
+  }
+  autoscrollAction.setActionGroup(&sizeGroup);
+  autoscaleAction.setActionGroup(&sizeGroup);
+  fixedAction.setActionGroup(&sizeGroup);
   plotMenu.addAction(&fitAction);
   plotMenu.addMenu(&gridMenu);
   plotMenu.addMenu(&sliderMenu);
@@ -156,6 +187,8 @@ void PlotWidget::addMenu()
   setAxisAutoScale(0, true);
   setAxisAutoScale(1, true);
   connect(&autoscrollAction, SIGNAL(triggered(bool)), this, SLOT(setAutoscrolling(bool)));
+  connect(&autoscaleAction, SIGNAL(triggered(bool)), this, SLOT(setAutoscale(bool)));
+  connect(&fixedAction, SIGNAL(triggered(bool)), this, SLOT(setFixedSize(bool)));
   connect(&fitAction, SIGNAL(triggered()), this, SLOT(fitPlotToGraph()));
   connect(&optionsAction, SIGNAL(triggered()), this, SLOT(showOptionsDialog()));
   connect(&leftSliderAction, SIGNAL(triggered()), this, SLOT(sliderActionChecked()));
@@ -281,7 +314,6 @@ void PlotWidget::refreshFromDataManager()
     }
     setAutoscrolling(dataManager->isAutoscrolling());
     setDrawGrid(true, dataManager->isDrawXGrid(), dataManager->isDrawYGrid());
-    std::cout << dataManager->isShowBottomSlider() << "|" << dataManager->isShowLeftSlider() << std::endl;
     enableSlider(X_BOTTOM, dataManager->isShowBottomSlider());
     enableSlider(Y_LEFT, dataManager->isShowLeftSlider());
 }
@@ -421,6 +453,16 @@ void PlotWidget::optionsChanged()
             legendItems[i]->setVisible(false);
         }
         legend.setVisible(false);
+    }
+    std::cout << "Test" << std::endl;
+    // put into refresh?
+    if(dataManager->isAutoscrolling() || dataManager->isFixedSize())
+    {
+        std::cout << "--------------------------" << std::endl;
+        std::cout << dataManager->getMinX() << "|" << dataManager->getMaxX() << std::endl;
+        std::cout << "--------------------------" << std::endl;
+        setAxisBoundaries(X_BOTTOM, dataManager->getMinX(), dataManager->getMaxX());
+        setAxisBoundaries(Y_LEFT, dataManager->getMinY(), dataManager->getMaxY());
     }
     plottingWidget.replot();
 }
@@ -660,10 +702,14 @@ void PlotWidget::setAxisBoundaries(int axisId, double lower, double upper, doubl
     if(axis == QwtPlot::xBottom)
     {
         xSpan = upper - lower;
+        dataManager->setMinX(lower);
+        dataManager->setMaxX(upper);
     }
     else if(axis == QwtPlot::yLeft)
     {
         ySpan = upper -lower;
+        dataManager->setMinY(lower);
+        dataManager->setMaxY(upper);
     }
     setZoomBase();
 //    autoScale = false;
@@ -744,6 +790,42 @@ void PlotWidget::setAutoscrolling(bool enable)
     zoomer.setEnabled(!enable);
     plottingWidget.setMouseWheelZoomAxis(!enable, !enable);
     autoScale = !enable;
+    if(enable)
+    {
+        dataManager->setAutoscaling(false);
+        dataManager->setAutoscrolling(true);
+        dataManager->setIsFixedSize(false);
+    }
+}
+
+void PlotWidget::setAutoscale(bool autoscale)
+{
+    dataManager->setAutoscaling(autoscale);
+    if(autoscale)
+    {
+        dataManager->setIsFixedSize(false);
+        dataManager->setAutoscrolling(false);
+    }
+}
+
+bool PlotWidget::isAutoscale()
+{
+    return dataManager->isAutoscaling();
+}
+
+void PlotWidget::setFixedSize(bool fixedSize)
+{
+    dataManager->setIsFixedSize(fixedSize);
+    if(fixedSize)
+    {
+        dataManager->setAutoscaling(false);
+        dataManager->setAutoscrolling(false);
+    }
+}
+
+bool PlotWidget::isFixedSize()
+{
+    return dataManager->isFixedSize();
 }
 
 int PlotWidget::addData(QList<double> xPoints, QList<double> yPoints, int dataId,
