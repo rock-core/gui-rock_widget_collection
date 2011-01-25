@@ -99,7 +99,7 @@ public slots:
     void update2();
     void setDefaultImage();
 
-    void setOpenGL(bool flag);
+    virtual void setOpenGL(bool flag);
     bool getOpenGl(){return image_view_gl;};
     void setAspectRatio(bool value)
     {

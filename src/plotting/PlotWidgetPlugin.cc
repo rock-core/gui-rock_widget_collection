@@ -26,7 +26,7 @@ bool PlotWidgetPlugin::isInitialized() const
 
 QIcon PlotWidgetPlugin::icon() const
 {
-    return QIcon();
+    return QIcon(":/plotting/icon.png");
 }
 
 QString PlotWidgetPlugin::group() const

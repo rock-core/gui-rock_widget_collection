@@ -4,6 +4,7 @@
 #include "image_view/ImageViewPlugin.h"
 #include "sonar_view/SonarViewPlugin.h"
 #include "plotting/PlotWidgetPlugin.h"
+#include "artificial_horizon/artificialhorizonplugin.h"
 
 #include <QtDesigner/QtDesigner>
 #include <QtCore/qplugin.h>

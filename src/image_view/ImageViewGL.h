@@ -24,6 +24,7 @@ class ImageViewGL :public QGLWidget
     bool aspect_ratio;
 
   public:
+    ImageViewGL(QWidget *parent);
     ImageViewGL(QWidget *parent,QImage &image,
                 QList<DrawItem*> &items,
                 QList<int> &disabledGroups);
@@ -33,9 +34,9 @@ class ImageViewGL :public QGLWidget
     void setAspectRatio(bool value){aspect_ratio = value;};
 
   private:
-    QImage &image;
-    QList<DrawItem*> &items;
-    QList<int> &disabledGroups;
+    QImage *image;
+    QList<DrawItem*> *items;
+    QList<int> *disabledGroups;
 };
 
 #endif	/* IMAGEVIEWWGL_H */
