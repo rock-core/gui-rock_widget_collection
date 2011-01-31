@@ -3,6 +3,7 @@
 
 #include "image_view/ImageViewPlugin.h"
 #include "sonar_view/SonarViewPlugin.h"
+#include "range_view/RangeViewPlugin.h"
 #include "plotting/PlotWidgetPlugin.h"
 #include "artificial_horizon/artificialhorizonplugin.h"
 
