@@ -15,6 +15,9 @@ SET(image_view_widget_MOC_HDRS
   sonar_view/SonarView.h
   sonar_view/SonarViewGL.h
   sonar_view/SonarViewPlugin.h
+  range_view/RangeView.h
+  range_view/RangeViewGL.h
+  range_view/RangeViewPlugin.h
   RockWidgetCollection.h
   plotting/PlottingWidget.h 
   plotting/PlotWidget.h 
@@ -39,7 +42,7 @@ QT4_ADD_RESOURCES(QtApp_RCC_SRCS ${QtApp_RCCS})
 #file(GLOB image_view_widget_SOURCES main.cc)
 
 # Find all the input files
-FILE(GLOB image_view_widget_SOURCES image_view/*.cc sonar_view/*.cc plotting/*.cc artificial_horizon/*.cc *.cc)
+FILE(GLOB image_view_widget_SOURCES range_view/*.cc image_view/*.cc sonar_view/*.cc plotting/*.cc artificial_horizon/*.cc *.cc)
 
 # Create an executable file called helloworld from sources:
 add_library(${PROJECT_NAME} SHARED ${image_view_widget_SOURCES} ${image_view_widget_MOC_SRCS} ${QtApp_RCC_SRCS})
