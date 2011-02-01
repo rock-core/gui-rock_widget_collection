@@ -107,7 +107,6 @@ void BorderLineOptionDialog::linkActivated()
                 if(sender == exitLabels[i])
                 {
                     // remove
-                    std::cout << "Remove old" << std::endl;
                     frames[i]->setVisible(false);
                     markerDeleted[i] = true;
                 }
@@ -121,7 +120,6 @@ void BorderLineOptionDialog::linkActivated()
                 if(sender == exitLabels[i+oldSize])
                 {
                     // remove
-                    std::cout << "Remove new" << std::endl;
                     frames[i+oldSize]->setVisible(false);
                     markerDeleted[i+oldSize] = true;
                 }
@@ -139,7 +137,6 @@ void BorderLineOptionDialog::addMarker()
     pen.setStyle(Qt::DotLine);
     marker->setLinePen(pen);
     marker->setLineStyle(QwtPlotMarker::HLine);
-    std::cout << "Push Back" << std::endl;
     newMarkers.push_back(marker);
     layout.removeWidget(&addButton);
     buttons.reserve(buttons.size()+1);
@@ -152,7 +149,6 @@ void BorderLineOptionDialog::addMarker()
     markerDeleted.resize(markerDeleted.size() + 1, false);
     addMarkerToLayout(marker, currentIndex);
     layout.addWidget(&addButton, yValue, 0, 5, 1);
-    std::cout << "Done" << std::endl;
     currentIndex++;
 }
 
@@ -164,7 +160,6 @@ std::vector<QwtPlotMarker*> BorderLineOptionDialog::getNewMarkers()
         if(marker != NULL)
         {
             bool deleted = markerDeleted[i + oldSize];
-            std::cout << "Deleted: " << deleted << std::endl;
             if(!deleted)
             {
                 QColor color = buttons[i + oldSize]->getDisplayColor();
@@ -188,7 +183,6 @@ std::vector<QwtPlotMarker*> BorderLineOptionDialog::getNewMarkers()
             }
         }
     }
-    std::cout << "Returning new Markers" << std::endl;
     return newMarkers;
 }
 
@@ -211,14 +205,11 @@ std::vector<QwtPlotMarker*> BorderLineOptionDialog::getDeletedMarkers()
 
 void BorderLineOptionDialog::updateExistingMarkers()
 {
-    std::cout << oldMarkers.size() << "|" << buttons.size() << std::endl;
     for(unsigned int i=0;i<oldMarkers.size();i++)
     {
         QwtPlotMarker* marker = oldMarkers[i];
         if(marker != NULL)
         {
-            std::cout << i << std::endl;
-            std::cout << "True:" << (buttons[i] == NULL) << std::endl;
             QColor color = buttons[i]->getDisplayColor();
             double xValue = xSpinBoxes[i]->value();
             double yValue = ySpinBoxes[i]->value();
@@ -236,7 +227,6 @@ void BorderLineOptionDialog::updateExistingMarkers()
 
         }
     }
-    std::cout << "Update success" << std::endl;
 }
 
 void BorderLineOptionDialog::addMarkerToLayout(QwtPlotMarker* marker, int i)
@@ -278,7 +268,6 @@ void BorderLineOptionDialog::addMarkerToLayout(QwtPlotMarker* marker, int i)
     combo->addItem(tr("Vertical"), QVariant(2));
     combo->addItem(tr("Cross"), QVariant(3));
     int current = marker->lineStyle();
-    std::cout << "StyleI: " << current << std::endl;
     combo->setCurrentIndex(current);
     comboBoxes[i] = combo;
 

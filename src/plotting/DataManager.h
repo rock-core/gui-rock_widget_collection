@@ -26,6 +26,8 @@ class DataManager
 
 public:
 
+    enum TimeDivisor {MILLIS = 0, SECONDS, MINUTES};
+
      /** deconstructor*/
     ~DataManager();
     /**
@@ -179,6 +181,90 @@ public:
      */
     void setZoomerDecimalSize(int zoomerDecimalSize) { this->zoomerDecimalSize = zoomerDecimalSize; };
 
+    /**
+     * Sets the autoscrolling to on or off
+     * @param autoscaling true if on, false if off
+     */
+    void setAutoscaling(bool autoscaling) { this->autoscaling = autoscaling;};
+
+    /**
+     * Returns whether autoscaling is turned on
+     * @return true id turned on, false otherwise
+     */
+    bool isAutoscaling() { return autoscaling; };
+
+    /**
+     * Returns if a fixed size is used
+     * @param fixedSize true if a fixed site shall be used
+     */
+    void setIsFixedSize(bool fixedSize) { this->fixedSize = fixedSize; };
+
+    /**
+     * Returns if a fixed size shall be used
+     * @return true if fixed
+     */
+    bool isFixedSize() { return fixedSize; };
+
+    /**
+     * sets the lower x Boundary if fixed or autoscrolling
+     * @param minX the lower x boundary
+     */
+    void setMinX(double minX) { this->minX = minX; };
+
+    /**
+     * Returns the lower x boundary, ignored if autoscale is enabled
+     * @return the lower x boundary
+     */
+    double getMinX() { return minX; };
+
+    /**
+     * Sets the upper x Boundary if fixed or autoscrolling
+     * @param maxX the upper x boundary
+     */
+    void setMaxX(double maxX) { this->maxX = maxX; };
+
+    /**
+     * Returns the upper x boundary, ignored if autoscale equals true
+     * @return the upper x boundary
+     */
+    double getMaxX() { return maxX; };
+
+    /**
+     * sets the lower y Boundary if fixed or autoscrolling
+     * @param minY the lower y boundary
+     */
+    void setMinY(double minY) { this->minY = minY; };
+
+    /**
+     * Returns the lower y boundary, ignored if autoscale is enabled
+     * @return the lower y boundary
+     */
+    double getMinY() { return minY; };
+
+    /**
+     * Sets the upper y Boundary if fixed or autoscrolling
+     * @param maxY the upper y boundary
+     */
+    void setMaxY(double maxY) { this->maxY = maxY; };
+
+    /**
+     * Returns the upper y boundary, ignored if autoscale equals true
+     * @return the upper y boundary
+     */
+    double getMaxY() { return maxY; };
+
+    /**
+     * Returns the currently used timedivisor
+     * @return the currently used timedivisor
+     */
+    TimeDivisor getTimeDivisor() { return timeDivisor; };
+
+    /**
+     * Sets the TimeDivisor
+     * @param divisor the new TimeDivisor
+     */
+    void setTimeDivisor(TimeDivisor divisor) { this->timeDivisor = divisor; };
+
 
 protected:
     /** The singleton instance */
@@ -207,6 +293,20 @@ protected:
     bool autoscrolling;
     /** number of numbers after the decimal point of the zoomer*/
     int zoomerDecimalSize;
+    /** Autoscaling*/
+    bool autoscaling;
+    /** Fixed Size*/
+    bool fixedSize;
+    /** Min x Boundary*/
+    double minX;
+    /** Max X Boundary*/
+    double maxX;
+    /** Min Y Boundary*/
+    double minY;
+    /** Max Y Boundary*/
+    double maxY;
+    /** The time frame for automatic time settings*/
+    TimeDivisor timeDivisor;
 
 private:
     /** private constructor*/

@@ -40,7 +40,6 @@ std::vector<QwtPlotCurve*> CurveSelectionDialog::getSelectedCurves()
 {
     std::vector<QwtPlotCurve*> selectedCurves;
     QList<QListWidgetItem*> items = listWidget.selectedItems();
-    std::cout << items.size() << std::endl;
     for(int i=0;i<items.size();i++)
     {
         CurveListItemWidget* item = (CurveListItemWidget*)items[i];

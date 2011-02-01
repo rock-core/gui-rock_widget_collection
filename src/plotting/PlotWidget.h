@@ -28,7 +28,8 @@
 #include <QMenuBar>
 #include <QStyleOptionMenuItem>
 #include <QIcon>
-
+#include <QWaitCondition>
+#include <QMutex>
 
 #include <qwt_slider.h>
 #include <qwt_plot.h>
@@ -43,6 +44,7 @@
 #include <vector>
 #include <limits>
 #include <algorithm>
+#include <map>
 
 // the following defines are neded
 // as ruby can't work properly with
@@ -348,6 +350,9 @@ public slots:
      */
     void setAxisBoundaries(int axisId, double lower, double upper, double step=0);
 
+    /** TEST*/
+    void setFastAxisBoundaries(int axisId, double lower, double upper, double step=0);
+
     /**
      * Sets if the specified axis shall be shown or hidden
      * @param axisId the axis to be shown or hidden
@@ -375,8 +380,37 @@ public slots:
      * @param yAxisId the id of the y axis, defaults to Y_LEFT
      * @return the id of the newly created line, or the id of the existing one
      */
-    int addData(double xPoints, double yPoints, int dataId=-1,
+    int addData(const double xPoints,const double yPoints, int dataId=-1,
 		int xAxisId=X_BOTTOM, int yAxisId=Y_LEFT) throw(std::exception);
+
+    /**
+     * Adds data to the plot the x value will be automatically calculated by time.
+     * The first add to the curve will be 0 and everything thereafter the delta
+     * of tehe first time minus the time data was added.
+     * @param xPoints an xpoint
+     * @param yPoints an y point
+     * @param dataId id of an existing line or -1 otherwise, defaults to -1
+     * @param xAxisId the id of the xaxis, defaults to X_BOTTOM
+     * @param yAxisId the id of the y axis, defaults to Y_LEFT
+     * @return the id of the newly created line, or the id of the existing one
+     */
+    int addDataWithTime(double yPoint, int dataId=-1,
+		int xAxisId=X_BOTTOM, int yAxisId=Y_LEFT) throw(std::exception);
+
+    /**
+     * Adds Data as a curve to the plot. The curve will be painted as black dots by default
+     * but can be changed via setDataSytle with the returned int id.<br>
+     * If the dataId is given data will be added to an existing data set.<br>
+     * The x and y Axis which shall be used for the data can be specified too.
+     * @param xPoints the x coordinates of the points
+     * @param yPoints the y coordinates of the points
+     * @param dataId the dataid of an existing data set, defaults to 0
+     * @param xAxisId the x axis the data refers to, defaults to the constant X_BOTTOM
+     * @param yAxisId the y axis the data refers to, defaults to the constant Y_LEFT
+     * @return a unique id identifying the data. if existing data was modifyied this will be the same as the dataId given
+     */
+    int addPoints(const QList<double> &xPoints,const QList<double> &yPoints, int dataId=-1,
+                int xAxisId=X_BOTTOM, int yAxisId=Y_LEFT) throw(std::exception);
 
     /**
      * Show or hides the data specified by dataId
@@ -455,6 +489,12 @@ public slots:
     
 protected slots:
 
+    /**
+     * Method for an automated Test
+     */
+    void doTesting();
+
+
      /**
      * Refreshes the complete plot with the data currently stored within the datamanager
      */
@@ -526,6 +566,32 @@ protected slots:
      */
     void saveProfile();
 
+    /**
+     * Sets autoscaling, if enabled disables autoscrolling and fixed size
+     * @param autoscale true if autoscaling shall be used
+     */
+    void setAutoscale(bool autoscale);
+
+    /**
+     * Returns whether autoscale is enabled
+     * @return true if enabled, false otherwise
+     */
+    bool isAutoscale();
+
+    /**
+     * Sets if fixed size shall be enabled. If it is enabled
+     * disables autoscale and autoscrolling
+     * @param fixedSize if ficedSize shall be enabled
+     */
+    void setFixedSize(bool fixedSize);
+
+    /**
+     * Returns whether fixed size shall be used
+     * @return true if fixed size is used, false otherwise
+     */
+    bool isFixedSize();
+
+
 protected:
 
     /**
@@ -541,23 +607,9 @@ protected:
      * @param yAxisId the y axis the data refers to, defaults to the constant Y_LEFT
      * @return a unique id identifying the data. if existing data was modifyied this will be the same as the dataId given
      */
-    int addData(double* xPoints, double* yPoints, int length, int dataId=-1,
+    int addData(const double* xPoints,const  double* yPoints, int length, int dataId=-1,
 		int xAxisId=X_BOTTOM, int yAxisId=Y_LEFT) throw(std::exception);
 
-    /**
-     * Adds Data as a curve to the plot. The curve will be painted as black dots by default
-     * but can be changed via setDataSytle with the returned int id.<br>
-     * If the dataId is given data will be added to an existing data set.<br>
-     * The x and y Axis which shall be used for the data can be specified too.
-     * @param xPoints the x coordinates of the points
-     * @param yPoints the y coordinates of the points
-     * @param dataId the dataid of an existing data set, defaults to 0
-     * @param xAxisId the x axis the data refers to, defaults to the constant X_BOTTOM
-     * @param yAxisId the y axis the data refers to, defaults to the constant Y_LEFT
-     * @return a unique id identifying the data. if existing data was modifyied this will be the same as the dataId given
-     */
-    int addData(QList<double> xPoints, QList<double> yPoints, int dataId=-1,
-                int xAxisId=X_BOTTOM, int yAxisId=Y_LEFT) throw(std::exception);
 
     // --> helper methods
 
@@ -584,6 +636,7 @@ protected:
      * @param yPoint the y point to check
      */
     void setMinMaxPoints(double xPoint, double yPoint);
+
 
     /** Slider in x direction*/
     QwtSlider xBottomSlider;
@@ -651,6 +704,10 @@ protected:
     QMenu importMenu;
     /** Clear menu*/
     QMenu clearMenu;
+    /** Size Menu*/
+    QMenu sizeMenu;
+    /** Testing Menu*/
+    QMenu testMenu;
 
     /** Action to export the plot as image*/
     QAction exportImageAction;
@@ -682,6 +739,14 @@ protected:
     QAction loadProfileAction;
     /** Action to save the profile*/
     QAction saveProfileAction;
+    /** Action to set autoscaling*/
+    QAction autoscaleAction;
+    /** Action to set fixed size*/
+    QAction fixedAction;
+    /** Test Action*/
+    QAction testAction;
+    /** Action Group for Sizes*/
+    QActionGroup sizeGroup;
 
     /** Datamanager containing all variables*/
     DataManager* dataManager;
@@ -689,6 +754,8 @@ protected:
     CurveSelectionDialog curveSelectionDialog;
     /** Plot legend*/
     QwtLegend legend;
+    /** Map containing the QTime for specific curves*/
+    std::map<int, QTime*> timeMap;
 };
 
 #endif	/* PLOTWIDGET_H */

@@ -46,10 +46,10 @@ FILE(GLOB image_view_widget_SOURCES range_view/*.cc image_view/*.cc sonar_view/*
 
 # Create an executable file called helloworld from sources:
 add_library(${PROJECT_NAME} SHARED ${image_view_widget_SOURCES} ${image_view_widget_MOC_SRCS} ${QtApp_RCC_SRCS})
-#add_executable(${PROJECT_NAME}_EXEC main.cc)
+add_executable(${PROJECT_NAME}_EXEC plotting/plotmain.cc)
 
 target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} ${FRAMEHELPER_LIBRARIES} ${QWT_LIBRARIES} ${LIBXML2_LIBRARIES} ${GLU_LIBRARY})
-#target_link_libraries(${PROJECT_NAME}_EXEC ${PROJECT_NAME} ${QT_LIBRARIES})
+target_link_libraries(${PROJECT_NAME}_EXEC ${PROJECT_NAME} ${QT_LIBRARIES} ${FRAMEHELPER_LIBRARIES} ${QWT_LIBRARIES} ${LIBXML2_LIBRARIES} ${GLU_LIBRARY})
 
 INSTALL_TARGETS(/lib/qt/designer ${PROJECT_NAME})
 #FILE(GLOB files artificial_horizon/resources/*.svg)

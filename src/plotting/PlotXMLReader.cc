@@ -195,7 +195,6 @@ bool PlotXMLReader::readXMLSpecifica()
     if(xmlXPathNodeSetIsEmpty(result->nodesetval))
     {
         xmlXPathFreeObject(result);
-        std::cout << "There are no borderlines configured." << std::endl;
     }
     else
     {
@@ -206,7 +205,6 @@ bool PlotXMLReader::readXMLSpecifica()
             QwtPlotMarker* marker = new QwtPlotMarker();
             QPen linePen = marker->linePen();
             xmlNodePtr currentNode = nodeset->nodeTab[i];
-            std::cout << currentNode->name << std::endl;
             xmlNodePtr childNode = currentNode->xmlChildrenNode;
             // next the children and if there is an element we know about handle it
             xmlNodePtr nextNode = childNode;

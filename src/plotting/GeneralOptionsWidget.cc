@@ -16,13 +16,16 @@ GeneralOptionsWidget::GeneralOptionsWidget() :
     bgButton(QColor(0, 0, 0)), layout(this), bgLabel(tr("Background color")),
         xAxisText(tr("X Title")),
         yAxisText(tr("Y Title")),
-        csvDelimiter(tr("CSV Delimiter")),
+        csvDelimiter(tr("CSV Delimiter")), divisorLabel(tr("Time Format")),
         legendCheckBox(tr("Draw Legend")), decimalPoint(tr("Numbers after decimal"))
 {
     legendBox.addItem("Left", QVariant(0));
     legendBox.addItem("Right", QVariant(1));
     legendBox.addItem("Bottom", QVariant(2));
     legendBox.addItem("Top", QVariant(3));
+    divisorBox.addItem("Milliseconds", QVariant(DataManager::MILLIS));
+    divisorBox.addItem("Seconds", QVariant(DataManager::SECONDS));
+    divisorBox.addItem("Minutes", QVariant(DataManager::MINUTES));
     connect(&legendCheckBox, SIGNAL(clicked(bool)), &legendBox, SLOT(setEnabled(bool)));
 }
 
@@ -39,12 +42,14 @@ void GeneralOptionsWidget::initializeLayout()
     legendBox.setCurrentIndex(dataManager->getLegendPosition());
     legendCheckBox.setChecked(dataManager->isDrawLegend());
     decimalSpinBox.setValue(dataManager->getZoomerDecimalSize());
+    divisorBox.setCurrentIndex(dataManager->getTimeDivisor());
 
     layout.addRow(&xAxisText, &xAxisTextEdit);
     layout.addRow(&yAxisText, &yAxisTextEdit);
     layout.addRow(&bgLabel, &bgButton);
     layout.addRow(&csvDelimiter, &csvDelimiterEdit);
     layout.addRow(&decimalPoint, &decimalSpinBox);
+    layout.addRow(&divisorLabel, &divisorBox);
     layout.addRow(&legendCheckBox, &legendBox);
     setLayout(&layout);
 }
