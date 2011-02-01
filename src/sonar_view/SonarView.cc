@@ -63,7 +63,7 @@ void SonarView::setSonarScan(const char *data_, int size, double angle, bool fro
 	}
 	double bearing =angle;
 	if(!fromBearing)
-		bearing = angle/2.0*M_PI*6399.0;
+		bearing = angle/(M_PI*2.0)*6399.0;
 	
 	std::vector<uint8_t> data;
 	for(int i=0;i<size;i++){
