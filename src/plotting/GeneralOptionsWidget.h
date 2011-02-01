@@ -77,6 +77,12 @@ public:
     int getZoomerDecimalPoint() { return decimalSpinBox.value(); };
 
     /**
+     * Returns the time divisor currently selected
+     * @return the time divisor
+     */
+    int getTimeDivisor() { return divisorBox.currentIndex(); };
+
+    /**
      * Returns the csv delimiter
      * @return the delimiter for csv files
      */
@@ -116,6 +122,8 @@ protected:
     QLabel yAxisText;
     /** LAbel for the delimiter*/
     QLabel csvDelimiter;
+    /** Label for the time division*/
+    QLabel divisorLabel;
     /** CheckBox whether legends shall be displayed*/
     QCheckBox legendCheckBox;
     /** ComboBox, where the legend shall be displayed*/
@@ -124,6 +132,8 @@ protected:
     QLabel decimalPoint;
     /** SpinBox for the decimal numbers*/
     QSpinBox decimalSpinBox;
+    /** Box to select the time division*/
+    QComboBox divisorBox;
 
 private:
 

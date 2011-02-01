@@ -57,7 +57,6 @@ void AxisOptionsWidget::initializeLayout()
     buttonGroup.addButton(&fixedBox);
     buttonGroup.addButton(&autoscrollBox);
     buttonGroup.addButton(&autoscaleBox);
-//    std::cout << dataManager->isAutoscaling() << "\n" << dataManager->isAutoscrolling() << "\n" << dataManager->isFixedSize() << std::endl;
     if(dataManager->isAutoscrolling())
     {
         autoscrollBox.setChecked(true);

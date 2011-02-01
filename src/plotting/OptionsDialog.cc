@@ -26,6 +26,7 @@ void OptionsDialog::okPressed()
     dataManager->setDrawLegend(generalWidget->isDrawLegend());
     dataManager->setLegendPosition(generalWidget->getLegendPosition());
     dataManager->setZoomerDecimalSize(generalWidget->getZoomerDecimalPoint());
+    dataManager->setTimeDivisor((DataManager::TimeDivisor)generalWidget->getTimeDivisor());
     borderWidget->updateExistingMarkers();
     curveWidget->updateExistingCurves();
     axisWidget->updateDataManager();

@@ -42,7 +42,6 @@ bool PlotXMLWriter::writeContent()
     endTag();
 
     sprintf(temp, "%c", manager->getCSVDelimter());
-    std::cout << "{" << temp << "}" << std::endl;
     writeTag("csvDelimiter", temp);
 
     startTag("legend");
@@ -110,7 +109,6 @@ bool PlotXMLWriter::writeContent()
     // end plot
     endTag();
 
-    std::cout << "Writing " << markers.size() << " Borderlines" << std::endl;
 
     for(unsigned int i=0;i<markers.size();i++)
     {
@@ -119,7 +117,6 @@ bool PlotXMLWriter::writeContent()
         {
             continue;
         }
-        std::cout << "Have not NULL" << std::endl;
         // begin the borderlines
         startTag("borderline");
         writeAttribute("visible", "1");

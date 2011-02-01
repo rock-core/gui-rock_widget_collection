@@ -34,6 +34,7 @@ DataManager::DataManager()
     autoscaling = true;
     legendPosition = 0;
     zoomerDecimalSize = 4;
+    timeDivisor = MILLIS;
 }
 
 DataManager::~DataManager()

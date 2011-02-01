@@ -72,19 +72,19 @@ bool XMLConfigReader::readXMLFile(const char* filename)
     document = xmlParseFile(filename);
     if(document == NULL)
     {
-        std::cout << "Could not parse document" << std::endl;
+        std::cerr << "Could not parse document" << std::endl;
         return false;
     }
     rootNode = xmlDocGetRootElement(document);
     if (rootNode == NULL)
     {
-        std::cout << "The document is empty and contains no root element" << std::endl;
+        std::cerr << "The document is empty and contains no root element" << std::endl;
 	xmlFreeDoc(document);
 	return false;
     }
     if (xmlStrcmp(rootNode->name, (const xmlChar *) "configuration"))
     {
-        std::cout << "Wrong document type, does not contain <configuration> as root element" << std::endl;
+        std::cerr << "Wrong document type, does not contain <configuration> as root element" << std::endl;
 	xmlFreeDoc(document);
 	return false;
     }

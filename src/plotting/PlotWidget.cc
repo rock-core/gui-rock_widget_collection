@@ -10,6 +10,7 @@
 #include <QtPlugin>
 #include <qwt-qt4/qwt_picker.h>
 #include <qwt-qt4/qwt_plot.h>
+#include <QtCore/qdatetime.h>
 
 //Q_EXPORT_PLUGIN2(PlotWidget,PlotWidget)
 
@@ -19,6 +20,7 @@ PlotWidget::PlotWidget(QWidget* parent) : QWidget(parent),
         optionsDialog(this),
         fileMenu(tr("&File")), plotMenu(tr("&Plot")), exportMenu(tr("&Export")), sliderMenu(tr("&Show Sliders")),
         gridMenu(tr("&Grid")), importMenu(tr("&Import")), clearMenu(tr("&Clear")), sizeMenu(tr("S&ize")),
+        testMenu(tr("&Test")),
         exportImageAction(tr("Export as &image"), this), autoscrollAction(tr("&Autoscrolling"), this),
         fitAction(tr("&Fit to Graph"), this), optionsAction(tr("&Options..."), this),
         leftSliderAction(tr("&Left Slider"), this), exportCSVAction(tr("Export as &CSV"), this),
@@ -26,7 +28,7 @@ PlotWidget::PlotWidget(QWidget* parent) : QWidget(parent),
         yGridAction(tr("Y"), this), importCSVAction(tr("Import &CSV"), this), clearBorderLineAction(tr("Clear &Border Lines"), this),
         clearCurveAction(tr("Clear &Curves"), this), clearAllAction(tr("Clear &All"), this),
         loadProfileAction(tr("&Load Profile"), this), saveProfileAction(tr("&Save Profile"), this),
-        autoscaleAction(tr("A&utoscaling"), this), fixedAction(tr("&Fixed"), this),
+        autoscaleAction(tr("A&utoscaling"), this), fixedAction(tr("&Fixed"), this), testAction(tr("Start &Test"), this),
         sizeGroup(this)
 {
     plotMarkerId = 0;
@@ -60,10 +62,17 @@ PlotWidget::PlotWidget(QWidget* parent) : QWidget(parent),
     double upper = plottingWidget.axisScaleDiv(QwtPlot::xBottom)->upperBound();
     dataManager->setMinX(lower);
     dataManager->setMaxX(upper);
+//    this->minXBottom = lower;
+//    this->maxXBottom = upper;
+    xSpan = upper - lower;
     lower = plottingWidget.axisScaleDiv(QwtPlot::yLeft)->lowerBound();
     upper = plottingWidget.axisScaleDiv(QwtPlot::yLeft)->upperBound();
     dataManager->setMinY(lower);
     dataManager->setMaxY(upper);
+    ySpan = upper - lower;
+    this->minYLeft = lower;
+    this->maxYLeft = upper;
+    connect(&plottingWidget, SIGNAL(legendChecked(QwtPlotItem *, bool)), this, SLOT(showCurve(QwtPlotItem *, bool)));
 }
 
 PlotWidget::~PlotWidget()
@@ -82,7 +91,6 @@ PlotWidget::~PlotWidget()
 
 void PlotWidget::clearBorderLines()
 {
-    std::cout << markers.size() << std::endl;
     for(unsigned int i=0;i<markers.size();i++)
     {
         QwtPlotMarker* marker = markers[i];
@@ -186,6 +194,10 @@ void PlotWidget::addMenu()
   gridMenu.addAction(&yGridAction);
   setAxisAutoScale(0, true);
   setAxisAutoScale(1, true);
+
+  testMenu.addAction(&testAction);
+  menuBar.addMenu(&testMenu);
+
   connect(&autoscrollAction, SIGNAL(triggered(bool)), this, SLOT(setAutoscrolling(bool)));
   connect(&autoscaleAction, SIGNAL(triggered(bool)), this, SLOT(setAutoscale(bool)));
   connect(&fixedAction, SIGNAL(triggered(bool)), this, SLOT(setFixedSize(bool)));
@@ -196,6 +208,31 @@ void PlotWidget::addMenu()
   connect(&xGridAction, SIGNAL(triggered()), this, SLOT(gridChanged()));
   connect(&yGridAction, SIGNAL(triggered()), this, SLOT(gridChanged()));
   connect(&curveSelectionDialog, SIGNAL(accepted()), this, SLOT(curvesSelected()));
+  connect(&testAction, SIGNAL(triggered()), this, SLOT(doTesting()));
+}
+
+
+void PlotWidget::doTesting()
+{
+    QTime time;
+    time.start();
+    srand ( std::time(NULL) );
+    for(int i=0;i<100;i++)
+    {
+        int number = rand() % 1000;
+        addDataWithTime(number, 99);
+        std::cout << i << "took: " << time.elapsed() << std::endl;
+        time.restart();
+    }
+//    QList<double> xList;
+//    QList<double> yList;
+//    for(int i=0;i<102;i++)
+//    {
+//        xList.append(i);
+//        yList.append(4.3);
+//    }
+//    time.restart();
+//    addData(xList, yList, 87);
 }
 
 void PlotWidget::loadProfile()
@@ -313,6 +350,8 @@ void PlotWidget::refreshFromDataManager()
         legend.setVisible(false);
     }
     setAutoscrolling(dataManager->isAutoscrolling());
+    setAutoscale(dataManager->isAutoscaling());
+    setFixedSize(dataManager->isFixedSize());
     setDrawGrid(true, dataManager->isDrawXGrid(), dataManager->isDrawYGrid());
     enableSlider(X_BOTTOM, dataManager->isShowBottomSlider());
     enableSlider(Y_LEFT, dataManager->isShowLeftSlider());
@@ -330,7 +369,6 @@ void PlotWidget::importFromCSV()
         std::vector<double> linePoints = points[i];
         if(linePoints.size() > 1)
         {
-            std::cout << linePoints[0] << "|" << linePoints[1] << std::endl;
             xPoints.append(linePoints[0]);
             yPoints.append(linePoints[1]);
         }
@@ -338,7 +376,7 @@ void PlotWidget::importFromCSV()
     //only if we have something, else do nothing
     if(xPoints.size() > 0)
     {
-        this->addData(xPoints, yPoints);
+        this->addDataFromList(xPoints, yPoints);
     }
 }
 
@@ -384,10 +422,6 @@ void PlotWidget::fitPlotToGraph()
   setAxisAutoScale(Y_LEFT, true);
   double lower = plottingWidget.axisScaleDiv(QwtPlot::xBottom)->lowerBound();
   double upper = plottingWidget.axisScaleDiv(QwtPlot::xBottom)->upperBound();
-  std::cout << "Current" << std::endl;
-  std::cout << lower << "|" << upper << std::endl;
-  std::cout << "Max" << std::endl;
-  std::cout << this->minXBottom << "|" << this->maxXBottom << std::endl;
 //  setAxisBoundaries(X_BOTTOM, lower, upper);
   setAxisBoundaries(X_BOTTOM, minXBottom, maxXBottom);
   lower = plottingWidget.axisScaleDiv(QwtPlot::yLeft)->lowerBound();
@@ -406,11 +440,9 @@ void PlotWidget::showOptionsDialog()
 
 void PlotWidget::optionsChanged()
 {
-    std::cout << "Changed" << std::endl;
     plottingWidget.setCanvasBackground(dataManager->getBGColor());
     setAxisTitles(dataManager->getXAxisTitle(), dataManager->getYAxisTitle());
     std::vector<QwtPlotMarker*> toDelete = optionsDialog.getDeletedMarkers();
-    std::cout << toDelete.size() << std::endl;
     for(unsigned int i=0;i<toDelete.size();i++)
     {
         QwtPlotMarker* deleteMarker = toDelete[i];
@@ -454,16 +486,13 @@ void PlotWidget::optionsChanged()
         }
         legend.setVisible(false);
     }
-    std::cout << "Test" << std::endl;
     // put into refresh?
     if(dataManager->isAutoscrolling() || dataManager->isFixedSize())
     {
-        std::cout << "--------------------------" << std::endl;
-        std::cout << dataManager->getMinX() << "|" << dataManager->getMaxX() << std::endl;
-        std::cout << "--------------------------" << std::endl;
         setAxisBoundaries(X_BOTTOM, dataManager->getMinX(), dataManager->getMaxX());
         setAxisBoundaries(Y_LEFT, dataManager->getMinY(), dataManager->getMaxY());
     }
+    refreshFromDataManager();
     plottingWidget.replot();
 }
 
@@ -715,6 +744,24 @@ void PlotWidget::setAxisBoundaries(int axisId, double lower, double upper, doubl
 //    autoScale = false;
 }
 
+void PlotWidget::setFastAxisBoundaries(int axisId, double lower, double upper, double step)
+{
+    QwtPlot::Axis axis = getAxisForInt(axisId);
+    plottingWidget.setAxisScale(axis, lower, upper, step);
+    if(axis == QwtPlot::xBottom)
+    {
+        xSpan = upper - lower;
+        dataManager->setMinX(lower);
+        dataManager->setMaxX(upper);
+    }
+    else if(axis == QwtPlot::yLeft)
+    {
+        ySpan = upper -lower;
+        dataManager->setMinY(lower);
+        dataManager->setMaxY(upper);
+    }
+}
+
 void PlotWidget::setSliderValues()
 {
     xBottomSlider.setScalePosition(QwtSlider::BottomScale);
@@ -795,6 +842,7 @@ void PlotWidget::setAutoscrolling(bool enable)
         dataManager->setAutoscaling(false);
         dataManager->setAutoscrolling(true);
         dataManager->setIsFixedSize(false);
+        autoscrollAction.setChecked(true);
     }
 }
 
@@ -803,8 +851,11 @@ void PlotWidget::setAutoscale(bool autoscale)
     dataManager->setAutoscaling(autoscale);
     if(autoscale)
     {
+        autoscaleAction.setChecked(true);
         dataManager->setIsFixedSize(false);
         dataManager->setAutoscrolling(false);
+        xBottomSlider.setEnabled(true);
+        yLeftSlider.setEnabled(true);
     }
 }
 
@@ -820,6 +871,9 @@ void PlotWidget::setFixedSize(bool fixedSize)
     {
         dataManager->setAutoscaling(false);
         dataManager->setAutoscrolling(false);
+        fixedAction.setChecked(true);
+        xBottomSlider.setEnabled(true);
+        yLeftSlider.setEnabled(true);
     }
 }
 
@@ -828,17 +882,15 @@ bool PlotWidget::isFixedSize()
     return dataManager->isFixedSize();
 }
 
-int PlotWidget::addData(QList<double> xPoints, QList<double> yPoints, int dataId,
+int PlotWidget::addDataFromList(QList<double> xPoints, QList<double> yPoints, int dataId,
         int xAxisId, int yAxisId) throw(std::exception)
 {
-    std::cout << xAxisId << "|" << yAxisId << std::endl;
   return addData(xPoints.toVector().data(), yPoints.toVector().data(), xPoints.size(), dataId, xAxisId, yAxisId);
 }
 
 int PlotWidget::addData(double xPoint, double yPoint, int dataId,
         int xAxisId, int yAxisId) throw(std::exception)
 {
-  std::cout << "Point at:" << xPoint << "|" << yPoint << std::endl;
   double xPoints[1];
   double yPoints[1];
   xPoints[0] = xPoint;
@@ -846,19 +898,62 @@ int PlotWidget::addData(double xPoint, double yPoint, int dataId,
   return addData(xPoints, yPoints, 1, dataId, xAxisId, yAxisId);
 }
 
+int PlotWidget::addDataWithTime(double yPoint, int dataId,
+		int xAxisId, int yAxisId) throw(std::exception)
+{
+    double yPoints[1];
+    double xPoints[1];
+    yPoints[0] = yPoint;
+    if(dataId > 100)
+    {
+        throw (IdTooLargeException());
+    }
+    if(dataId < 0 || curves[dataId] == NULL)
+    {
+        // new object set x to zero and store the time
+        QTime* time = new QTime();
+        time->start();
+        xPoints[0] = 0;
+        timeMap[dataId] = time;
+    }
+    else
+    {
+        QTime* time = timeMap[dataId];
+        if(dataManager->getTimeDivisor() == DataManager::SECONDS)
+        {
+            xPoints[0] = ((double)time->elapsed())/1000.0f;
+        }
+        else if(dataManager->getTimeDivisor() == DataManager::MINUTES)
+        {
+            xPoints[0] = ((double)time->elapsed())/60000.0f;
+        }
+        else
+        {
+            xPoints[0] = time->elapsed();
+        }
+
+    }
+    return addData(xPoints, yPoints, 1, dataId, xAxisId, yAxisId);
+}
+
 int PlotWidget::addData(double* xPoints, double* yPoints, int length, int dataId,
         int xAxisId, int yAxisId) throw(std::exception)
 {
-  QwtPlot::Axis xAxis = getAxisForInt(xAxisId);
-  QwtPlot::Axis yAxis = getAxisForInt(yAxisId);
+    bool needRepaint = false;
+    QwtPlot::Axis xAxis = getAxisForInt(xAxisId);
+    QwtPlot::Axis yAxis = getAxisForInt(yAxisId);
     // new data
+    if(dataId > 100)
+    {
+        throw (IdTooLargeException());
+    }
     if(dataId < 0 || curves[dataId] == NULL)
     {
+        needRepaint = true;
         if(dataId < 0 && curveId >= 100)
         {
             throw (IdTooLargeException());
         }
-        std::cout << "New" << std::endl;
         QwtPlotCurve* curve = new QwtPlotCurve();
         curve->setStyle(QwtPlotCurve::Dots);
         QPen pen;
@@ -867,6 +962,11 @@ int PlotWidget::addData(double* xPoints, double* yPoints, int length, int dataId
         curve->setData(xPoints, yPoints, length);
         curve->attach(&plottingWidget);
         curve->setAxis(xAxis, yAxis);
+        if(dataManager->isAutoscrolling() || dataManager->isFixedSize())
+        {
+            setAxisBoundaries(X_BOTTOM, dataManager->getMinX(), dataManager->getMaxX());
+            setAxisBoundaries(Y_LEFT, dataManager->getMinY(), dataManager->getMaxY());
+        }
         for(int i=0;i<length;i++)
         {
             setMinMaxPoints(xPoints[i], yPoints[i]);
@@ -886,11 +986,11 @@ int PlotWidget::addData(double* xPoints, double* yPoints, int length, int dataId
     // existing data
     else
     {
-        std::cout << "Existing" << std::endl;
         QwtPlotCurve* curve = curves[dataId];
         QwtArrayData& currentData  = (QwtArrayData&)curve->data();
         QVector<double> xVector = currentData.xData();
         QVector<double> yVector = currentData.yData();
+        int oldLength = xVector.size();
         for(int i=0;i<length;i++)
         {
             setMinMaxPoints(xPoints[i], yPoints[i]);
@@ -901,33 +1001,55 @@ int PlotWidget::addData(double* xPoints, double* yPoints, int length, int dataId
         curve->setAxis(xAxis, yAxis);
         // if autoscrolling is set to true
         // rescale the axis
-        if(autoscrolling)
+        if(dataManager->isAutoscrolling())
         {
             // set the max to the last value and add 5% off the total span
             double finalMaxX = maxXBottom*1.05;
             double finalMaxY = maxYLeft * 1.05;
 	    if(maxXBottom > plottingWidget.axisScaleDiv(QwtPlot::xBottom)->upperBound())
 	      {
+                needRepaint = true;
 		plottingWidget.setAxisScale(QwtPlot::xBottom, finalMaxX - xSpan, finalMaxX);
+                dataManager->setMinX(finalMaxX - xSpan);
+                dataManager->setMaxX(finalMaxX);
 	      }
 	    if(maxYLeft > plottingWidget.axisScaleDiv(QwtPlot::yLeft)->upperBound())
 	      {
+                needRepaint = true;
 		plottingWidget.setAxisScale(QwtPlot::yLeft, finalMaxY - ySpan, finalMaxY);
+                dataManager->setMinY(finalMaxY - ySpan);
+                dataManager->setMaxY(finalMaxY);
 	      }
+        }
+        if(!needRepaint)
+        {
+            curve->draw(oldLength-1, xVector.size()+1);
         }
     }
     setSliderValues();
-    if(autoScale)
+    if(dataManager->isAutoscaling())
     {
-        std::cout << "Auto" << std::endl;
-        setAxisBoundaries(Y_LEFT, minYLeft, maxYLeft*1.05);
-        setAxisBoundaries(X_BOTTOM, minXBottom, maxXBottom*1.05);
+        if(maxYLeft > plottingWidget.axisScaleDiv(QwtPlot::yLeft)->upperBound())
+	{
+            std::cout << "Scale" << std::endl;
+            needRepaint = true;
+            setFastAxisBoundaries(Y_LEFT, minYLeft, maxYLeft*1.05);
+            maxYLeft *= 1.05;
+        }
+        if(maxXBottom > plottingWidget.axisScaleDiv(QwtPlot::xBottom)->upperBound())
+	{
+            std::cout << "Scale" << std::endl;
+            needRepaint = true;
+            setFastAxisBoundaries(X_BOTTOM, minXBottom, maxXBottom*1.05);
+            maxXBottom *= 1.05;
+        }
         // TODO: set x and y spans here
-        
     }
-    plottingWidget.replot();
-    setZoomBase();
-    connect(&plottingWidget, SIGNAL(legendChecked(QwtPlotItem *, bool)), this, SLOT(showCurve(QwtPlotItem *, bool)));
+    if(needRepaint)
+    {
+        plottingWidget.replot();
+        setZoomBase();
+    }
     return dataId;
 }
 

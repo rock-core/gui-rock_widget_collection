@@ -26,6 +26,8 @@ class DataManager
 
 public:
 
+    enum TimeDivisor {MILLIS = 0, SECONDS, MINUTES};
+
      /** deconstructor*/
     ~DataManager();
     /**
@@ -251,6 +253,18 @@ public:
      */
     double getMaxY() { return maxY; };
 
+    /**
+     * Returns the currently used timedivisor
+     * @return the currently used timedivisor
+     */
+    TimeDivisor getTimeDivisor() { return timeDivisor; };
+
+    /**
+     * Sets the TimeDivisor
+     * @param divisor the new TimeDivisor
+     */
+    void setTimeDivisor(TimeDivisor divisor) { this->timeDivisor = divisor; };
+
 
 protected:
     /** The singleton instance */
@@ -291,6 +305,8 @@ protected:
     double minY;
     /** Max Y Boundary*/
     double maxY;
+    /** The time frame for automatic time settings*/
+    TimeDivisor timeDivisor;
 
 private:
     /** private constructor*/
