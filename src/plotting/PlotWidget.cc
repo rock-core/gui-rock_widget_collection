@@ -306,7 +306,7 @@ void PlotWidget::importFromCSV()
     //only if we have something, else do nothing
     if(xPoints.size() > 0)
     {
-        this->addData(xPoints, yPoints);
+        this->addPoints(xPoints, yPoints);
     }
 }
 
@@ -746,17 +746,16 @@ void PlotWidget::setAutoscrolling(bool enable)
     autoScale = !enable;
 }
 
-int PlotWidget::addData(QList<double> xPoints, QList<double> yPoints, int dataId,
+int PlotWidget::addPoints(const QList<double> &xPoints,const  QList<double> &yPoints, int dataId,
         int xAxisId, int yAxisId) throw(std::exception)
 {
-    std::cout << xAxisId << "|" << yAxisId << std::endl;
   return addData(xPoints.toVector().data(), yPoints.toVector().data(), xPoints.size(), dataId, xAxisId, yAxisId);
 }
 
-int PlotWidget::addData(double xPoint, double yPoint, int dataId,
+int PlotWidget::addData(const double xPoint,const  double yPoint, int dataId,
         int xAxisId, int yAxisId) throw(std::exception)
 {
-  std::cout << "Point at:" << xPoint << "|" << yPoint << std::endl;
+//  std::cout << "Point at:" << xPoint << "|" << yPoint << std::endl;
   double xPoints[1];
   double yPoints[1];
   xPoints[0] = xPoint;
@@ -764,7 +763,7 @@ int PlotWidget::addData(double xPoint, double yPoint, int dataId,
   return addData(xPoints, yPoints, 1, dataId, xAxisId, yAxisId);
 }
 
-int PlotWidget::addData(double* xPoints, double* yPoints, int length, int dataId,
+int PlotWidget::addData(const double* xPoints,const double* yPoints, int length, int dataId,
         int xAxisId, int yAxisId) throw(std::exception)
 {
   QwtPlot::Axis xAxis = getAxisForInt(xAxisId);
@@ -776,7 +775,7 @@ int PlotWidget::addData(double* xPoints, double* yPoints, int length, int dataId
         {
             throw (IdTooLargeException());
         }
-        std::cout << "New" << std::endl;
+   //     std::cout << "New" << std::endl;
         QwtPlotCurve* curve = new QwtPlotCurve();
         curve->setStyle(QwtPlotCurve::Dots);
         QPen pen;

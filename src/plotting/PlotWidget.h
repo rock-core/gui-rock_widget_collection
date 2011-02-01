@@ -375,8 +375,23 @@ public slots:
      * @param yAxisId the id of the y axis, defaults to Y_LEFT
      * @return the id of the newly created line, or the id of the existing one
      */
-    int addData(double xPoints, double yPoints, int dataId=-1,
+    int addData(const double xPoints,const double yPoints, int dataId=-1,
 		int xAxisId=X_BOTTOM, int yAxisId=Y_LEFT) throw(std::exception);
+
+    /**
+     * Adds Data as a curve to the plot. The curve will be painted as black dots by default
+     * but can be changed via setDataSytle with the returned int id.<br>
+     * If the dataId is given data will be added to an existing data set.<br>
+     * The x and y Axis which shall be used for the data can be specified too.
+     * @param xPoints the x coordinates of the points
+     * @param yPoints the y coordinates of the points
+     * @param dataId the dataid of an existing data set, defaults to 0
+     * @param xAxisId the x axis the data refers to, defaults to the constant X_BOTTOM
+     * @param yAxisId the y axis the data refers to, defaults to the constant Y_LEFT
+     * @return a unique id identifying the data. if existing data was modifyied this will be the same as the dataId given
+     */
+    int addPoints(const QList<double> &xPoints,const QList<double> &yPoints, int dataId=-1,
+                int xAxisId=X_BOTTOM, int yAxisId=Y_LEFT) throw(std::exception);
 
     /**
      * Show or hides the data specified by dataId
@@ -541,23 +556,9 @@ protected:
      * @param yAxisId the y axis the data refers to, defaults to the constant Y_LEFT
      * @return a unique id identifying the data. if existing data was modifyied this will be the same as the dataId given
      */
-    int addData(double* xPoints, double* yPoints, int length, int dataId=-1,
+    int addData(const double* xPoints,const  double* yPoints, int length, int dataId=-1,
 		int xAxisId=X_BOTTOM, int yAxisId=Y_LEFT) throw(std::exception);
 
-    /**
-     * Adds Data as a curve to the plot. The curve will be painted as black dots by default
-     * but can be changed via setDataSytle with the returned int id.<br>
-     * If the dataId is given data will be added to an existing data set.<br>
-     * The x and y Axis which shall be used for the data can be specified too.
-     * @param xPoints the x coordinates of the points
-     * @param yPoints the y coordinates of the points
-     * @param dataId the dataid of an existing data set, defaults to 0
-     * @param xAxisId the x axis the data refers to, defaults to the constant X_BOTTOM
-     * @param yAxisId the y axis the data refers to, defaults to the constant Y_LEFT
-     * @return a unique id identifying the data. if existing data was modifyied this will be the same as the dataId given
-     */
-    int addData(QList<double> xPoints, QList<double> yPoints, int dataId=-1,
-                int xAxisId=X_BOTTOM, int yAxisId=Y_LEFT) throw(std::exception);
 
     // --> helper methods
 
