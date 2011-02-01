@@ -22,7 +22,8 @@ public:
 public slots:    
 	void setOpenGL(bool flag);
         void setRangeScan2(base::samples::LaserScan *scan);
-//        void setRangeScan(const char *data, int size, double angle, bool fromBearing=false);
+	void setRangeScan(double *data, int size);
+	void setRangeScan3(const QList<double> &data);
 protected:
      void keyPressEvent ( QKeyEvent * event );
 

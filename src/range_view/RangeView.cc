@@ -11,8 +11,9 @@
 #include "RangeViewGL.h"
 
 RangeView::RangeView(QWidget *parent,bool use_openGL):
-ImageView(parent,false)
+ImageView(parent,use_openGL)
 {
+    	image_view_gl = NULL;
 	setOpenGL(use_openGL);
 }
 
@@ -54,25 +55,27 @@ void RangeView::setRangeScan2(base::samples::LaserScan *scan){
 	std::vector<Eigen::Vector3d> data = scan->convertScanToPointCloud(Eigen::Transform3d());
 	window->setData(data);
 }
+	
+void RangeView::setRangeScan3(const QList<double> &data){
+	setRangeScan(data.toVector().data(),data.size());
+}
 
-/*
-void RangeView::setRangeScan(const char *data_, int size, double angle, bool fromBearing){
+void RangeView::setRangeScan(double *data, int size){
+	if(size%3!=0){
+		fprintf(stderr,"Cannot set data from non division of three\n");
+	}
 	RangeViewGL *window = dynamic_cast<RangeViewGL*>(image_view_gl);
 	if(!window){
 		fprintf(stderr,"Cannot set data have no widget?!\n");
 		return;
 	}
-	double bearing =angle;
-	if(!fromBearing)
-		bearing = angle/2.0*M_PI*6399.0;
-	
-	std::vector<uint8_t> data;
-	for(int i=0;i<size;i++){
-		data.push_back(data_[i]);
+	std::vector<Eigen::Vector3d> points;
+	for(int i=0;i<size;i+=3){
+		points.push_back(Eigen::Vector3d(data[i],data[i+1],data[i+2]));
+		
 	}
-	window->setData(data,bearing);
+	window->setData(points);
 }
-*/
 
 void RangeView::keyPressEvent ( QKeyEvent * event ){
 	RangeViewGL *window = dynamic_cast<RangeViewGL*>(image_view_gl);

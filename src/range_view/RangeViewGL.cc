@@ -230,7 +230,7 @@ void RangeViewGL::mouseMoveEvent(QMouseEvent *event)
 		setxPosition(xShift + dxt);
 		setyPosition(yShift - dyt);
 	}else if (event->buttons() & Qt::RightButton) {
-		zoom += dyt+dxt;
+		zoom += (dyt+dxt)/10.0;
 		zoom = std::max<float>( std::min<float>( zoom, ZOOM_MAX ), ZOOM_MIN );
 	}
 
