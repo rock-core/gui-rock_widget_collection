@@ -376,7 +376,7 @@ void PlotWidget::importFromCSV()
     //only if we have something, else do nothing
     if(xPoints.size() > 0)
     {
-        this->addDataFromList(xPoints, yPoints);
+        this->addPoints(xPoints, yPoints);
     }
 }
 
@@ -882,13 +882,13 @@ bool PlotWidget::isFixedSize()
     return dataManager->isFixedSize();
 }
 
-int PlotWidget::addDataFromList(QList<double> xPoints, QList<double> yPoints, int dataId,
+int PlotWidget::addPoints(const QList<double> &xPoints,const  QList<double> &yPoints, int dataId,
         int xAxisId, int yAxisId) throw(std::exception)
 {
   return addData(xPoints.toVector().data(), yPoints.toVector().data(), xPoints.size(), dataId, xAxisId, yAxisId);
 }
 
-int PlotWidget::addData(double xPoint, double yPoint, int dataId,
+int PlotWidget::addData(const double xPoint,const  double yPoint, int dataId,
         int xAxisId, int yAxisId) throw(std::exception)
 {
   double xPoints[1];
@@ -936,7 +936,7 @@ int PlotWidget::addDataWithTime(double yPoint, int dataId,
     return addData(xPoints, yPoints, 1, dataId, xAxisId, yAxisId);
 }
 
-int PlotWidget::addData(double* xPoints, double* yPoints, int length, int dataId,
+int PlotWidget::addData(const double* xPoints,const double* yPoints, int length, int dataId,
         int xAxisId, int yAxisId) throw(std::exception)
 {
     bool needRepaint = false;

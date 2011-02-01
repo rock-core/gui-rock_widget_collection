@@ -380,7 +380,7 @@ public slots:
      * @param yAxisId the id of the y axis, defaults to Y_LEFT
      * @return the id of the newly created line, or the id of the existing one
      */
-    int addData(double xPoints, double yPoints, int dataId=-1,
+    int addData(const double xPoints,const double yPoints, int dataId=-1,
 		int xAxisId=X_BOTTOM, int yAxisId=Y_LEFT) throw(std::exception);
 
     /**
@@ -409,7 +409,7 @@ public slots:
      * @param yAxisId the y axis the data refers to, defaults to the constant Y_LEFT
      * @return a unique id identifying the data. if existing data was modifyied this will be the same as the dataId given
      */
-    int addDataFromList(QList<double> xPoints, QList<double> yPoints, int dataId=-1,
+    int addPoints(const QList<double> &xPoints,const QList<double> &yPoints, int dataId=-1,
                 int xAxisId=X_BOTTOM, int yAxisId=Y_LEFT) throw(std::exception);
 
     /**
@@ -607,7 +607,7 @@ protected:
      * @param yAxisId the y axis the data refers to, defaults to the constant Y_LEFT
      * @return a unique id identifying the data. if existing data was modifyied this will be the same as the dataId given
      */
-    int addData(double* xPoints, double* yPoints, int length, int dataId=-1,
+    int addData(const double* xPoints,const  double* yPoints, int length, int dataId=-1,
 		int xAxisId=X_BOTTOM, int yAxisId=Y_LEFT) throw(std::exception);
 
 
