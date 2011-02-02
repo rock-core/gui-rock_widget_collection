@@ -430,7 +430,7 @@ void PlotWidget::fitPlotToGraph()
   setAxisBoundaries(X_BOTTOM, minXBottom, maxXBottom);
   lower = plottingWidget.axisScaleDiv(QwtPlot::yLeft)->lowerBound();
   upper = plottingWidget.axisScaleDiv(QwtPlot::yLeft)->upperBound();
-  setAxisBoundaries(Y_LEFT, lower, upper);
+  setAxisBoundaries(Y_LEFT, minYLeft, maxYLeft);
   plottingWidget.replot();
 }
 
