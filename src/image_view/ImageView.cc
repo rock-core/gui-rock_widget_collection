@@ -53,9 +53,10 @@ void ImageView::mousePressEvent(QMouseEvent *event)
   int offset_y = target.y();
   float scale_x = source.width()/target.width();
   float scale_y = source.height()/target.height();
-
+  
   int x = (int)(scale_x*(event->x()-offset_x)+0.5);
   int y = (int)(scale_y*(event->y()-offset_y)+0.5);
+
   if (x>=0 && x  <= source.width() &&
       y>=0 && y  <= source.height()) 
       emit clickImage(x,y);
@@ -217,8 +218,13 @@ void ImageView::addRawImage(const QString &mode, int pixel_size,  int width,  in
   //check if image size has been changed
   //zoom factor must be recalculated
   if(frame_converter.copyFrameToQImageRGB888(image,mode, pixel_size, width, height,pbuffer))
+  {
     if(image_view_gl)
+    {
       image_view_gl->setGLViewPoint();
+      calculateRects();
+    }
+  }
   no_input = false;
 }
 
@@ -288,7 +294,7 @@ void ImageView::calculateRects()
       y = ((float)height())/ image.height();
     }
     if(x < y)
-      y_offset =  -0.5f*(height()-x*image.height());
+      y_offset =  0.5f*(height()-x*image.height());
     else
       x_offset =  0.5f*(width()-y*image.width());
   }
