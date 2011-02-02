@@ -73,12 +73,12 @@ void SonarView::setSonarScan(const char *data_, int size, double angle, double t
 		bearing = angle/(M_PI*2.0)*6399.0;
  		newScale = timeBetweenBins*size/2.0;
 	}
+	newScale = (newScale*150.0)/size;
 	if(newScale != lastScale){
-		newScale = (newScale*150.0)/size;
-		window->reset(newScale);
 		lastScale = newScale;
+		printf("new Scale: %f\n",newScale);	
+		window->reset(newScale);
 	}
-	printf("new Scale: %f\n",newScale);	
  
 	std::vector<uint8_t> data;
 	for(int i=0;i<size;i++){
