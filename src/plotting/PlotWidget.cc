@@ -200,8 +200,9 @@ void PlotWidget::addMenu()
   setAxisAutoScale(0, true);
   setAxisAutoScale(1, true);
 
+  // Test Menu deactivate when not in test mode TODO
   testMenu.addAction(&testAction);
-  menuBar.addMenu(&testMenu);
+//  menuBar.addMenu(&testMenu);
 
   connect(&autoscrollAction, SIGNAL(triggered(bool)), this, SLOT(setAutoscrolling(bool)));
   connect(&autoscaleAction, SIGNAL(triggered(bool)), this, SLOT(setAutoscale(bool)));
