@@ -46,6 +46,20 @@ void ImageView::contextMenuEvent ( QContextMenuEvent * event )
    contextMenu.exec(event->globalPos());
 }
 
+void ImageView::mousePressEvent(QMouseEvent *event)
+{
+  //calculate pos on image 
+  int offset_x = target.x();
+  int offset_y = target.y();
+  float scale_x = source.width()/target.width();
+  float scale_y = source.height()/target.height();
+
+  int x = (int)(scale_x*(event->x()-offset_x)+0.5);
+  int y = (int)(scale_y*(event->y()-offset_y)+0.5);
+  if (x>=0 && x  <= source.width() &&
+      y>=0 && y  <= source.height()) 
+      emit clickImage(x,y);
+}
 
 void ImageView::setDefaultImage()
 {
@@ -260,7 +274,7 @@ void ImageView::update()
   }
 }
 
-void ImageView::paintEvent(QPaintEvent *)
+void ImageView::calculateRects()
 {
   int x_offset = 0;
   int y_offset = 0;
@@ -278,9 +292,12 @@ void ImageView::paintEvent(QPaintEvent *)
     else
       x_offset =  0.5f*(width()-y*image.width());
   }
+  target.setRect(x_offset, y_offset, width()-x_offset*2, height()-y_offset*2);
+  source.setRect(0.0, 0.0, image.width(), image.height());
+}
 
-  QRectF target(x_offset, y_offset, width()-x_offset*2, height()-y_offset*2);
-  QRectF source(0.0, 0.0, image.width(), image.height());
+void ImageView::paintEvent(QPaintEvent *)
+{
   QPainter painter(this);
   painter.drawImage(target, image, source);
   drawDrawItemsToPainter(painter,true);
@@ -289,6 +306,8 @@ void ImageView::paintEvent(QPaintEvent *)
 void ImageView::resizeEvent ( QResizeEvent * event )
 {
   QWidget::resizeEvent(event);
+  calculateRects();
+
   if(no_input)
     setDefaultImage();
   if(image_view_gl)

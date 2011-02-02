@@ -92,9 +92,10 @@ public:
     void contextMenuEvent ( QContextMenuEvent * event );
     int heightForWidth( int w ) {return w*image.height()/image.width(); };
     void mouseDoubleClickEvent ( QMouseEvent * event );
+signals:
+    void clickImage(int x,int y);
 
 public slots:
-
     void update();
     void update2();
     void setDefaultImage();
@@ -234,8 +235,10 @@ protected:
      */
     void drawDrawItemsToImage(QImage &image,bool all=false);
     void drawDrawItemsToPainter(QPainter &painter,bool all=false);
-    void resizeEvent ( QResizeEvent * event );
-    void paintEvent ( QPaintEvent * event );
+    void resizeEvent(QResizeEvent *event);
+    void paintEvent(QPaintEvent *event);
+    void mousePressEvent(QMouseEvent *event);
+    void calculateRects();
 
     /** The format used in the widget*/
     /** List of all Draw Items*/
@@ -253,6 +256,9 @@ protected:
 
     FrameQImageConverter frame_converter;
     ImageViewGL *image_view_gl;
+
+    QRectF target;
+    QRectF source;
 };
 
 #endif	/* IMAGEVIEWWIDGET_H */
