@@ -22,9 +22,10 @@ public:
 public slots:    
 	void setOpenGL(bool flag);
         void setSonarScan2(base::samples::SonarScan *scan);
-        void setSonarScan(const char *data, int size, double angle, bool fromBearing=false);
+        void setSonarScan(const char *data, int size, double angle,double timeBetweenBins ,bool fromBearing=false);
 protected:
      void keyPressEvent ( QKeyEvent * event );
+     double lastScale;
 
 };
 

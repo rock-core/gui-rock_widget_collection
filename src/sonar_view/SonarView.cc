@@ -14,6 +14,7 @@ SonarView::SonarView(QWidget *parent,bool use_openGL):
 ImageView(parent,false)
 {
 	setOpenGL(use_openGL);
+	lastScale=0;
 }
 
 
@@ -36,7 +37,7 @@ void SonarView::setOpenGL(bool flag)
     //image_view_gl->setAspectRatio(aspect_ratio);
     image_view_gl->show();
     SonarViewGL *window = dynamic_cast<SonarViewGL*>(image_view_gl);
-    window->reset(0.024); //TODO hardcoded value
+    //window->reset(0.024); //TODO hardcoded value
   }
   else
   {
@@ -52,19 +53,33 @@ void SonarView::setSonarScan2(base::samples::SonarScan *scan){
 		fprintf(stderr,"Cannot set data have no widget?!\n");
 		return;
 	}
+ 	double newScale = (scan->time_beetween_bins/10e-9)/640.0;
+	if(newScale != lastScale){
+		window->reset(newScale);
+		lastScale = newScale;
+	} 
 	window->setData(scan->scanData,scan->angle/2.0*M_PI*6399.0);
 }
 
-void SonarView::setSonarScan(const char *data_, int size, double angle, bool fromBearing){
+void SonarView::setSonarScan(const char *data_, int size, double angle, double timeBetweenBins,bool fromBearing){
 	SonarViewGL *window = dynamic_cast<SonarViewGL*>(image_view_gl);
 	if(!window){
 		fprintf(stderr,"Cannot set data have no widget?!\n");
 		return;
 	}
-	double bearing =angle;
-	if(!fromBearing)
+	double bearing = angle;
+ 	double newScale = ((timeBetweenBins*640.0)*10e-9);
+	if(!fromBearing){
 		bearing = angle/(M_PI*2.0)*6399.0;
-	
+ 		newScale = timeBetweenBins*size/2.0;
+	}
+	if(newScale != lastScale){
+		newScale = (newScale*150.0)/size;
+		window->reset(newScale);
+		lastScale = newScale;
+	}
+	printf("new Scale: %f\n",newScale);	
+ 
 	std::vector<uint8_t> data;
 	for(int i=0;i<size;i++){
 		data.push_back(data_[i]);
