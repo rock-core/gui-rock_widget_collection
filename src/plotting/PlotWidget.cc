@@ -119,6 +119,7 @@ void PlotWidget::clearCurves()
     }
     curves.clear();
     curves.resize(100);
+    timeMap.clear();
     minXBottom = INT_MAX;
     minYLeft = INT_MAX;
     maxXBottom = INT_MIN;
@@ -225,6 +226,13 @@ void PlotWidget::doTesting()
     {
         int number = rand() % 1000;
         addDataWithTime(number, 99);
+        std::cout << i << "took: " << time.elapsed() << std::endl;
+        time.restart();
+    }
+    for(int i=0;i<100;i++)
+    {
+        int number = rand() % 1000;
+        addDataWithTime(number, 98);
         std::cout << i << "took: " << time.elapsed() << std::endl;
         time.restart();
     }

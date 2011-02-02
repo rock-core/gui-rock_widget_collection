@@ -84,7 +84,8 @@ void CurveOptionWidget::initializeLayout(std::vector<QwtPlotCurve*> curves)
     spinBoxes.resize(curves.size());
     nameEdits.resize(curves.size());
     layout.setAlignment(Qt::AlignTop);
-    baseLayout->setSizeConstraint(QLayout::SetMinAndMaxSize);
+    baseLayout->setAlignment(Qt::AlignTop);
+//    baseLayout->setSizeConstraint(QLayout::SetMinAndMaxSize);
     for(unsigned int i=0;i<curves.size();i++)
     {
         QFrame* outerFrame = new QFrame();
@@ -115,13 +116,13 @@ void CurveOptionWidget::initializeLayout(std::vector<QwtPlotCurve*> curves)
             boxes[i] = combo;
 
             outerGridLayout->setAlignment(Qt::AlignTop);
-            outerGridLayout->addWidget(name, i, 0, 1, 1);
-            outerGridLayout->addWidget(spinBox, i, 1, 1, 1);
-            outerGridLayout->addWidget(combo, i, 2, 1, 1);
-            outerGridLayout->addWidget(button, i, 3, 1, 1);
+            outerGridLayout->addWidget(name, i, 0, 1, 1, Qt::AlignTop);
+            outerGridLayout->addWidget(spinBox, i, 1, 1, 1, Qt::AlignTop);
+            outerGridLayout->addWidget(combo, i, 2, 1, 1, Qt::AlignTop);
+            outerGridLayout->addWidget(button, i, 3, 1, 1, Qt::AlignTop);
 
             outerFrame->setLayout(outerGridLayout);
-            outerFrame->setMinimumSize(320, 250);
+
             baseLayout->addWidget(outerFrame, i, 0, 1, 1);
         }
     }
