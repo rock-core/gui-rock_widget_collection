@@ -119,6 +119,10 @@ void PlotWidget::clearCurves()
     }
     curves.clear();
     curves.resize(100);
+    minXBottom = INT_MAX;
+    minYLeft = INT_MAX;
+    maxXBottom = INT_MIN;
+    maxYLeft = INT_MIN;
     plottingWidget.replot();
 }
 
@@ -1031,14 +1035,12 @@ int PlotWidget::addData(const double* xPoints,const double* yPoints, int length,
     {
         if(maxYLeft > plottingWidget.axisScaleDiv(QwtPlot::yLeft)->upperBound())
 	{
-            std::cout << "Scale" << std::endl;
             needRepaint = true;
             setFastAxisBoundaries(Y_LEFT, minYLeft, maxYLeft*1.05);
             maxYLeft *= 1.05;
         }
         if(maxXBottom > plottingWidget.axisScaleDiv(QwtPlot::xBottom)->upperBound())
 	{
-            std::cout << "Scale" << std::endl;
             needRepaint = true;
             setFastAxisBoundaries(X_BOTTOM, minXBottom, maxXBottom*1.05);
             maxXBottom *= 1.05;
