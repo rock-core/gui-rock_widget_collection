@@ -84,7 +84,7 @@ void ImageView::setOpenGL(bool flag)
     if(image_view_gl)
       return;
 
-    image_view_gl = new ImageViewGL(this,image,items,disabledGroups);
+    image_view_gl = new ImageViewGL(*this);
     if (!image_view_gl)
       return;
     image_view_gl->resize(width(),height());

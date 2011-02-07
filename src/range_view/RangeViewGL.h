@@ -20,7 +20,7 @@ class RangeViewGL : public ImageViewGL
 
 
 public:
-	RangeViewGL(QWidget *parent = NULL);
+	RangeViewGL(ImageView &parent);
 	virtual ~RangeViewGL();
 	QSize minimumSizeHint() const;
 	QSize sizeHint() const;

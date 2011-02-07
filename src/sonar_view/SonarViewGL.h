@@ -21,7 +21,7 @@ static const float ZOOM_MIN = -6000.0;
 
 
 public:
-    SonarViewGL(QWidget *parent = NULL, unsigned int maximumBearings=6400);
+    SonarViewGL(ImageView &parent, unsigned int maximumBearings=6400);
     virtual ~SonarViewGL();
      QSize minimumSizeHint() const;
      QSize sizeHint() const;

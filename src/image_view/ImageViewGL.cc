@@ -6,24 +6,11 @@
  */
 #include <iostream>
 #include "ImageViewGL.h"
+#include "ImageView.h"
 
-ImageViewGL::ImageViewGL(QWidget *parent) :
-QGLWidget(parent),
-image(new QImage()),
-items(new QList<DrawItem*>()),
-disabledGroups(new QList<int>())
-{
-}
-
-
-ImageViewGL::ImageViewGL(QWidget *parent,
-                         QImage &image,
-                         QList<DrawItem*> &items,
-                         QList<int> &disabledGroups):
-  QGLWidget(parent),
-  image(&image),
-  items(&items),
-  disabledGroups(&disabledGroups)
+ImageViewGL::ImageViewGL(ImageView &parent):
+  image_view(parent),
+  QGLWidget(&parent)
 {
 }
 
@@ -34,13 +21,13 @@ ImageViewGL::~ImageViewGL()
 void ImageViewGL::paintGL()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glDrawPixels(image->width(), image->height(), GL_RGB, GL_UNSIGNED_BYTE, image->bits());
-    QList<DrawItem*>::iterator iter = items->begin();
-    for(;iter != items->end();++iter)
+    glDrawPixels(image_view.image.width(), image_view.image.height(), GL_RGB, GL_UNSIGNED_BYTE, image_view.image.bits());
+    QList<DrawItem*>::iterator iter = image_view.items.begin();
+    for(;iter != image_view.items.end();++iter)
     {
-      if(!disabledGroups->contains((*iter)->getGroupNr()))
+      if(!image_view.disabledGroups.contains((*iter)->getGroupNr()))
         if((*iter)->getRenderOnOpenGl())
-          (*iter)->renderOnGl(*this);
+          (*iter)->renderOnGl(*this,image_view.source,image_view.target);
     }
 }
 
@@ -55,10 +42,10 @@ void ImageViewGL::setGLViewPoint(int display_width,int display_height)
   float x =1; 
   float y =1; 
  
-  if (image->width() && image->height())
+  if (image_view.image.width() && image_view.image.height())
   {
-    x = ((float)display_width)/ image->width();
-    y = ((float)display_height)/ image->height();
+    x = ((float)display_width)/ image_view.image.width();
+    y = ((float)display_height)/ image_view.image.height();
   }
 
   int x_offset = 0;
@@ -67,12 +54,12 @@ void ImageViewGL::setGLViewPoint(int display_width,int display_height)
   {
     if(x < y)
     {
-      y_offset =  -0.5f*(display_height-x*image->height());
+      y_offset =  -0.5f*(display_height-x*image_view.image.height());
       y = x;
     }
     else
     {
-      x_offset =  0.5f*(display_width-y*image->width());
+      x_offset =  0.5f*(display_width-y*image_view.image.width());
       x = y;
     }
   }
@@ -84,6 +71,9 @@ void ImageViewGL::setGLViewPoint(int display_width,int display_height)
   glLoadIdentity();
   glViewport(0,0, display_width, display_height);
   glRasterPos2i(x_offset,display_height+y_offset);
+  
+ // target.setRect(x_offset,y_offset,display_width-x_offset,display_width-y_offset);
+ // source.setRect(0,0,image->width(),image->height());
 }
 
 void ImageViewGL::resizeGL(int w, int h)

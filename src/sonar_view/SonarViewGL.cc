@@ -19,7 +19,7 @@ const float SonarViewGL::ZOOM_MAX;
 const float SonarViewGL::ZOOM_MIN;
 
 
-SonarViewGL::SonarViewGL(QWidget *parent,unsigned int maximumBearings):
+SonarViewGL::SonarViewGL(ImageView &parent,unsigned int maximumBearings):
 ImageViewGL(parent),
 maximumBearings(maximumBearings)
 {

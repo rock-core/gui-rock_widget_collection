@@ -15,6 +15,8 @@
 #include "PolygonItem.h"
 #include "PolylineItem.h"
 
+class ImageView;
+
 class ImageViewGL :public QGLWidget
 {
     Q_OBJECT
@@ -24,19 +26,14 @@ class ImageViewGL :public QGLWidget
     bool aspect_ratio;
 
   public:
-    ImageViewGL(QWidget *parent);
-    ImageViewGL(QWidget *parent,QImage &image,
-                QList<DrawItem*> &items,
-                QList<int> &disabledGroups);
+    ImageViewGL(ImageView &parent);
 
     virtual ~ImageViewGL();
     void setGLViewPoint(int display_width=0,int display_height=0);
     void setAspectRatio(bool value){aspect_ratio = value;};
 
   private:
-    QImage *image;
-    QList<DrawItem*> *items;
-    QList<int> *disabledGroups;
+    ImageView &image_view;    
 };
 
 #endif	/* IMAGEVIEWWGL_H */

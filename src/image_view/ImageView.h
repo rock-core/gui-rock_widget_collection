@@ -77,6 +77,7 @@ class QDESIGNER_WIDGET_EXPORT ImageView : public QWidget
     Q_PROPERTY(bool Aspect_Ratio READ getAspectRatio WRITE setAspectRatio USER false)
 
 public:
+    friend class ImageViewGL;
     /**
      * Initializing the widget with the given format and dimensions
      * For format parameters @seeQImage

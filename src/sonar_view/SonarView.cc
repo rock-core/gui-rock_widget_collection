@@ -30,7 +30,7 @@ void SonarView::setOpenGL(bool flag)
     if(image_view_gl)
       return;
 
-    image_view_gl = new SonarViewGL(this);
+    image_view_gl = new SonarViewGL(*this);
     if (!image_view_gl)
       return;
     image_view_gl->resize(width(),height());

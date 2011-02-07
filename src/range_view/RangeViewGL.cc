@@ -19,7 +19,7 @@ const float RangeViewGL::ZOOM_MAX;
 const float RangeViewGL::ZOOM_MIN;
 
 
-RangeViewGL::RangeViewGL(QWidget *parent):
+RangeViewGL::RangeViewGL(ImageView &parent):
 	ImageViewGL(parent),
 	 zoom( 45.0 )
 

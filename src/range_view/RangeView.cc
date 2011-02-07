@@ -30,7 +30,7 @@ void RangeView::setOpenGL(bool flag)
     if(image_view_gl)
       return;
 
-    image_view_gl = new RangeViewGL(this);
+    image_view_gl = new RangeViewGL(*this);
     if (!image_view_gl)
       return;
     image_view_gl->resize(width(),height());

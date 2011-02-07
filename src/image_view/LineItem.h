@@ -16,6 +16,7 @@
  */
 class LineItem : public DrawItem
 {
+    Q_OBJECT
 public:
     /**
      * Creates a LIneItem
@@ -32,7 +33,7 @@ public:
      * Destructor
      */
     virtual ~LineItem(){};
-
+public slots:
     /**
      * Returns the x position of the end point
      * @return the x position of the end point
@@ -66,6 +67,7 @@ public:
     /**
      * @see DrawItem#draw
      */
+    void renderOnGl(QGLWidget &widget,QRectF &source,QRectF &target);
     void draw(QPainter* painter);
 private:
     /** The x position of the end point*/

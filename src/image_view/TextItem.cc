@@ -28,7 +28,7 @@ void TextItem::draw(QPainter* painter)
     painter->drawText(position_factor_x*rect.width()+posX,position_factor_y*rect.height(), text);
 }
 
-void TextItem::renderOnGl(QGLWidget &widget)
+void TextItem::renderOnGl(QGLWidget &widget,QRectF &source, QRectF &target)
 {
   widget.qglColor(color);
   widget.renderText(position_factor_x*widget.width()+posX,position_factor_y*widget.height()+posY,text,font);

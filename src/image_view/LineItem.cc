@@ -23,3 +23,13 @@ void LineItem::draw(QPainter* painter)
 }
 
 
+void LineItem::renderOnGl(QGLWidget &widget,QRectF &source,QRectF &target)
+{
+  float factor_x = ((float)target.width())/source.width();
+  float factor_y = ((float)target.height())/source.height();
+  glColor4ub(color.red(),color.green(),color.blue(),color.alpha());
+  glBegin(GL_LINES);
+  glVertex3f(factor_x*posX+target.x(), widget.height()-(posY*factor_y+target.y()), 0.0f); // ending point of the line
+  glVertex3f(target.x()+factor_x*endX, widget.height()-(target.y()+factor_y*endY), 0.0f); // ending point of the line
+  glEnd( );
+}

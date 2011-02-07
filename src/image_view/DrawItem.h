@@ -59,7 +59,7 @@ class DrawItem : public QObject
       return (getID() == other.getID());
     }
 
-    virtual void renderOnGl(QGLWidget &widget){};
+    virtual void renderOnGl(QGLWidget &widget,QRectF &source,QRectF &target){};
 
   
   Q_OBJECT

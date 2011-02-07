@@ -11,6 +11,7 @@ SET(image_view_widget_MOC_HDRS
   image_view/ImageViewGL.h
   image_view/ImageViewPlugin.h
   image_view/DrawItem.h
+  image_view/LineItem.h
   image_view/TextItem.h
   sonar_view/SonarView.h
   sonar_view/SonarViewGL.h
