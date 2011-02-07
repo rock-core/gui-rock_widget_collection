@@ -202,7 +202,7 @@ void PlotWidget::addMenu()
 
   // Test Menu deactivate when not in test mode TODO
   testMenu.addAction(&testAction);
-//  menuBar.addMenu(&testMenu);
+  menuBar.addMenu(&testMenu);
 
   connect(&autoscrollAction, SIGNAL(triggered(bool)), this, SLOT(setAutoscrolling(bool)));
   connect(&autoscaleAction, SIGNAL(triggered(bool)), this, SLOT(setAutoscale(bool)));
@@ -633,7 +633,7 @@ void PlotWidget::zoomed(const QwtDoubleRect& rect)
         // set the slider positions to its original values
         xBottomSlider.blockSignals(true);
         yLeftSlider.blockSignals(true);
-        setSliderValues();
+        std::cout << "Zoom Base" << std::endl;
         xBottomSlider.setValue(rect.bottomLeft().x());
         yLeftSlider.setValue(rect.topLeft().y());
         xBottomSlider.blockSignals(false);
@@ -649,13 +649,13 @@ void PlotWidget::zoomed(const QwtDoubleRect& rect)
         {
             zoomer.zoom(initialRect);
         }
+        setSliderValues();
     }
     else
     {
         isZoomed = true;
         zoomXSpan = rect.bottomRight().x() - rect.bottomLeft().x();
         zoomYSpan = rect.bottomLeft().y() - rect.topLeft().y();
-
         xBottomSlider.blockSignals(true);
         yLeftSlider.blockSignals(true);
         xBottomSlider.setValue(rect.bottomLeft().x());
@@ -782,6 +782,7 @@ void PlotWidget::setSliderValues()
     double currentMaxX = plottingWidget.axisScaleDiv(QwtPlot::xBottom)->upperBound();
     double currentMinY = plottingWidget.axisScaleDiv(QwtPlot::yLeft)->lowerBound();
     double currentMaxY = plottingWidget.axisScaleDiv(QwtPlot::yLeft)->upperBound();
+    std::cout << currentMaxY << "|" << maxYLeft << std::endl;
     xBottomSlider.setRange(minXBottom < currentMinX ? minXBottom : currentMinX, maxXBottom > currentMaxX ? maxXBottom : currentMaxX);
     yLeftSlider.setScalePosition(QwtSlider::LeftScale);
     yLeftSlider.setRange(minYLeft < currentMinY ? minYLeft : currentMinY, maxYLeft > currentMaxY ? maxYLeft : currentMaxY);
@@ -864,6 +865,8 @@ void PlotWidget::setAutoscale(bool autoscale)
     dataManager->setAutoscaling(autoscale);
     if(autoscale)
     {
+        zoomer.setEnabled(true);
+        plottingWidget.setMouseWheelZoomAxis(true, true);
         autoscaleAction.setChecked(true);
         dataManager->setIsFixedSize(false);
         dataManager->setAutoscrolling(false);
@@ -882,6 +885,8 @@ void PlotWidget::setFixedSize(bool fixedSize)
     dataManager->setIsFixedSize(fixedSize);
     if(fixedSize)
     {
+        zoomer.setEnabled(true);
+        plottingWidget.setMouseWheelZoomAxis(true, true);
         dataManager->setAutoscaling(false);
         dataManager->setAutoscrolling(false);
         fixedAction.setChecked(true);

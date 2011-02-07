@@ -10,6 +10,8 @@
 PlottingWidget::PlottingWidget(QWidget* parent)
     : QwtPlot(parent)
 {
+    zoomXAxis = true;
+    zoomYAxis = true;
 }
 
 
@@ -19,7 +21,6 @@ PlottingWidget::~PlottingWidget()
 
 void PlottingWidget::wheelEvent(QWheelEvent* event)
 {
-
     // mouse wheel away from the user, or up
     if(event->delta() > 0)
     {
