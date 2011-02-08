@@ -13,6 +13,7 @@ SET(image_view_widget_MOC_HDRS
   image_view/DrawItem.h
   image_view/LineItem.h
   image_view/TextItem.h
+  image_view/PointItem.h
   sonar_view/SonarView.h
   sonar_view/SonarViewGL.h
   sonar_view/SonarViewPlugin.h

@@ -73,7 +73,7 @@ class QDESIGNER_WIDGET_EXPORT ImageView : public QWidget
 {
     Q_OBJECT
     Q_CLASSINFO("Author", "Alexander Duda")
-    Q_PROPERTY(bool Use_OpenGL READ getOpenGl WRITE setOpenGL USER false)
+    Q_PROPERTY(bool Use_OpenGL READ onOpenGL WRITE openGL USER false)
     Q_PROPERTY(bool Aspect_Ratio READ getAspectRatio WRITE setAspectRatio USER false)
 
 public:
@@ -101,8 +101,8 @@ public slots:
     void update2();
     void setDefaultImage();
 
-    virtual void setOpenGL(bool flag);
-    bool getOpenGl(){return image_view_gl;};
+    virtual void openGL(bool flag);
+    bool onOpenGL(){return image_view_gl;};
     void setAspectRatio(bool value)
     {
       aspect_ratio=value;
@@ -130,7 +130,7 @@ public slots:
      * @param drawItem teh itrem which to draw. keep the item given to remove it afterwards
      */
     QObject* addItem(QObject* object);
-    
+    QObject* addPoints(const QList<int> &points_x,const QList<int> &points_y,int groupNr, const QColor &color);
     /**
      * Adds a Text to the image and all successive images
      * @param xPos the starting x position

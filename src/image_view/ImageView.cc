@@ -31,7 +31,7 @@ ImageView::ImageView(QWidget *parent,bool use_openGL):
   
     //configure opengl if activated
     image_view_gl = NULL;
-    setOpenGL(use_openGL);
+    openGL(use_openGL);
 }
 
 
@@ -76,7 +76,7 @@ void ImageView::setDefaultImage()
    no_input = true;
 }
 
-void ImageView::setOpenGL(bool flag)
+void ImageView::openGL(bool flag)
 {
   if(flag)
   {
@@ -128,6 +128,8 @@ bool ImageView::saveImage3(const QString &mode, int pixel_size,  int width,  int
 QObject* ImageView::addText(int xPos, int yPos, int groupNr, const QString &text)
 {
     TextItem* textItem = new TextItem(xPos, yPos, groupNr, text);
+    if(image_view_gl)
+      textItem->openGL(true);
     items.push_back(textItem);
     return textItem;
 }
@@ -135,6 +137,9 @@ QObject* ImageView::addText(int xPos, int yPos, int groupNr, const QString &text
 QObject* ImageView::addLine(int xPos, int yPos, int groupNr, const QColor &color, int endX, int endY)
 {
     LineItem* item = new LineItem(xPos, yPos, groupNr, color, endX, endY);
+    if(image_view_gl)
+      item->openGL(true);
+
     items.push_back(item);
     return item;
 }
@@ -142,6 +147,9 @@ QObject* ImageView::addLine(int xPos, int yPos, int groupNr, const QColor &color
 QObject* ImageView::addEllipse(int xPos, int yPos, int groupNr, const QColor &color, int width, int height)
 {
     EllipseItem* item = new EllipseItem(xPos, yPos, groupNr, color, width, height);
+    if(image_view_gl)
+      item->openGL(true);
+
     items.push_back(item);
     return item;
 }
@@ -149,12 +157,18 @@ QObject* ImageView::addEllipse(int xPos, int yPos, int groupNr, const QColor &co
 QObject* ImageView::addRectangle(int xPos, int yPos, int groupNr, const QColor &color, int width, int height)
 {
     RectangleItem* item = new RectangleItem(xPos, yPos, groupNr, color, width, height);
+    if(image_view_gl)
+      item->openGL(true);
+
     items.push_back(item);
     return item;
 }
 QObject* ImageView::addPolyline(int groupNr, const QColor &color, const QList<QPoint> &points)
 {
     PolylineItem* item = new PolylineItem(color, groupNr, points);
+    if(image_view_gl)
+      item->openGL(true);
+
     items.push_back(item);
     return item;
 }
@@ -162,6 +176,9 @@ QObject* ImageView::addPolyline(int groupNr, const QColor &color, const QList<QP
 QObject* ImageView::addPolygon(int groupNr, const QColor &color, const QList<QPoint> &points)
 {
     PolygonItem* item = new PolygonItem(color, groupNr, points);
+    if(image_view_gl)
+      item->openGL(true);
+
     items.push_back(item);
     return item;
 }
@@ -169,8 +186,20 @@ QObject* ImageView::addPolygon(int groupNr, const QColor &color, const QList<QPo
 QObject* ImageView::addItem(QObject* object)
 {
     DrawItem* drawItem = dynamic_cast<DrawItem*>(object);
+    if(image_view_gl)
+      drawItem->openGL(true);
+
     items.push_back(drawItem);
     return object;
+}
+
+QObject* ImageView::addPoints(const QList<int> &points_x,const QList<int> &points_y,int groupNr, const QColor &color)
+{
+    DrawItem* drawItem = new PointItem(points_x,points_y,groupNr,color);
+    if(image_view_gl)
+      drawItem->openGL(true);
+    items.push_back(drawItem);
+    return drawItem;
 }
 
  QObject* ImageView::removeItem(QObject* object,bool delete_object)
@@ -248,7 +277,7 @@ void ImageView::drawDrawItemsToPainter(QPainter &painter,bool all)
         for(;iter != items.end();++iter)
         {
 	  if(!disabledGroups.contains((*iter)->getGroupNr()))
-	    if(!(*iter)->getRenderOnOpenGl() || all == true)
+	    if(!(*iter)->onOpenGL() || all == true)
                 (*iter)->draw(&painter);
         }
     }

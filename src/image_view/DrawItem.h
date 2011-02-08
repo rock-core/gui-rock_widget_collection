@@ -16,7 +16,7 @@
 /**
  * Enumeration for DrawTypes
  */
-enum DrawType {Text, Line, Ellipse, Rectangle, Polyline, Polygon, Arrow};
+enum DrawType {Text, Line, Ellipse, Rectangle, Polyline, Polygon, Arrow,Point};
 
 /**
  * Abstract Base class for all shapes. It defines basic members and
@@ -154,12 +154,12 @@ class DrawItem : public QObject
       return m_id;
     };
 
-    void setRenderOnOpenGl(bool value)
+    void openGL(bool value)
     {
       brender_on_opengl = value;
     };
 
-    bool getRenderOnOpenGl(){return brender_on_opengl;};
+    bool onOpenGL(){return brender_on_opengl;};
 
     /**
          * Set the facor to calculate the pos during scaling

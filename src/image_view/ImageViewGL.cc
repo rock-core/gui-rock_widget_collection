@@ -26,7 +26,7 @@ void ImageViewGL::paintGL()
     for(;iter != image_view.items.end();++iter)
     {
       if(!image_view.disabledGroups.contains((*iter)->getGroupNr()))
-        if((*iter)->getRenderOnOpenGl())
+        if((*iter)->onOpenGL())
           (*iter)->renderOnGl(*this,image_view.source,image_view.target);
     }
 }

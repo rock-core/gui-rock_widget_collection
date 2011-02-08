@@ -14,6 +14,7 @@
 #include "EllipseItem.h"
 #include "PolygonItem.h"
 #include "PolylineItem.h"
+#include "PointItem.h"
 
 class ImageView;
 
