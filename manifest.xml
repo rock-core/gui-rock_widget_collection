@@ -7,6 +7,7 @@
   <logo>http://</logo>
   <depend package="image_processing/frame_helper" />
   <depend package="freeglut3" />
+  <depend package="qwt5" />
   <rosdep name="qt4" />
   <versioncontrol type="git" url="" />
 </package>
