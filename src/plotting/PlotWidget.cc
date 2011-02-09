@@ -498,6 +498,8 @@ void PlotWidget::fitPlotToGraph()
   lower = plottingWidget.axisScaleDiv(QwtPlot::yLeft)->lowerBound();
   upper = plottingWidget.axisScaleDiv(QwtPlot::yLeft)->upperBound();
   setAxisBoundaries(Y_LEFT, minYLeft, maxYLeft);
+  yLeftSlider.setValue(yLeftSlider.minValue());
+  xBottomSlider.setValue(xBottomSlider.minValue());
   plottingWidget.replot();
 }
 
