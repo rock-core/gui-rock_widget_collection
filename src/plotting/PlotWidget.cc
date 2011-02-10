@@ -11,6 +11,7 @@
 #include <qwt-qt4/qwt_picker.h>
 #include <qwt-qt4/qwt_plot.h>
 #include <QtCore/qdatetime.h>
+#include <qwt-qt4/qwt_plot_curve.h>
 
 //Q_EXPORT_PLUGIN2(PlotWidget,PlotWidget)
 
@@ -135,6 +136,18 @@ void PlotWidget::clearAll()
     clearCurves();
 }
 
+void PlotWidget::clearCurveData(int curveId)
+{
+    QwtPlotCurve* curve = curves[curveId];
+    if(curve != NULL)
+    {
+        QVector<double> xVector;
+        QVector<double> yVector;
+        curve->setData(xVector, yVector);
+    }
+    plottingWidget.replot();
+}
+
 void PlotWidget::addMenu()
 {
   menuBar.addMenu(&fileMenu);
@@ -225,7 +238,7 @@ void PlotWidget::doTesting()
     static bool doSecond = true;
     QTime time;
     time.start();
-    clearAll();
+//    clearAll();
     srand ( std::time(NULL) );
     if(doSecond)
     {
@@ -255,9 +268,10 @@ void PlotWidget::doTesting()
             time.restart();
         }
         addPoints(xpoints, ypoints, 2);
-        this->setDataStyle(1, QPen(QColor(255, 0, 0)), 1);
+        this->setDataStyle(2, QPen(QColor(255, 0, 0)), 1);
         setLegendNameForCurve(QString("Test here"), 1);
         fitPlotToGraph();
+        this->clearCurveData(2);
         setEnableLegend(true);
         doSecond = false;
     }
@@ -265,20 +279,20 @@ void PlotWidget::doTesting()
     {
         QList<double> xpoints;
         QList<double> ypoints;
-        clearAll();
-        for(int i=0;i<100;i++)
-        {
-            double number = rand() % 500;
-            double secondNumber = rand() % 500;
-            xpoints.append(number);
-            ypoints.append(secondNumber);
-//            addData(number, secondNumber, 1);
-//            std::cout << i << "took: " << time.elapsed() << std::endl;
-            time.restart();
-        }
-        addPoints(xpoints, ypoints, 1);
-        xpoints.clear();
-        ypoints.clear();
+//        clearAll();
+//        for(int i=0;i<100;i++)
+//        {
+//            double number = rand() % 500;
+//            double secondNumber = rand() % 500;
+//            xpoints.append(number);
+//            ypoints.append(secondNumber);
+////            addData(number, secondNumber, 1);
+////            std::cout << i << "took: " << time.elapsed() << std::endl;
+//            time.restart();
+//        }
+//        addPoints(xpoints, ypoints, 1);
+//        xpoints.clear();
+//        ypoints.clear();
         for(int i=0;i<100;i++)
         {
             double number = rand() % 100;

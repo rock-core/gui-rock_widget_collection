@@ -217,6 +217,14 @@ public slots:
      */
     void setLegendNameForCurve(const QString name, int curveId);
 
+    /**
+     * Clears all points of the curve specified by the curveId. Any specified
+     * style changes will still be associated with the curveId but all points
+     * will be erased from the curve
+     * @param curveId the id of the curve
+     */
+    void clearCurveData(int curveId);
+
 
     // --> Grid related methods
 
