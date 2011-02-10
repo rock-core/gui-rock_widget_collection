@@ -256,6 +256,7 @@ void PlotWidget::doTesting()
         }
         addPoints(xpoints, ypoints, 2);
         this->setDataStyle(1, QPen(QColor(255, 0, 0)), 1);
+        setLegendNameForCurve(QString("Test here"), 1);
         fitPlotToGraph();
         setEnableLegend(true);
         doSecond = false;
@@ -393,6 +394,15 @@ void PlotWidget::setLegendPosition(QwtPlot::LegendPosition position)
 {
     dataManager->setLegendPosition((int)position);
     refreshFromDataManager();
+}
+
+void PlotWidget::setLegendNameForCurve(const QString name, int curveId)
+{
+    QwtPlotCurve* curve = curves[curveId];
+    if(curve != NULL)
+    {
+        curve->setTitle(name);
+    }
 }
 
 void PlotWidget::refreshFromDataManager()

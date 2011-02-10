@@ -210,6 +210,13 @@ public slots:
      */
     QwtPlot::LegendPosition getLegendPosition();
 
+    /**
+     * Sets the anme of the curve which is displayed in the legend
+     * @param name the name for the curve in the legend
+     * @param curveId the id of the curve whose name shall be changed
+     */
+    void setLegendNameForCurve(const QString name, int curveId);
+
 
     // --> Grid related methods
 
