@@ -11,8 +11,10 @@
 #include <QtGui/qwidget.h>
 
 #include "MultiViewWidget.h"
-#include "plotting/PlottingWidget.h"
+#include "plotting/PlotWidget.h"
 #include "image_view/ImageView.h"
+
+#include <limits>
 
 using namespace std;
 
@@ -23,17 +25,16 @@ int main(int argc, char** argv)
 {
     QApplication* app = new QApplication(argc, argv);
     MultiViewWidget* widget = new MultiViewWidget(NULL);
-    widget->setThumbnailPosition(1);
     widget->setThumbnailSize(100, 100);
-    PlottingWidget* pwidget = new PlottingWidget(NULL);
+    PlotWidget* pwidget = new PlotWidget(NULL);
     widget->addWidget(QString("Plot"), pwidget);
-    PlottingWidget* pwidget2 = new PlottingWidget(NULL);
+    PlotWidget* pwidget2 = new PlotWidget(NULL);
+    QIcon icon("/usr/share/psi/iconsets/system/default/psiplus/logo_48.png");
     widget->addWidget(QString("Plot2"), pwidget2);
     ImageView* imageView = new ImageView();
     QImage* image = new QImage();
     image->load("/home/blueck/pics/testimage.jpg");
     imageView->addImage(*image);
-    imageView->setMaximumSize(400, 300);
     widget->addWidget(QString("Image"), imageView);
     widget->show();
     app->exec();

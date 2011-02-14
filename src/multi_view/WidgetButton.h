@@ -10,6 +10,11 @@
 
 #include <QPushButton>
 #include <QHBoxLayout>
+#include <QTimer>
+#include <QIcon>
+#include <QLabel>
+
+#include <iostream>
 
 class WidgetButton : public QPushButton
 {
@@ -25,12 +30,19 @@ public slots:
     void showWidget(bool shown);
     QWidget* getWidget();
     QString getWidgetName();
+    void widgetUpdate(int type=0);
+    void changePalette();
+    void setIconAlternative(const QIcon &icon, bool isAlternative=false);
     
 protected:
     QWidget* mainWidget;
     QString name;
     QHBoxLayout layout;
-
+    QPalette defaultPalette;
+    QPalette redPalette;
+    QTimer paletteTimer;
+    QIcon icon;
+    bool isAlternative;
 };
 
 #endif	/* WIDGETBUTTON_H */
