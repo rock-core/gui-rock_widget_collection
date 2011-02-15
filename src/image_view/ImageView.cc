@@ -28,6 +28,7 @@ ImageView::ImageView(QWidget *parent,bool use_openGL):
     //setting up widget
     setWindowTitle(tr("ImageView"));
     setDefaultImage();
+    calculateRects();
   
     //configure opengl if activated
     image_view_gl = NULL;
@@ -341,12 +342,13 @@ void ImageView::paintEvent(QPaintEvent *)
 void ImageView::resizeEvent ( QResizeEvent * event )
 {
   QWidget::resizeEvent(event);
-  calculateRects();
 
   if(no_input)
     setDefaultImage();
   if(image_view_gl)
     image_view_gl->resize(width(),height());
+
+  calculateRects();
 }
 
 void ImageView::mouseDoubleClickEvent( QMouseEvent * event )
