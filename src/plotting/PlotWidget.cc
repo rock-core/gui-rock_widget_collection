@@ -217,7 +217,7 @@ void PlotWidget::addMenu()
 
   // Test Menu deactivate when not in test mode TODO
   testMenu.addAction(&testAction);
-  menuBar.addMenu(&testMenu);
+//  menuBar.addMenu(&testMenu);
 
   connect(&autoscrollAction, SIGNAL(triggered(bool)), this, SLOT(setAutoscrolling(bool)));
   connect(&autoscaleAction, SIGNAL(triggered(bool)), this, SLOT(setAutoscale(bool)));
@@ -829,12 +829,14 @@ void PlotWidget::setAxisBoundaries(int axisId, double lower, double upper, doubl
         xSpan = upper - lower;
         dataManager->setMinX(lower);
         dataManager->setMaxX(upper);
+        this->maxXBottom = upper;
     }
     else if(axis == QwtPlot::yLeft)
     {
         ySpan = upper -lower;
         dataManager->setMinY(lower);
         dataManager->setMaxY(upper);
+        this->maxYLeft = upper;
     }
     setZoomBase();
 //    autoScale = false;
@@ -849,12 +851,14 @@ void PlotWidget::setFastAxisBoundaries(int axisId, double lower, double upper, d
         xSpan = upper - lower;
         dataManager->setMinX(lower);
         dataManager->setMaxX(upper);
+        this->maxXBottom = upper;
     }
     else if(axis == QwtPlot::yLeft)
     {
         ySpan = upper -lower;
         dataManager->setMinY(lower);
         dataManager->setMaxY(upper);
+        this->maxYLeft = upper;
     }
 }
 
