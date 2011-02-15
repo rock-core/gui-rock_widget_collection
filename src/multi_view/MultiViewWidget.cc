@@ -135,7 +135,7 @@ void MultiViewWidget::addMenu()
 
 void MultiViewWidget::addWidget(const QString &name, QWidget* widget, const QIcon &icon, bool useOnlyIcon)
 {
-    if(widgets[name] != NULL)
+    if(widgets.contains(name))
     {
         std::cerr << "A Widget with the name: [" << name.toStdString() << "] already exists!" << std::endl;
         return;

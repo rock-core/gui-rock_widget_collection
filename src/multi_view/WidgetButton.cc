@@ -77,7 +77,7 @@ void WidgetButton::setWidget(const QString &name, QWidget* widget, bool shown)
     }
     else
     {
-        std::cout << "No notifyUpdate method found, updates will not be displayed for: " << name.toStdString() << std::endl;
+        std::cout << "No notifyUpdate(int) method found, updates will not be displayed for: " << name.toStdString() << std::endl;
     }
 }
 

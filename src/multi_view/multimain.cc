@@ -35,6 +35,7 @@ int main(int argc, char** argv)
     QImage* image = new QImage();
     image->load("/home/blueck/pics/testimage.jpg");
     imageView->addImage(*image);
+    imageView->setMaximumSize(image->width(), image->height());
     widget->addWidget(QString("Image"), imageView);
     widget->show();
     app->exec();
