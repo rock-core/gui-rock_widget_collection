@@ -46,37 +46,112 @@
 class MultiViewWidget : public QWidget
 {
 
+    /**
+     * Enum to determine the position of the thumbnails
+     */
     enum Position{Left, Top, Right, Bottom};
 
     Q_OBJECT
 
 public:
+    /**
+     * Constructor
+     * @param parent parentWidget will be given to QWidgets constructor
+     */
     MultiViewWidget(QWidget* parent);
+
+    /**
+     * Destructor
+     * @todo implement correctly
+     */
     virtual ~MultiViewWidget();
 
-    void addMenu();
 public slots:
+
+    /**
+     * Adds a widget and a thumbnail to the widget
+     * @param name the name given to the widget, must be unique.
+     * @param widget teh widget to add
+     * @param icon an icon as alternative for text or the wisget itself
+     * @param useOnlyIcon if only the icon and or text shall be displayed as thumbnail and NOT the widget
+     */
     void addWidget(const QString &name, QWidget* widget, const QIcon &icon=QIcon(), bool useOnlyIcon=false);
+
+    /**
+     * Return sthe widget for the given name
+     * @param name the name of the widget to return given when added via addWidget
+     * @return the widget which was added with the given name
+     * @todo implement correctly
+     */
     QWidget* getWidget(const QString &name);
+
+    /**
+     * Removes the widget with the given name.
+     * This will DELETE the widget that was added with that name!!
+     * @param name the anme of the widget to remove
+     * @todo implement correctly!
+     */
     void deleteWidget(const QString &name);
+
+    /**
+     * Called when a thumbnail was clicked
+     */
     void widgetClicked();
+
+    /**
+     * Sets the position of the thumbnails. The given int corresponds to
+     * teh Position enum. int is taken for ruby mainly.
+     * @param position 0=left, 1=top, 2=right, 3=bottom
+     */
     void setThumbnailPosition(int position);
+
+    /**
+     * Sets the size of teh thumbnail widgets. Defaults the thumbnails to
+     * 150x150.
+     * @param width teh width of the thumbnails, defaults to 150
+     * @param height the height of the thumbnails defaults to 150
+     */
     void setThumbnailSize(int width=150, int height=150);
+
+    /**
+     * Simple Test method. This method cycles all widgets added and calls the
+     * doTesting method slot on the widget if there is one, or nothing if there isn't.
+     */
     void doTesting();
 
 protected:
+
+    /**
+     * Adds the menu to the widget, currently its only use is to have
+     * a testing environment
+     */
+    void addMenu();
+
+    /** All thumbnails and widgets added*/
     QHash<QString, WidgetButton*> widgets;
+    /** Menu Bar*/
     QMenuBar menuBar;
+    /** Main layout*/
     QGridLayout layout;
+    /**Layout if Top or Bottom position is used*/
     QHBoxLayout* upperLayout;
+    /** Layout if Left or Right position is used*/
     QVBoxLayout* vertLayout;
+    /** File Menu*/
     QMenu fileMenu;
+    /** The widget currently displayed in the center part of the widget*/
     QWidget* currentWidget;
+    /** A widget for layouting purposes*/
     QWidget layoutWidget;
+    /** The current Thumbnail position*/
     Position position;
+    /** The width of thumbnails*/
     int thumbnailWidth;
+    /** The height of thumbnails*/
     int thumbnailHeight;
+    /** Action to test the widget, calls doTesting*/
     QAction testingAction;
+    /** Widget for Layouting purposes*/
     QWidget* pseudoWidget;
 };
 

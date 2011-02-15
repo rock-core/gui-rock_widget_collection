@@ -114,9 +114,14 @@ void MultiViewWidget::setThumbnailPosition(int position)
             layout.addWidget(&layoutWidget, 3, 0, 1, 1, Qt::AlignLeft | Qt::AlignTop);
             break;
         }
+        // same as top
         default:
         {
-            
+            layout.setAlignment(Qt::AlignTop);
+            layout.removeWidget(&layoutWidget);
+            layout.setRowStretch(2, 10);
+            layout.addWidget(&layoutWidget, 1, 0, 1, 1, Qt::AlignLeft | Qt::AlignTop);
+            break;
         }
     }
 }
@@ -130,6 +135,11 @@ void MultiViewWidget::addMenu()
 
 void MultiViewWidget::addWidget(const QString &name, QWidget* widget, const QIcon &icon, bool useOnlyIcon)
 {
+    if(widgets[name] != NULL)
+    {
+        std::cerr << "A Widget with the name: [" << name.toStdString() << "] already exists!" << std::endl;
+        return;
+    }
     WidgetButton* widgetButton = new WidgetButton();
     widgetButton->setFixedSize(thumbnailWidth, thumbnailHeight);
     widgetButton->setIconAlternative(icon, useOnlyIcon);
@@ -182,12 +192,18 @@ void MultiViewWidget::doTesting()
 
 QWidget* MultiViewWidget::getWidget(const QString& name)
 {
-    return widgets.value(name);
+    return widgets.value(name)->getWidget();
 }
 
 void MultiViewWidget::deleteWidget(const QString& name)
 {
+    WidgetButton* button = widgets[name];
     widgets.remove(name);
+    QWidget* widget = button->getWidget();
+    layout.removeWidget(widget);
+    upperLayout->removeWidget(widget);
+    vertLayout->removeWidget(widget);
+    delete button;
 }
 
 void MultiViewWidget::widgetClicked()

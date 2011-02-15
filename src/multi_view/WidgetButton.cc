@@ -25,6 +25,7 @@ WidgetButton::WidgetButton() : QPushButton(),
 
 WidgetButton::~WidgetButton()
 {
+    delete mainWidget;
 }
 
 void WidgetButton::setWidget(const QString &name, QWidget* widget, bool shown)
@@ -52,7 +53,6 @@ void WidgetButton::setWidget(const QString &name, QWidget* widget, bool shown)
                 setIcon(QIcon());
             }
         }
-//        layout.addWidget(mainWidget);
         mainWidget->setEnabled(false);
     }
     else
