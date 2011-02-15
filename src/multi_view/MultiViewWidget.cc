@@ -28,7 +28,7 @@ MultiViewWidget::MultiViewWidget(QWidget* parent) : QWidget(parent),
     layoutWidget.setLayout(upperLayout);
     layout.addWidget(&menuBar, 0, 0, 1, 1, Qt::AlignTop);
     layout.addWidget(&layoutWidget, 1, 0, 1, 1, Qt::AlignLeft | Qt::AlignTop);
-    addMenu();
+//    addMenu();
     setLayout(&layout);
     setThumbnailPosition(position);
 }
