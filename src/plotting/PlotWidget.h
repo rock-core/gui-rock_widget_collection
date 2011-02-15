@@ -501,13 +501,16 @@ public slots:
      */
     QColor getBackgroundColor();
 
-    
-protected slots:
-
     /**
      * Method for an automated Test
      */
     void doTesting();
+
+signals:
+    void notifyUpdate(int type=0);
+
+    
+protected slots:
 
 
      /**

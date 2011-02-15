@@ -235,6 +235,7 @@ void PlotWidget::addMenu()
 
 void PlotWidget::doTesting()
 {
+    std::cout << "Start Test" << std::endl;
     static bool doSecond = true;
     QTime time;
     time.start();
@@ -1156,6 +1157,7 @@ int PlotWidget::addData(const double* xPoints,const double* yPoints, int length,
         plottingWidget.replot();
         setZoomBase();
     }
+    emit notifyUpdate();
     return dataId;
 }
 
