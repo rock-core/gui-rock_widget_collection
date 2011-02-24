@@ -16,6 +16,8 @@
 #include <QMenuBar>
 #include <QMenu>
 
+#include <QtDesigner/QDesignerExportWidget>
+
 #include <iostream>
 
 
@@ -43,7 +45,7 @@
  * @author Bjoern Lueck <blueck@dfki.de>
  * @version 0.1
  */
-class MultiViewWidget : public QWidget
+class QDESIGNER_WIDGET_EXPORT MultiViewWidget : public QWidget
 {
 
     /**
@@ -52,6 +54,7 @@ class MultiViewWidget : public QWidget
     enum Position{Left, Top, Right, Bottom};
 
     Q_OBJECT
+    Q_CLASSINFO("Author", "Bjoern Lueck")
 
 public:
     /**

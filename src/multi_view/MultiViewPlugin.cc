@@ -1,6 +1,7 @@
 
+#include <QtGui/qwidget.h>
+
 #include "MultiViewPlugin.h"
-#include "MultiViewWidget.h"
 //#include <QtPlugin>
 
 
@@ -11,12 +12,12 @@ MultiViewPlugin::MultiViewPlugin(QObject* parent) : QObject(parent)
 
 MultiViewPlugin::~MultiViewPlugin()
 {
-
+    delete widget;
 }
 
 bool MultiViewPlugin::isContainer() const
 {
-    return false;
+    return true;
 }
 
 bool MultiViewPlugin::isInitialized() const
@@ -26,7 +27,7 @@ bool MultiViewPlugin::isInitialized() const
 
 QIcon MultiViewPlugin::icon() const
 {
-    return QIcon(":/multi_view/icon.png");
+    return QIcon();
 }
 
 QString MultiViewPlugin::group() const
@@ -66,7 +67,8 @@ void MultiViewPlugin::initialize(QDesignerFormEditorInterface * core)
 
 QWidget* MultiViewPlugin::createWidget(QWidget* parent)
 {
-    return new MultiViewWidget(parent);
+    widget = new MultiViewWidget(parent);
+    return widget;
 }
 
 QString MultiViewPlugin::domXml() const
@@ -89,3 +91,5 @@ QString MultiViewPlugin::domXml() const
         "</widget>\n";
 
 }
+
+// Q_EXPORT_PLUGIN2(MultiViewPlugin, MultiViewPlugin)

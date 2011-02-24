@@ -8,6 +8,8 @@
 #ifndef MULTIVIEWPLUGIN_H
 #define	MULTIVIEWPLUGIN_H
 
+#include "MultiViewWidget.h"
+
 #include <QtGui>
 #include <QtDesigner/QDesignerCustomWidgetInterface>
 
@@ -34,6 +36,7 @@ public:
 
 private:
     bool initialized;
+    MultiViewWidget* widget;
 
 };
 

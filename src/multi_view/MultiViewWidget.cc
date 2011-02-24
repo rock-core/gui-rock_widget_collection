@@ -11,8 +11,10 @@
 #include <QtGui/qboxlayout.h>
 #include <QtGui/qstackedwidget.h>
 #include <QtCore/qmetaobject.h>
+#include <QtCore/qcoreevent.h>
 
 #include "MultiViewWidget.h"
+#include "MultiViewPlugin.h"
 
 MultiViewWidget::MultiViewWidget(QWidget* parent) : QWidget(parent),
         fileMenu(tr("&File")), testingAction(tr("&Test"), this)
@@ -28,7 +30,7 @@ MultiViewWidget::MultiViewWidget(QWidget* parent) : QWidget(parent),
     layoutWidget.setLayout(upperLayout);
     layout.addWidget(&menuBar, 0, 0, 1, 1, Qt::AlignTop);
     layout.addWidget(&layoutWidget, 1, 0, 1, 1, Qt::AlignLeft | Qt::AlignTop);
-//    addMenu();
+    addMenu();
     setLayout(&layout);
     setThumbnailPosition(position);
 }
@@ -36,6 +38,7 @@ MultiViewWidget::MultiViewWidget(QWidget* parent) : QWidget(parent),
 MultiViewWidget::~MultiViewWidget()
 {
 }
+
 
 void MultiViewWidget::setThumbnailSize(int width, int height)
 {
@@ -140,6 +143,7 @@ void MultiViewWidget::addWidget(const QString &name, QWidget* widget, const QIco
         std::cerr << "A Widget with the name: [" << name.toStdString() << "] already exists!" << std::endl;
         return;
     }
+    std::cout << "Adding component wit name: [" << name.toStdString() << "]" << std::endl;
     WidgetButton* widgetButton = new WidgetButton();
     widgetButton->setFixedSize(thumbnailWidth, thumbnailHeight);
     widgetButton->setIconAlternative(icon, useOnlyIcon);
@@ -197,13 +201,16 @@ QWidget* MultiViewWidget::getWidget(const QString& name)
 
 void MultiViewWidget::deleteWidget(const QString& name)
 {
-    WidgetButton* button = widgets[name];
-    widgets.remove(name);
-    QWidget* widget = button->getWidget();
-    layout.removeWidget(widget);
-    upperLayout->removeWidget(widget);
-    vertLayout->removeWidget(widget);
-    delete button;
+    if(widgets.contains(name))
+    {
+        WidgetButton* button = widgets[name];
+        widgets.remove(name);
+        QWidget* widget = button->getWidget();
+        layout.removeWidget(widget);
+        upperLayout->removeWidget(button);
+        vertLayout->removeWidget(button);
+        delete button;
+    }
 }
 
 void MultiViewWidget::widgetClicked()
