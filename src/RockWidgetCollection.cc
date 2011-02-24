@@ -1,4 +1,5 @@
 #include "RockWidgetCollection.h"
+#include "multi_view/MultiViewWidget.h"
 
 Q_EXPORT_PLUGIN2(RockWidgetCollection, RockWidgetCollection)
 
@@ -10,6 +11,7 @@ RockWidgetCollection::RockWidgetCollection(QObject *parent)
    widgets.append(new RangeViewPlugin(this));
    widgets.append(new PlotWidgetPlugin(this));
    widgets.append(new ArtificialHorizonPlugin(this));
+   widgets.append(new MultiViewPlugin(this));
 }
 
 QList<QDesignerCustomWidgetInterface*> RockWidgetCollection::customWidgets() const

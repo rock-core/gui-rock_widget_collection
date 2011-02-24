@@ -172,6 +172,8 @@ public slots:
      */
     void addMenu();
 
+    void testMethod();
+
     /**
      * Sets the number of decimals shown after a dot
      * @param decimals the number of decimals shown after the dot
@@ -198,7 +200,7 @@ public slots:
      */
     bool isEnableLegend();
 
-    /**
+    /**addDataWithTime
      * Sets the position of the legend
      * @param position the position of the legend
      */
@@ -501,13 +503,16 @@ public slots:
      */
     QColor getBackgroundColor();
 
-    
-protected slots:
-
     /**
      * Method for an automated Test
      */
     void doTesting();
+
+signals:
+    void notifyUpdate(int type=0);
+
+    
+protected slots:
 
 
      /**
@@ -771,6 +776,7 @@ protected:
     QwtLegend legend;
     /** Map containing the QTime for specific curves*/
     std::map<int, QTime*> timeMap;
+    QTimer testTimer;
 };
 
 #endif	/* PLOTWIDGET_H */

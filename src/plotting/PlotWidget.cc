@@ -12,6 +12,7 @@
 #include <qwt-qt4/qwt_plot.h>
 #include <QtCore/qdatetime.h>
 #include <qwt-qt4/qwt_plot_curve.h>
+#include <QtCore/qtimer.h>
 
 //Q_EXPORT_PLUGIN2(PlotWidget,PlotWidget)
 
@@ -232,57 +233,36 @@ void PlotWidget::addMenu()
   connect(&testAction, SIGNAL(triggered()), this, SLOT(doTesting()));
 }
 
+void PlotWidget::testMethod()
+{
+    srand ( std::time(NULL) );
+    double number = rand() % 6;
+    if(number > 3)
+    {
+        number = number - 6;
+    }
+    addDataWithTime(number, 2);
+}
+
 
 void PlotWidget::doTesting()
 {
-    static bool doSecond = true;
-    QTime time;
-    time.start();
-//    clearAll();
-    srand ( std::time(NULL) );
-    if(doSecond)
-    {
-        QList<double> xpoints;
-        QList<double> ypoints;
-        for(int i=0;i<100;i++)
-        {
-            double number = rand() % 1000;
-            double secondNumber = rand() % 500;
-            xpoints.append(number);
-            ypoints.append(secondNumber);
-//            addData(number, secondNumber, 1);
-//            std::cout << i << "took: " << time.elapsed() << std::endl;
-            time.restart();
-        }
-        addPoints(xpoints, ypoints, 1);
-        xpoints.clear();
-        ypoints.clear();
-        for(int i=0;i<100;i++)
-        {
-            double number = rand() % 500;
-            double secondNumber = rand() % 1000;
-            xpoints.append(number);
-            ypoints.append(secondNumber);
-//            addData(number, secondNumber, 2);
-//            std::cout << i << "took: " << time.elapsed() << std::endl;
-            time.restart();
-        }
-        addPoints(xpoints, ypoints, 2);
-        this->setDataStyle(2, QPen(QColor(255, 0, 0)), 1);
-        setLegendNameForCurve(QString("Test here"), 1);
-        fitPlotToGraph();
-        this->clearCurveData(2);
-        setEnableLegend(true);
-        doSecond = false;
-    }
-    else
-    {
-        QList<double> xpoints;
-        QList<double> ypoints;
-//        clearAll();
+    std::cout << "Start Test" << std::endl;
+    testTimer.setInterval(1000);
+    connect(&testTimer, SIGNAL(timeout()), this, SLOT(testMethod()));
+    testTimer.start();
+//    static bool doSecond = true;
+//    QTime time;
+//    time.start();
+////    clearAll();
+//    srand ( std::time(NULL) );
+//    if(doSecond)
+//    {
+//        QList<double> xpoints;
+//        QList<double> ypoints;
 //        for(int i=0;i<100;i++)
 //        {
-//            double number = rand() % 500;
+//            double number = rand() % 1000;
 //            double secondNumber = rand() % 500;
 //            xpoints.append(number);
 //            ypoints.append(secondNumber);
@@ -293,30 +273,66 @@ void PlotWidget::doTesting()
 //        addPoints(xpoints, ypoints, 1);
 //        xpoints.clear();
 //        ypoints.clear();
-        for(int i=0;i<100;i++)
-        {
-            double number = rand() % 100;
-            double secondNumber = rand() % 400;
-            xpoints.append(number);
-            ypoints.append(secondNumber);
-//            addData(number, secondNumber, 2);
-            std::cout << i << "took: " << time.elapsed() << std::endl;
-            time.restart();
-        }
-        addPoints(xpoints, ypoints, 2);
-        this->setDataStyle(1, QPen(QColor(0, 0, 255)), 1);
-        fitPlotToGraph();
-        doSecond = true;
-    }
-//    QList<double> xList;
-//    QList<double> yList;
-//    for(int i=0;i<102;i++)
-//    {
-//        xList.append(i);
-//        yList.append(4.3);
+//        for(int i=0;i<100;i++)
+//        {
+//            double number = rand() % 500;
+//            double secondNumber = rand() % 1000;
+//            xpoints.append(number);
+//            ypoints.append(secondNumber);
+////            addData(number, secondNumber, 2);
+////            std::cout << i << "took: " << time.elapsed() << std::endl;
+//            time.restart();
+//        }
+//        addPoints(xpoints, ypoints, 2);
+//        this->setDataStyle(2, QPen(QColor(255, 0, 0)), 1);
+//        setLegendNameForCurve(QString("Test here"), 1);
+//        fitPlotToGraph();
+//        this->clearCurveData(2);
+//        setEnableLegend(true);
+//        doSecond = false;
 //    }
-//    time.restart();
-//    addData(xList, yList, 87);
+//    else
+//    {
+//        QList<double> xpoints;
+//        QList<double> ypoints;
+////        clearAll();
+////        for(int i=0;i<100;i++)
+////        {
+////            double number = rand() % 500;
+////            double secondNumber = rand() % 500;
+////            xpoints.append(number);
+////            ypoints.append(secondNumber);
+//////            addData(number, secondNumber, 1);
+//////            std::cout << i << "took: " << time.elapsed() << std::endl;
+////            time.restart();
+////        }
+////        addPoints(xpoints, ypoints, 1);
+////        xpoints.clear();
+////        ypoints.clear();
+//        for(int i=0;i<100;i++)
+//        {
+//            double number = rand() % 100;
+//            double secondNumber = rand() % 400;
+//            xpoints.append(number);
+//            ypoints.append(secondNumber);
+////            addData(number, secondNumber, 2);
+//            std::cout << i << "took: " << time.elapsed() << std::endl;
+//            time.restart();
+//        }
+//        addPoints(xpoints, ypoints, 2);
+//        this->setDataStyle(1, QPen(QColor(0, 0, 255)), 1);
+//        fitPlotToGraph();
+//        doSecond = true;
+//    }
+////    QList<double> xList;
+////    QList<double> yList;
+////    for(int i=0;i<102;i++)
+////    {
+////        xList.append(i);
+////        yList.append(4.3);
+////    }
+////    time.restart();
+////    addData(xList, yList, 87);
 }
 
 void PlotWidget::loadProfile()
@@ -1037,6 +1053,7 @@ int PlotWidget::addDataWithTime(double yPoint, int dataId,
         }
 
     }
+    std::cout << yPoint << std::endl;
     return addData(xPoints, yPoints, 1, dataId, xAxisId, yAxisId);
 }
 
@@ -1118,6 +1135,7 @@ int PlotWidget::addData(const double* xPoints,const double* yPoints, int length,
         if(dataManager->isAutoscrolling())
         {
             // set the max to the last value and add 5% off the total span
+            std::cout << maxXBottom << "|" << maxYLeft << std::endl;
             double finalMaxX = maxXBottom*1.05;
             double finalMaxY = maxYLeft * 1.05;
 	    if(maxXBottom > plottingWidget.axisScaleDiv(QwtPlot::xBottom)->upperBound())
@@ -1160,6 +1178,7 @@ int PlotWidget::addData(const double* xPoints,const double* yPoints, int length,
         plottingWidget.replot();
         setZoomBase();
     }
+    emit notifyUpdate();
     return dataId;
 }
 
