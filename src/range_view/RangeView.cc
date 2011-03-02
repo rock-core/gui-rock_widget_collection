@@ -14,7 +14,8 @@ RangeView::RangeView(QWidget *parent,bool use_openGL):
 ImageView(parent,use_openGL)
 {
     	image_view_gl = NULL;
-	setOpenGL(use_openGL);
+	//setOpenGL(use_openGL);
+	setOpenGL(true);
 }
 
 

@@ -258,7 +258,7 @@ void RangeViewGL::setPosition(int xRot,int yRot, int zRot, int xMove, int yMove,
 
 void RangeViewGL::wheelEvent(QWheelEvent *event)
 {
-	zoom -= (2.0*(float)event->delta()/120.0)*20;
+	zoom -= (2.0*(float)event->delta()/120.0)*5;
 	zoom = std::max<float>( std::min<float>( zoom, ZOOM_MAX ), ZOOM_MIN );
 	event->accept();
 	updateGL();
