@@ -173,7 +173,7 @@ public slots:
      * @param xAxisId the id of the xaxis, defaults to X_BOTTOM
      * @param yAxisId the id of the y axis, defaults to Y_LEFT
      */
-    void registerCurve(int dataId, QPen pen, const QString name);
+    void registerCurve(int dataId, QPen pen, const QString name, int curveStyle);
     /**
      * Adds all menu entries
      */
