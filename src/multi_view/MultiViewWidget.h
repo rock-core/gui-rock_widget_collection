@@ -69,6 +69,18 @@ public:
      */
     virtual ~MultiViewWidget();
 
+    /**
+     * Handles the events when a widget is added to or removed from the widget.
+     * This will not do anything when used in standalone mode, but will be used
+     * heavily when used in the qt designer.<br>
+     * When adding a widget to or removing a widget from the MultiViewWidget from
+     * within QTDesigner the childEvent method will map them to the
+     * corresponding methods within the MultiViewWidget. Thus enabling the widget to
+     * perform within the qt designer as container with teh desired functionality.<br>
+     * Note the only thing which does not work is the thumbnail widgets. Widgets will not
+     * be displayed as thumbnails within the designer, as the designer needs ownership
+     * of those. In Designer's preview everything will act asexpected
+     */
     void childEvent(QChildEvent* event);
 
 public slots:
@@ -159,8 +171,11 @@ protected:
     /** Widget for Layouting purposes*/
     QWidget* pseudoWidget;
 
+    /** Whether the view is already initialized*/
     bool initialized;
+    /** The current index for use with qt designer. automatically gives numbers instead of names*/
     int currentWidgetIndex;
+    /** if a widget was clicked and the widgetClicked method is currently processing*/
     bool clicking;
 };
 

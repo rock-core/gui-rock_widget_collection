@@ -12,10 +12,11 @@
 
 #include <QtGui>
 #include <QtDesigner/QDesignerCustomWidgetInterface>
-#include <QtDesigner/QDesignerFormEditorInterface>
-#include <QtDesigner/QExtensionManager>
-#include <QtDesigner/QExtensionFactory>
 
+/**
+ * Simple qt designer plugin class. Only thing to note that the multi view widget is used
+ * as a container widget.
+ */
 class MultiViewPlugin : public QObject, public QDesignerCustomWidgetInterface
 {
 
