@@ -81,6 +81,6 @@
 
  QString ArtificialHorizonPlugin::includeFile() const
  {
-     return "rock_widget_collection/artificialhorizon/artificialhorizon.h";
+     return "rock_widget_collection/artificial_horizon/artificialhorizon.h";
  }
 
