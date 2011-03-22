@@ -8,7 +8,7 @@
 #ifndef IMAGEVIEW_H
 #define	IMAGEVIEW_H
 
-#include "QtGui/qwidget.h"
+#include <QtGui/QWidget>
 #include <QtGui/QPaintEvent>
 #include <QtGui/QPainter>
 #include <QtGui/QImage>

@@ -8,8 +8,8 @@
 #define	RANGEVIEWGL_H
 
 #include "image_view/ImageViewGL.h"
-#include <QTimer>
-#include <QMutex>
+#include <QtCore/QTimer>
+#include <QtCore/QMutex>
 #include <Eigen/Core>
 
 class RangeViewGL : public ImageViewGL

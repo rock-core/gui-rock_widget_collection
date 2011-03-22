@@ -4,7 +4,7 @@
 #include <qstring.h>
 #include <QWidget>
 #include <QPixmap>
-#include <QSvgGenerator>
+#include <QtSvg/QSvgGenerator>
 #include <QPainter>
 #include <QPaintEngine>
 #include <QPaintEvent>

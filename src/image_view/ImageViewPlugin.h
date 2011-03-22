@@ -2,7 +2,7 @@
 #ifndef IMAGEVIEWWIDGETPLUGIN_H
 #define IMAGEVIEWWIDGETPLUGIN_H
 
-#include <QtGui>
+#include <QtGui/QtGui>
 #include <QtDesigner/QDesignerCustomWidgetInterface>
 
 class ImageViewPlugin : public QObject , public QDesignerCustomWidgetInterface

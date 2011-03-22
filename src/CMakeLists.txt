@@ -1,12 +1,11 @@
-# Include the directory itself as a path to include directories
+
+find_package(Qt4 REQUIRED QtCore QtGui QtOpengl)
+include_directories(${QT_INCLUDE_DIR})
+include_directories(${QT_QTCORE_INCLUDE_DIR})
+include_directories(${QT_QTGUI_INCLUDE_DIR})
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-
-find_package(GLU REQUIRED)
-
-
-SET(QtApp_RCCS resources.qrc)
-SET(image_view_widget_MOC_HDRS
+SET(COLLECTION_MOC_HDRS
   image_view/ImageView.h
   image_view/ImageViewGL.h
   image_view/ImageViewPlugin.h
@@ -37,26 +36,23 @@ SET(image_view_widget_MOC_HDRS
   multi_view/WidgetButton.h
   multi_view/MultiViewPlugin.h
 )
-QT4_WRAP_CPP(image_view_widget_MOC_SRCS ${image_view_widget_MOC_HDRS})
+SET(COLLECTION_HDRS
+  image_view/ImageView.h
+  sonar_view/SonarView.h
+  range_view/RangeView.h
+  plotting/PlotWidget.h 
+  artificial_horizon/artificialhorizon.h
+  multi_view/MultiViewWidget.h
+)
+
+FILE(GLOB COLLECTION_SOURCES range_view/*.cc image_view/*.cc sonar_view/*.cc plotting/*.cc artificial_horizon/*.cc multi_view/*.cc *.cc)
+SET(QtApp_RCCS resources.qrc)
 QT4_ADD_RESOURCES(QtApp_RCC_SRCS ${QtApp_RCCS})
 
-
-# For a large number of source files:
-# using file() function:
-#file(GLOB image_view_widget_SOURCES *.cc)
-#file(GLOB image_view_widget_SOURCES main.cc)
-
-# Find all the input files
-FILE(GLOB image_view_widget_SOURCES range_view/*.cc image_view/*.cc sonar_view/*.cc plotting/*.cc artificial_horizon/*.cc multi_view/*.cc *.cc)
-
-# Create an executable file called helloworld from sources:
-add_library(${PROJECT_NAME} SHARED ${image_view_widget_SOURCES} ${image_view_widget_MOC_SRCS} ${QtApp_RCC_SRCS})
-add_executable(${PROJECT_NAME}_EXEC multi_view/multimain.cc)
-
-target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} ${FRAMEHELPER_LIBRARIES} ${QWT_LIBRARIES} ${LIBXML2_LIBRARIES} ${GLU_LIBRARY})
-target_link_libraries(${PROJECT_NAME}_EXEC ${PROJECT_NAME} ${QT_LIBRARIES} ${FRAMEHELPER_LIBRARIES} ${QWT_LIBRARIES} ${LIBXML2_LIBRARIES} ${GLU_LIBRARY})
-
-INSTALL_TARGETS(/lib/qt/designer ${PROJECT_NAME})
-#FILE(GLOB files artificial_horizon/resources/*.svg)
-#INSTALL(FILES ${files} DESTINATION lib/qt/designer/resources/artificial_horizon)
-
+rock_vizkit_widget(rock_widget_collection
+    SOURCES ${COLLECTION_SOURCES} ${QtApp_RCC_SRCS} 
+    HEADERS ${COLLECTION_HDRS}
+    MOC ${COLLECTION_MOC_HDRS}
+    DEPS_PKGCONFIG base-types frame_helper
+    DEPS_CMAKE LIBXML2 QWT GLU
+    LIBS ${QT_QTCORE_LIBRARY} ${QT_QTGUI_LIBRARY} ${QT_QTOPENGL_LIBRARY})

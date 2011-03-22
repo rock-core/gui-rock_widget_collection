@@ -2,7 +2,7 @@
 #ifndef SONARVIEWPLUGIN_H
 #define SONARVIEWPLUGIN_H 
 
-#include <QtGui>
+#include <QtGui/QtGui>
 #include <QtDesigner/QDesignerCustomWidgetInterface>
 
 class SonarViewPlugin : public QObject , public QDesignerCustomWidgetInterface

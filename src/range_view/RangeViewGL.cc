@@ -7,7 +7,7 @@
 #include <stdexcept>
 #include "RangeViewGL.h"
 #include <QtCore/QtPlugin>
-#include <QtOpenGL>
+#include <QtOpenGL/QtOpenGL>
 #include <math.h>
 #include <stdio.h>
 

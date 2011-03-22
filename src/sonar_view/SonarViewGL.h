@@ -8,8 +8,8 @@
 #define	SONARVIEWGL_H
 
 #include "image_view/ImageViewGL.h"
-#include <QTimer>
-#include <QMutex>
+#include <QtCore/QTimer>
+#include <QtCore/QMutex>
 
 class SonarViewGL : public ImageViewGL
 {
