@@ -12,6 +12,9 @@
 
 #include <QtGui>
 #include <QtDesigner/QDesignerCustomWidgetInterface>
+#include <QtDesigner/QDesignerFormEditorInterface>
+#include <QtDesigner/QExtensionManager>
+#include <QtDesigner/QExtensionFactory>
 
 class MultiViewPlugin : public QObject, public QDesignerCustomWidgetInterface
 {

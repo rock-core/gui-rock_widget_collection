@@ -25,7 +25,7 @@ int main(int argc, char** argv)
 {
     QApplication* app = new QApplication(argc, argv);
     MultiViewWidget* widget = new MultiViewWidget(NULL);
-    widget->setThumbnailPosition(0);
+//    widget->setThumbnailPosition(0);
     widget->setThumbnailSize(100, 100);
     PlotWidget* pwidget = new PlotWidget(NULL);
     widget->addWidget(QString("Plot"), pwidget);

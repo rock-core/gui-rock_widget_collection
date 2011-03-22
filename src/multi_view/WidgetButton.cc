@@ -25,7 +25,6 @@ WidgetButton::WidgetButton() : QPushButton(),
 
 WidgetButton::~WidgetButton()
 {
-    delete mainWidget;
 }
 
 void WidgetButton::setWidget(const QString &name, QWidget* widget, bool shown)

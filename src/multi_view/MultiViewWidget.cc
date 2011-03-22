@@ -19,9 +19,12 @@
 MultiViewWidget::MultiViewWidget(QWidget* parent) : QWidget(parent),
         fileMenu(tr("&File")), testingAction(tr("&Test"), this)
 {
+    initialized = false;
     currentWidget = NULL;
     pseudoWidget = NULL;
+    clicking = false;
     position = Top;
+    currentWidgetIndex = 0;
     thumbnailWidth = 150;
     thumbnailHeight = 150;
     upperLayout = new QHBoxLayout();
@@ -33,6 +36,7 @@ MultiViewWidget::MultiViewWidget(QWidget* parent) : QWidget(parent),
     addMenu();
     setLayout(&layout);
     setThumbnailPosition(position);
+    initialized = true;
 }
 
 MultiViewWidget::~MultiViewWidget()
@@ -143,7 +147,7 @@ void MultiViewWidget::addWidget(const QString &name, QWidget* widget, const QIco
         std::cerr << "A Widget with the name: [" << name.toStdString() << "] already exists!" << std::endl;
         return;
     }
-    std::cout << "Adding component wit name: [" << name.toStdString() << "]" << std::endl;
+    std::cout << "Adding component with name: [" << name.toStdString() << "]" << std::endl;
     WidgetButton* widgetButton = new WidgetButton();
     widgetButton->setFixedSize(thumbnailWidth, thumbnailHeight);
     widgetButton->setIconAlternative(icon, useOnlyIcon);
@@ -153,6 +157,7 @@ void MultiViewWidget::addWidget(const QString &name, QWidget* widget, const QIco
     if(widgets.size() == 0)
     {
         widgetButton->setWidget(name, widget, false);
+        widgets.insert(name, widgetButton);
         if(position == Top || position == Bottom)
         {
             layout.addWidget(widget, 2, 0, 1, 1);
@@ -213,8 +218,76 @@ void MultiViewWidget::deleteWidget(const QString& name)
     }
 }
 
+
+
+void MultiViewWidget::childEvent(QChildEvent* event)
+{
+    if(initialized)
+    {
+        if(event->type() == QChildEvent::ChildAdded)
+        {
+            if(event->child()->isWidgetType())
+            {
+                // we never need to watch adding of widgetbuttons, then everything went well already
+                WidgetButton* testButton = dynamic_cast<WidgetButton*> (event->child());
+                if(testButton != NULL)
+                {
+                    return;
+                }
+                // we never want to add a widget which is already added
+                QWidget* child = (QWidget*)event->child();
+                QList<QString> keys = widgets.keys();
+                std::cout << "Name: " << child->objectName().toStdString() << std::endl;
+                for(int i=0;i<keys.size();i++)
+                {
+                    WidgetButton* button = widgets[keys[i]];
+                    if(button->getWidget() == child)
+                    {
+                        std::cout << "Showing Widget" << std::endl;
+                        if(button->isEnabled())
+                        {
+                            child->setMaximumSize(0, 0);
+                        }
+                        return;
+                    }
+                }
+                addWidget(QString::number(currentWidgetIndex), child);
+                currentWidgetIndex++;
+            }
+        }
+        else if(event->type() == QChildEvent::ChildRemoved)
+        {
+            if(!clicking)
+            {
+                if(event->child()->isWidgetType())
+                {
+                    // look which widget was removed and remove the button also
+                    QWidget* child = (QWidget*)event->child();
+                    QList<QString> keys = widgets.keys();
+                    for(int i=0;i<keys.size();i++)
+                    {
+                        WidgetButton* button = widgets[keys[i]];
+                        if(button->getWidget() == child)
+                        {
+                            widgets.remove(keys[i]);
+                            QWidget* widget = button->getWidget();
+                            std::cout << "Remove widget from layout" << std::endl;
+                            layout.removeWidget(widget);
+                            upperLayout->removeWidget(button);
+                            vertLayout->removeWidget(button);
+                            widget = NULL;
+                            return;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
 void MultiViewWidget::widgetClicked()
 {
+    clicking = true;
     WidgetButton* sender = (WidgetButton*)QObject::sender();
     sender->showWidget(false);
     QWidget* widget = sender->getWidget();
@@ -289,6 +362,7 @@ void MultiViewWidget::widgetClicked()
             }
         }
     }
+    clicking = false;
 //    repaint();
 }
 

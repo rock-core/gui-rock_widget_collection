@@ -69,6 +69,8 @@ public:
      */
     virtual ~MultiViewWidget();
 
+    void childEvent(QChildEvent* event);
+
 public slots:
 
     /**
@@ -92,7 +94,6 @@ public slots:
      * Removes the widget with the given name.
      * This will DELETE the widget that was added with that name!!
      * @param name the anme of the widget to remove
-     * @todo implement correctly!
      */
     void deleteWidget(const QString &name);
 
@@ -121,6 +122,7 @@ public slots:
      * doTesting method slot on the widget if there is one, or nothing if there isn't.
      */
     void doTesting();
+
 
 protected:
 
@@ -156,6 +158,10 @@ protected:
     QAction testingAction;
     /** Widget for Layouting purposes*/
     QWidget* pseudoWidget;
+
+    bool initialized;
+    int currentWidgetIndex;
+    bool clicking;
 };
 
 #endif	/* MULIVIEWWIDGET_H */

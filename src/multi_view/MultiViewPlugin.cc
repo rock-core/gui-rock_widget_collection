@@ -55,18 +55,19 @@ QString MultiViewPlugin::whatsThis() const
     return "Container widget for other widgets";
 }
 
-void MultiViewPlugin::initialize(QDesignerFormEditorInterface * core)
+void MultiViewPlugin::initialize(QDesignerFormEditorInterface* core)
 {
+    std::cout << "Initializing" << std::endl;
     if (initialized)
     {
         return;
     }
-    // potential initialization here
     initialized = true;
 }
 
 QWidget* MultiViewPlugin::createWidget(QWidget* parent)
 {
+    std::cout << "Creating widget" << std::endl;
     widget = new MultiViewWidget(parent);
     return widget;
 }
