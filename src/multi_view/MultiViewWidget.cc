@@ -237,13 +237,11 @@ void MultiViewWidget::childEvent(QChildEvent* event)
                 // we never want to add a widget which is already added
                 QWidget* child = (QWidget*)event->child();
                 QList<QString> keys = widgets.keys();
-                std::cout << "Name: " << child->objectName().toStdString() << std::endl;
                 for(int i=0;i<keys.size();i++)
                 {
                     WidgetButton* button = widgets[keys[i]];
                     if(button->getWidget() == child)
                     {
-                        std::cout << "Showing Widget" << std::endl;
                         if(button->isEnabled())
                         {
                             child->setMaximumSize(0, 0);
@@ -271,7 +269,6 @@ void MultiViewWidget::childEvent(QChildEvent* event)
                         {
                             widgets.remove(keys[i]);
                             QWidget* widget = button->getWidget();
-                            std::cout << "Remove widget from layout" << std::endl;
                             layout.removeWidget(widget);
                             upperLayout->removeWidget(button);
                             vertLayout->removeWidget(button);

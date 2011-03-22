@@ -57,7 +57,6 @@ QString MultiViewPlugin::whatsThis() const
 
 void MultiViewPlugin::initialize(QDesignerFormEditorInterface* core)
 {
-    std::cout << "Initializing" << std::endl;
     if (initialized)
     {
         return;
@@ -67,7 +66,6 @@ void MultiViewPlugin::initialize(QDesignerFormEditorInterface* core)
 
 QWidget* MultiViewPlugin::createWidget(QWidget* parent)
 {
-    std::cout << "Creating widget" << std::endl;
     widget = new MultiViewWidget(parent);
     return widget;
 }
