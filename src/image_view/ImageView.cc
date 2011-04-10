@@ -117,6 +117,7 @@ bool ImageView::saveImage2(QString path,bool overlay)
     }
     else
       image.save(path,"PNG",80);
+    return true;
 }
 
 bool ImageView::saveImage3(const QString &mode, int pixel_size,  int width,  int height,const char* pbuffer, QString path)
@@ -124,6 +125,7 @@ bool ImageView::saveImage3(const QString &mode, int pixel_size,  int width,  int
     QImage image;
     frame_converter.copyFrameToQImageRGB888(image,mode, pixel_size, width, height,pbuffer);
     image.save(path,"PNG",80);
+    return true;
 }
 
 QObject* ImageView::addText(int xPos, int yPos, int groupNr, const QString &text)
