@@ -13,10 +13,11 @@ using namespace base::samples::frame;
 //Q_EXPORT_PLUGIN2(ImageView, ImageView)
 
 ImageView::ImageView(QWidget *parent,bool use_openGL):
-  image(0, 0, QImage::Format_RGB888),
+  QWidget(parent),
   contextMenu(this),
+  image(0, 0, QImage::Format_RGB888),
   aspect_ratio(false),
-  QWidget(parent)
+  zoomEnabled(false)
 {
     resize(width(),height());
     //setting up popup menue
@@ -42,12 +43,17 @@ ImageView::~ImageView()
     delete save_image_act;
 }
 
+void ImageView::setZoomEnabled(bool enabled)
+{
+  zoomEnabled = enabled;
+}
+
 void ImageView::contextMenuEvent ( QContextMenuEvent * event )
 {
    contextMenu.exec(event->globalPos());
 }
 
-void ImageView::mousePressEvent(QMouseEvent *event)
+std::pair<QPoint, bool> ImageView::toImage(QPoint const& p)
 {
   //calculate pos on image 
   int offset_x = target.x();
@@ -55,25 +61,70 @@ void ImageView::mousePressEvent(QMouseEvent *event)
   float scale_x = source.width()/target.width();
   float scale_y = source.height()/target.height();
   
-  int x = (int)(scale_x*(event->x()-offset_x)+0.5);
-  int y = (int)(scale_y*(event->y()-offset_y)+0.5);
+  int x = (int)(scale_x*(p.x()-offset_x)+0.5);
+  int y = (int)(scale_y*(p.y()-offset_y)+0.5);
 
-  if (x>=0 && x  <= source.width() &&
-      y>=0 && y  <= source.height()) 
-      emit clickImage(x,y);
+  bool valid = (x>=0 && x <= source.width() &&
+      y>=0 && y <= source.height());
+
+  if (!valid)
+  {
+    x = x < 0 ? 0 : source.width() - 1;
+    y = y < 0 ? 0 : source.height() - 1;
+  }
+  x += currentCrop.x();
+  y += currentCrop.y();
+  return std::make_pair(QPoint(x, y), valid);
+}
+
+void ImageView::mousePressEvent(QMouseEvent *event)
+{
+  std::pair<QPoint, bool> img = toImage(QPoint(event->x(), event->y()));
+  pressPoint = img.first;
+  pressValid = img.second;
+}
+
+void ImageView::mouseReleaseEvent(QMouseEvent *event)
+{
+  if (event->modifiers() & Qt::ControlModifier)
+  {
+    // Cancel current zoom
+    if (!zoomEnabled)
+      return;
+
+    resetCrop();
+    update();
+    return;
+  }
+
+  std::pair<QPoint, bool> imgPoint = toImage(QPoint(event->x(), event->y()));
+  QPoint releasePoint = imgPoint.first;
+  int distance = (releasePoint - pressPoint).manhattanLength();
+  if (zoomEnabled && distance > 5)
+  {
+    int w = abs((pressPoint - releasePoint).x()) + 1;
+    int h = abs((pressPoint - releasePoint).y()) + 1;
+    int x = std::min(pressPoint.x(), releasePoint.x());
+    int y = std::min(pressPoint.y(), releasePoint.y());
+    crop(x, y, w, h);
+    update();
+  }
+  else if (pressValid)
+    emit clickImage(pressPoint.x(), pressPoint.y());
 }
 
 void ImageView::setDefaultImage()
 {
    static QColor background(127, 127, 127);
    static QColor textcolor(255,255,255);
-   image = QImage(width(),height(),QImage::Format_RGB888);
-   QPainter painter(&image);
+   this->originalImage = QImage(width(),height(),QImage::Format_RGB888);
+   QPainter painter(&this->originalImage);
    painter.setBrush(background);
    painter.drawRect(0,0,image.width(),image.height());
    painter.setBrush(textcolor);
    painter.drawText(0,0,image.width(),image.height(),
                     Qt::AlignVCenter|Qt::AlignHCenter,"No Signal");
+   image = originalImage;
    no_input = true;
 }
 
@@ -245,18 +296,34 @@ void ImageView::clearGroups()
     disabledGroups.clear();
 }
 
+void ImageView::resetCrop()
+{
+  this->image = this->originalImage;
+  currentCrop = QRect(0, 0, image.width(), image.height());
+  calculateRects();
+}
+
+void ImageView::crop(int x, int y, int w, int h)
+{
+  this->image = this->image.copy(x, y, w, h);
+  currentCrop = QRect(x, y, w, h);
+  calculateRects();
+}
+
 void ImageView::addRawImage(const QString &mode, int pixel_size,  int width,  int height,const char* pbuffer)
 {
   //check if image size has been changed
   //zoom factor must be recalculated
-  if(frame_converter.copyFrameToQImageRGB888(image,mode, pixel_size, width, height,pbuffer))
+  if(frame_converter.copyFrameToQImageRGB888(originalImage,mode, pixel_size, width, height,pbuffer))
   {
+    this->image = this->originalImage;
     if(image_view_gl)
     {
       image_view_gl->setGLViewPoint();
       calculateRects();
     }
   }
+  this->image = this->originalImage;
   no_input = false;
 }
 
@@ -264,7 +331,7 @@ void ImageView::addImage(const QImage &image)
 {
   //check if image size has changed
   //zoom factor must be recalculated
-  this->image = image;
+  this->image = this->originalImage = image;
   no_input = false;
 }
 

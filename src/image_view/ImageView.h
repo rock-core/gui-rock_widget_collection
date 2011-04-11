@@ -101,6 +101,8 @@ public slots:
     void update2();
     void setDefaultImage();
 
+    void setZoomEnabled(bool enabled);
+
     virtual void openGL(bool flag);
     bool onOpenGL(){return image_view_gl;};
     void setAspectRatio(bool value)
@@ -115,8 +117,30 @@ public slots:
     void saveImage(bool overlay=true);
     bool saveImage2(QString path,bool overlay=true);
     bool saveImage3(const QString &mode, int pixel_size,  int width,  int height,const char* pbuffer, QString path);
+
+    /** Removes any cropping previously set with crop(x, y, w, h) */
+    void resetCrop();
+
+    /** Crops the current image */
+    void crop(int x, int y, int w, int h);
     
 
+    /** Adds an image to the display, given raw data in \c pbuffer
+     *
+     * @arg mode the mode as a string. This maps to the values in the base::samples::frame::frame_mode_t enumeration (see below)
+     * @arg pixel_size the size of a complete pixel, in bytes
+     * @arg with the width of the image, in pixels
+     * @arg height the height of the image, in pixels
+     * @arg pbuffer the raw data
+     *
+     * The following modes are understood in \c mode:
+     *
+     * <ul>
+     * <li>MODE_GRAYSCALE
+     * <li>MODE_RGB
+     * <li>MODE_UYVY
+     * </ul>
+     */
     void addRawImage(const QString &mode, int pixel_size, int width, int height,const char* pbuffer);
 
     /**
@@ -239,7 +263,10 @@ protected:
     void resizeEvent(QResizeEvent *event);
     void paintEvent(QPaintEvent *event);
     void mousePressEvent(QMouseEvent *event);
+    void mouseReleaseEvent(QMouseEvent *event);
     void calculateRects();
+    std::pair<QPoint, bool> toImage(QPoint const& p);
+
 
     /** The format used in the widget*/
     /** List of all Draw Items*/
@@ -251,7 +278,9 @@ protected:
     QAction *save_image_act;
     QString save_path;
     
-    QImage image;          //holds the orignial image
+    QImage originalImage; // holds the original image
+    QImage image;
+    QRect currentCrop;
     bool no_input;
     bool aspect_ratio;
 
@@ -260,6 +289,10 @@ protected:
 
     QRectF target;
     QRectF source;
+
+    bool zoomEnabled;
+    QPoint pressPoint;
+    bool pressValid;
 };
 
 #endif	/* IMAGEVIEWWIDGET_H */
