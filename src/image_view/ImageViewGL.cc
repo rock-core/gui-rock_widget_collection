@@ -9,8 +9,8 @@
 #include "ImageView.h"
 
 ImageViewGL::ImageViewGL(ImageView &parent):
-  image_view(parent),
-  QGLWidget(&parent)
+  QGLWidget(&parent),
+  image_view(parent)
 {
 }
 

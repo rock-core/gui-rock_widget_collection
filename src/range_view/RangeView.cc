@@ -37,7 +37,6 @@ void RangeView::setOpenGL(bool flag)
     image_view_gl->resize(width(),height());
     //image_view_gl->setAspectRatio(aspect_ratio);
     image_view_gl->show();
-    RangeViewGL *window = dynamic_cast<RangeViewGL*>(image_view_gl);
   }
   else
   {

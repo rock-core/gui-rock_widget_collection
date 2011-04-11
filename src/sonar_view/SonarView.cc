@@ -36,7 +36,7 @@ void SonarView::setOpenGL(bool flag)
     image_view_gl->resize(width(),height());
     //image_view_gl->setAspectRatio(aspect_ratio);
     image_view_gl->show();
-    SonarViewGL *window = dynamic_cast<SonarViewGL*>(image_view_gl);
+    //SonarViewGL *window = dynamic_cast<SonarViewGL*>(image_view_gl);
     //window->reset(0.024); //TODO hardcoded value
   }
   else
