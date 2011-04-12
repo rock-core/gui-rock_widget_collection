@@ -284,7 +284,7 @@ protected:
     bool no_input;
     bool aspect_ratio;
 
-    FrameQImageConverter frame_converter;
+    frame_helper::FrameQImageConverter frame_converter;
     ImageViewGL *image_view_gl;
 
     QRectF target;
