@@ -10,6 +10,7 @@
 #include "image_view/ImageViewGL.h"
 #include <QtCore/QTimer>
 #include <QtCore/QMutex>
+#include <stdint.h>
 
 class SonarViewGL : public ImageViewGL
 {
