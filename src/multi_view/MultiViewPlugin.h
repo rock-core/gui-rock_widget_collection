@@ -12,6 +12,7 @@
 
 #include <QtGui>
 #include <QtDesigner/QDesignerCustomWidgetInterface>
+#include <QtDesigner/QDesignerFormWindowInterface>
 
 /**
  * Simple qt designer plugin class. Only thing to note that the multi view widget is used
@@ -38,9 +39,17 @@ public:
     QWidget *createWidget(QWidget *parent);
     void initialize(QDesignerFormEditorInterface *core);
 
+public slots:
+    void manageWidget(QWidget* widget);
+    void selectionChanged();
+    void widgetUnmanaged(QWidget* widget);
+    void widgetRemoved(QWidget* widget);
+    void widgetManaged(QWidget* widget);
+
 private:
     bool initialized;
     MultiViewWidget* widget;
+    QDesignerFormEditorInterface* formInterface;
 
 };
 

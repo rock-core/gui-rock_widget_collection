@@ -140,6 +140,20 @@ void MultiViewWidget::addMenu()
     connect(&testingAction, SIGNAL(triggered()), this, SLOT(doTesting()));
 }
 
+WidgetButton* MultiViewWidget::getButtonForWidget(QWidget* widget)
+{
+    QList<QString> keys = widgets.keys();
+    for(int i=0;i<keys.size();i++)
+    {
+        WidgetButton* button = widgets[keys[i]];
+        if(button->getWidget() == widget)
+        {
+            return button;
+        }
+    }
+    return NULL;
+}
+
 void MultiViewWidget::addWidget(const QString &name, QWidget* widget, const QIcon &icon, bool useOnlyIcon)
 {
     if(widgets.contains(name))
@@ -182,6 +196,7 @@ void MultiViewWidget::addWidget(const QString &name, QWidget* widget, const QIco
         vertLayout->addWidget(widgetButton);
     }
     connect(widgetButton, SIGNAL(clicked()), this, SLOT(widgetClicked()));
+    emit widgetButtonAdded(widgetButton);
 }
 
 void MultiViewWidget::doTesting()
@@ -218,8 +233,6 @@ void MultiViewWidget::deleteWidget(const QString& name)
     }
 }
 
-
-
 void MultiViewWidget::childEvent(QChildEvent* event)
 {
     if(initialized)
@@ -242,10 +255,14 @@ void MultiViewWidget::childEvent(QChildEvent* event)
                     WidgetButton* button = widgets[keys[i]];
                     if(button->getWidget() == child)
                     {
-                        if(button->isEnabled())
-                        {
-                            child->setMaximumSize(0, 0);
-                        }
+//                        if(button->isEnabled())
+//                        {
+//                            child->setMaximumSize(0, 0);
+//                        }
+//                        else
+//                        {
+//                            child->setMaximumSize(1000000, 1000000);
+//                        }
                         return;
                     }
                 }
@@ -282,12 +299,33 @@ void MultiViewWidget::childEvent(QChildEvent* event)
     }
 }
 
+QList<WidgetButton*> MultiViewWidget::getAllWidgetButtons()
+{
+    return widgets.values();
+}
+
 void MultiViewWidget::widgetClicked()
 {
+    std::cout << "Clicking" << std::endl;
     clicking = true;
     WidgetButton* sender = (WidgetButton*)QObject::sender();
     sender->showWidget(false);
     QWidget* widget = sender->getWidget();
+
+    QList<WidgetButton*> buttons = getAllWidgetButtons();
+    for(int i=0;i<buttons.size();i++)
+    {
+        if(sender != buttons[i])
+        {
+            buttons[i]->getWidget()->setMaximumSize(0, 0);
+        }
+        else
+        {
+            buttons[i]->getWidget()->setMaximumSize(1000000, 1000000);
+        }
+
+    }
+
     widget->setEnabled(true);
     layout.removeWidget(currentWidget);
     if(position == Top || position == Bottom)

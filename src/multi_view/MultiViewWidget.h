@@ -135,6 +135,13 @@ public slots:
      */
     void doTesting();
 
+    WidgetButton* getButtonForWidget(QWidget* widget);
+
+    QList<WidgetButton*> getAllWidgetButtons();
+
+    signals:
+    void widgetButtonAdded(QWidget* widget);
+
 
 protected:
 
