@@ -1,4 +1,5 @@
 #include "OptionsDialog.h"
+#include "DataManager.h"
 
 OptionsDialog::OptionsDialog(QWidget* parent, Qt::WindowFlags f): QDialog(parent, f),
   okButton("Ok"), cancelButton("Cancel"),

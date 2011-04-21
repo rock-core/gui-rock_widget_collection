@@ -11,7 +11,6 @@
 #include <qwt_plot_curve.h>
 #include <qwt_plot_marker.h>
 
-#include "DataManager.h"
 #include "GeneralOptionsWidget.h"
 #include "BorderLineOptionDialog.h"
 #include "CurveOptionWidget.h"

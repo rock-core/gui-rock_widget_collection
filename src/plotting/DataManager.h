@@ -27,7 +27,6 @@ class DataManager
 public:
 
     enum TimeDivisor {MILLIS = 0, SECONDS, MINUTES};
-
      /** deconstructor*/
     ~DataManager();
     /**

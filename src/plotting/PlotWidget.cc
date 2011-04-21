@@ -14,12 +14,23 @@
 #include <qwt-qt4/qwt_plot_curve.h>
 #include <QtCore/qtimer.h>
 
+#include "QtExporter.h"
+#include "CSVExporter.h"
+#include "DataManager.h"
+#include "CSVImporter.h"
+#include "PlotXMLReader.h"
+#include "PlotXMLWriter.h"  
+#include "IdTooLargeException.h"
+#include "ExtendedPlotZoomer.h"
+#include "CurveSelectionDialog.h"
+#include "OptionsDialog.h"
+
 //Q_EXPORT_PLUGIN2(PlotWidget,PlotWidget)
 
 PlotWidget::PlotWidget(QWidget* parent) : QWidget(parent),
         xBottomSlider(NULL), yLeftSlider(NULL, Qt::Vertical), plottingWidget(this),
-        zoomer(plottingWidget.canvas(), true), markers(100), curves(100), initialRect(-1, -1, -1, -1),
-        optionsDialog(this),
+        zoomer(new ExtendedPlotZoomer(plottingWidget.canvas(), true)), markers(100), curves(100), initialRect(-1, -1, -1, -1),
+        optionsDialog(new OptionsDialog(this)),
         fileMenu(tr("&File")), plotMenu(tr("&Plot")), exportMenu(tr("&Export")), sliderMenu(tr("&Show Sliders")),
         gridMenu(tr("&Grid")), importMenu(tr("&Import")), clearMenu(tr("&Clear")), sizeMenu(tr("S&ize")),
         testMenu(tr("&Test")),
@@ -31,7 +42,8 @@ PlotWidget::PlotWidget(QWidget* parent) : QWidget(parent),
         clearCurveAction(tr("Clear &Curves"), this), clearAllAction(tr("Clear &All"), this),
         loadProfileAction(tr("&Load Profile"), this), saveProfileAction(tr("&Save Profile"), this),
         autoscaleAction(tr("A&utoscaling"), this), fixedAction(tr("&Fixed"), this), testAction(tr("Start &Test"), this),
-        sizeGroup(this)
+        sizeGroup(this),
+	curveSelectionDialog(new CurveSelectionDialog())
 {
     plotMarkerId = 0;
     curveId = 0;
@@ -55,10 +67,10 @@ PlotWidget::PlotWidget(QWidget* parent) : QWidget(parent),
     autoscrolling = false;
     QObject::connect(&xBottomSlider, SIGNAL(valueChanged(double)), this, SLOT(xBottomSliderValueChanged(double)));
     QObject::connect(&yLeftSlider, SIGNAL(valueChanged(double)), this, SLOT(yLeftSliderValueChanged(double)));
-    QObject::connect(&zoomer, SIGNAL(zoomed(const QwtDoubleRect&)), this, SLOT(zoomed(const QwtDoubleRect&)));
+    QObject::connect(zoomer, SIGNAL(zoomed(const QwtDoubleRect&)), this, SLOT(zoomed(const QwtDoubleRect&)));
     QObject::connect(&plottingWidget, SIGNAL(mouseZoomed(const QwtDoubleRect&)), this, SLOT(zoomed(const QwtDoubleRect&)));
-    QObject::connect(&optionsDialog, SIGNAL(accepted()), this, SLOT(optionsChanged()));
-    zoomer.setTrackerMode(QwtPlotZoomer::AlwaysOn);
+    QObject::connect(optionsDialog, SIGNAL(accepted()), this, SLOT(optionsChanged()));
+    zoomer->setTrackerMode(QwtPlotZoomer::AlwaysOn);
     legend.setItemMode(QwtLegend::CheckableItem);
     double lower = plottingWidget.axisScaleDiv(QwtPlot::xBottom)->lowerBound();
     double upper = plottingWidget.axisScaleDiv(QwtPlot::xBottom)->upperBound();
@@ -74,7 +86,7 @@ PlotWidget::PlotWidget(QWidget* parent) : QWidget(parent),
     ySpan = upper - lower;
     this->minYLeft = lower;
     this->maxYLeft = upper;
-    zoomer.setEnabled(true);
+    zoomer->setEnabled(true);
     connect(&plottingWidget, SIGNAL(legendChecked(QwtPlotItem *, bool)), this, SLOT(showCurve(QwtPlotItem *, bool)));
 }
 
@@ -229,7 +241,7 @@ void PlotWidget::addMenu()
   connect(&bottomSliderAction, SIGNAL(triggered()), this, SLOT(sliderActionChecked()));
   connect(&xGridAction, SIGNAL(triggered()), this, SLOT(gridChanged()));
   connect(&yGridAction, SIGNAL(triggered()), this, SLOT(gridChanged()));
-  connect(&curveSelectionDialog, SIGNAL(accepted()), this, SLOT(curvesSelected()));
+  connect(curveSelectionDialog, SIGNAL(accepted()), this, SLOT(curvesSelected()));
   connect(&testAction, SIGNAL(triggered()), this, SLOT(doTesting()));
 }
 
@@ -511,13 +523,13 @@ void PlotWidget::sliderActionChecked()
 
 void PlotWidget::exportAsCSV()
 {
-    curveSelectionDialog.initializeLayout(curves);
-    curveSelectionDialog.show();
+    curveSelectionDialog->initializeLayout(curves);
+    curveSelectionDialog->show();
 }
 
 void PlotWidget::curvesSelected()
 {
-    std::vector<QwtPlotCurve*> selectedCurves = curveSelectionDialog.getSelectedCurves();
+    std::vector<QwtPlotCurve*> selectedCurves = curveSelectionDialog->getSelectedCurves();
     if(selectedCurves.size() > 0)
     {
         CSVExporter::exportCurveAsCSV(selectedCurves, dataManager->getCSVDelimter());
@@ -545,8 +557,8 @@ void PlotWidget::fitPlotToGraph()
 
 void PlotWidget::showOptionsDialog()
 {
-  optionsDialog.initializeLayout(curves, markers);
-  optionsDialog.show();
+  optionsDialog->initializeLayout(curves, markers);
+  optionsDialog->show();
 }
 
 
@@ -555,7 +567,7 @@ void PlotWidget::optionsChanged()
 {
     plottingWidget.setCanvasBackground(dataManager->getBGColor());
     setAxisTitles(dataManager->getXAxisTitle(), dataManager->getYAxisTitle());
-    std::vector<QwtPlotMarker*> toDelete = optionsDialog.getDeletedMarkers();
+    std::vector<QwtPlotMarker*> toDelete = optionsDialog->getDeletedMarkers();
     for(unsigned int i=0;i<toDelete.size();i++)
     {
         QwtPlotMarker* deleteMarker = toDelete[i];
@@ -569,7 +581,7 @@ void PlotWidget::optionsChanged()
             }
         }
     }
-    std::vector<QwtPlotMarker*> newMarkers = optionsDialog.getNewMarkers();
+    std::vector<QwtPlotMarker*> newMarkers = optionsDialog->getNewMarkers();
     for(unsigned int i=0;i<newMarkers.size();i++)
     {
         QwtPlotMarker* marker = newMarkers[i];
@@ -727,7 +739,7 @@ bool PlotWidget::isEnableYSlider()
 
 void PlotWidget::zoomed(const QwtDoubleRect& rect)
 {
-    if(rect == zoomer.zoomBase())
+    if(rect == zoomer->zoomBase())
     {
         isZoomed = false;
         // set the slider positions to its original values
@@ -746,7 +758,7 @@ void PlotWidget::zoomed(const QwtDoubleRect& rect)
         // out of the zoombase of the zoomer
         if(initialRect.width() != -1)
         {
-            zoomer.zoom(initialRect);
+            zoomer->zoom(initialRect);
         }
         setSliderValues();
     }
@@ -897,7 +909,7 @@ void PlotWidget::setZoomBase()
     double height = plottingWidget.axisScaleDiv(QwtPlot::yLeft)->upperBound() - plottingWidget.axisScaleDiv(QwtPlot::yLeft)->lowerBound();
     double yLower = plottingWidget.axisScaleDiv(QwtPlot::yLeft)->lowerBound();
     initialRect.setRect(xLower, yLower, width, height);
-    zoomer.setZoomBase(QwtDoubleRect(minXBottom, maxYLeft, maxXBottom + zoomXSpan, maxYLeft + zoomYSpan));
+    zoomer->setZoomBase(QwtDoubleRect(minXBottom, maxYLeft, maxXBottom + zoomXSpan, maxYLeft + zoomYSpan));
 }
 
 void PlotWidget::setNumberOfDecimals(int decimals)
@@ -950,7 +962,7 @@ void PlotWidget::setAutoscrolling(bool enable)
     autoscrollAction.setChecked(enable);
     xBottomSlider.setEnabled(!enable);
     yLeftSlider.setEnabled(!enable);
-    zoomer.setEnabled(!enable);
+    zoomer->setEnabled(!enable);
     plottingWidget.setMouseWheelZoomAxis(!enable, !enable);
     autoScale = !enable;
     if(enable)
@@ -967,7 +979,7 @@ void PlotWidget::setAutoscale(bool autoscale)
     dataManager->setAutoscaling(autoscale);
     if(autoscale)
     {
-        zoomer.setEnabled(true);
+        zoomer->setEnabled(true);
         plottingWidget.setMouseWheelZoomAxis(true, true);
         autoscaleAction.setChecked(true);
         dataManager->setIsFixedSize(false);
@@ -987,7 +999,7 @@ void PlotWidget::setFixedSize(bool fixedSize)
     dataManager->setIsFixedSize(fixedSize);
     if(fixedSize)
     {
-        zoomer.setEnabled(true);
+        zoomer->setEnabled(true);
         plottingWidget.setMouseWheelZoomAxis(true, true);
         dataManager->setAutoscaling(false);
         dataManager->setAutoscrolling(false);

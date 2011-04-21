@@ -15,6 +15,7 @@
 
 #include "MultiViewWidget.h"
 #include "MultiViewPlugin.h"
+#include "plotting/PlotWidget.h"
 
 MultiViewWidget::MultiViewWidget(QWidget* parent) : QWidget(parent),
         fileMenu(tr("&File")), testingAction(tr("&Test"), this)

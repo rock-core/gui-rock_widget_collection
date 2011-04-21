@@ -9,16 +9,6 @@
 #define	PLOTWIDGET_H
 
 #include "PlottingWidget.h"
-#include "QtExporter.h"
-#include "OptionsDialog.h"
-#include "CSVExporter.h"
-#include "DataManager.h"
-#include "CSVImporter.h"
-#include "CurveSelectionDialog.h"
-#include "PlotXMLReader.h"
-#include "PlotXMLWriter.h"  
-#include "ExtendedPlotZoomer.h"
-#include "IdTooLargeException.h"
 
 #include <QResizeEvent>
 #include <QPushButton>
@@ -30,6 +20,7 @@
 #include <QIcon>
 #include <QWaitCondition>
 #include <QMutex>
+
 
 #include <qwt_slider.h>
 #include <qwt_plot.h>
@@ -45,6 +36,13 @@
 #include <limits>
 #include <algorithm>
 #include <map>
+
+
+//Forward Declaration
+class ExtendedPlotZoomer;
+class CurveSelectionDialog;
+class OptionsDialog;
+class DataManager;
 
 // the following defines are neded
 // as ruby can't work properly with
@@ -669,7 +667,7 @@ protected:
     /** the grid*/
     QwtPlotGrid grid;
     /** general zoomer zooming in via selecting a rect with the mouse*/
-    ExtendedPlotZoomer zoomer;
+    ExtendedPlotZoomer *zoomer;
     /** vector containing all border lines*/
     std::vector<QwtPlotMarker*> markers;
     /** the currentid of the marker*/
@@ -709,7 +707,7 @@ protected:
     /** MenuBar of the widget*/
     QMenuBar menuBar;
     /** Dialog with options*/
-    OptionsDialog optionsDialog;
+    OptionsDialog *optionsDialog;
     /** File menu*/
     QMenu fileMenu;
     /** Plot menu*/
@@ -769,9 +767,9 @@ protected:
     QActionGroup sizeGroup;
 
     /** Datamanager containing all variables*/
-    DataManager* dataManager;
+    DataManager *dataManager;
     /** Dialog to select which curves shall be exported*/
-    CurveSelectionDialog curveSelectionDialog;
+    CurveSelectionDialog *curveSelectionDialog;
     /** Plot legend*/
     QwtLegend legend;
     /** Map containing the QTime for specific curves*/

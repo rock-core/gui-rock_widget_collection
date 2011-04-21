@@ -22,7 +22,6 @@
 
 
 #include "WidgetButton.h"
-#include "plotting/PlotWidget.h"
 
 /**
  * Widget which displays other widgets. All added widgets will be displayed as thumbnails
