@@ -95,6 +95,8 @@ public slots:
      * @param isAlternative if the icon is the alternative to the widget or to the text, defaults to false
      */
     void setIconAlternative(const QIcon &icon, bool isAlternative=false);
+
+    void printStatus();
     
 protected:
     /** The main widget*/

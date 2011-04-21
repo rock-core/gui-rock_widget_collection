@@ -27,6 +27,12 @@ WidgetButton::~WidgetButton()
 {
 }
 
+void WidgetButton::printStatus()
+{
+    std::cout << (this == NULL) << std::endl;
+    std::cout << "Alt: " << isAlternative << std::endl;
+}
+
 void WidgetButton::setWidget(const QString &name, QWidget* widget, bool shown)
 {
     this->name = name;

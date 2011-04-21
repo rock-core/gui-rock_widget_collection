@@ -14,6 +14,7 @@ MultiViewPlugin::MultiViewPlugin(QObject* parent) : QObject(parent)
     std::cout << "MultiViewPlugin created" << std::endl;
     widget = NULL;
     initialized = false;
+    designerMode = false;
 }
 
 MultiViewPlugin::~MultiViewPlugin()
@@ -63,6 +64,8 @@ QString MultiViewPlugin::whatsThis() const
 
 void MultiViewPlugin::initialize(QDesignerFormEditorInterface* core)
 {
+    std::cout << "Initialize" << std::endl;
+    designerMode = true;
     if (initialized)
     {
         return;
@@ -90,16 +93,23 @@ void MultiViewPlugin::widgetManaged(QWidget* widget)
 
 void MultiViewPlugin::manageWidget(QWidget* widget)
 {
+    if(!this->widget->isDesignerMode())
+    {
+        return;
+    }
     std::cout << (formInterface == NULL) << std::endl;
     // when designer loads a ui file it will call manage widget BEFORE
     // setting the active Form Window, save what shall be added
     // and wait for the activeFormWindow signal and add everything up
     // to that point
+    std::cout << "Checking to NULL" << std::endl;
     if(formInterface->formWindowManager()->activeFormWindow() == NULL)
     {
+        std::cout << "Pushing back" << std::endl;
         lastWidgets.push_back(widget);
         return;
     }
+    std::cout << "Starting" << std::endl;
     formInterface->formWindowManager()->activeFormWindow()->manageWidget(widget);
     WidgetButton* button = dynamic_cast<WidgetButton*>(widget);
     if(button != NULL)
@@ -119,6 +129,7 @@ void MultiViewPlugin::activeFormWindowChanged(QDesignerFormWindowInterface* form
 {
     // needs to be done for reloading as widgets will be added before the
     // active form window is set by the designer
+    std::cout << "Active changed" << std::endl;
     if(formWindow != NULL && lastWidgets.size() > 0)
     {
         for(int i=0;i<lastWidgets.size();i++)
@@ -168,6 +179,7 @@ void MultiViewPlugin::selectionChanged()
 QWidget* MultiViewPlugin::createWidget(QWidget* parent)
 {
     widget = new MultiViewWidget(parent);
+    widget->setDesignerMode(designerMode);
     connect(widget, SIGNAL(widgetButtonAdded(QWidget*)), this, SLOT(manageWidget(QWidget*)));
     std::cout << "Create" << std::endl;
     return widget;

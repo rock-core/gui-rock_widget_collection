@@ -82,6 +82,8 @@ public:
      */
     void childEvent(QChildEvent* event);
 
+    bool event(QEvent* event);
+
 public slots:
 
     /**
@@ -138,6 +140,9 @@ public slots:
 
     QList<WidgetButton*> getAllWidgetButtons();
 
+    void setDesignerMode(bool designerMode) { this->designerMode = designerMode; };
+    bool isDesignerMode() { return designerMode; };
+
     signals:
     void widgetButtonAdded(QWidget* widget);
 
@@ -183,6 +188,8 @@ protected:
     int currentWidgetIndex;
     /** if a widget was clicked and the widgetClicked method is currently processing*/
     bool clicking;
+
+    bool designerMode;
 };
 
 #endif	/* MULIVIEWWIDGET_H */

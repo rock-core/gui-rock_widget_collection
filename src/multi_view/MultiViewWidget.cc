@@ -12,6 +12,7 @@
 #include <QtGui/qstackedwidget.h>
 #include <QtCore/qmetaobject.h>
 #include <QtCore/qcoreevent.h>
+#include <QtGui/qtooltip.h>
 
 #include "MultiViewWidget.h"
 #include "MultiViewPlugin.h"
@@ -23,6 +24,7 @@ MultiViewWidget::MultiViewWidget(QWidget* parent) : QWidget(parent),
     initialized = false;
     currentWidget = NULL;
     pseudoWidget = NULL;
+    designerMode = true;
     clicking = false;
     position = Top;
     currentWidgetIndex = 0;
@@ -234,41 +236,62 @@ void MultiViewWidget::deleteWidget(const QString& name)
     }
 }
 
+bool MultiViewWidget::event(QEvent* event)
+{
+    if(event->type() == QEvent::ToolTip)
+    {
+        QToolTip::hideText();
+        event->ignore();
+        std::cout << "Ignore" << std::endl;
+        return true;
+    }
+    return QWidget::event(event);
+}
+
 void MultiViewWidget::childEvent(QChildEvent* event)
 {
+    std::cout << "Child Event" << std::endl;
     if(initialized)
     {
+        
         if(event->type() == QChildEvent::ChildAdded)
         {
-            if(event->child()->isWidgetType())
+            if(!clicking)
             {
-                // we never need to watch adding of widgetbuttons, then everything went well already
-                WidgetButton* testButton = dynamic_cast<WidgetButton*> (event->child());
-                if(testButton != NULL)
+                if(event->child()->isWidgetType())
                 {
-                    return;
-                }
-                // we never want to add a widget which is already added
-                QWidget* child = (QWidget*)event->child();
-                QList<QString> keys = widgets.keys();
-                for(int i=0;i<keys.size();i++)
-                {
-                    WidgetButton* button = widgets[keys[i]];
-                    if(button->getWidget() == child)
+                    // we never need to watch adding of widgetbuttons, then everything went well already
+                    WidgetButton* testButton = dynamic_cast<WidgetButton*> (event->child());
+                    if(testButton != NULL)
                     {
-//                        if(button->isEnabled())
-//                        {
-//                            child->setMaximumSize(0, 0);
-//                        }
-//                        else
-//                        {
-//                            child->setMaximumSize(1000000, 1000000);
-//                        }
                         return;
                     }
+
+
+                    // we never want to add a widget which is already added
+                    QWidget* child = (QWidget*)event->child();
+                    std::cout << child->inherits("QFocusFrame") << std::endl;
+                    QList<QString> keys = widgets.keys();
+                    for(int i=0;i<keys.size();i++)
+                    {
+                        WidgetButton* button = widgets[keys[i]];
+                        if(button->getWidget() == child)
+                        {
+    //                        if(button->isEnabled())
+    //                        {
+    //                            child->setMaximumSize(0, 0);
+    //                        }
+    //                        else
+    //                        {
+    //                            child->setMaximumSize(1000000, 1000000);
+    //                        }
+                            return;
+                        }
+                        
+                    }
+                    addWidget(QString::number(currentWidgetIndex), child);
+                    currentWidgetIndex++;
                 }
-                addWidget(QString::number(currentWidgetIndex), child);
-                currentWidgetIndex++;
             }
         }
         else if(event->type() == QChildEvent::ChildRemoved)
@@ -310,23 +333,26 @@ void MultiViewWidget::widgetClicked()
     std::cout << "Clicking" << std::endl;
     clicking = true;
     WidgetButton* sender = (WidgetButton*)QObject::sender();
+    sender->printStatus();
     sender->showWidget(false);
     QWidget* widget = sender->getWidget();
 
-    QList<WidgetButton*> buttons = getAllWidgetButtons();
-    for(int i=0;i<buttons.size();i++)
+    if(designerMode)
     {
-        if(sender != buttons[i])
+        QList<WidgetButton*> buttons = getAllWidgetButtons();
+        for(int i=0;i<buttons.size();i++)
         {
-            buttons[i]->getWidget()->setMaximumSize(0, 0);
-        }
-        else
-        {
-            buttons[i]->getWidget()->setMaximumSize(1000000, 1000000);
-        }
+            if(sender != buttons[i])
+            {
+                buttons[i]->getWidget()->setMaximumSize(0, 0);
+            }
+            else
+            {
+                buttons[i]->getWidget()->setMaximumSize(1000000, 1000000);
+            }
 
+        }
     }
-
     widget->setEnabled(true);
     layout.removeWidget(currentWidget);
     if(position == Top || position == Bottom)

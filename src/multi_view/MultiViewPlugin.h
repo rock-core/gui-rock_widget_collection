@@ -54,6 +54,7 @@ private:
     MultiViewWidget* widget;
     QDesignerFormEditorInterface* formInterface;
     std::vector<QWidget*> lastWidgets;
+    bool designerMode;
 
 };
 
