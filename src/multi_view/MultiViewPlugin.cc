@@ -11,6 +11,7 @@
 
 MultiViewPlugin::MultiViewPlugin(QObject* parent) : QObject(parent)
 {
+    std::cout << "MultiViewPlugin created" << std::endl;
     widget = NULL;
     initialized = false;
 }
@@ -67,6 +68,8 @@ void MultiViewPlugin::initialize(QDesignerFormEditorInterface* core)
         return;
     }
     formInterface = core;
+    connect(formInterface->formWindowManager(), SIGNAL(activeFormWindowChanged(QDesignerFormWindowInterface*)),
+            this, SLOT(activeFormWindowChanged(QDesignerFormWindowInterface*)));
     initialized = true;
 }
 
@@ -88,17 +91,43 @@ void MultiViewPlugin::widgetManaged(QWidget* widget)
 void MultiViewPlugin::manageWidget(QWidget* widget)
 {
     std::cout << (formInterface == NULL) << std::endl;
+    // when designer loads a ui file it will call manage widget BEFORE
+    // setting the active Form Window, save what shall be added
+    // and wait for the activeFormWindow signal and add everything up
+    // to that point
+    if(formInterface->formWindowManager()->activeFormWindow() == NULL)
+    {
+        lastWidgets.push_back(widget);
+        return;
+    }
     formInterface->formWindowManager()->activeFormWindow()->manageWidget(widget);
     WidgetButton* button = dynamic_cast<WidgetButton*>(widget);
     if(button != NULL)
     {
         button->setIconAlternative(QIcon(), true);
+        std::cout << "Managing Designer stuff" << std::endl;
         formInterface->formWindowManager()->activeFormWindow()->manageWidget(button->getWidget());
     }
+    std::cout << "Connecting signals" << std::endl;
     connect(formInterface->formWindowManager()->activeFormWindow(), SIGNAL(selectionChanged()), this, SLOT(selectionChanged()));
     connect(formInterface->formWindowManager()->activeFormWindow(), SIGNAL(widgetUnmanaged(QWidget*)), this, SLOT(widgetUnmanaged(QWidget*)));
     connect(formInterface->formWindowManager()->activeFormWindow(), SIGNAL(widgetRemoved(QWidget*)), this, SLOT(widgetRemoved(QWidget*)));
     connect(formInterface->formWindowManager()->activeFormWindow(), SIGNAL(widgetManaged(QWidget*)), this, SLOT(widgetManaged(QWidget*)));
+}
+
+void MultiViewPlugin::activeFormWindowChanged(QDesignerFormWindowInterface* formWindow)
+{
+    // needs to be done for reloading as widgets will be added before the
+    // active form window is set by the designer
+    if(formWindow != NULL && lastWidgets.size() > 0)
+    {
+        for(int i=0;i<lastWidgets.size();i++)
+        {
+            manageWidget(lastWidgets[i]);
+        }
+        lastWidgets.clear();
+    }
+
 }
 
 void MultiViewPlugin::selectionChanged()

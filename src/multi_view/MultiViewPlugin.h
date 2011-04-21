@@ -14,6 +14,8 @@
 #include <QtDesigner/QDesignerCustomWidgetInterface>
 #include <QtDesigner/QDesignerFormWindowInterface>
 
+#include <vector>
+
 /**
  * Simple qt designer plugin class. Only thing to note that the multi view widget is used
  * as a container widget.
@@ -45,11 +47,13 @@ public slots:
     void widgetUnmanaged(QWidget* widget);
     void widgetRemoved(QWidget* widget);
     void widgetManaged(QWidget* widget);
+    void activeFormWindowChanged(QDesignerFormWindowInterface* formWindow);
 
 private:
     bool initialized;
     MultiViewWidget* widget;
     QDesignerFormEditorInterface* formInterface;
+    std::vector<QWidget*> lastWidgets;
 
 };
 
