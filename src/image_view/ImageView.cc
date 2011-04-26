@@ -22,9 +22,13 @@ ImageView::ImageView(QWidget *parent,bool use_openGL):
     resize(width(),height());
     //setting up popup menue
     save_image_act = new QAction(tr("&Save Image"),this);
+    user_export_act = new QAction(tr("&User Export"),this);
     save_image_act->setStatusTip(tr("Save the image to disk"));
+    user_export_act->setStatusTip(tr("Emits an event for user specific export"));
     connect(save_image_act,SIGNAL(triggered()),this,SLOT(saveImage()));
+    connect(user_export_act,SIGNAL(triggered()),this,SLOT(emitUserExport()));
     contextMenu.addAction(save_image_act);
+    contextMenu.addAction(user_export_act);
 
     //setting up widget
     setWindowTitle(tr("ImageView"));
@@ -42,6 +46,12 @@ ImageView::~ImageView()
     disconnect(save_image_act, 0, 0, 0);
     delete save_image_act;
 }
+
+void ImageView::emitUserExport()
+{
+    emit userExport();
+}
+
 
 void ImageView::setZoomEnabled(bool enabled)
 {

@@ -95,8 +95,10 @@ public:
     void mouseDoubleClickEvent ( QMouseEvent * event );
 signals:
     void clickImage(int x,int y);
+    void userExport();
 
 public slots:
+    void emitUserExport();
     void update();
     void update2();
     void setDefaultImage();
@@ -276,6 +278,7 @@ protected:
 
     QMenu contextMenu;
     QAction *save_image_act;
+    QAction *user_export_act;
     QString save_path;
     
     QImage originalImage; // holds the original image
