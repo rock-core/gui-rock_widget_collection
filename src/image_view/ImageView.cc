@@ -181,11 +181,11 @@ bool ImageView::saveImage2(QString path,bool overlay)
     return true;
 }
 
-bool ImageView::saveImage3(const QString &mode, int pixel_size,  int width,  int height,const char* pbuffer, QString path)
+bool ImageView::saveImage3(const QString &mode, int pixel_size,  int width,  int height,const char* pbuffer, QString path, QString format)
 {
     QImage image;
     frame_converter.copyFrameToQImageRGB888(image,mode, pixel_size, width, height,pbuffer);
-    image.save(path,"PNG",80);
+    image.save(path,format.toAscii().data(),80);
     return true;
 }
 

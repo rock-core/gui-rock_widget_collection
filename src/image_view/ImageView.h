@@ -118,7 +118,7 @@ public slots:
     //for saving displayed frames
     void saveImage(bool overlay=true);
     bool saveImage2(QString path,bool overlay=true);
-    bool saveImage3(const QString &mode, int pixel_size,  int width,  int height,const char* pbuffer, QString path);
+    bool saveImage3(const QString &mode, int pixel_size,  int width,  int height,const char* pbuffer, QString path,QString format);
 
     /** Removes any cropping previously set with crop(x, y, w, h) */
     void resetCrop();
