@@ -164,7 +164,6 @@ void MultiViewWidget::addWidget(const QString &name, QWidget* widget, const QIco
         std::cerr << "A Widget with the name: [" << name.toStdString() << "] already exists!" << std::endl;
         return;
     }
-    std::cout << "Adding component with name: [" << name.toStdString() << "]" << std::endl;
     WidgetButton* widgetButton = new WidgetButton();
     widgetButton->setFixedSize(thumbnailWidth, thumbnailHeight);
     widgetButton->setIconAlternative(icon, useOnlyIcon);
@@ -242,7 +241,6 @@ bool MultiViewWidget::event(QEvent* event)
     {
         QToolTip::hideText();
         event->ignore();
-        std::cout << "Ignore" << std::endl;
         return true;
     }
     return QWidget::event(event);
@@ -250,7 +248,6 @@ bool MultiViewWidget::event(QEvent* event)
 
 void MultiViewWidget::childEvent(QChildEvent* event)
 {
-    std::cout << "Child Event" << std::endl;
     if(initialized)
     {
         
@@ -266,11 +263,8 @@ void MultiViewWidget::childEvent(QChildEvent* event)
                     {
                         return;
                     }
-
-
                     // we never want to add a widget which is already added
                     QWidget* child = (QWidget*)event->child();
-                    std::cout << child->inherits("QFocusFrame") << std::endl;
                     QList<QString> keys = widgets.keys();
                     for(int i=0;i<keys.size();i++)
                     {
@@ -330,7 +324,6 @@ QList<WidgetButton*> MultiViewWidget::getAllWidgetButtons()
 
 void MultiViewWidget::widgetClicked()
 {
-    std::cout << "Clicking" << std::endl;
     clicking = true;
     WidgetButton* sender = (WidgetButton*)QObject::sender();
     sender->printStatus();

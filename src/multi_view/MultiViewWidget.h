@@ -136,14 +136,37 @@ public slots:
      */
     void doTesting();
 
+    /**
+     * Returns the widget which is shown on the Button
+     * @param widget  the widget for which the button shall be returned
+     * @return the button for the given widget
+     */
     WidgetButton* getButtonForWidget(QWidget* widget);
 
+    /**
+     * Returns all Buttons
+     * @return  all Buttons as QList
+     */
     QList<WidgetButton*> getAllWidgetButtons();
 
+    /**
+     * Sets whether designer mode is enabled (no small widgets)
+     * NOTE: You should normally never have to call this manually
+     * @param designerMode true if the designer is shown, false otherwise
+     */
     void setDesignerMode(bool designerMode) { this->designerMode = designerMode; };
+
+    /**
+     * Returns whether designer mode is enabled
+     * @return if designer mode is enabled
+     */
     bool isDesignerMode() { return designerMode; };
 
     signals:
+    /**
+     * Emitted when a new widget is added
+     * @param widget the widget which was added to the MultiWidget
+     */
     void widgetButtonAdded(QWidget* widget);
 
 
@@ -188,7 +211,7 @@ protected:
     int currentWidgetIndex;
     /** if a widget was clicked and the widgetClicked method is currently processing*/
     bool clicking;
-
+    /** Whether the designer mode is enabled*/
     bool designerMode;
 };
 

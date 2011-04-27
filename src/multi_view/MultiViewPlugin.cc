@@ -11,7 +11,6 @@
 
 MultiViewPlugin::MultiViewPlugin(QObject* parent) : QObject(parent)
 {
-    std::cout << "MultiViewPlugin created" << std::endl;
     widget = NULL;
     initialized = false;
     designerMode = false;
@@ -19,7 +18,6 @@ MultiViewPlugin::MultiViewPlugin(QObject* parent) : QObject(parent)
 
 MultiViewPlugin::~MultiViewPlugin()
 {
-    delete widget;
 }
 
 bool MultiViewPlugin::isContainer() const
@@ -64,7 +62,8 @@ QString MultiViewPlugin::whatsThis() const
 
 void MultiViewPlugin::initialize(QDesignerFormEditorInterface* core)
 {
-    std::cout << "Initialize" << std::endl;
+    // initialize will only be called wehn qt designer is used
+    // when loading via an ui file, this will not be called
     designerMode = true;
     if (initialized)
     {
@@ -76,60 +75,35 @@ void MultiViewPlugin::initialize(QDesignerFormEditorInterface* core)
     initialized = true;
 }
 
-void MultiViewPlugin::widgetUnmanaged(QWidget* widget)
-{
-    std::cout << "Unmanaged widget" << std::endl;
-}
-
-void MultiViewPlugin::widgetRemoved(QWidget* widget)
-{
-    std::cout << "Removed widget" << std::endl;
-}
-
-void MultiViewPlugin::widgetManaged(QWidget* widget)
-{
-    std::cout << "Managed Widget" << std::endl;
-}
-
 void MultiViewPlugin::manageWidget(QWidget* widget)
 {
     if(!this->widget->isDesignerMode())
     {
         return;
     }
-    std::cout << (formInterface == NULL) << std::endl;
     // when designer loads a ui file it will call manage widget BEFORE
     // setting the active Form Window, save what shall be added
     // and wait for the activeFormWindow signal and add everything up
     // to that point
-    std::cout << "Checking to NULL" << std::endl;
     if(formInterface->formWindowManager()->activeFormWindow() == NULL)
     {
-        std::cout << "Pushing back" << std::endl;
         lastWidgets.push_back(widget);
         return;
     }
-    std::cout << "Starting" << std::endl;
     formInterface->formWindowManager()->activeFormWindow()->manageWidget(widget);
     WidgetButton* button = dynamic_cast<WidgetButton*>(widget);
     if(button != NULL)
     {
         button->setIconAlternative(QIcon(), true);
-        std::cout << "Managing Designer stuff" << std::endl;
         formInterface->formWindowManager()->activeFormWindow()->manageWidget(button->getWidget());
     }
-    std::cout << "Connecting signals" << std::endl;
     connect(formInterface->formWindowManager()->activeFormWindow(), SIGNAL(selectionChanged()), this, SLOT(selectionChanged()));
-    connect(formInterface->formWindowManager()->activeFormWindow(), SIGNAL(widgetUnmanaged(QWidget*)), this, SLOT(widgetUnmanaged(QWidget*)));
-    connect(formInterface->formWindowManager()->activeFormWindow(), SIGNAL(widgetRemoved(QWidget*)), this, SLOT(widgetRemoved(QWidget*)));
-    connect(formInterface->formWindowManager()->activeFormWindow(), SIGNAL(widgetManaged(QWidget*)), this, SLOT(widgetManaged(QWidget*)));
 }
 
 void MultiViewPlugin::activeFormWindowChanged(QDesignerFormWindowInterface* formWindow)
 {
     // needs to be done for reloading as widgets will be added before the
     // active form window is set by the designer
-    std::cout << "Active changed" << std::endl;
     if(formWindow != NULL && lastWidgets.size() > 0)
     {
         for(int i=0;i<lastWidgets.size();i++)
@@ -143,7 +117,6 @@ void MultiViewPlugin::activeFormWindowChanged(QDesignerFormWindowInterface* form
 
 void MultiViewPlugin::selectionChanged()
 {
-    std::cout << "Selection Changed" << std::endl;
     QWidget* selected = formInterface->formWindowManager()->activeFormWindow()->cursor()->selectedWidget(0);
     WidgetButton* button = dynamic_cast<WidgetButton*>(selected);
     if(button != NULL)
@@ -152,10 +125,13 @@ void MultiViewPlugin::selectionChanged()
     }
     else
     {
-        button = widget->getButtonForWidget(selected);
-        if(button != NULL)
+        if(selected != NULL)
         {
-            button->click();
+            button = widget->getButtonForWidget(selected);
+            if(button != NULL)
+            {
+                button->click();
+            }
         }
     }
     if(button != NULL)
@@ -181,7 +157,6 @@ QWidget* MultiViewPlugin::createWidget(QWidget* parent)
     widget = new MultiViewWidget(parent);
     widget->setDesignerMode(designerMode);
     connect(widget, SIGNAL(widgetButtonAdded(QWidget*)), this, SLOT(manageWidget(QWidget*)));
-    std::cout << "Create" << std::endl;
     return widget;
 }
 
