@@ -52,7 +52,7 @@ void RangeView::setRangeScan2(base::samples::LaserScan *scan){
 		fprintf(stderr,"Cannot set data have no widget?!\n");
 		return;
 	}
-	std::vector<Eigen::Vector3d> data = scan->convertScanToPointCloud(Eigen::Transform3d());
+	std::vector<Eigen::Vector3d> data = scan->convertScanToPointCloud(Eigen::Affine3d());
 	window->setData(data);
 }
 	
