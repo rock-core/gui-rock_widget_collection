@@ -168,7 +168,16 @@ public slots:
     };
     
     // --> Widget related methods
-
+    /** 
+     * Register a curve for plotting 
+     * * @param dataId the id of the curve 
+     * @param pen pen the chruve drawing pen 
+     * @param curveStyle curveStyle the curve dot style 
+     * @param name QString name of the curve 
+     * @param xAxisId the id of the xaxis, defaults to X_BOTTOM
+     * @param yAxisId the id of the y axis, defaults to Y_LEFT
+     */
+    void registerCurve(int dataId, QPen pen, const QString name, int curveStyle);
     /**
      * Adds all menu entries
      */

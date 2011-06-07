@@ -1066,8 +1066,52 @@ int PlotWidget::addDataWithTime(double yPoint, int dataId,
         }
 
     }
-    std::cout << yPoint << std::endl;
+    //std::cout << yPoint << std::endl;
     return addData(xPoints, yPoints, 1, dataId, xAxisId, yAxisId);
+}
+
+
+void PlotWidget::registerCurve(int dataId, QPen pen, const QString name, int curveStyle )
+{
+    QwtPlot::Axis xAxis = getAxisForInt(X_BOTTOM);
+    QwtPlot::Axis yAxis = getAxisForInt(Y_LEFT);
+    QwtPlotCurve* curve = new QwtPlotCurve();
+    switch(curveStyle)
+    {
+      case NO_CURVE:
+	curve->setStyle(QwtPlotCurve::NoCurve);
+	break;
+      case LINES:
+	curve->setStyle(QwtPlotCurve::Lines);
+	break;
+      case STICKS:
+	curve->setStyle(QwtPlotCurve::Sticks);
+	break;
+      case STEPS:
+	curve->setStyle(QwtPlotCurve::Steps);
+	break;
+      case DOTS:
+	curve->setStyle(QwtPlotCurve::Dots);
+	break;
+      default:
+	curve->setStyle(QwtPlotCurve::UserCurve);
+    }
+      
+   
+    //pen.setColor(QColor(255,0,0,127)); 
+    curve->setPen(pen);
+    curve->attach(&plottingWidget);
+    curve->setAxis(xAxis,yAxis);
+   
+    if(dataManager->isAutoscrolling() || dataManager->isFixedSize())
+    {
+	setAxisBoundaries(X_BOTTOM, dataManager->getMinX(), dataManager->getMaxX());
+	setAxisBoundaries(Y_LEFT, dataManager->getMinY(), dataManager->getMaxY());
+    }
+    setMinMaxPoints(0,1);
+    curves[dataId] = curve;
+    curveId++;
+    setLegendNameForCurve(name, dataId);
 }
 
 int PlotWidget::addData(const double* xPoints,const double* yPoints, int length, int dataId,
@@ -1092,7 +1136,7 @@ int PlotWidget::addData(const double* xPoints,const double* yPoints, int length,
 
     if(dataId < 0 || curves[dataId] == NULL)
     {
-//        std::cout << "New" << std::endl;
+        
         needRepaint = true;
         if(dataId < 0 && curveId >= 100)
         {
@@ -1101,7 +1145,7 @@ int PlotWidget::addData(const double* xPoints,const double* yPoints, int length,
         QwtPlotCurve* curve = new QwtPlotCurve();
         curve->setStyle(QwtPlotCurve::Dots);
         QPen pen;
-        pen.setWidth(5);
+        pen.setWidth(1);
         curve->setPen(pen);
         curve->setData(xPoints, yPoints, length);
         curve->attach(&plottingWidget);
@@ -1131,24 +1175,37 @@ int PlotWidget::addData(const double* xPoints,const double* yPoints, int length,
     else
     {
         QwtPlotCurve* curve = curves[dataId];
-        QwtArrayData& currentData  = (QwtArrayData&)curve->data();
-        QVector<double> xVector = currentData.xData();
-        QVector<double> yVector = currentData.yData();
-        int oldLength = xVector.size();
-        for(int i=0;i<length;i++)
-        {
-            setMinMaxPoints(xPoints[i], yPoints[i]);
-            xVector.push_back(xPoints[i]);
-            yVector.push_back(yPoints[i]);
-        }
-        curve->setData(xVector, yVector);
-        curve->setAxis(xAxis, yAxis);
+	QwtArrayData& currentData  = (QwtArrayData&)curve->data();
+	QVector<double> xVector = currentData.xData();
+	
+	int oldLength = xVector.size();
+	if ( currentData.size() > 0 ) 
+	{
+
+	 
+	    QVector<double> yVector = currentData.yData();
+	 
+	    
+	    for(int i=0;i<length;i++)
+	    {
+		setMinMaxPoints(xPoints[i], yPoints[i]);
+		xVector.push_back(xPoints[i]);
+		yVector.push_back(yPoints[i]);
+	    }
+	    curve->setData(xVector, yVector);
+	    curve->setAxis(xAxis, yAxis);
+	}
+	else 
+	{
+	    
+	   curve->setData(xPoints, yPoints, length);
+	}
         // if autoscrolling is set to true
         // rescale the axis
         if(dataManager->isAutoscrolling())
         {
             // set the max to the last value and add 5% off the total span
-            std::cout << maxXBottom << "|" << maxYLeft << std::endl;
+           // std::cout << maxXBottom << "|" << maxYLeft << std::endl;
             double finalMaxX = maxXBottom*1.05;
             double finalMaxY = maxYLeft * 1.05;
 	    if(maxXBottom > plottingWidget.axisScaleDiv(QwtPlot::xBottom)->upperBound())
@@ -1247,6 +1304,7 @@ void PlotWidget::setDataStyle(int dataId, QPen pen, int curveStyle)
     QwtPlotCurve* curve = curves[dataId];
     if(curve != NULL)
     {
+      
         QPen cPen = curve->pen();
         cPen.setColor(pen.color());
         curve->setPen(cPen);
@@ -1270,6 +1328,7 @@ void PlotWidget::setDataStyle(int dataId, QPen pen, int curveStyle)
 	  default:
 	    curve->setStyle(QwtPlotCurve::UserCurve);
 	  }
+      
     }
 }
 
