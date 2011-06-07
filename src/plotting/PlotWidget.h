@@ -10,6 +10,7 @@
 
 #include "PlottingWidget.h"
 
+#include <MultiWidget.h>
 #include <QResizeEvent>
 #include <QPushButton>
 #include <qtimer.h>
@@ -118,7 +119,7 @@ class DataManager;
  * @author Bjoern Lueck <blueck@dfki.de>
  * @version 0.1
  */
-class PlotWidget : public QWidget
+class PlotWidget : public MultiWidget 
 {
 
     Q_OBJECT
@@ -151,6 +152,9 @@ public:
     // --> Exporting functions
 
 public slots:
+
+		/** Its called in case an resize occured by the MultiViewWidget */
+		void setActive(bool active);
 
     void showCurve(QwtPlotItem* item, bool checekd);
 
@@ -775,6 +779,9 @@ protected:
     /** Map containing the QTime for specific curves*/
     std::map<int, QTime*> timeMap;
     QTimer testTimer;
+
+
+	bool hasMenu, hasXAxis, hasYAxis;
 };
 
 #endif	/* PLOTWIDGET_H */

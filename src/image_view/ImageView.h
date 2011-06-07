@@ -8,6 +8,7 @@
 #ifndef IMAGEVIEW_H
 #define	IMAGEVIEW_H
 
+#include <MultiWidget.h>
 #include <QtGui/QWidget>
 #include <QtGui/QPaintEvent>
 #include <QtGui/QPainter>
@@ -69,7 +70,7 @@
  * @version 0.1
  */
 
-class QDESIGNER_WIDGET_EXPORT ImageView : public QWidget
+class QDESIGNER_WIDGET_EXPORT ImageView : public MultiWidget 
 {
     Q_OBJECT
     Q_CLASSINFO("Author", "Alexander Duda")

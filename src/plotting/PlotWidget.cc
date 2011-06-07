@@ -27,7 +27,7 @@
 
 //Q_EXPORT_PLUGIN2(PlotWidget,PlotWidget)
 
-PlotWidget::PlotWidget(QWidget* parent) : QWidget(parent),
+PlotWidget::PlotWidget(QWidget* parent) : MultiWidget(parent),
         xBottomSlider(NULL), yLeftSlider(NULL, Qt::Vertical), plottingWidget(this),
         zoomer(new ExtendedPlotZoomer(plottingWidget.canvas(), true)), markers(100), curves(100), initialRect(-1, -1, -1, -1),
         optionsDialog(new OptionsDialog(this)),
@@ -70,6 +70,7 @@ PlotWidget::PlotWidget(QWidget* parent) : QWidget(parent),
     QObject::connect(zoomer, SIGNAL(zoomed(const QwtDoubleRect&)), this, SLOT(zoomed(const QwtDoubleRect&)));
     QObject::connect(&plottingWidget, SIGNAL(mouseZoomed(const QwtDoubleRect&)), this, SLOT(zoomed(const QwtDoubleRect&)));
     QObject::connect(optionsDialog, SIGNAL(accepted()), this, SLOT(optionsChanged()));
+    QObject::connect(this, SIGNAL(activityChanged(bool)), this, SLOT(setActive(bool)));
     zoomer->setTrackerMode(QwtPlotZoomer::AlwaysOn);
     legend.setItemMode(QwtLegend::CheckableItem);
     double lower = plottingWidget.axisScaleDiv(QwtPlot::xBottom)->lowerBound();
@@ -1276,4 +1277,27 @@ void PlotWidget::setDataStyle(int dataId, QPen pen, int curveStyle)
 void PlotWidget::exportPlotAsImage()
 {
     QtExporter::exportWidgetAsImagWithDialog(&plottingWidget);
+}
+
+
+void PlotWidget::setActive( bool active )
+{
+	printf("Set Active called for plottong\n");
+	if(!active){
+		hasMenu= !menuBar.isHidden();
+		menuBar.hide();
+		hasXAxis = dataManager->isShowBottomSlider();
+		hasYAxis = dataManager->isShowLeftSlider();
+		setEnableYSlider(false);
+		setEnableXSlider(false);
+    setAxisShown(0,false);
+    setAxisShown(1,false);
+	}else{
+    setAxisShown(0,true);
+    setAxisShown(1,true);
+		setEnableYSlider(hasXAxis);
+		setEnableXSlider(hasYAxis);
+		if(hasMenu) menuBar.show();	
+	}
+
 }

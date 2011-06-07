@@ -1,5 +1,6 @@
 
 find_package(Qt4 REQUIRED QtCore QtGui QtOpengl QtDesigner)
+include_directories(multi_view/)
 include_directories(${QT_INCLUDE_DIR})
 include_directories(${QT_QTCORE_INCLUDE_DIR})
 include_directories(${QT_QTGUI_INCLUDE_DIR})
@@ -40,6 +41,8 @@ SET(COLLECTION_MOC_HDRS
   multi_view/MultiViewWidget.h
   multi_view/WidgetButton.h
   multi_view/MultiViewPlugin.h
+  multi_view/MultiWidget.h
+  multi_view/MultiWidgetPlugin.h
 )
 SET(COLLECTION_HDRS
   image_view/ImageView.h
@@ -76,6 +79,8 @@ SET(COLLECTION_HDRS
   multi_view/MultiViewWidget.h
   multi_view/WidgetButton.h
   multi_view/MultiViewPlugin.h
+  multi_view/MultiWidgetPlugin.h
+  multi_view/MultiWidget.h
 )
 
 FILE(GLOB COLLECTION_SOURCES range_view/*.cc image_view/*.cc sonar_view/*.cc plotting/*.cc artificial_horizon/*.cc multi_view/*.cc *.cc)

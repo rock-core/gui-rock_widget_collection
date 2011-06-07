@@ -7,6 +7,7 @@
 #include "plotting/PlotWidgetPlugin.h"
 #include "artificial_horizon/artificialhorizonplugin.h"
 #include "multi_view/MultiViewPlugin.h"
+#include "multi_view/MultiWidgetPlugin.h"
 
 #include <QtDesigner/QtDesigner>
 #include <QtCore/qplugin.h>

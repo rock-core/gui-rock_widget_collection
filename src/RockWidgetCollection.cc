@@ -12,6 +12,7 @@ RockWidgetCollection::RockWidgetCollection(QObject *parent)
    widgets.append(new PlotWidgetPlugin(this));
    widgets.append(new ArtificialHorizonPlugin(this));
    widgets.append(new MultiViewPlugin(this));
+   widgets.append(new MultiWidgetPlugin(this));
 }
 
 QList<QDesignerCustomWidgetInterface*> RockWidgetCollection::customWidgets() const

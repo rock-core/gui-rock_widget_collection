@@ -106,7 +106,7 @@ void MultiViewPlugin::activeFormWindowChanged(QDesignerFormWindowInterface* form
     // active form window is set by the designer
     if(formWindow != NULL && lastWidgets.size() > 0)
     {
-        for(int i=0;i<lastWidgets.size();i++)
+        for(unsigned int i=0;i<lastWidgets.size();i++)
         {
             manageWidget(lastWidgets[i]);
         }

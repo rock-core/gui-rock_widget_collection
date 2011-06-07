@@ -12,6 +12,11 @@
 #include <QtGui/qlabel.h>
 
 #include "WidgetButton.h"
+#include "MultiWidget.h"
+
+#include <stdio.h>
+#include <typeinfo>
+
 
 WidgetButton::WidgetButton() : QPushButton(),
         redPalette(QPalette(Qt::red))
@@ -31,6 +36,18 @@ void WidgetButton::printStatus()
 {
     std::cout << (this == NULL) << std::endl;
     std::cout << "Alt: " << isAlternative << std::endl;
+}
+		
+		
+void WidgetButton::setActive(bool active){
+	isActive=false;
+	MultiWidget *widget = dynamic_cast<MultiWidget*>(mainWidget);
+	if(widget > 0){
+		widget->setActive(active);
+	}else{
+		printf("Not updateing from class: %s %i\n",typeid(mainWidget).name(),widget);
+	}
+
 }
 
 void WidgetButton::setWidget(const QString &name, QWidget* widget, bool shown)
@@ -54,8 +71,15 @@ void WidgetButton::setWidget(const QString &name, QWidget* widget, bool shown)
             }
             else
             {
-                setText(name);
-                setIcon(QIcon());
+							MultiWidget *widget = dynamic_cast<MultiWidget*>(mainWidget);
+							if(widget > 0){
+							printf("\nbla3\n");
+								setText(widget->getMinimizedLabel());
+							}else{
+							printf("\nbla4\n");
+								setText(name);
+							}
+              setIcon(QIcon());
             }
         }
         mainWidget->setEnabled(false);
@@ -64,7 +88,14 @@ void WidgetButton::setWidget(const QString &name, QWidget* widget, bool shown)
     {
         if(icon.isNull() || isAlternative == false)
         {
-            setText(name);
+						MultiWidget *widget = dynamic_cast<MultiWidget*>(mainWidget);
+						if(widget > 0){
+							printf("\nbla1\n");
+							setText(widget->getMinimizedLabel());
+						}else{
+							printf("\nbla2\n");
+							setText(name);
+						}
         }
         else
         {

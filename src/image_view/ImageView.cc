@@ -13,7 +13,7 @@ using namespace base::samples::frame;
 //Q_EXPORT_PLUGIN2(ImageView, ImageView)
 
 ImageView::ImageView(QWidget *parent,bool use_openGL):
-  QWidget(parent),
+  MultiWidget(parent),
   contextMenu(this),
   image(0, 0, QImage::Format_RGB888),
   aspect_ratio(false),

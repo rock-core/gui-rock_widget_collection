@@ -97,6 +97,8 @@ public slots:
     void setIconAlternative(const QIcon &icon, bool isAlternative=false);
 
     void printStatus();
+
+		void setActive(bool active);
     
 protected:
     /** The main widget*/
@@ -115,6 +117,8 @@ protected:
     QIcon icon;
     /** If the icon is an alternative to the widget or only the text*/
     bool isAlternative;
+		/** True if this Widget is Active (not minimized) */
+		bool isActive;
 };
 
 #endif	/* WIDGETBUTTON_H */

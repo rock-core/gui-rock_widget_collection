@@ -36,7 +36,7 @@ MultiViewWidget::MultiViewWidget(QWidget* parent) : QWidget(parent),
     layoutWidget.setLayout(upperLayout);
     layout.addWidget(&menuBar, 0, 0, 1, 1, Qt::AlignTop);
     layout.addWidget(&layoutWidget, 1, 0, 1, 1, Qt::AlignLeft | Qt::AlignTop);
-    addMenu();
+    //addMenu();
     setLayout(&layout);
     setThumbnailPosition(position);
     initialized = true;
@@ -74,8 +74,8 @@ void MultiViewWidget::setThumbnailPosition(int position)
             layout.addWidget(&layoutWidget, 1, 0, 1, 1, Qt::AlignTop);
             if(currentWidget != NULL)
             {
-                layout.removeWidget(currentWidget);
-                layout.addWidget(currentWidget, 1, 1, 1, 1);
+                layout.removeWidget(currentWidget->getWidget());
+                layout.addWidget(currentWidget->getWidget(), 1, 1, 1, 1);
             }
             layout.setRowStretch(2, 0);
             layout.setRowStretch(1, 10);
@@ -107,8 +107,8 @@ void MultiViewWidget::setThumbnailPosition(int position)
             layout.addWidget(&layoutWidget, 1, 2, 1, 1, Qt::AlignTop);
             if(currentWidget != NULL)
             {
-                layout.removeWidget(currentWidget);
-                layout.addWidget(currentWidget, 1, 1, 1, 1);
+                layout.removeWidget(currentWidget->getWidget());
+                layout.addWidget(currentWidget->getWidget(), 1, 1, 1, 1);
             }
             layout.setColumnStretch(1, 10);
             layout.setRowStretch(2, 0);
@@ -182,7 +182,7 @@ void MultiViewWidget::addWidget(const QString &name, QWidget* widget, const QIco
         {
             layout.addWidget(widget, 1, 1, 1, 1);
         }
-        currentWidget = widget;
+        currentWidget = widgetButton;
     }
     else
     {
@@ -283,6 +283,7 @@ void MultiViewWidget::childEvent(QChildEvent* event)
                         }
                         
                     }
+										printf("Hier werde aufgerufen\n");
                     addWidget(QString::number(currentWidgetIndex), child);
                     currentWidgetIndex++;
                 }
@@ -325,7 +326,13 @@ QList<WidgetButton*> MultiViewWidget::getAllWidgetButtons()
 void MultiViewWidget::widgetClicked()
 {
     clicking = true;
-    WidgetButton* sender = (WidgetButton*)QObject::sender();
+
+		WidgetButton *sender = dynamic_cast<WidgetButton*>(QObject::sender());
+		if(sender <= 0){
+			fprintf(stderr,"FATAL: Cannot Handle unknown Widget %s:%i\n",__FILE__,__LINE__);
+			return;
+		}
+
     sender->printStatus();
     sender->showWidget(false);
     QWidget* widget = sender->getWidget();
@@ -347,7 +354,11 @@ void MultiViewWidget::widgetClicked()
         }
     }
     widget->setEnabled(true);
-    layout.removeWidget(currentWidget);
+
+		currentWidget->setActive(false);
+		sender->setActive(true);
+
+    layout.removeWidget(currentWidget->getWidget());
     if(position == Top || position == Bottom)
     {
         layout.addWidget(widget, 2, 0, 1, 1);
@@ -356,7 +367,7 @@ void MultiViewWidget::widgetClicked()
     {
         layout.addWidget(widget, 1, 1, 1, 1);
     }
-    currentWidget = widget;
+    currentWidget = sender;
     QList<QString> keys = widgets.keys();
     for(int i=0;i<keys.size();i++)
     {
@@ -368,7 +379,7 @@ void MultiViewWidget::widgetClicked()
     }
     // try to be stupid and use an arbitary large number
     // this is NOT a good solution, if you've got a better one....
-    if(currentWidget->maximumHeight() < 1000000 || currentWidget->maximumWidth() < 1000000)
+    if(currentWidget->getWidget()->maximumHeight() < 1000000 || currentWidget->getWidget()->maximumWidth() < 1000000)
     {
         // no breaks in left and right are ON PURPOSE
         switch(position)

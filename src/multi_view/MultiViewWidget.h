@@ -191,7 +191,7 @@ protected:
     /** File Menu*/
     QMenu fileMenu;
     /** The widget currently displayed in the center part of the widget*/
-    QWidget* currentWidget;
+    WidgetButton* currentWidget;
     /** A widget for layouting purposes*/
     QWidget layoutWidget;
     /** The current Thumbnail position*/
