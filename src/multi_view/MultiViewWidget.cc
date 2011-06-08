@@ -18,6 +18,10 @@
 #include "MultiViewPlugin.h"
 #include "plotting/PlotWidget.h"
 
+
+#include <typeinfo>
+
+
 MultiViewWidget::MultiViewWidget(QWidget* parent) : QWidget(parent),
         fileMenu(tr("&File")), testingAction(tr("&Test"), this)
 {
@@ -157,9 +161,33 @@ WidgetButton* MultiViewWidget::getButtonForWidget(QWidget* widget)
     return NULL;
 }
 
-void MultiViewWidget::addWidget(const QString &name, QWidget* widget, const QIcon &icon, bool useOnlyIcon)
+void MultiViewWidget::addWidget(const QString &name, QWidget* widget_, const QIcon &icon, bool useOnlyIcon)
 {
-    if(widgets.contains(name))
+		QWidget *widget = widget_;
+   
+#if 0 //Not possible because ruby qt don't initialize all components as QWidget so we have no chance to get the right obect at this point
+		//Try cast the QT way
+		MultiWidget *w = qobject_cast<MultiWidget*>(widget_);
+		if(w){
+			widget= w;
+			printf("Cast sucsessful\n");
+		}else{
+			//MultiWidget *bla = (MultiWidget*) widget_;
+			printf("ARGHHHH: %s Name: %s \n",typeid(widget).name(),widget->objectName().toStdString().c_str());
+			
+			printf("QT Means: %s\n",widget->metaObject()->className());
+			const QMetaObject *o = widget->metaObject();
+			for(int i=0; i<o->methodCount(); i++){
+				printf("Method found: %s\n",o->method(i).signature());
+			}
+			printf("\n\n");
+			//printf("Got one: %s \n",bla->getMinimizedLabel().toStdString().c_str());
+			//printf("Cast failed\n");
+		}
+#endif
+
+		
+		if(widgets.contains(name))
     {
         std::cerr << "A Widget with the name: [" << name.toStdString() << "] already exists!" << std::endl;
         return;
@@ -199,6 +227,22 @@ void MultiViewWidget::addWidget(const QString &name, QWidget* widget, const QIco
     }
     connect(widgetButton, SIGNAL(clicked()), this, SLOT(widgetClicked()));
     emit widgetButtonAdded(widgetButton);
+
+		timer.setSingleShot(true);
+		timer.start(500);
+	  connect(&timer,SIGNAL(timeout()),this,SLOT(fixStatus()));
+}
+
+void MultiViewWidget::fixStatus(){
+	QList<WidgetButton*> list = getAllWidgetButtons(); 
+	for(int i=0;i<list.size();i++){
+		if(list[i] == currentWidget){
+			list[i]->setActive(true);
+		}else{
+			list[i]->setActive(false);
+		}
+		list[i]->corrcetName();
+	}
 }
 
 void MultiViewWidget::doTesting()
@@ -283,8 +327,11 @@ void MultiViewWidget::childEvent(QChildEvent* event)
                         }
                         
                     }
-										printf("Hier werde aufgerufen\n");
-                    addWidget(QString::number(currentWidgetIndex), child);
+										if(child->windowTitle().isEmpty())
+                    	addWidget(QString::number(currentWidgetIndex), child);
+										else
+                    	addWidget(child->windowTitle(), child);
+			
                     currentWidgetIndex++;
                 }
             }
@@ -333,7 +380,7 @@ void MultiViewWidget::widgetClicked()
 			return;
 		}
 
-    sender->printStatus();
+    //sender->printStatus();
     sender->showWidget(false);
     QWidget* widget = sender->getWidget();
 

@@ -15,7 +15,7 @@
 #include <QGridLayout>
 #include <QMenuBar>
 #include <QMenu>
-
+#include <QTimer>
 #include <QtDesigner/QDesignerExportWidget>
 
 #include <iostream>
@@ -85,6 +85,7 @@ public:
     bool event(QEvent* event);
 
 public slots:
+
 
     /**
      * Adds a widget and a thumbnail to the widget
@@ -162,6 +163,14 @@ public slots:
      */
     bool isDesignerMode() { return designerMode; };
 
+
+		/** Fix the Status (names and view Style of all Widgets, 
+		* this cannot be done during adding because rubyqt says 
+		* all widets are QWidget
+		 */
+		void fixStatus();
+
+
     signals:
     /**
      * Emitted when a new widget is added
@@ -213,6 +222,9 @@ protected:
     bool clicking;
     /** Whether the designer mode is enabled*/
     bool designerMode;
+
+		/**  Workaround to fix Ruby initialization, the widgets are not recognized well */
+		QTimer timer;
 };
 
 #endif	/* MULIVIEWWIDGET_H */

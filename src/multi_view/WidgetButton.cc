@@ -45,14 +45,65 @@ void WidgetButton::setActive(bool active){
 	if(widget > 0){
 		widget->setActive(active);
 	}else{
-		printf("Not updateing from class: %s %i\n",typeid(mainWidget).name(),widget);
+		//printf("Not updateing from class: %s %i\n",typeid(mainWidget).name(),widget);
 	}
 
 }
 
-void WidgetButton::setWidget(const QString &name, QWidget* widget, bool shown)
+
+void WidgetButton::corrcetName(){
+		//The next lines will fail if the objects was constructed by rubqt ui loder because all objects are recognized as qwidget
+		MultiWidget *w = dynamic_cast<MultiWidget*>(mainWidget);
+		if(w > 0){
+			name = w->getMinimizedLabel();
+	  }
+    if(isActive)
+    {
+        if(isAlternative == false)
+        {
+            setIcon(QIcon());
+        }
+        else
+        {
+            if(!icon.isNull())
+            {
+                setText("");
+                setIcon(icon);
+            }
+            else
+            {
+							setText(name);
+              setIcon(QIcon());
+            }
+        }
+    }
+    else
+    {
+        if(icon.isNull() || isAlternative == false)
+        {
+							setText(name);
+        }
+        else
+        {
+            setText("");
+            setIcon(icon);
+        }
+        setPalette(QPalette(QColor(0, 255, 0)));
+    }
+}
+
+void WidgetButton::setWidget(const QString &name_, QWidget* widget, bool shown)
 {
-    this->name = name;
+
+		//The next lines will fail if the objects was constructed by rubqt ui loder because all objects are recognized as qwidget
+		QString name = name_;
+		MultiWidget *w = dynamic_cast<MultiWidget*>(widget);
+		if(w > 0){
+			name = w->getMinimizedLabel();
+	  }
+
+
+		this->name = name;
     mainWidget = widget;
     if(shown)
     {
@@ -71,14 +122,7 @@ void WidgetButton::setWidget(const QString &name, QWidget* widget, bool shown)
             }
             else
             {
-							MultiWidget *widget = dynamic_cast<MultiWidget*>(mainWidget);
-							if(widget > 0){
-							printf("\nbla3\n");
-								setText(widget->getMinimizedLabel());
-							}else{
-							printf("\nbla4\n");
-								setText(name);
-							}
+							setText(name);
               setIcon(QIcon());
             }
         }
@@ -88,14 +132,7 @@ void WidgetButton::setWidget(const QString &name, QWidget* widget, bool shown)
     {
         if(icon.isNull() || isAlternative == false)
         {
-						MultiWidget *widget = dynamic_cast<MultiWidget*>(mainWidget);
-						if(widget > 0){
-							printf("\nbla1\n");
-							setText(widget->getMinimizedLabel());
-						}else{
-							printf("\nbla2\n");
 							setText(name);
-						}
         }
         else
         {
@@ -115,6 +152,8 @@ void WidgetButton::setWidget(const QString &name, QWidget* widget, bool shown)
     {
         std::cout << "No notifyUpdate(int) method found, updates will not be displayed for: " << name.toStdString() << std::endl;
     }
+
+		setActive(shown);
 }
 
 void WidgetButton::showWidget(bool shown)

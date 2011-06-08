@@ -100,6 +100,9 @@ public slots:
 
 		void setActive(bool active);
     
+
+		void corrcetName();
+
 protected:
     /** The main widget*/
     QWidget* mainWidget;

@@ -1341,7 +1341,6 @@ void PlotWidget::exportPlotAsImage()
 
 void PlotWidget::setActive( bool active )
 {
-	printf("Set Active called for plottong\n");
 	if(!active){
 		hasMenu= !menuBar.isHidden();
 		menuBar.hide();
