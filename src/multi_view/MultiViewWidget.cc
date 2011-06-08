@@ -22,28 +22,105 @@
 #include <typeinfo>
 
 
-MultiViewWidget::MultiViewWidget(QWidget* parent) : QWidget(parent),
-        fileMenu(tr("&File")), testingAction(tr("&Test"), this)
+MultiViewWidget::MultiViewWidget(QWidget* parent) : QWidget(parent)
 {
     initialized = false;
     currentWidget = NULL;
     pseudoWidget = NULL;
     designerMode = true;
     clicking = false;
-    position = Top;
     currentWidgetIndex = 0;
     thumbnailWidth = 150;
     thumbnailHeight = 150;
-    upperLayout = new QHBoxLayout();
-    vertLayout = new QVBoxLayout();
-    layout.setAlignment(Qt::AlignTop);
-    layoutWidget.setLayout(upperLayout);
-    layout.addWidget(&menuBar, 0, 0, 1, 1, Qt::AlignTop);
-    layout.addWidget(&layoutWidget, 1, 0, 1, 1, Qt::AlignLeft | Qt::AlignTop);
-    //addMenu();
+    
+//		//Central Widget
+//		mainLayout = new QVBoxLayout();
+//		mainWidget = new QWidget();
+//		mainLayout->addWidget(mainWidget);
+//
+//		topLayout = new QHBoxLayout(mainWidget);
+//		mainWidget->setLayout(topLayout);
+//		topWidget = new QWidget();
+//		top
+//
+//		midRowLayout = new QHBoxLayout(mainLayout);
+//		midLeftLayout = new QVBoxLayout(midRowLayout);
+//		centralLayout = new QVBoxLayout(midRowLayout);
+//		midRightLayout = new QVBoxLayout(midRowLayout);
+//		bottomLayout = new QHBoxLayout(mainLayout);
+
+
+		//upperLayout = new QHBoxLayout();
+    //upperLayout = new QHBoxLayout();
+    //vertLayout = new QVBoxLayout();
+		
+		top_w = new QWidget();
+		bottom_w = new QWidget();
+		left_w = new QWidget();
+		mid_w = new QWidget();
+		right_w = new QWidget();
+
+		
+	/*
+		bottom_w->setMinimumSize(thumbnailWidth,thumbnailHeight+20);
+		bottom_w->setMaximumSize(10000,thumbnailHeight+20);
+		
+		top_w->setMinimumSize(thumbnailWidth,thumbnailHeight+20);
+		top_w->setMaximumSize(10000,thumbnailHeight+20);
+		
+		left_w->setMinimumSize(thumbnailWidth+20,thumbnailHeight);
+		left_w->setMaximumSize(thumbnailWidth+20,10000);
+		
+		
+		*/
+		
+		left_w->setMinimumSize(thumbnailWidth,thumbnailHeight);
+		right_w->setMinimumSize(thumbnailWidth,thumbnailHeight);
+
+		mid_w->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
+		right_w->setSizePolicy(QSizePolicy::Fixed,QSizePolicy::Expanding);
+		left_w->setSizePolicy(QSizePolicy::Fixed,QSizePolicy::Expanding);
+
+		top = new QHBoxLayout(top_w);
+		bottom = new QHBoxLayout(bottom_w);
+		left = new QVBoxLayout(left_w);
+		mid = new QVBoxLayout(mid_w);
+		right = new QVBoxLayout(right_w);
+  
+		//top_w->setPalette((QColor("red")));
+		//top_w->setBackgroundRole(QPalette::Window);
+		//mid_w->setPalette((QColor("green")));
+		//bottom_w->setPalette((QColor("blue")));
+
+/*
+		top->setAlignment(Qt::AlignVCenter | Qt::AlignHCenter);
+		bottom->setAlignment(Qt::AlignVCenter | Qt::AlignHCenter);
+		mid->setAlignment(Qt::AlignVCenter | Qt::AlignHCenter);
+		right->setAlignment(Qt::AlignVCenter | Qt::AlignHCenter);
+		left->setAlignment(Qt::AlignVCenter | Qt::AlignHCenter);
+	*/
+
+
+
+    //layoutWidget.setLayout(upperLayout);
+    //layout.addWidget(&menuBar, 0, 0, 1, 1, Qt::AlignTop);
+    //layout.addWidget(&layoutWidget, 1, 0, 1, 1, Qt::AlignLeft | Qt::AlignTop);
     setLayout(&layout);
-    setThumbnailPosition(position);
-    initialized = true;
+    //setThumbnailPosition(position);
+		
+		
+		//layout.setAlignment(Qt::AlignVCenter | Qt::AlignHCenter);
+
+		//layout.addWidget(top_w,0,0,1,3);
+		//layout.addWidget(left_w,1,0,1,1);
+		layout.addWidget(mid_w,1,0,1,1);
+		//layout.addWidget(right_w,1,2,1,1);
+		//layout.addWidget(bottom_w,2,0,1,3);
+    
+		
+		//updateView();
+
+		initialized = true;
 }
 
 MultiViewWidget::~MultiViewWidget()
@@ -51,12 +128,63 @@ MultiViewWidget::~MultiViewWidget()
 }
 
 
+void MultiViewWidget::updateView(){
+		int midStart = 1;
+		printf("Top Count is: %i\n",top->count());
+		printf("Left Count is: %i\n",left->count());
+		printf("Right Count is: %i\n",right->count());
+
+		if(top->count() == 0){
+			layout.removeWidget(top_w);
+			midStart-=1;
+			printf("Removint Top\n");
+		}else{
+			layout.addWidget(top_w,0,0,1,3);
+			printf("Adding Top\n");
+		}
+
+		int centerWidth = 3;
+		if(right->count() > 0){
+			centerWidth--;
+			layout.removeWidget(right_w);
+			layout.addWidget(right_w,midStart,2,1,1);
+			printf("Adding Right at row: %i\n",midStart);
+		}else{
+			printf("Removing Right\n");
+			layout.removeWidget(right_w);
+		}
+
+		if(left->count() > 0){
+			layout.removeWidget(mid_w);
+			centerWidth--;
+			printf("Adding Left and Mid at row: %i and width: %i\n",midStart,centerWidth);
+			layout.addWidget(left_w,midStart,0,1,1);
+			layout.addWidget(mid_w,midStart,1,1,centerWidth);
+		}else{
+			layout.removeWidget(left_w);
+			layout.removeWidget(mid_w);
+			printf("Removing Left and adding Mid at row: %i and width: %i\n",midStart,centerWidth);
+			layout.addWidget(mid_w,midStart,0,1,centerWidth);
+		}
+
+
+		if(bottom->count() > 0){
+			layout.addWidget(bottom_w,midStart+1,0,1,3);
+			printf("Adding Bottom at row: %i\n",midStart+1);
+		}else{
+			printf("Removing bottom\n");
+			layout.removeWidget(bottom_w);
+		}
+	
+}
+
 void MultiViewWidget::setThumbnailSize(int width, int height)
 {
     thumbnailWidth = width;
     thumbnailHeight = height;
 }
 
+#if 0
 void MultiViewWidget::setThumbnailPosition(int position)
 {
     this->position = (Position)position;
@@ -139,13 +267,7 @@ void MultiViewWidget::setThumbnailPosition(int position)
         }
     }
 }
-
-void MultiViewWidget::addMenu()
-{
-    menuBar.addMenu(&fileMenu);
-    fileMenu.addAction(&testingAction);
-    connect(&testingAction, SIGNAL(triggered()), this, SLOT(doTesting()));
-}
+#endif 
 
 WidgetButton* MultiViewWidget::getButtonForWidget(QWidget* widget)
 {
@@ -202,31 +324,43 @@ void MultiViewWidget::addWidget(const QString &name, QWidget* widget_, const QIc
     {
         widgetButton->setWidget(name, widget, false);
         widgets.insert(name, widgetButton);
-        if(position == Top || position == Bottom)
-        {
-            layout.addWidget(widget, 2, 0, 1, 1);
-        }
-        else
-        {
-            layout.addWidget(widget, 1, 1, 1, 1);
-        }
+//        if(widgetButton->getPosition() == WidgetButton::Top || widgetButton->getPosition() == WidgetButton::Bottom)
+//        {
+						printf("Adding an widget to mid\n");
+            mid->addWidget(widget);
+//        }
+//        else
+//        {
+//            mid.addWidget(widget);
+//        }
         currentWidget = widgetButton;
     }
     else
     {
         widgetButton->setWidget(name, widget);
     }
+
     widgets.insert(name, widgetButton);
-    if(position == Top || position == Bottom)
+    switch(currentWidget->getPosition())
     {
-        upperLayout->addWidget(widgetButton);
-    }
-    else
-    {
-        vertLayout->addWidget(widgetButton);
-    }
+			case WidgetButton::Left:
+        left->addWidget(widgetButton);
+				break;
+			case WidgetButton::Right:
+        right->addWidget(widgetButton);
+				break;
+			case WidgetButton::Bottom:
+        bottom->addWidget(widgetButton);
+				break;
+			case WidgetButton::Top:
+        top->addWidget(widgetButton);
+				break;
+		}
+
+				
     connect(widgetButton, SIGNAL(clicked()), this, SLOT(widgetClicked()));
     emit widgetButtonAdded(widgetButton);
+		updateView();
 
 		timer.setSingleShot(true);
 		timer.start(500);
@@ -245,20 +379,6 @@ void MultiViewWidget::fixStatus(){
 	}
 }
 
-void MultiViewWidget::doTesting()
-{
-    QList<QString> keys = widgets.keys();
-    for(int i=0;i<keys.size();i++)
-    {
-        QWidget* widget = (QWidget*)widgets[keys[i]]->getWidget();
-        const QMetaObject* meta = widget->metaObject();
-        int index = meta->indexOfMethod("doTesting()");
-        if(index > -1)
-        {
-            meta->invokeMethod(widget, "doTesting");
-        }
-    }
-}
 
 QWidget* MultiViewWidget::getWidget(const QString& name)
 {
@@ -273,10 +393,14 @@ void MultiViewWidget::deleteWidget(const QString& name)
         widgets.remove(name);
         QWidget* widget = button->getWidget();
         layout.removeWidget(widget);
-        upperLayout->removeWidget(button);
-        vertLayout->removeWidget(button);
+        mid->removeWidget(button);
+        top->removeWidget(button);
+        left->removeWidget(button);
+        right->removeWidget(button);
+        bottom->removeWidget(button);
         delete button;
     }
+		updateView();
 }
 
 bool MultiViewWidget::event(QEvent* event)
@@ -353,8 +477,11 @@ void MultiViewWidget::childEvent(QChildEvent* event)
                             widgets.remove(keys[i]);
                             QWidget* widget = button->getWidget();
                             layout.removeWidget(widget);
-                            upperLayout->removeWidget(button);
-                            vertLayout->removeWidget(button);
+                            mid->removeWidget(button);
+                            left->removeWidget(button);
+                            right->removeWidget(button);
+                            bottom->removeWidget(button);
+                            top->removeWidget(button);
                             widget = NULL;
                             return;
                         }
@@ -405,16 +532,10 @@ void MultiViewWidget::widgetClicked()
 		currentWidget->setActive(false);
 		sender->setActive(true);
 
-    layout.removeWidget(currentWidget->getWidget());
-    if(position == Top || position == Bottom)
-    {
-        layout.addWidget(widget, 2, 0, 1, 1);
-    }
-    else
-    {
-        layout.addWidget(widget, 1, 1, 1, 1);
-    }
-    currentWidget = sender;
+    mid->removeWidget(currentWidget->getWidget());
+    mid->addWidget(widget);
+    
+		currentWidget = sender;
     QList<QString> keys = widgets.keys();
     for(int i=0;i<keys.size();i++)
     {
@@ -424,27 +545,29 @@ void MultiViewWidget::widgetClicked()
             button->showWidget(true);
         }
     }
+
+		/*
     // try to be stupid and use an arbitary large number
     // this is NOT a good solution, if you've got a better one....
     if(currentWidget->getWidget()->maximumHeight() < 1000000 || currentWidget->getWidget()->maximumWidth() < 1000000)
     {
         // no breaks in left and right are ON PURPOSE
-        switch(position)
+        switch(currentWidget->getPosition())
         {
-            case Left:
+            case WidgetButton::Left:
             {
-                layout.setColumnStretch(3, 10);
+                center.setColumnStretch(3, 10);
             }
-            case Right:
+            case WidgetButton::Right:
             {
                 layout.setColumnStretch(0, 10);
             }
-            case Top:
+            case WidgetButton::Top:
             {
                 layout.setRowStretch(3, 10);
                 break;
             }
-            case Bottom:
+            case WidgetButton::Bottom:
             {
                 layout.setRowStretch(0, 10);
                 break;
@@ -453,28 +576,29 @@ void MultiViewWidget::widgetClicked()
     }
     else
     {
-        switch(position)
+        switch(currentWidget->getPosition())
         {
-            case Left:
+            case WidgetButton::Left:
             {
                 layout.setColumnStretch(3, 0);
             }
-            case Right:
+            case WidgetButton::Right:
             {
                 layout.setColumnStretch(0, 0);
             }
-            case Top:
+            case WidgetButton::Top:
             {
                 layout.setRowStretch(3, 0);
                 break;
             }
-            case Bottom:
+            case WidgetButton::Bottom:
             {
                 layout.setRowStretch(0, 0);
                 break;
             }
         }
     }
+		*/
     clicking = false;
 //    repaint();
 }

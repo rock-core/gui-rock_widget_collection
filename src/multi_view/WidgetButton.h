@@ -35,6 +35,11 @@ class WidgetButton : public QPushButton
 
 public:
     /**
+     * Enum to determine the position of the thumbnails
+     */
+    enum Position{Left, Top, Right, Bottom};
+
+    /**
      * Constructor
      */
     WidgetButton();
@@ -44,7 +49,7 @@ public:
      */
     virtual ~WidgetButton();
 
-    
+ 		const Position getPosition() const;   
 public slots:
 
     /**
@@ -106,6 +111,11 @@ public slots:
 protected:
     /** The main widget*/
     QWidget* mainWidget;
+	
+
+		/**Position for the button*/
+		Position position;
+
     /** The name of the widget*/
     QString name;
     /** The layout of the button*/

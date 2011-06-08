@@ -13,8 +13,6 @@
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QGridLayout>
-#include <QMenuBar>
-#include <QMenu>
 #include <QTimer>
 #include <QtDesigner/QDesignerExportWidget>
 
@@ -47,10 +45,6 @@
 class QDESIGNER_WIDGET_EXPORT MultiViewWidget : public QWidget
 {
 
-    /**
-     * Enum to determine the position of the thumbnails
-     */
-    enum Position{Left, Top, Right, Bottom};
 
     Q_OBJECT
     Q_CLASSINFO("Author", "Bjoern Lueck")
@@ -86,6 +80,7 @@ public:
 
 public slots:
 
+		void updateView();
 
     /**
      * Adds a widget and a thumbnail to the widget
@@ -121,7 +116,7 @@ public slots:
      * teh Position enum. int is taken for ruby mainly.
      * @param position 0=left, 1=top, 2=right, 3=bottom
      */
-    void setThumbnailPosition(int position);
+//    void setThumbnailPosition(int position);
 
     /**
      * Sets the size of teh thumbnail widgets. Defaults the thumbnails to
@@ -130,12 +125,6 @@ public slots:
      * @param height the height of the thumbnails defaults to 150
      */
     void setThumbnailSize(int width=150, int height=150);
-
-    /**
-     * Simple Test method. This method cycles all widgets added and calls the
-     * doTesting method slot on the widget if there is one, or nothing if there isn't.
-     */
-    void doTesting();
 
     /**
      * Returns the widget which is shown on the Button
@@ -185,32 +174,31 @@ protected:
      * Adds the menu to the widget, currently its only use is to have
      * a testing environment
      */
-    void addMenu();
 
     /** All thumbnails and widgets added*/
     QHash<QString, WidgetButton*> widgets;
-    /** Menu Bar*/
-    QMenuBar menuBar;
     /** Main layout*/
     QGridLayout layout;
+
+		QWidget *top_w, *bottom_w;
+		QWidget  *left_w,*mid_w,*right_w;
+		
+		QHBoxLayout *top, *bottom;
+		QVBoxLayout *left,*mid,*right;
+
     /**Layout if Top or Bottom position is used*/
-    QHBoxLayout* upperLayout;
+    //QHBoxLayout* upperLayout;
     /** Layout if Left or Right position is used*/
-    QVBoxLayout* vertLayout;
-    /** File Menu*/
-    QMenu fileMenu;
+    //QVBoxLayout* vertLayout;
     /** The widget currently displayed in the center part of the widget*/
     WidgetButton* currentWidget;
     /** A widget for layouting purposes*/
-    QWidget layoutWidget;
-    /** The current Thumbnail position*/
-    Position position;
+    //QWidget layoutWidget;
+    
     /** The width of thumbnails*/
     int thumbnailWidth;
     /** The height of thumbnails*/
     int thumbnailHeight;
-    /** Action to test the widget, calls doTesting*/
-    QAction testingAction;
     /** Widget for Layouting purposes*/
     QWidget* pseudoWidget;
 

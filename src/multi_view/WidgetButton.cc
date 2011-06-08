@@ -25,11 +25,18 @@ WidgetButton::WidgetButton() : QPushButton(),
     paletteTimer.setInterval(750);
     connect(&paletteTimer, SIGNAL(timeout()), this, SLOT(changePalette()));
     defaultPalette = this->palette();
+		layout.setContentsMargins(3,3,3,3);
     setLayout(&layout);
+		position = Top;
 }
 
 WidgetButton::~WidgetButton()
 {
+}
+
+
+const WidgetButton::Position WidgetButton::getPosition() const{
+	return position;
 }
 
 void WidgetButton::printStatus()
