@@ -28,6 +28,7 @@ WidgetButton::WidgetButton() : QPushButton(),
 		layout.setContentsMargins(3,3,3,3);
     setLayout(&layout);
 		position = Top;
+	  qRegisterMetaType<WidgetButton::Position>("WidgetButton::Position");
 }
 
 WidgetButton::~WidgetButton()
@@ -97,6 +98,18 @@ void WidgetButton::corrcetName(){
         }
         setPalette(QPalette(QColor(0, 255, 0)));
     }
+   /* 
+		const QMetaObject* meta = mainWidget->metaObject();
+    int index = meta->indexOfMethod("notifyUpdate(int)");
+    if(index > -1)
+    {
+        connect(mainWidget, SIGNAL(notifyUpdate(int)), this, SLOT(widgetUpdate(int)));
+    }
+    else
+    {
+        std::cout << "No notifyUpdate(int) method found, updates will not be displayed for: " << name.toStdString() << std::endl;
+    }
+		*/
 }
 
 void WidgetButton::setWidget(const QString &name_, QWidget* widget, bool shown)

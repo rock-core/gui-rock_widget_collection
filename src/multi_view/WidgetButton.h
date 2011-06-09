@@ -13,7 +13,7 @@
 #include <QTimer>
 #include <QIcon>
 #include <QLabel>
-
+#include <QMetaType>
 #include <iostream>
 
 /**
@@ -30,14 +30,16 @@
  */
 class WidgetButton : public QPushButton
 {
-
     Q_OBJECT
+		Q_ENUMS(Position)
+	  Q_PROPERTY(Position position READ getPosition WRITE setPosition)
 
 public:
     /**
      * Enum to determine the position of the thumbnails
      */
     enum Position{Left, Top, Right, Bottom};
+		
 
     /**
      * Constructor
@@ -49,7 +51,10 @@ public:
      */
     virtual ~WidgetButton();
 
- 		const Position getPosition() const;   
+ 		const Position getPosition() const;  
+		const Position getPosition(){return position;} 
+		void setPosition(const Position pos){position = pos;}
+
 public slots:
 
     /**
@@ -133,6 +138,8 @@ protected:
 		/** True if this Widget is Active (not minimized) */
 		bool isActive;
 };
+		
+Q_DECLARE_METATYPE(WidgetButton::Position)
 
 #endif	/* WIDGETBUTTON_H */
 

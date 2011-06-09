@@ -7,7 +7,7 @@
 
 #include "MultiViewPlugin.h"
 //#include <QtPlugin>
-
+#include <typeinfo>
 
 MultiViewPlugin::MultiViewPlugin(QObject* parent) : QObject(parent)
 {
@@ -95,8 +95,13 @@ void MultiViewPlugin::manageWidget(QWidget* widget)
     if(button != NULL)
     {
         button->setIconAlternative(QIcon(), true);
-        formInterface->formWindowManager()->activeFormWindow()->manageWidget(button->getWidget());
-    }
+			  printf("We have here an element in button: %s\n",typeid(*button->getWidget()).name());
+				printf("Adding this to: %s\n",typeid(*formInterface->formWindowManager()->activeFormWindow()).name());
+				printf("Filename for current one is: %s\n",formInterface->formWindowManager()->activeFormWindow()->fileName().toStdString().c_str());
+				formInterface->formWindowManager()->activeFormWindow()->manageWidget(button->getWidget());
+    }else{
+			printf("We have here an non-button: %s\n",typeid(*widget).name());
+		}
     connect(formInterface->formWindowManager()->activeFormWindow(), SIGNAL(selectionChanged()), this, SLOT(selectionChanged()));
 }
 
@@ -117,7 +122,8 @@ void MultiViewPlugin::activeFormWindowChanged(QDesignerFormWindowInterface* form
 
 void MultiViewPlugin::selectionChanged()
 {
-    QWidget* selected = formInterface->formWindowManager()->activeFormWindow()->cursor()->selectedWidget(0);
+		
+		QWidget* selected = formInterface->formWindowManager()->activeFormWindow()->cursor()->selectedWidget(0);
     WidgetButton* button = dynamic_cast<WidgetButton*>(selected);
     if(button != NULL)
     {
@@ -150,6 +156,7 @@ void MultiViewPlugin::selectionChanged()
 
         }
     }
+		//printf("Curent content: %s\n",formInterface->formWindowManager()->activeFormWindow()->contents().toStdString().c_str());
 }
 
 QWidget* MultiViewPlugin::createWidget(QWidget* parent)

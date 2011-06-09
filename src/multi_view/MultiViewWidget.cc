@@ -117,10 +117,9 @@ MultiViewWidget::MultiViewWidget(QWidget* parent) : QWidget(parent)
 		//layout.addWidget(right_w,1,2,1,1);
 		//layout.addWidget(bottom_w,2,0,1,3);
     
-		
-		//updateView();
+		initialized=true;		
+		updateView();
 
-		initialized = true;
 }
 
 MultiViewWidget::~MultiViewWidget()
@@ -130,17 +129,12 @@ MultiViewWidget::~MultiViewWidget()
 
 void MultiViewWidget::updateView(){
 		int midStart = 1;
-		printf("Top Count is: %i\n",top->count());
-		printf("Left Count is: %i\n",left->count());
-		printf("Right Count is: %i\n",right->count());
 
 		if(top->count() == 0){
 			layout.removeWidget(top_w);
 			midStart-=1;
-			printf("Removint Top\n");
 		}else{
 			layout.addWidget(top_w,0,0,1,3);
-			printf("Adding Top\n");
 		}
 
 		int centerWidth = 3;
@@ -148,31 +142,25 @@ void MultiViewWidget::updateView(){
 			centerWidth--;
 			layout.removeWidget(right_w);
 			layout.addWidget(right_w,midStart,2,1,1);
-			printf("Adding Right at row: %i\n",midStart);
 		}else{
-			printf("Removing Right\n");
 			layout.removeWidget(right_w);
 		}
 
 		if(left->count() > 0){
 			layout.removeWidget(mid_w);
 			centerWidth--;
-			printf("Adding Left and Mid at row: %i and width: %i\n",midStart,centerWidth);
 			layout.addWidget(left_w,midStart,0,1,1);
 			layout.addWidget(mid_w,midStart,1,1,centerWidth);
 		}else{
 			layout.removeWidget(left_w);
 			layout.removeWidget(mid_w);
-			printf("Removing Left and adding Mid at row: %i and width: %i\n",midStart,centerWidth);
 			layout.addWidget(mid_w,midStart,0,1,centerWidth);
 		}
 
 
 		if(bottom->count() > 0){
 			layout.addWidget(bottom_w,midStart+1,0,1,3);
-			printf("Adding Bottom at row: %i\n",midStart+1);
 		}else{
-			printf("Removing bottom\n");
 			layout.removeWidget(bottom_w);
 		}
 	
@@ -311,9 +299,10 @@ void MultiViewWidget::addWidget(const QString &name, QWidget* widget_, const QIc
 		
 		if(widgets.contains(name))
     {
-        std::cerr << "A Widget with the name: [" << name.toStdString() << "] already exists!" << std::endl;
-        return;
+       std::cerr << "A Widget with the name: [" << name.toStdString() << "] already exists!" << std::endl;
+       return;
     }
+
     WidgetButton* widgetButton = new WidgetButton();
     widgetButton->setFixedSize(thumbnailWidth, thumbnailHeight);
     widgetButton->setIconAlternative(icon, useOnlyIcon);
@@ -416,6 +405,7 @@ bool MultiViewWidget::event(QEvent* event)
 
 void MultiViewWidget::childEvent(QChildEvent* event)
 {
+		QWidget::childEvent(event);
     if(initialized)
     {
         
