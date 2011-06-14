@@ -157,7 +157,8 @@ void ImageView::openGL(bool flag)
   {
     delete image_view_gl;
     image_view_gl = NULL;
-  }
+  }  
+	for(QList<DrawItem*>::iterator iter = items.begin();iter != items.end();++iter) (*iter)->openGL(flag);
 }
 
 void ImageView::saveImage(bool overlay)
