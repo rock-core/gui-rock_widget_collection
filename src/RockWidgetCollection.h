@@ -6,6 +6,8 @@
 #include "range_view/RangeViewPlugin.h"
 #include "plotting/PlotWidgetPlugin.h"
 #include "artificial_horizon/artificialhorizonplugin.h"
+#include "artificial_horizon/compassplugin.h"
+#include "artificial_horizon/orientationplugin.h"
 #include "multi_view/MultiViewPlugin.h"
 #include "multi_view/MultiWidgetPlugin.h"
 

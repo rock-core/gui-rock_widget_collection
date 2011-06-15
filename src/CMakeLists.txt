@@ -43,6 +43,10 @@ SET(COLLECTION_MOC_HDRS
   multi_view/MultiViewPlugin.h
   multi_view/MultiWidget.h
   multi_view/MultiWidgetPlugin.h
+  artificial_horizon/compass.h
+  artificial_horizon/compassplugin.h
+  artificial_horizon/orientation.h
+  artificial_horizon/orientationplugin.h
 )
 SET(COLLECTION_HDRS
   image_view/ImageView.h
@@ -81,6 +85,10 @@ SET(COLLECTION_HDRS
   multi_view/MultiViewPlugin.h
   multi_view/MultiWidgetPlugin.h
   multi_view/MultiWidget.h
+  artificial_horizon/compass.h
+  artificial_horizon/compassplugin.h
+  artificial_horizon/orientation.h
+  artificial_horizon/orientationplugin.h
 )
 
 FILE(GLOB COLLECTION_SOURCES range_view/*.cc image_view/*.cc sonar_view/*.cc plotting/*.cc artificial_horizon/*.cc multi_view/*.cc *.cc)

@@ -13,6 +13,8 @@ RockWidgetCollection::RockWidgetCollection(QObject *parent)
    widgets.append(new ArtificialHorizonPlugin(this));
    widgets.append(new MultiViewPlugin(this));
    widgets.append(new MultiWidgetPlugin(this));
+   widgets.append(new CompassPlugin(this));
+   widgets.append(new OrientationPlugin(this));
 }
 
 QList<QDesignerCustomWidgetInterface*> RockWidgetCollection::customWidgets() const
