@@ -26,7 +26,7 @@ public slots:
     void setHeadingAngle(double value){setHeading(value);}
     void setPitchAngle(double value){setPitch(value);}
     void setRollAngle(double value){setRoll(value);}
-
+		void update(){}; //Nothig needs to be done but needs to be implemnted for ruby bindings
 protected:
 		QHBoxLayout *layout;
 		Compass *compass;

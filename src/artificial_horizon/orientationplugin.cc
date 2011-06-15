@@ -30,7 +30,7 @@
 
  QString OrientationPlugin::name() const
  {
-     return "Orientation";
+     return "OrientationView";
  }
 
  QString OrientationPlugin::group() const
@@ -60,7 +60,7 @@
 
  QString OrientationPlugin::domXml() const
  {
-     return "<widget class=\"Orientation\" name=\"Orientation\">\n"
+     return "<widget class=\"OrientationView\" name=\"Orientation\">\n"
             " <property name=\"geometry\">\n"
             "  <rect>\n"
             "   <x>0</x>\n"
@@ -70,7 +70,7 @@
             "  </rect>\n"
             " </property>\n"
             " <property name=\"toolTip\" >\n"
-            "  <string>Orientation</string>\n"
+            "  <string>OrientationView</string>\n"
             " </property>\n"
             " <property name=\"whatsThis\" >\n"
             "  <string></string>\n"
