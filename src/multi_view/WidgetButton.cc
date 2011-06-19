@@ -18,7 +18,7 @@
 #include <typeinfo>
 
 
-WidgetButton::WidgetButton() : QPushButton(),
+WidgetButton::WidgetButton(QWidget *widget) : QPushButton(widget),
         redPalette(QPalette(Qt::red))
 {
     isAlternative = false;
@@ -27,8 +27,10 @@ WidgetButton::WidgetButton() : QPushButton(),
     defaultPalette = this->palette();
 		layout.setContentsMargins(3,3,3,3);
     setLayout(&layout);
-		position = Top;
+		position = Left;
 	  qRegisterMetaType<WidgetButton::Position>("WidgetButton::Position");
+		setMinimumSize(100,100);
+		setMaximumSize(100,100);
 }
 
 WidgetButton::~WidgetButton()

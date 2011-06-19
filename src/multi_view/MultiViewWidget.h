@@ -180,8 +180,8 @@ protected:
     /** Main layout*/
     QGridLayout layout;
 
-		QWidget *top_w, *bottom_w;
-		QWidget  *left_w,*mid_w,*right_w;
+		//QWidget *top_w, *bottom_w;
+		//QWidget  *left_w,*mid_w,*right_w;
 		
 		QHBoxLayout *top, *bottom;
 		QVBoxLayout *left,*mid,*right;

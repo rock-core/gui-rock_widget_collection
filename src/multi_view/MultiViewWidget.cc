@@ -54,11 +54,11 @@ MultiViewWidget::MultiViewWidget(QWidget* parent) : QWidget(parent)
     //upperLayout = new QHBoxLayout();
     //vertLayout = new QVBoxLayout();
 		
-		top_w = new QWidget();
-		bottom_w = new QWidget();
-		left_w = new QWidget();
-		mid_w = new QWidget();
-		right_w = new QWidget();
+		//top_w = new QWidget();
+		//bottom_w = new QWidget();
+		//left_w = new QWidget();
+		//mid_w = new QWidget();
+		//right_w = new QWidget();
 
 		
 	/*
@@ -74,19 +74,23 @@ MultiViewWidget::MultiViewWidget(QWidget* parent) : QWidget(parent)
 		
 		*/
 		
-		left_w->setMinimumSize(thumbnailWidth,thumbnailHeight);
-		right_w->setMinimumSize(thumbnailWidth,thumbnailHeight);
+		//left_w->setMinimumSize(thumbnailWidth,thumbnailHeight);
+		//right_w->setMinimumSize(thumbnailWidth,thumbnailHeight);
 
-		mid_w->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
-		right_w->setSizePolicy(QSizePolicy::Fixed,QSizePolicy::Expanding);
-		left_w->setSizePolicy(QSizePolicy::Fixed,QSizePolicy::Expanding);
+		//top->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
 
-		top = new QHBoxLayout(top_w);
-		bottom = new QHBoxLayout(bottom_w);
-		left = new QVBoxLayout(left_w);
-		mid = new QVBoxLayout(mid_w);
-		right = new QVBoxLayout(right_w);
-  
+		//mid_w->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
+		//right_w->setSizePolicy(QSizePolicy::Fixed,QSizePolicy::Expanding);
+		//left_w->setSizePolicy(QSizePolicy::Fixed,QSizePolicy::Expanding);
+
+		top = new QHBoxLayout();
+		bottom = new QHBoxLayout();
+		left = new QVBoxLayout();
+		mid = new QVBoxLayout();
+		right = new QVBoxLayout();
+
+		top->addSpacerItem(new QSpacerItem(100,100));
+
 		//top_w->setPalette((QColor("red")));
 		//top_w->setBackgroundRole(QPalette::Window);
 		//mid_w->setPalette((QColor("green")));
@@ -101,6 +105,13 @@ MultiViewWidget::MultiViewWidget(QWidget* parent) : QWidget(parent)
 	*/
 
 
+		WidgetButton *button4 = new WidgetButton();
+		WidgetButton *button2 = new WidgetButton();
+		left->addWidget(button4);
+		layout.addLayout(top,0,0,1,3);
+		layout.addLayout(left,1,0,1,1);
+		layout.addLayout(mid,1,1,1,2);
+
 
     //layoutWidget.setLayout(upperLayout);
     //layout.addWidget(&menuBar, 0, 0, 1, 1, Qt::AlignTop);
@@ -113,12 +124,17 @@ MultiViewWidget::MultiViewWidget(QWidget* parent) : QWidget(parent)
 
 		//layout.addWidget(top_w,0,0,1,3);
 		//layout.addWidget(left_w,1,0,1,1);
-		layout.addWidget(mid_w,1,0,1,1);
+		//layout.addWidget(mid_w,1,0,1,1);
 		//layout.addWidget(right_w,1,2,1,1);
 		//layout.addWidget(bottom_w,2,0,1,3);
     
+		//updateView();
 		initialized=true;		
-		updateView();
+		
+		
+		left->addWidget(button2);
+    layout.update();
+    layout.activate();
 
 }
 
@@ -128,41 +144,43 @@ MultiViewWidget::~MultiViewWidget()
 
 
 void MultiViewWidget::updateView(){
+		return;
 		int midStart = 1;
 
 		if(top->count() == 0){
-			layout.removeWidget(top_w);
+			layout.removeItem(top);
 			midStart-=1;
 		}else{
-			layout.addWidget(top_w,0,0,1,3);
+			layout.addLayout(top,0,0,1,3);
 		}
 
 		int centerWidth = 3;
 		if(right->count() > 0){
 			centerWidth--;
-			layout.removeWidget(right_w);
-			layout.addWidget(right_w,midStart,2,1,1);
+			layout.removeItem(right);
+			layout.addLayout(right,midStart,2,1,1);
 		}else{
-			layout.removeWidget(right_w);
+			layout.removeItem(right);
 		}
 
 		if(left->count() > 0){
-			layout.removeWidget(mid_w);
+			layout.removeItem(mid);
 			centerWidth--;
-			layout.addWidget(left_w,midStart,0,1,1);
-			layout.addWidget(mid_w,midStart,1,1,centerWidth);
+			layout.addLayout(left,midStart,0,1,1);
+			layout.addLayout(mid,midStart,1,1,centerWidth);
 		}else{
-			layout.removeWidget(left_w);
-			layout.removeWidget(mid_w);
-			layout.addWidget(mid_w,midStart,0,1,centerWidth);
+			layout.removeItem(left);
+			layout.removeItem(mid);
+			layout.addLayout(mid,midStart,0,1,centerWidth);
 		}
 
 
 		if(bottom->count() > 0){
-			layout.addWidget(bottom_w,midStart+1,0,1,3);
+			layout.addLayout(bottom,midStart+1,0,1,3);
 		}else{
-			layout.removeWidget(bottom_w);
+			layout.removeItem(bottom);
 		}
+		
 	
 }
 
@@ -302,8 +320,9 @@ void MultiViewWidget::addWidget(const QString &name, QWidget* widget_, const QIc
        std::cerr << "A Widget with the name: [" << name.toStdString() << "] already exists!" << std::endl;
        return;
     }
+		WidgetButton* widgetButton=0;
 
-    WidgetButton* widgetButton = new WidgetButton();
+    widgetButton = new WidgetButton();
     widgetButton->setFixedSize(thumbnailWidth, thumbnailHeight);
     widgetButton->setIconAlternative(icon, useOnlyIcon);
 
@@ -316,7 +335,7 @@ void MultiViewWidget::addWidget(const QString &name, QWidget* widget_, const QIc
 //        if(widgetButton->getPosition() == WidgetButton::Top || widgetButton->getPosition() == WidgetButton::Bottom)
 //        {
 						printf("Adding an widget to mid\n");
-            mid->addWidget(widget);
+            //mid->addWidget(widget);
 //        }
 //        else
 //        {
@@ -330,6 +349,9 @@ void MultiViewWidget::addWidget(const QString &name, QWidget* widget_, const QIc
     }
 
     widgets.insert(name, widgetButton);
+    left->addWidget(widgetButton);
+
+		/*
     switch(currentWidget->getPosition())
     {
 			case WidgetButton::Left:
@@ -344,7 +366,7 @@ void MultiViewWidget::addWidget(const QString &name, QWidget* widget_, const QIc
 			case WidgetButton::Top:
         top->addWidget(widgetButton);
 				break;
-		}
+		}*/
 
 				
     connect(widgetButton, SIGNAL(clicked()), this, SLOT(widgetClicked()));
@@ -405,7 +427,7 @@ bool MultiViewWidget::event(QEvent* event)
 
 void MultiViewWidget::childEvent(QChildEvent* event)
 {
-		QWidget::childEvent(event);
+		//QWidget::childEvent(event);
     if(initialized)
     {
         
@@ -500,7 +522,7 @@ void MultiViewWidget::widgetClicked()
     //sender->printStatus();
     sender->showWidget(false);
     QWidget* widget = sender->getWidget();
-
+/*
     if(designerMode)
     {
         QList<WidgetButton*> buttons = getAllWidgetButtons();
@@ -517,13 +539,14 @@ void MultiViewWidget::widgetClicked()
 
         }
     }
+		*/
     widget->setEnabled(true);
 
 		currentWidget->setActive(false);
 		sender->setActive(true);
 
-    mid->removeWidget(currentWidget->getWidget());
-    mid->addWidget(widget);
+    //mid->removeWidget(currentWidget->getWidget());
+    //mid->addWidget(widget);
     
 		currentWidget = sender;
     QList<QString> keys = widgets.keys();

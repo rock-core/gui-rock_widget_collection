@@ -43,6 +43,7 @@ SET(COLLECTION_MOC_HDRS
   multi_view/MultiViewPlugin.h
   multi_view/MultiWidget.h
   multi_view/MultiWidgetPlugin.h
+  multi_view/WidgetButtonPlugin.h
   artificial_horizon/compass.h
   artificial_horizon/compassplugin.h
   artificial_horizon/orientation.h
@@ -83,6 +84,7 @@ SET(COLLECTION_HDRS
   multi_view/MultiViewWidget.h
   multi_view/WidgetButton.h
   multi_view/MultiViewPlugin.h
+  multi_view/WidgetButtonPlugin.h
   multi_view/MultiWidgetPlugin.h
   multi_view/MultiWidget.h
   artificial_horizon/compass.h

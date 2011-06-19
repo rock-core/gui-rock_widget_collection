@@ -44,7 +44,7 @@ public:
     /**
      * Constructor
      */
-    WidgetButton();
+    WidgetButton(QWidget *widget=0);
 
     /**
      * Destructor
