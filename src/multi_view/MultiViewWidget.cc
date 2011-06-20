@@ -27,7 +27,7 @@ MultiViewWidget::MultiViewWidget(QWidget* parent) : QWidget(parent)
     initialized = false;
     currentWidget = NULL;
     pseudoWidget = NULL;
-    designerMode = true;
+    designerMode = false;
     clicking = false;
     currentWidgetIndex = 0;
     thumbnailWidth = 150;
@@ -89,7 +89,7 @@ MultiViewWidget::MultiViewWidget(QWidget* parent) : QWidget(parent)
 		mid = new QVBoxLayout();
 		right = new QVBoxLayout();
 
-		top->addSpacerItem(new QSpacerItem(100,100));
+	//	top->addSpacerItem(new QSpacerItem(100,100));
 
 		//top_w->setPalette((QColor("red")));
 		//top_w->setBackgroundRole(QPalette::Window);
@@ -105,9 +105,9 @@ MultiViewWidget::MultiViewWidget(QWidget* parent) : QWidget(parent)
 	*/
 
 
-		WidgetButton *button4 = new WidgetButton();
-		WidgetButton *button2 = new WidgetButton();
-		left->addWidget(button4);
+		//WidgetButton *button4 = new WidgetButton();
+		//WidgetButton *button2 = new WidgetButton();
+		//left->addWidget(button4);
 		layout.addLayout(top,0,0,1,3);
 		layout.addLayout(left,1,0,1,1);
 		layout.addLayout(mid,1,1,1,2);
@@ -132,7 +132,7 @@ MultiViewWidget::MultiViewWidget(QWidget* parent) : QWidget(parent)
 		initialized=true;		
 		
 		
-		left->addWidget(button2);
+		//left->addWidget(button2);
     layout.update();
     layout.activate();
 
@@ -332,15 +332,7 @@ void MultiViewWidget::addWidget(const QString &name, QWidget* widget_, const QIc
     {
         widgetButton->setWidget(name, widget, false);
         widgets.insert(name, widgetButton);
-//        if(widgetButton->getPosition() == WidgetButton::Top || widgetButton->getPosition() == WidgetButton::Bottom)
-//        {
-						printf("Adding an widget to mid\n");
-            //mid->addWidget(widget);
-//        }
-//        else
-//        {
-//            mid.addWidget(widget);
-//        }
+        mid->addWidget(widget);
         currentWidget = widgetButton;
     }
     else
@@ -349,9 +341,9 @@ void MultiViewWidget::addWidget(const QString &name, QWidget* widget_, const QIc
     }
 
     widgets.insert(name, widgetButton);
-    left->addWidget(widgetButton);
+    //left->addWidget(widgetButton);
 
-		/*
+		
     switch(currentWidget->getPosition())
     {
 			case WidgetButton::Left:
@@ -366,7 +358,7 @@ void MultiViewWidget::addWidget(const QString &name, QWidget* widget_, const QIc
 			case WidgetButton::Top:
         top->addWidget(widgetButton);
 				break;
-		}*/
+		}
 
 				
     connect(widgetButton, SIGNAL(clicked()), this, SLOT(widgetClicked()));
@@ -545,8 +537,8 @@ void MultiViewWidget::widgetClicked()
 		currentWidget->setActive(false);
 		sender->setActive(true);
 
-    //mid->removeWidget(currentWidget->getWidget());
-    //mid->addWidget(widget);
+    mid->removeWidget(currentWidget->getWidget());
+    mid->addWidget(widget);
     
 		currentWidget = sender;
     QList<QString> keys = widgets.keys();

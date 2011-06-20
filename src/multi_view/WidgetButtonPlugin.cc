@@ -56,7 +56,7 @@
 
  bool WidgetButtonPlugin::isContainer() const
  {
-     return true;
+     return false;
  }
 
  QString WidgetButtonPlugin::domXml() const

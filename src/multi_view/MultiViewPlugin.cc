@@ -90,7 +90,7 @@ void MultiViewPlugin::manageWidget(QWidget* widget)
         lastWidgets.push_back(widget);
         return;
     }
-    formInterface->formWindowManager()->activeFormWindow()->manageWidget(widget);
+    //formInterface->formWindowManager()->activeFormWindow()->manageWidget(widget);
     WidgetButton* button = dynamic_cast<WidgetButton*>(widget);
     if(button != NULL)
     {
@@ -127,6 +127,7 @@ void MultiViewPlugin::selectionChanged()
     WidgetButton* button = dynamic_cast<WidgetButton*>(selected);
     if(button != NULL)
     {
+				printf("It's an button selected with contains: %s\n",typeid(*button->getWidget()).name());
         button->click();
     }
     else
@@ -136,10 +137,14 @@ void MultiViewPlugin::selectionChanged()
             button = widget->getButtonForWidget(selected);
             if(button != NULL)
             {
+								printf("It's an button selected with contains: %s\n",typeid(*button->getWidget()).name());
                 button->click();
-            }
+            }else{
+							printf("Cannot find Button for: %s\n",typeid(*selected).name());
+						}
         }
     }
+	
     if(button != NULL)
     {
         QList<WidgetButton*> buttons = widget->getAllWidgetButtons();
@@ -156,6 +161,7 @@ void MultiViewPlugin::selectionChanged()
 
         }
     }
+		
 		//printf("Curent content: %s\n",formInterface->formWindowManager()->activeFormWindow()->contents().toStdString().c_str());
 }
 
