@@ -108,9 +108,9 @@ MultiViewWidget::MultiViewWidget(QWidget* parent) : QWidget(parent)
 		//WidgetButton *button4 = new WidgetButton();
 		//WidgetButton *button2 = new WidgetButton();
 		//left->addWidget(button4);
-		layout.addLayout(top,0,0,1,3);
-		layout.addLayout(left,1,0,1,1);
-		layout.addLayout(mid,1,1,1,2);
+		//layout.addLayout(top,0,0,1,3);
+		//layout.addLayout(left,1,0,1,1);
+		//layout.addLayout(mid,1,1,1,2);
 
 
     //layoutWidget.setLayout(upperLayout);
@@ -144,17 +144,18 @@ MultiViewWidget::~MultiViewWidget()
 
 
 void MultiViewWidget::updateView(){
-		return;
 		int midStart = 1;
+		int centerWidth = 2;
 
 		if(top->count() == 0){
 			layout.removeItem(top);
 			midStart-=1;
 		}else{
+			centerWidth++;
 			layout.addLayout(top,0,0,1,3);
 		}
 
-		int centerWidth = 3;
+		
 		if(right->count() > 0){
 			centerWidth--;
 			layout.removeItem(right);
@@ -180,7 +181,8 @@ void MultiViewWidget::updateView(){
 		}else{
 			layout.removeItem(bottom);
 		}
-		
+    layout.update();
+		printf("The Number of Layouts inhere are: %i\n",layout.count());	
 	
 }
 
