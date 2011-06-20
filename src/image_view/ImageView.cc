@@ -158,6 +158,7 @@ void ImageView::openGL(bool flag)
     delete image_view_gl;
     image_view_gl = NULL;
   }  
+	isOpenGL = flag;
 	for(QList<DrawItem*>::iterator iter = items.begin();iter != items.end();++iter) (*iter)->openGL(flag);
 }
 
@@ -188,106 +189,6 @@ bool ImageView::saveImage3(const QString &mode, int pixel_size,  int width,  int
     frame_converter.copyFrameToQImageRGB888(image,mode, pixel_size, width, height,pbuffer);
     image.save(path,format.toAscii().data(),80);
     return true;
-}
-
-QObject* ImageView::addText(int xPos, int yPos, int groupNr, const QString &text)
-{
-    TextItem* textItem = new TextItem(xPos, yPos, groupNr, text);
-    if(image_view_gl)
-      textItem->openGL(true);
-    items.push_back(textItem);
-    return textItem;
-}
-
-QObject* ImageView::addLine(int xPos, int yPos, int groupNr, const QColor &color, int endX, int endY)
-{
-    LineItem* item = new LineItem(xPos, yPos, groupNr, color, endX, endY);
-    if(image_view_gl)
-      item->openGL(true);
-
-    items.push_back(item);
-    return item;
-}
-
-QObject* ImageView::addEllipse(int xPos, int yPos, int groupNr, const QColor &color, int width, int height)
-{
-    EllipseItem* item = new EllipseItem(xPos, yPos, groupNr, color, width, height);
-    if(image_view_gl)
-      item->openGL(true);
-
-    items.push_back(item);
-    return item;
-}
-
-QObject* ImageView::addRectangle(int xPos, int yPos, int groupNr, const QColor &color, int width, int height)
-{
-    RectangleItem* item = new RectangleItem(xPos, yPos, groupNr, color, width, height);
-    if(image_view_gl)
-      item->openGL(true);
-
-    items.push_back(item);
-    return item;
-}
-QObject* ImageView::addPolyline(int groupNr, const QColor &color, const QList<QPoint> &points)
-{
-    PolylineItem* item = new PolylineItem(color, groupNr, points);
-    if(image_view_gl)
-      item->openGL(true);
-
-    items.push_back(item);
-    return item;
-}
-
-QObject* ImageView::addPolygon(int groupNr, const QColor &color, const QList<QPoint> &points)
-{
-    PolygonItem* item = new PolygonItem(color, groupNr, points);
-    if(image_view_gl)
-      item->openGL(true);
-
-    items.push_back(item);
-    return item;
-}
-
-QObject* ImageView::addItem(QObject* object)
-{
-    DrawItem* drawItem = dynamic_cast<DrawItem*>(object);
-    if(image_view_gl)
-      drawItem->openGL(true);
-
-    items.push_back(drawItem);
-    return object;
-}
-
-QObject* ImageView::addPoints(const QList<int> &points_x,const QList<int> &points_y,int groupNr, const QColor &color)
-{
-    DrawItem* drawItem = new PointItem(points_x,points_y,groupNr,color);
-    if(image_view_gl)
-      drawItem->openGL(true);
-    items.push_back(drawItem);
-    return drawItem;
-}
-
- QObject* ImageView::removeItem(QObject* object,bool delete_object)
-{
-    DrawItem *draw_item = dynamic_cast<DrawItem*>(object);
-    items.removeAll(draw_item);
-    if(delete_object)
-    {
-      delete object;
-      object = NULL;
-    }
-    return object;
-}
-
-void ImageView::removeAllItems(bool delete_objects)
-{
-   if(delete_objects)
-   {
-      QList<DrawItem*>::iterator iter = items.begin();
-      for(;iter != items.end();++iter)
-          delete(*iter);
-   }
-   items.clear();
 }
 
 void ImageView::setGroupStatus(int groupNr, bool enable)

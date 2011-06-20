@@ -1,6 +1,6 @@
 
 find_package(Qt4 REQUIRED QtCore QtGui QtOpengl QtDesigner)
-include_directories(multi_view/)
+include_directories(multi_view/ generic_widgets/)
 include_directories(${QT_INCLUDE_DIR})
 include_directories(${QT_QTCORE_INCLUDE_DIR})
 include_directories(${QT_QTGUI_INCLUDE_DIR})
@@ -10,15 +10,15 @@ SET(COLLECTION_MOC_HDRS
   image_view/ImageView.h
   image_view/ImageViewGL.h
   image_view/ImageViewPlugin.h
-  image_view/DrawItem.h
-  image_view/RectangleItem.h
-  image_view/FillItem.h
-  image_view/LineItem.h
-  image_view/TextItem.h
-  image_view/PointItem.h
-  image_view/EllipseItem.h
-  image_view/PolygonItem.h
-  image_view/PolylineItem.h
+  generic_widgets/DrawItem.h
+  generic_widgets/RectangleItem.h
+  generic_widgets/FillItem.h
+  generic_widgets/LineItem.h
+  generic_widgets/TextItem.h
+  generic_widgets/PointItem.h
+  generic_widgets/EllipseItem.h
+  generic_widgets/PolygonItem.h
+  generic_widgets/PolylineItem.h
   sonar_view/SonarView.h
   sonar_view/SonarViewGL.h
   sonar_view/SonarViewPlugin.h
@@ -48,20 +48,21 @@ SET(COLLECTION_MOC_HDRS
   artificial_horizon/compassplugin.h
   artificial_horizon/orientation.h
   artificial_horizon/orientationplugin.h
+	generic_widgets/PaintWidget.h
 )
 SET(COLLECTION_HDRS
   image_view/ImageView.h
   image_view/ImageViewGL.h
   image_view/ImageViewPlugin.h
-  image_view/DrawItem.h
-  image_view/LineItem.h
-  image_view/FillItem.h
-  image_view/TextItem.h
-  image_view/PointItem.h
-  image_view/EllipseItem.h
-  image_view/RectangleItem.h
-  image_view/PolygonItem.h
-  image_view/PolylineItem.h
+  generic_widgets/DrawItem.h
+  generic_widgets/LineItem.h
+  generic_widgets/FillItem.h
+  generic_widgets/TextItem.h
+  generic_widgets/PointItem.h
+  generic_widgets/EllipseItem.h
+  generic_widgets/RectangleItem.h
+  generic_widgets/PolygonItem.h
+  generic_widgets/PolylineItem.h
   sonar_view/SonarView.h
   sonar_view/SonarViewGL.h
   sonar_view/SonarViewPlugin.h
@@ -91,9 +92,11 @@ SET(COLLECTION_HDRS
   artificial_horizon/compassplugin.h
   artificial_horizon/orientation.h
   artificial_horizon/orientationplugin.h
+	generic_widgets/PaintWidget.h
 )
 
-FILE(GLOB COLLECTION_SOURCES range_view/*.cc image_view/*.cc sonar_view/*.cc plotting/*.cc artificial_horizon/*.cc multi_view/*.cc *.cc)
+FILE(GLOB COLLECTION_SOURCES range_view/*.cc image_view/*.cc sonar_view/*.cc plotting/*.cc artificial_horizon/*.cc multi_view/*.cc generic_widgets/*.cc *.cc)
+
 SET(QtApp_RCCS resources.qrc)
 QT4_ADD_RESOURCES(QtApp_RCC_SRCS ${QtApp_RCCS})
 

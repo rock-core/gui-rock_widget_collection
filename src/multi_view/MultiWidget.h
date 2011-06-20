@@ -1,11 +1,11 @@
 #ifndef _MULTI_VIEW_WIDGET_H
 #define _MULTI_VIEW_WIDGET_H
 
-#include <QWidget>
+#include <PaintWidget.h>
 #include <QtDesigner/QDesignerExportWidget>
 
 
-class QDESIGNER_WIDGET_EXPORT MultiWidget : public QWidget
+class QDESIGNER_WIDGET_EXPORT MultiWidget : public PaintWidget 
 {
 	Q_OBJECT
   Q_CLASSINFO("Author", "Matthias Goldhoorn")
@@ -16,11 +16,13 @@ signals:
 	void activityChanged(bool);
 public:
 	MultiWidget(QWidget *parent=0):
-		QWidget(parent),
+		PaintWidget(parent),
 		isActive(false),
 		hideWhenMinimized(false),
 		wasHidden(false)
 	{};
+
+public slots:
 
 	void setActive(bool b){
 		isActive=b;
@@ -39,9 +41,9 @@ public:
 				hide();
 			}
 		}else{
-			if(!wasHidden){
+			//if(!wasHidden){
 				show();
-			}
+			//}
 		}
 	}
 

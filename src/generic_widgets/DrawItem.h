@@ -169,6 +169,8 @@ class DrawItem : public QObject
     void setPosFactor(float fx, float fy){position_factor_x=fx;position_factor_y=fy;};
 
 protected:
+    /** The group number*/
+    int groupNr;
     /**
      * Adds a pen to the given painter with the parameters given to the item
      * @param painter teh painter with which afterwards teh shape will be drawn
@@ -178,16 +180,14 @@ protected:
     int posX;
     /** The y position*/
     int posY;
-    /** The group number*/
-    int groupNr;
     /** The color*/
     QColor color;
     /** the width of the shapes lines*/
     int lineWidth;
-    /** The pen style of the lines*/
-    Qt::PenStyle penStyle;
     /** the pen cap style of the item, irrelevant for lines which have no start or end point*/
     Qt::PenCapStyle penCapStyle;
+    /** The pen style of the lines*/
+    Qt::PenStyle penStyle;
     int m_id;
     static int _ID;
     float position_factor_x;
