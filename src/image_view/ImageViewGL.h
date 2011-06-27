@@ -32,7 +32,7 @@ class ImageViewGL :public QGLWidget
     virtual ~ImageViewGL();
     void setGLViewPoint(int display_width=0,int display_height=0);
     void setAspectRatio(bool value){aspect_ratio = value;};
-
+    
   private:
     ImageView &image_view;    
 };

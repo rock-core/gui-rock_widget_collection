@@ -16,13 +16,16 @@ class QDESIGNER_WIDGET_EXPORT SonarView : public ImageView
     Q_CLASSINFO("Author", "Matthias Goldhoorn")
 
 public:
-    SonarView(QWidget *parent = NULL,bool use_openGL = false);
+    SonarView(QWidget *parent = NULL,bool use_openGL = true);
     virtual ~SonarView();
 
 public slots:    
 	void setOpenGL(bool flag);
         void setSonarScan2(base::samples::SonarScan *scan);
         void setSonarScan(const char *data, int size, double angle,double timeBetweenBins ,bool fromBearing=false);
+	void setPosition(double posX, double posY, double sigmaX, double sigmaY);
+     	void setOrientation(const double orientation);
+
 protected:
      void keyPressEvent ( QKeyEvent * event );
      double lastScale;

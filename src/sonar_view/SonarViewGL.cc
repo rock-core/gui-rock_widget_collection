@@ -359,7 +359,7 @@ void SonarViewGL::initializeGL()
     qglClearColor(QColor(0.0,0.0,0.0));
     glShadeModel(GL_FLAT);
     glEnable(GL_DEPTH_TEST);
-    glEnable(GL_CULL_FACE);
+    //glEnable(GL_CULL_FACE);
 
 /*
     GLfloat fogColor[4] = {0.5,0.5,0.5,1.0};
@@ -453,6 +453,17 @@ void SonarViewGL::update_pointcloud(Point_3d* _point,int _size)
 
 */
 
+void SonarViewGL::drawEllipse(float xradius, float yradius)
+{
+	glBegin(GL_LINE_LOOP);
+	for(int i=0; i < 360; i++)
+	{
+		glVertex2f(cos(i/180.0*M_PI)*xradius,sin(i/180.0*M_PI)*yradius);
+	} 
+	glEnd();
+}
+
+
 
 void SonarViewGL::paintGL(){
 //	printf("PaintGL\n");
@@ -464,10 +475,16 @@ void SonarViewGL::paintGL(){
      
 	//glMultMatrixf(camera);
      //set movments
-     glTranslated(double(xShift)/100.0, double(yShift)/100.0, double(zShift)/100.0);
+     glTranslated(double(xShift)/100.0+pos[0], double(yShift)/100.0+pos[1], double(zShift)/100.0);
+     glRotated(orientation, 1.0, 0.0, 0.0);
      glRotated(xRot / 16.0, 1.0, 0.0, 0.0);
      glRotated(yRot / 16.0, 0.0, 1.0, 0.0);
      glRotated(zRot / 16.0, 0.0, 0.0, 1.0);
+
+     
+     QColor color("yellow");
+     qglColor(color);
+     drawEllipse(sigmaPos[0],sigmaPos[1]);
 
     // gllDist
     // /wlCallList(point_list);
@@ -480,6 +497,8 @@ void SonarViewGL::paintGL(){
 	     //	printf("Error gorund true is not an list\n");
      if(glIsList(avalon))
 	     glCallList(avalon);
+
+     
 
      //for(unsigned int i=0;i<colorList.size();i++){
      //	glCallList(colorList[i].first);
@@ -562,7 +581,6 @@ void SonarViewGL::setWallDist(int bearing, int dist, int dist2){
  {
      lastPos = event->pos();
      lastPosTrans = event->pos();
-     printf("Mouse pressed\n");
 
  }
 
@@ -607,7 +625,6 @@ void SonarViewGL::setWallDist(int bearing, int dist, int dist2){
 
 
 void SonarViewGL::keyPressEvent ( QKeyEvent * event ){
-    printf("bla taste\n");
 	switch (event->key()) {
 		case Qt::Key_W:
 			paintWall=!paintWall;
@@ -736,4 +753,16 @@ void SonarViewGL::checkGL(const char* msg){
 		break;
 	}
 }
+
+void SonarViewGL::setOrientation(const double orientation){
+	this->orientation = orientation;
+}
+     
+void SonarViewGL::setPosition(const double posX, const double posY, const double sigmaX, const double sigmaY){
+	pos[0] = posX;
+	pos[1] = posY;
+	sigmaPos[0] = sigmaX;
+	sigmaPos[1] = sigmaY;
+}
+
 

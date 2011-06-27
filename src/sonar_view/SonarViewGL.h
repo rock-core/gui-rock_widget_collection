@@ -30,7 +30,7 @@ public:
      void setData(const std::vector<uint8_t> data, int bearing);
      void reset(double currentScale);
      void setGroundTrue(double sizeX,double sizeY,double posX,double posY,double rot);
-     void setWallDist(int bearing, int dist,int dist2);
+     void drawEllipse(float xradius, float yradius);
 
 public slots:
      void repaintFunc();
@@ -40,7 +40,10 @@ public slots:
      void setxPosition(int value);
      void setyPosition(int value);
      void setzPosition(int value);
+     void setWallDist(int bearing, int dist,int dist2);
      void keyPressEvent ( QKeyEvent * event );
+     void setPosition(const double posX, const double posY, const double sigmaX=0, const double sigmaY=0);
+     void setOrientation(const double orientation);
 
 protected:
      void initializeGL();
@@ -65,6 +68,7 @@ protected:
      float zoom;
      int lastBearing;
      int lastWallBearing;
+     double orientation;
 
      inline double max(double a,double b){
      	return (a>b)?a:b;
@@ -87,6 +91,9 @@ protected:
      int medium_ableitung;
      int overlay_border;
      double currentScale;
+     double pos[2];
+     double sigmaPos[2];
+
 
      unsigned int oldSize;
      volatile GLuint *indices;

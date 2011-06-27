@@ -91,3 +91,14 @@ void SonarView::keyPressEvent ( QKeyEvent * event ){
 	SonarViewGL *window = dynamic_cast<SonarViewGL*>(image_view_gl);
 	window->keyPressEvent(event);	
 }
+
+
+void SonarView::setPosition(double posX, double posY, double sigmaX, double sigmaY){
+	SonarViewGL *window = dynamic_cast<SonarViewGL*>(image_view_gl);
+	if(window)window->setPosition(posX,posY,sigmaX,sigmaY);	
+}
+  
+void SonarView::setOrientation(const double orientation){
+	SonarViewGL *window = dynamic_cast<SonarViewGL*>(image_view_gl);
+	if(window)window->setOrientation(orientation);
+}
