@@ -25,6 +25,7 @@ public slots:
         void setSonarScan(const char *data, int size, double angle,double timeBetweenBins ,bool fromBearing=false);
 	void setPosition(double posX, double posY, double sigmaX, double sigmaY);
      	void setOrientation(const double orientation);
+	void setDistance(double distance, double angle);
 
 protected:
      void keyPressEvent ( QKeyEvent * event );

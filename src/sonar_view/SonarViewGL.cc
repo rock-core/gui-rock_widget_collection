@@ -506,11 +506,11 @@ void SonarViewGL::paintGL(){
      //	glCallList(colorList[i].first);
      //}
 //	 if(paintWall)
-  //   for(int i=0;i<maximumBearings;i++){
-    // 	if(glIsList(wallDist[i])){
-//			glCallList(wallDist[i]);
-//	 	}
-//	 }
+     for(int i=0;i<maximumBearings;i++){
+     	if(glIsList(wallDist[i])){
+			glCallList(wallDist[i]);
+	 	}
+     }
      for(int i=0;i<maximumBearings;i++){
      	if(glIsList(bearingList[i])){
 		 glCallList(bearingList[i]);
@@ -560,9 +560,9 @@ void SonarViewGL::setWallDist(int bearing, int dist, int dist2){
 	glBegin(GL_POINTS);
 	QColor color("yellow");
 	qglColor(color);
-	glVertex3f(dist*currentScale,0,0);
+	glVertex3f(dist*currentScale,0,-0.1);
 	qglColor(QColor("green"));
-	glVertex3f(dist2*currentScale,0,0);
+	glVertex3f(dist2*currentScale,0,-0.1);
 	glEnd();
 	glPopMatrix();
 	glEndList();

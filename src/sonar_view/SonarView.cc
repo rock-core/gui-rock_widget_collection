@@ -63,6 +63,16 @@ void SonarView::setSonarScan2(base::samples::SonarScan *scan){
 	window->setData(scan->scanData,scan->angle/2.0*M_PI*6399.0);
 }
 
+void SonarView::setDistance(double distance, double angle){
+	SonarViewGL *window = dynamic_cast<SonarViewGL*>(image_view_gl);
+	if(!window){
+		fprintf(stderr,"Cannot set data have no widget?!\n");
+		return;
+	}
+	double bearing = angle/(M_PI*2.0)*6399.0;
+	window->setWallDist(bearing,distance,0);
+}
+
 void SonarView::setSonarScan(const char *data_, int size, double angle, double timeBetweenBins,bool fromBearing){
 	SonarViewGL *window = dynamic_cast<SonarViewGL*>(image_view_gl);
 	if(!window){
@@ -104,3 +114,4 @@ void SonarView::setOrientation(const double orientation){
 	SonarViewGL *window = dynamic_cast<SonarViewGL*>(image_view_gl);
 	if(window)window->setOrientation(orientation);
 }
+
