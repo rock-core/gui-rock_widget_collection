@@ -42,10 +42,10 @@ maximumBearings(maximumBearings)
 	 overlay_border=0;
      medium_ableitung=1;
      factor=1;
-	repaintTimer.setSingleShot(false);
-	repaintTimer.setInterval(100);
-	connect(&repaintTimer,SIGNAL(timeout()),this,SLOT(repaintFunc()));
-	repaintTimer.start();
+	//repaintTimer.setSingleShot(false);
+	//repaintTimer.setInterval(100);
+	//connect(&repaintTimer,SIGNAL(timeout()),this,SLOT(repaintFunc()));
+	//repaintTimer.start();
 	
 	for(int i=0;i<maximumBearings;i++){
 		glDeleteLists(bearingList[i], 1);
@@ -161,7 +161,7 @@ void SonarViewGL::setData(const std::vector<uint8_t> data,int bearing){
 		for(unsigned int k=0; k<data.size(); k+=3){
 			vertecies[k+0 + i*data.size()*3] = k*currentScale;
 			vertecies[k+1 + i*data.size()*3] = 0;
-			vertecies[k+2 + i*data.size()*3] = 0;
+			vertecies[k+2 + i*data.size()*3] = 0; 
 		}
 		glDeleteLists(wallDist[i],1);
 		wallDist[i] = glGenLists( 1 );
@@ -183,6 +183,7 @@ void SonarViewGL::setData(const std::vector<uint8_t> data,int bearing){
 				if(i*data.size() > data.size()*3*maximumBearings){
 					fprintf(stderr,"CRITIACAL ERROR\n");
 				}
+				glPolygonOffset(i,1e-10);
 				volatile GLuint *baseIndex = &indices[i*(data.size())];
 				glDrawElements(GL_LINE_STRIP, data.size(), GL_UNSIGNED_INT, (void*)baseIndex);
 				//
@@ -358,9 +359,10 @@ void SonarViewGL::initializeGL()
   //qglClearColor(white);
     qglClearColor(QColor(0.0,0.0,0.0));
     glShadeModel(GL_FLAT);
+    
     glEnable(GL_DEPTH_TEST);
-    //glEnable(GL_CULL_FACE);
-
+    glEnable(GL_CULL_FACE);
+    glDepthFunc(GL_LESS);
 /*
     GLfloat fogColor[4] = {0.5,0.5,0.5,1.0};
 
@@ -490,9 +492,9 @@ void SonarViewGL::paintGL(){
     // /wlCallList(point_list);
     //glCallList(groundPlane);
      //Wegen Nebenläufigkeit die Punkte im GUI Thread zeichnen.
-     if(paintGroundTrue)
-	  if(glIsList(groundTrue))
-		glCallList(groundTrue);
+     //if(paintGroundTrue)
+//	  if(glIsList(groundTrue))
+//		glCallList(groundTrue);
 	   //  else
 	     //	printf("Error gorund true is not an list\n");
      if(glIsList(avalon))
@@ -503,12 +505,12 @@ void SonarViewGL::paintGL(){
      //for(unsigned int i=0;i<colorList.size();i++){
      //	glCallList(colorList[i].first);
      //}
-	 if(paintWall)
-     for(int i=0;i<maximumBearings;i++){
-     	if(glIsList(wallDist[i])){
-			glCallList(wallDist[i]);
-	 	}
-	 }
+//	 if(paintWall)
+  //   for(int i=0;i<maximumBearings;i++){
+    // 	if(glIsList(wallDist[i])){
+//			glCallList(wallDist[i]);
+//	 	}
+//	 }
      for(int i=0;i<maximumBearings;i++){
      	if(glIsList(bearingList[i])){
 		 glCallList(bearingList[i]);
@@ -581,7 +583,7 @@ void SonarViewGL::setWallDist(int bearing, int dist, int dist2){
  {
      lastPos = event->pos();
      lastPosTrans = event->pos();
-
+     repaintFunc();
  }
 
  void SonarViewGL::mouseMoveEvent(QMouseEvent *event)
@@ -607,6 +609,7 @@ void SonarViewGL::setWallDist(int bearing, int dist, int dist2){
 
 //     printf("Rot: %i,%i,%i, Pos, (%i,%i,%i), zoom: %f\n",xRot,yRot,zRot,xShift,yShift,zShift,zoom);
 
+     repaintFunc();
  }
 
  //Werte für die Anzeige setzen.
@@ -663,6 +666,7 @@ void SonarViewGL::keyPressEvent ( QKeyEvent * event ){
 		default:
 			return;
 	}
+     repaintFunc();
  }
 
  void SonarViewGL::wheelEvent(QWheelEvent *event)
@@ -671,6 +675,7 @@ void SonarViewGL::keyPressEvent ( QKeyEvent * event ){
     zoom = std::max<float>( std::min<float>( zoom, ZOOM_MAX ), ZOOM_MIN );
     event->accept();
    // updateGL();
+     repaintFunc();
 }
 
 void SonarViewGL::setGroundTrue(double sizeX,double sizeY,double posX,double posY,double rotate){
@@ -763,6 +768,7 @@ void SonarViewGL::setPosition(const double posX, const double posY, const double
 	pos[1] = posY;
 	sigmaPos[0] = sigmaX;
 	sigmaPos[1] = sigmaY;
+     repaintFunc();
 }
 
 

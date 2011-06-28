@@ -13,6 +13,8 @@
 SonarView::SonarView(QWidget *parent,bool use_openGL):
 ImageView(parent,false)
 {
+	image_view_gl = 0;
+	use_openGL=true;
 	setOpenGL(use_openGL);
 	lastScale=0;
 }
@@ -53,7 +55,7 @@ void SonarView::setSonarScan2(base::samples::SonarScan *scan){
 		fprintf(stderr,"Cannot set data have no widget?!\n");
 		return;
 	}
- 	double newScale = (scan->time_beetween_bins/10e-9)/640.0;
+ 	double newScale = (scan->time_beetween_bins/1e-9)/640.0;
 	if(newScale != lastScale){
 		window->reset(newScale);
 		lastScale = newScale;
@@ -68,12 +70,12 @@ void SonarView::setSonarScan(const char *data_, int size, double angle, double t
 		return;
 	}
 	double bearing = angle;
- 	double newScale = ((timeBetweenBins*640.0)*10e-9);
+ 	double newScale = ((timeBetweenBins*640.0)*1e-9);
 	if(!fromBearing){
 		bearing = angle/(M_PI*2.0)*6399.0;
  		newScale = timeBetweenBins*size/2.0;
 	}
-	newScale = (newScale*150.0)/size;
+	newScale = (newScale*1500.0)/size;
 	if(newScale != lastScale){
 		lastScale = newScale;
 		printf("new Scale: %f\n",newScale);	
