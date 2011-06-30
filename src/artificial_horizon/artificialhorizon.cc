@@ -16,10 +16,16 @@ QWidget(parent)
 
 void ArtificialHorizon::setDataDir(QString const& data_dir)
 {
-    background = QPixmap(data_dir + "background.svg");
-    stationary = QImage(data_dir + "stationary.svg");
-    rotate     = QImage(data_dir + "rotate.svg");
-    dial       = QImage(data_dir + "dial.svg");
+    background_o = QPixmap(data_dir + "background.svg");
+    stationary_o = QImage(data_dir + "stationary.svg");
+    rotate_o     = QImage(data_dir + "rotate.svg");
+    dial_o       = QImage(data_dir + "dial.svg");
+		background = background_o;
+	  stationary = stationary_o; 
+	  rotate     = rotate_o;     
+	  dial       = dial_o;       
+
+
 }
 
 ArtificialHorizon* ArtificialHorizon::newInstance()
@@ -54,7 +60,7 @@ void ArtificialHorizon::paintEvent(QPaintEvent*)
 
     QPainter painter(this);
     painter.save(); // save the current painter settings before changing them
-    painter.setClipRect(0,0,300,290);
+		painter.setClipRect(0,0,background.width(),background.height());
 
     painter.setTransform(transform);
     painter.translate(0,-background.height()/2-10);
@@ -70,8 +76,17 @@ void ArtificialHorizon::paintEvent(QPaintEvent*)
     painter.drawImage( point,stationary);
     painter.end();
 }
+		
+void ArtificialHorizon::resizeEvent(QResizeEvent *event){
+	QWidget::resizeEvent(event);
+
+	background = background_o.scaled(size(),Qt::KeepAspectRatio);
+  stationary = stationary_o.scaled(size(),Qt::KeepAspectRatio);
+  dial       = dial_o.scaled(size(),Qt::KeepAspectRatio);      
+  rotate     = rotate_o.scaledToWidth(dial.width()*1.01315789474);    
+}
 
 ArtificialHorizon::~ArtificialHorizon()
 {
-
+	
 }
