@@ -37,7 +37,7 @@ Compass* Compass::newInstance()
 void Compass::setHeading(double v)
 {
 	compass->setValue(-v/M_PI*180.0);
-	number->display(-v/M_PI*180.0);
+	number->display(v/M_PI*180.0);
 }
 
 /*
