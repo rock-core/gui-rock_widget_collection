@@ -183,9 +183,12 @@ void SonarViewGL::setData(const std::vector<uint8_t> data,int bearing){
 				if(i*data.size() > data.size()*3*maximumBearings){
 					fprintf(stderr,"CRITIACAL ERROR\n");
 				}
-				glPolygonOffset(i,1e-10);
+				//glPolygonOffset(i,1e-10);
 				volatile GLuint *baseIndex = &indices[i*(data.size())];
-				glDrawElements(GL_LINE_STRIP, data.size(), GL_UNSIGNED_INT, (void*)baseIndex);
+				//glDrawElements(GL_LINES, data.size(), GL_UNSIGNED_INT, (void*)baseIndex);
+				//glDrawElements(GL_LINES, data.size(), GL_UNSIGNED_INT, (void*)baseIndex);
+				//glDrawElements(GL_LINE_STRIP, data.size(), GL_UNSIGNED_INT, (void*)baseIndex);
+				glDrawElements(GL_POINTS, data.size(), GL_UNSIGNED_INT, (void*)baseIndex);
 				//
 /*
 				glBegin(GL_LINE_STRIP);
@@ -361,8 +364,13 @@ void SonarViewGL::initializeGL()
     glShadeModel(GL_FLAT);
     
     glEnable(GL_DEPTH_TEST);
-    glEnable(GL_CULL_FACE);
-    glDepthFunc(GL_LESS);
+    //glDisable(GL_DEPTH_TEST);
+    //glEnable(GL_CULL_FACE);
+    //glDepthFunc(GL_ALWAYS);
+    //glDepthFunc(GL_LESS);
+    glDepthFunc(GL_LEQUAL);
+//	glClearDepth(0.0);
+    //glDepthFunc(GL_GEQUAL);
 /*
     GLfloat fogColor[4] = {0.5,0.5,0.5,1.0};
 
@@ -381,6 +389,7 @@ void SonarViewGL::initializeGL()
     glEnable(GL_POINT_SMOOTH);
     glEnable(GL_LINE_SMOOTH);
 */
+    
    groundPlane = glGenLists(1);
    glNewList(groundPlane, GL_COMPILE);
 
@@ -418,43 +427,6 @@ void SonarViewGL::initializeGL()
        #endif
 }
 
-
-
-/*
-void SonarViewGL::update_pointcloud(Point_3d* _point,int _size)
- {
- 	if(PointCloudeChanged){
-     	//delete old list
-     	glDeleteLists(point_list, 1);
-     	//generate new one
-     	point_list = glGenLists( 1 );
-	 	glNewList( point_list, GL_COMPILE );
-		glPointSize(1.0);
-		glDisable(GL_LIGHTING);
-		//glEnable(GL_POINT_SMOOTH);
-		glDisable(GL_LINE_SMOOTH);
-		glBegin(GL_POINTS);
-		//read points and store in matrix
-		for(int j=0; j<cloudSize; j++){
-			QColor color(_point[j].color_red,_point[j].color_green,_point[j].color_blue);
-		 	qglColor(color);
-		 	glVertex3f(_point[j].x,
-				_point[j].y,
-				_point[j].z);
-		 	}
-		glEnd();
-		glEndList();
-		PointCloudeChanged=false;
-		//		printf("Repointing cloude\n");
-	}else
-	  //		printf("Do not repaint Repointing cloude\n");
-    cloudSize=_size;
-  
-    glCallList(point_list);
- }
-
-*/
-
 void SonarViewGL::drawEllipse(float xradius, float yradius)
 {
 	glBegin(GL_LINE_LOOP);
@@ -488,8 +460,8 @@ void SonarViewGL::paintGL(){
      qglColor(color);
      drawEllipse(sigmaPos[0],sigmaPos[1]);
 
-    // gllDist
-    // /wlCallList(point_list);
+    //gllDist
+   // wlCallList(point_list);
     //glCallList(groundPlane);
      //Wegen Nebenläufigkeit die Punkte im GUI Thread zeichnen.
      //if(paintGroundTrue)

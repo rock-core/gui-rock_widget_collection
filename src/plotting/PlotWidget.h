@@ -518,6 +518,15 @@ public slots:
      * Method for an automated Test
      */
     void doTesting();
+    
+    /**
+      * Wrapped method for adding arrays through ruby
+    */
+
+    int addArrayData(const double* xPoints,const  double* yPoints, int length, int dataId=-1,
+		int xAxisId=X_BOTTOM, int yAxisId=Y_LEFT) throw(std::exception){
+	addData(xPoints,yPoints,length,dataId,xAxisId,yAxisId);
+    };
 
 signals:
     void notifyUpdate(int type=0);

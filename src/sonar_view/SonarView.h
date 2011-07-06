@@ -26,12 +26,14 @@ public slots:
 	void setPosition(double posX, double posY, double sigmaX, double sigmaY);
      	void setOrientation(const double orientation);
 	void setDistance(double distance, double angle);
+	void paintLine(double bearing, const uint8_t *data, size_t len);
+        void paintReference(double bearing, int distance);
 
 protected:
-     void keyPressEvent ( QKeyEvent * event );
      double lastScale;
-
+     int lastBearing;
+     void keyPressEvent(QKeyEvent*);
+     QImage img;
 };
-
 #endif	
 

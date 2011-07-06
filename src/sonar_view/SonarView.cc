@@ -11,12 +11,15 @@
 #include "SonarViewGL.h"
 
 SonarView::SonarView(QWidget *parent,bool use_openGL):
-ImageView(parent,false)
+ImageView(parent,false),
+img(10, 10, QImage::Format_RGB888)
 {
+//	resize(width(),height());	
 	image_view_gl = 0;
-	use_openGL=true;
+	use_openGL=false;
 	setOpenGL(use_openGL);
 	lastScale=0;
+	
 }
 
 
@@ -59,49 +62,105 @@ void SonarView::setSonarScan2(base::samples::SonarScan *scan){
 	if(newScale != lastScale){
 		window->reset(newScale);
 		lastScale = newScale;
-	} 
+	}
+	//this->lastScale =  lastScale;
 	window->setData(scan->scanData,scan->angle/2.0*M_PI*6399.0);
 }
 
 void SonarView::setDistance(double distance, double angle){
 	SonarViewGL *window = dynamic_cast<SonarViewGL*>(image_view_gl);
-	if(!window){
-		fprintf(stderr,"Cannot set data have no widget?!\n");
-		return;
-	}
 	double bearing = angle/(M_PI*2.0)*6399.0;
-	window->setWallDist(bearing,distance,0);
+	if(window){
+		window->setWallDist(bearing,distance,0);
+	}else{
+		//printf("scale: %f, distance: %f\n",lastScale,distance);
+		paintReference(angle,distance/lastScale);
+	}
 }
 
 void SonarView::setSonarScan(const char *data_, int size, double angle, double timeBetweenBins,bool fromBearing){
 	SonarViewGL *window = dynamic_cast<SonarViewGL*>(image_view_gl);
-	if(!window){
-		fprintf(stderr,"Cannot set data have no widget?!\n");
-		return;
-	}
 	double bearing = angle;
- 	double newScale = ((timeBetweenBins*640.0)*1e-9);
+	double newScale = ((timeBetweenBins*640.0)*1e-9);
 	if(!fromBearing){
 		bearing = angle/(M_PI*2.0)*6399.0;
- 		newScale = timeBetweenBins*size/2.0;
+		newScale = timeBetweenBins*size/2.0;
 	}
 	newScale = (newScale*1500.0)/size;
-	if(newScale != lastScale){
-		lastScale = newScale;
-		printf("new Scale: %f\n",newScale);	
-		window->reset(newScale);
+	
+	if(window){
+		if(newScale != lastScale){
+			lastScale = newScale;
+			printf("new Scale: %f\n",newScale);	
+			window->reset(newScale);
+		}
+	 
+		std::vector<uint8_t> data;
+		for(int i=0;i<size;i++){
+			data.push_back(data_[i]);
+		}
+		window->setData(data,bearing);
+	}else{
+		lastScale =  newScale;
+		if(img.size().width() != size*2.0){
+			//img = QImage(size*2.0,size*2.0,QImage::Format_Mono);
+			img = QImage(size*2.0,size*2.0,QImage::Format_RGB888);
+			img.fill(0);
+			printf("Creating new Image with: %i,%i\n",img.size().width(),img.size().height());
+		}
+		int begin,end;
+		if(lastBearing-bearing>0 || lastBearing-bearing < -3000){
+			begin = lastBearing;
+			end = lastBearing-bearing;
+		}else{
+			begin = bearing;
+			end = bearing-lastBearing;
+		}
+
+		for(int j=0;j<end;j++){
+			int i = ((begin+j));
+			if(i < 0 || i > 6399){
+				break;
+			}
+			paintLine(((double)i)/6399*2.0*M_PI,(const uint8_t*)data_,(size_t)size);
+		}
 	}
- 
-	std::vector<uint8_t> data;
-	for(int i=0;i<size;i++){
-		data.push_back(data_[i]);
-	}
-	window->setData(data,bearing);
+	lastBearing = bearing;
+        addImage(img);
+//	ImageView::update();
 }
+
+void SonarView::paintReference(double bearing, int distance){
+	if(distance > img.size().width()){
+		return;
+	}
+	QPainter painter(&img);
+	double s = sin(bearing);
+	double c = cos(bearing);
+	int x = (img.size().width()/2.0)+(s*distance);
+	int y = (img.size().width()/2.0)+(c*distance);	
+
+	painter.setPen(QColor(255,255,0));
+	painter.drawEllipse(QPoint(x,y),5,5);
+	//painter.drawPoint(x,y);
+        addImage(img);
+
+}
+
+void SonarView::paintLine(double bearing, const uint8_t *data, size_t len){
+	QPainter painter(&img);
+	double s = sin(bearing);
+	double c = cos(bearing);
+	for(size_t i=0;i<len;i++){
+		painter.setPen(QColor(data[i],data[i],data[i]));
+		painter.drawPoint((len)+(s*i),(len)+(c*i));
+	}
+}
+
 
 void SonarView::keyPressEvent ( QKeyEvent * event ){
 	SonarViewGL *window = dynamic_cast<SonarViewGL*>(image_view_gl);
-	window->keyPressEvent(event);	
+	if(window) window->keyPressEvent(event);	
 }
 
 
@@ -115,3 +174,37 @@ void SonarView::setOrientation(const double orientation){
 	if(window)window->setOrientation(orientation);
 }
 
+/*
+void SonarView::paintEvent(QPaintEvent *event)
+{
+  ImageView::paintEvent(event);
+  
+  printf("Paint called\n");
+  QPainter painter(this);
+  painter.drawImage(target, image, source);
+}
+
+
+void SonarView::resizeEvent ( QResizeEvent * event )
+{
+  ImageView::resizeEvent(event);
+  int x_offset = 0;
+  int y_offset = 0;
+  if(aspect_ratio)
+  {
+    float x =1; 
+    float y =1; 
+    if (image.width() && image.height())
+    {
+      x = ((float)width())/ image.width();
+      y = ((float)height())/ image.height();
+    }
+    if(x < y)
+      y_offset =  0.5f*(height()-x*image.height());
+    else
+      x_offset =  0.5f*(width()-y*image.width());
+  }
+  target.setRect(x_offset, y_offset, width()-x_offset*2, height()-y_offset*2);
+  source.setRect(0.0, 0.0, image.width(), image.height());
+}
+*/

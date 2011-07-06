@@ -108,3 +108,8 @@ rock_vizkit_widget(rock_widget_collection
     DEPS_CMAKE LIBXML2 QWT GLU
     LIBS ${QT_QTCORE_LIBRARY} ${QT_QTGUI_LIBRARY} ${QT_QTOPENGL_LIBRARY} ${QT_QTDESIGNER_LIBRARY}
     )
+
+add_executable(sonarTest
+	sonar_view/sonarTest.cpp
+)
+target_link_libraries(sonarTest rock_widget_collection)

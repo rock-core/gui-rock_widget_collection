@@ -171,8 +171,8 @@ protected:
      */
     void drawDrawItemsToImage(QImage &image,bool all=false);
     void drawDrawItemsToPainter(QPainter &painter,bool all=false);
-    void resizeEvent(QResizeEvent *event);
-    void paintEvent(QPaintEvent *event);
+    virtual void resizeEvent(QResizeEvent *event);
+    virtual void paintEvent(QPaintEvent *event);
     void mousePressEvent(QMouseEvent *event);
     void mouseReleaseEvent(QMouseEvent *event);
     void calculateRects();
