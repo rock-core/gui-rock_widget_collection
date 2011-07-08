@@ -14,7 +14,7 @@ SonarView::SonarView(QWidget *parent,bool use_openGL):
 ImageView(parent,false),
 img(10, 10, QImage::Format_RGB888)
 {
-//	resize(width(),height());	
+	resize(width(),height());	
 	image_view_gl = 0;
 	use_openGL=false;
 	setOpenGL(use_openGL);
@@ -127,7 +127,8 @@ void SonarView::setSonarScan(const char *data_, int size, double angle, double t
 	}
 	lastBearing = bearing;
         addImage(img);
-//	ImageView::update();
+	resize(width(),height());	
+	//ImageView::update();
 }
 
 void SonarView::paintReference(double bearing, int distance){
@@ -137,14 +138,20 @@ void SonarView::paintReference(double bearing, int distance){
 	QPainter painter(&img);
 	double s = sin(bearing);
 	double c = cos(bearing);
-	int x = (img.size().width()/2.0)+(s*distance);
-	int y = (img.size().width()/2.0)+(c*distance);	
+	int x = (img.size().width()/2.0)+(c*distance);
+	int y = (img.size().width()/2.0)+(s*distance);	
 
 	painter.setPen(QColor(255,255,0));
 	painter.drawEllipse(QPoint(x,y),5,5);
-	//painter.drawPoint(x,y);
         addImage(img);
+	//painter.drawPoint(x,y);
+}
 
+void SonarView::paintPos(int posX, int posY, int sizeX, int sizeY){
+	QPainter painter(&img);
+	painter.setPen(QColor(255,0,0));
+	painter.drawEllipse(QPoint(posX,posY),sizeX,sizeY);
+        addImage(img);
 }
 
 void SonarView::paintLine(double bearing, const uint8_t *data, size_t len){
@@ -153,7 +160,8 @@ void SonarView::paintLine(double bearing, const uint8_t *data, size_t len){
 	double c = cos(bearing);
 	for(size_t i=0;i<len;i++){
 		painter.setPen(QColor(data[i],data[i],data[i]));
-		painter.drawPoint((len)+(s*i),(len)+(c*i));
+		//painter.drawPoint((len)+(s*i),(len)+(c*i));
+		painter.drawPoint((len)+(c*i),(len)+(s*i));
 	}
 }
 
@@ -174,17 +182,15 @@ void SonarView::setOrientation(const double orientation){
 	if(window)window->setOrientation(orientation);
 }
 
-/*
+
 void SonarView::paintEvent(QPaintEvent *event)
 {
-  ImageView::paintEvent(event);
+  ImageView::paintEvent(event);  
+  printf("Paint called in SonarView\n");
   
-  printf("Paint called\n");
-  QPainter painter(this);
-  painter.drawImage(target, image, source);
 }
 
-
+/*
 void SonarView::resizeEvent ( QResizeEvent * event )
 {
   ImageView::resizeEvent(event);

@@ -28,8 +28,10 @@ public slots:
 	void setDistance(double distance, double angle);
 	void paintLine(double bearing, const uint8_t *data, size_t len);
         void paintReference(double bearing, int distance);
+	void paintPos(int posX, int posY, int sizeX=10, int sizeY=10);
 
 protected:
+	void paintEvent(QPaintEvent *event);
      double lastScale;
      int lastBearing;
      void keyPressEvent(QKeyEvent*);
