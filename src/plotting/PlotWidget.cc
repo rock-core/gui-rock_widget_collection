@@ -1155,10 +1155,10 @@ int PlotWidget::addData(const double* xPoints,const double* yPoints, int length,
             setAxisBoundaries(X_BOTTOM, dataManager->getMinX(), dataManager->getMaxX());
             setAxisBoundaries(Y_LEFT, dataManager->getMinY(), dataManager->getMaxY());
         }
-        for(int i=0;i<length;i++)
-        {
-            setMinMaxPoints(xPoints[i], yPoints[i]);
-        }
+//        for(int i=0;i<length;i++)
+//        {
+            setMinMaxPoints(xPoints, yPoints,length);
+//        }
 	if(dataId > 0)
 	  {
 	    curves[dataId] = curve;
@@ -1186,14 +1186,21 @@ int PlotWidget::addData(const double* xPoints,const double* yPoints, int length,
 	    QVector<double> yVector = currentData.yData();
 	 
 	    
+		  setMinMaxPoints(xVector.data(), yVector.data(),xVector.size());
 	    for(int i=0;i<length;i++)
 	    {
-		setMinMaxPoints(xPoints[i], yPoints[i]);
-		xVector.push_back(xPoints[i]);
-		yVector.push_back(yPoints[i]);
+				xVector.push_back(xPoints[i]);
+				yVector.push_back(yPoints[i]);
 	    }
+			if(xVector.size() > MAXDATAPOINTS){
+				xVector.remove(0,xVector.size() - MAXDATAPOINTS);
+			}
+			if(yVector.size() > MAXDATAPOINTS){
+				yVector.remove(0,yVector.size() - MAXDATAPOINTS);
+			}
 	    curve->setData(xVector, yVector);
 	    curve->setAxis(xAxis, yAxis);
+
 	}
 	else 
 	{
@@ -1231,7 +1238,7 @@ int PlotWidget::addData(const double* xPoints,const double* yPoints, int length,
     setSliderValues();
     if(dataManager->isAutoscaling())
     {
-        if(maxYLeft > plottingWidget.axisScaleDiv(QwtPlot::yLeft)->upperBound())
+        if(maxYLeft > plottingWidget.axisScaleDiv(QwtPlot::yLeft)->upperBound() || true)
 	{
             needRepaint = true;
             setFastAxisBoundaries(Y_LEFT, minYLeft, maxYLeft);
@@ -1240,7 +1247,7 @@ int PlotWidget::addData(const double* xPoints,const double* yPoints, int length,
 	{
             needRepaint = true;
             setFastAxisBoundaries(X_BOTTOM, minXBottom, maxXBottom);
-        }
+				}
         // TODO: set x and y spans here
     }
     if(needRepaint)
@@ -1263,7 +1270,17 @@ void PlotWidget::showCurve(QwtPlotItem* item, bool checked)
     plottingWidget.replot();
 }
 
-void PlotWidget::setMinMaxPoints(double xPoint, double yPoint)
+void PlotWidget::setMinMaxPoints(const double *xPoint, const double *yPoint, const size_t length){
+    minXBottom = INT_MAX;
+    maxXBottom = INT_MIN;
+    minYLeft = INT_MAX;
+    maxYLeft = INT_MIN;
+		for(size_t i = 0; i < length; i++){
+			setMinMaxPoints(xPoint[i],yPoint[i]);
+		}
+}
+
+void PlotWidget::setMinMaxPoints(const double xPoint, const double yPoint)
 {
     if(xPoint < minXBottom)
     {

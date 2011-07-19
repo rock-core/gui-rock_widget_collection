@@ -6,6 +6,12 @@ include_directories(${QT_QTCORE_INCLUDE_DIR})
 include_directories(${QT_QTGUI_INCLUDE_DIR})
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
+set(MAX_POINT 15000 CACHE STRING "Maximum number of Points shown in QWT Plot, to prevent too slow drawings (old points are thworn away)")
+
+ADD_DEFINITIONS(
+	-DMAXDATAPOINTS=${MAX_POINT}	
+)
+
 SET(COLLECTION_MOC_HDRS
   image_view/ImageView.h
   image_view/ImageViewGL.h

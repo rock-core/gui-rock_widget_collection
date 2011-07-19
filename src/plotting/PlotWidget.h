@@ -38,6 +38,9 @@
 #include <algorithm>
 #include <map>
 
+#ifndef MAXDATAPOINTS 
+	#error "Please set the MAXDATAPOINTS Definition"
+#endif
 
 //Forward Declaration
 class ExtendedPlotZoomer;
@@ -525,7 +528,7 @@ public slots:
 
     int addArrayData(const double* xPoints,const  double* yPoints, int length, int dataId=-1,
 		int xAxisId=X_BOTTOM, int yAxisId=Y_LEFT) throw(std::exception){
-	addData(xPoints,yPoints,length,dataId,xAxisId,yAxisId);
+			return addData(xPoints,yPoints,length,dataId,xAxisId,yAxisId);
     };
 
 signals:
@@ -675,7 +678,8 @@ protected:
      * @param xPoint the x point to check
      * @param yPoint the y point to check
      */
-    void setMinMaxPoints(double xPoint, double yPoint);
+    void setMinMaxPoints(const double xPoint, const double yPoint);
+		void setMinMaxPoints(const double *xPoint, const double *yPoint, const size_t length);
 
 
     /** Slider in x direction*/
