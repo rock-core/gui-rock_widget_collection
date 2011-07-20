@@ -62,6 +62,7 @@ PlotWidget::PlotWidget(QWidget* parent) : MultiWidget(parent),
     maxXBottom = INT_MIN;
     minYLeft = INT_MAX;
     maxYLeft = INT_MIN;
+		maxDataPoints = 0;
     autoScale = true;
     isZoomed = false;
     autoscrolling = false;
@@ -1192,11 +1193,13 @@ int PlotWidget::addData(const double* xPoints,const double* yPoints, int length,
 				xVector.push_back(xPoints[i]);
 				yVector.push_back(yPoints[i]);
 	    }
-			if(xVector.size() > MAXDATAPOINTS){
-				xVector.remove(0,xVector.size() - MAXDATAPOINTS);
-			}
-			if(yVector.size() > MAXDATAPOINTS){
-				yVector.remove(0,yVector.size() - MAXDATAPOINTS);
+			if(maxDataPoints){
+							if(xVector.size() > maxDataPoints){
+								xVector.remove(0,xVector.size() - maxDataPoints);
+							}
+							if(yVector.size() > maxDataPoints){
+								yVector.remove(0,yVector.size() - maxDataPoints);
+							}
 			}
 	    curve->setData(xVector, yVector);
 	    curve->setAxis(xAxis, yAxis);

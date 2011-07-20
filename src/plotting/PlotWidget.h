@@ -38,10 +38,6 @@
 #include <algorithm>
 #include <map>
 
-#ifndef MAXDATAPOINTS 
-	#error "Please set the MAXDATAPOINTS Definition"
-#endif
-
 //Forward Declaration
 class ExtendedPlotZoomer;
 class CurveSelectionDialog;
@@ -531,6 +527,14 @@ public slots:
 			return addData(xPoints,yPoints,length,dataId,xAxisId,yAxisId);
     };
 
+		/**
+		  * Maimum number of Datapoints that are stored in plot to create an sliding window like behaviour and 
+			* prevent too large buffers that slowdown the visualization. Set to 0 if you would like to disable this behavior
+			*/
+		void setMaximumDataPoints(int points){
+			maxDataPoints = points;
+		}
+
 signals:
     void notifyUpdate(int type=0);
 
@@ -752,6 +756,8 @@ protected:
     QMenu sizeMenu;
     /** Testing Menu*/
     QMenu testMenu;
+		/** Maximum number of Datapoints */
+		int maxDataPoints;
 
     /** Action to export the plot as image*/
     QAction exportImageAction;
