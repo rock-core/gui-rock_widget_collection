@@ -1,5 +1,15 @@
 #include "RockWidgetCollection.h"
 #include "multi_view/MultiViewWidget.h"
+#include "image_view/ImageViewPlugin.h"
+#include "sonar_view/SonarViewPlugin.h"
+#include "range_view/RangeViewPlugin.h"
+#include "plotting/PlotWidgetPlugin.h"
+#include "artificial_horizon/artificialhorizonplugin.h"
+#include "artificial_horizon/compassplugin.h"
+#include "artificial_horizon/orientationplugin.h"
+#include "multi_view/MultiViewPlugin.h"
+#include "multi_view/MultiWidgetPlugin.h"
+#include "virtual_joystick/VirtualJoystickPlugin.h"
 
 Q_EXPORT_PLUGIN2(RockWidgetCollection, RockWidgetCollection)
 
@@ -15,6 +25,7 @@ RockWidgetCollection::RockWidgetCollection(QObject *parent)
    widgets.append(new MultiWidgetPlugin(this));
    widgets.append(new CompassPlugin(this));
    widgets.append(new OrientationPlugin(this));
+   widgets.append(new VirtualJoystickPlugin(this));
 }
 
 QList<QDesignerCustomWidgetInterface*> RockWidgetCollection::customWidgets() const

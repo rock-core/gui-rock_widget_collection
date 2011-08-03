@@ -48,6 +48,8 @@ SET(COLLECTION_MOC_HDRS
   artificial_horizon/compassplugin.h
   artificial_horizon/orientation.h
   artificial_horizon/orientationplugin.h
+  virtual_joystick/JoystickWidget.h  
+  virtual_joystick/VirtualJoystickPlugin.h
 	generic_widgets/PaintWidget.h
 )
 SET(COLLECTION_HDRS
@@ -92,10 +94,22 @@ SET(COLLECTION_HDRS
   artificial_horizon/compassplugin.h
   artificial_horizon/orientation.h
   artificial_horizon/orientationplugin.h
-	generic_widgets/PaintWidget.h
+  virtual_joystick/JoystickWidget.h  
+  virtual_joystick/VirtualJoystickPlugin.h
+    generic_widgets/PaintWidget.h
 )
 
-FILE(GLOB COLLECTION_SOURCES range_view/*.cc image_view/*.cc sonar_view/*.cc plotting/*.cc artificial_horizon/*.cc multi_view/*.cc generic_widgets/*.cc *.cc)
+FILE(GLOB COLLECTION_SOURCES 
+    range_view/*.cc 
+    image_view/*.cc 
+    sonar_view/*.cc 
+    plotting/*.cc 
+    artificial_horizon/*.cc 
+    multi_view/*.cc 
+    generic_widgets/*.cc
+    virtual_joystick/JoystickWidget.cpp
+    virtual_joystick/VirtualJoystickPlugin.cc
+    *.cc)
 
 SET(QtApp_RCCS resources.qrc)
 QT4_ADD_RESOURCES(QtApp_RCC_SRCS ${QtApp_RCCS})
@@ -104,12 +118,16 @@ rock_vizkit_widget(rock_widget_collection
     SOURCES ${COLLECTION_SOURCES} ${QtApp_RCC_SRCS} 
     HEADERS ${COLLECTION_HDRS}
     MOC ${COLLECTION_MOC_HDRS}
-    DEPS_PKGCONFIG base-types frame_helper
+    DEPS_PKGCONFIG base-types frame_helper QtCore QtGui
     DEPS_CMAKE LIBXML2 QWT GLU
     LIBS ${QT_QTCORE_LIBRARY} ${QT_QTGUI_LIBRARY} ${QT_QTOPENGL_LIBRARY} ${QT_QTDESIGNER_LIBRARY}
     )
 
 add_executable(sonarTest
-	sonar_view/sonarTest.cpp
+    sonar_view/sonarTest.cpp
 )
 target_link_libraries(sonarTest rock_widget_collection)
+
+rock_executable(virtualJoystickTest 
+		virtual_joystick/main.cpp
+		DEPS rock_widget_collection)
