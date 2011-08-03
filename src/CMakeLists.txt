@@ -48,7 +48,7 @@ SET(COLLECTION_MOC_HDRS
   artificial_horizon/compassplugin.h
   artificial_horizon/orientation.h
   artificial_horizon/orientationplugin.h
-  virtual_joystick/JoystickWidget.h  
+  virtual_joystick/VirtualJoystick.h  
   virtual_joystick/VirtualJoystickPlugin.h
 	generic_widgets/PaintWidget.h
 )
@@ -94,7 +94,7 @@ SET(COLLECTION_HDRS
   artificial_horizon/compassplugin.h
   artificial_horizon/orientation.h
   artificial_horizon/orientationplugin.h
-  virtual_joystick/JoystickWidget.h  
+  virtual_joystick/VirtualJoystick.h  
   virtual_joystick/VirtualJoystickPlugin.h
     generic_widgets/PaintWidget.h
 )
@@ -107,8 +107,7 @@ FILE(GLOB COLLECTION_SOURCES
     artificial_horizon/*.cc 
     multi_view/*.cc 
     generic_widgets/*.cc
-    virtual_joystick/JoystickWidget.cpp
-    virtual_joystick/VirtualJoystickPlugin.cc
+    virtual_joystick/*.cc
     *.cc)
 
 SET(QtApp_RCCS resources.qrc)

@@ -1,5 +1,5 @@
 #include "VirtualJoystickPlugin.h"
-#include "JoystickWidget.h"
+#include "VirtualJoystick.h"
 
 
  VirtualJoystickPlugin::VirtualJoystickPlugin(QObject *parent)
@@ -26,7 +26,7 @@
 
  QWidget *VirtualJoystickPlugin::createWidget(QWidget *parent)
  {
-     return new JoystickWidget(parent, name().toStdString());
+     return new VirtualJoystick(parent, name().toStdString());
  }
 
  QString VirtualJoystickPlugin::name() const

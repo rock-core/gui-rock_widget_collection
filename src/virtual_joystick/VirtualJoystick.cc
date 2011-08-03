@@ -1,10 +1,8 @@
-#include "JoystickWidget.h"
+#include "VirtualJoystick.h"
 #include <cmath>
 #include <iostream>
 
-using namespace std;
-
-JoystickWidget::JoystickWidget(QWidget* parent, const std::string& name) : QWidget(parent)
+VirtualJoystick::VirtualJoystick(QWidget* parent, const std::string& name) : QWidget(parent)
 {
     filled = false;
 
@@ -32,16 +30,16 @@ JoystickWidget::JoystickWidget(QWidget* parent, const std::string& name) : QWidg
     startTimer(100);
 }
 
-JoystickWidget::~JoystickWidget()
+VirtualJoystick::~VirtualJoystick()
 {
 }
 
 
-void JoystickWidget::focus(bool in) {
+void VirtualJoystick::focus(bool in) {
     setVisible(in);
 }
 
-void JoystickWidget::paintEvent(QPaintEvent* event)
+void VirtualJoystick::paintEvent(QPaintEvent* event)
 {
     (void)event;
     QPainter painter(this);
@@ -57,7 +55,7 @@ void JoystickWidget::paintEvent(QPaintEvent* event)
 }
 
 
-void JoystickWidget::calculateCoordinates(void) {
+void VirtualJoystick::calculateCoordinates(void) {
     height = 0; 
     maxHeight = 1;
     if (mousePosition.y() < painterCenter.y()-90)
@@ -72,13 +70,13 @@ void JoystickWidget::calculateCoordinates(void) {
 	height = maxHeight;
 }
 
-void JoystickWidget::paintCross(QPainter &painter)
+void VirtualJoystick::paintCross(QPainter &painter)
 {
     painter.drawLine(0, 125, 250, 125);
     painter.drawLine(125, 0, 125, 250);
 }
 
-void JoystickWidget::paintBase(QPainter& painter)
+void VirtualJoystick::paintBase(QPainter& painter)
 {
     painter.setPen(Qt::transparent);
     painter.setBrush(baseGrad);
@@ -91,7 +89,7 @@ void JoystickWidget::paintBase(QPainter& painter)
     painter.drawEllipse(widgetCenter-QPoint(0, 10), 16, 16);
 }
 
-void JoystickWidget::paintStick(QPainter& painter)
+void VirtualJoystick::paintStick(QPainter& painter)
 { 
     painterAngle = angle(painterCenter, mousePosition);
 
@@ -123,17 +121,17 @@ void JoystickWidget::paintStick(QPainter& painter)
 }
 
 
-double JoystickWidget::distance(QPointF A, QPointF B)
+double VirtualJoystick::distance(QPointF A, QPointF B)
 {
     return sqrt(pow(A.x()-B.x(), 2) + pow(A.y()-B.y(), 2));
 }
 
-double JoystickWidget::angle(QPointF A, QPointF B)
+double VirtualJoystick::angle(QPointF A, QPointF B)
 {
     return atan2(B.x()-A.x(), A.y()-B.y()) * 180 / M_PI;
 }
 
-void JoystickWidget::drawMouseRects(QPainter &painter)
+void VirtualJoystick::drawMouseRects(QPainter &painter)
 {
     painter.setPen(Qt::DashLine);
     painter.drawLine(250/3, 0, 250/3, 250);
@@ -142,7 +140,7 @@ void JoystickWidget::drawMouseRects(QPainter &painter)
     painter.drawLine(0, 500/3, 250, 500/3);
 }
 
-QPointF JoystickWidget::calculateAxis(bool active)
+QPointF VirtualJoystick::calculateAxis(bool active)
 {
     if(!active)
 	return QPointF(0,0);
@@ -160,7 +158,7 @@ QPointF JoystickWidget::calculateAxis(bool active)
     return  bc;
 }
 
-void JoystickWidget::mouseMoveEvent(QMouseEvent* event)
+void VirtualJoystick::mouseMoveEvent(QMouseEvent* event)
 {
     mousePosition = event->posF();
     axisValues = calculateAxis(followMouse);
@@ -168,7 +166,7 @@ void JoystickWidget::mouseMoveEvent(QMouseEvent* event)
     update();
 }  
 
-void JoystickWidget::mousePressEvent(QMouseEvent *event)
+void VirtualJoystick::mousePressEvent(QMouseEvent *event)
 {
     switch (event->button()) {
     case Qt::RightButton:
@@ -191,7 +189,7 @@ void JoystickWidget::mousePressEvent(QMouseEvent *event)
 }
 
 
-void JoystickWidget::mouseReleaseEvent(QMouseEvent* event) {
+void VirtualJoystick::mouseReleaseEvent(QMouseEvent* event) {
     if (pressed)
 	return;
     if (event->button() == Qt::LeftButton) {
@@ -202,7 +200,7 @@ void JoystickWidget::mouseReleaseEvent(QMouseEvent* event) {
     }
 }
 
-void JoystickWidget::timerEvent(QTimerEvent *event) 
+void VirtualJoystick::timerEvent(QTimerEvent *event) 
 {
     if (pressed == false)
 	return;

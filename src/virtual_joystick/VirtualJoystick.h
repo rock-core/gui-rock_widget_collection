@@ -1,17 +1,17 @@
-#ifndef _JOYSTICK_WIDGET_H
-#define _JOYSTICK_WIDGET_H
+#ifndef _VIRTUAL_JOYSTICK_WIDGET_H
+#define _VIRTUAL_JOYSTICK_WIDGET_H
 
 #include <QtGui>
 #include <cstring>
 
-class JoystickWidget : public QWidget {
+class VirtualJoystick : public QWidget {
 
 Q_OBJECT
 
     public:
 
-	JoystickWidget(QWidget *parent, const std::string &name);
-	~JoystickWidget();
+	VirtualJoystick(QWidget *parent, const std::string &name);
+	~VirtualJoystick();
 
     signals:
 	void moveSignal(double, double); // axis 1, axis 2 
