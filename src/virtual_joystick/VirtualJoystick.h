@@ -6,7 +6,7 @@
 
 class VirtualJoystick : public QWidget {
 
-Q_OBJECT
+    Q_OBJECT
 
     public:
 
@@ -14,7 +14,8 @@ Q_OBJECT
 	~VirtualJoystick();
 
     signals:
-	void moveSignal(double, double); // axis 1, axis 2 
+	// axis 1, axis 2 
+	void axisChanged(double, double); 
 
     private:
 	bool filled;

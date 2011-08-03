@@ -27,7 +27,7 @@ VirtualJoystick::VirtualJoystick(QWidget* parent, const std::string& name) : QWi
     baseColor = QColor(80, 80, 80);
     update();
     filled = true;
-    startTimer(100);
+    startTimer(30);
 }
 
 VirtualJoystick::~VirtualJoystick()
@@ -145,7 +145,7 @@ QPointF VirtualJoystick::calculateAxis(bool active)
     if(!active)
 	return QPointF(0,0);
     
-    QPointF bc(mousePosition.x() - 125, mousePosition.y() - 125);
+    QPointF bc(-(mousePosition.y() - 125), mousePosition.x() - 125);
     
     double dist = sqrt(pow(bc.x(),2) + pow(bc.y(), 2));
 
@@ -174,7 +174,7 @@ void VirtualJoystick::mousePressEvent(QMouseEvent *event)
 	pressed = !pressed;
 	axisValues = calculateAxis(followMouse);
 	update();
-	emit moveSignal(axisValues.x(), axisValues.y());
+	emit axisChanged(axisValues.x(), axisValues.y());
 	break;
 	
     case Qt::LeftButton:
@@ -196,16 +196,16 @@ void VirtualJoystick::mouseReleaseEvent(QMouseEvent* event) {
 	followMouse = false;
 	axisValues = calculateAxis(followMouse);
 	update();
-	emit moveSignal(axisValues.x(), axisValues.y());
+	emit axisChanged(axisValues.x(), axisValues.y());
     }
 }
 
 void VirtualJoystick::timerEvent(QTimerEvent *event) 
 {
-    if (pressed == false)
+    if (followMouse == false)
 	return;
     else {
-	emit moveSignal(axisValues.x(), axisValues.y());
+	emit axisChanged(axisValues.x(), axisValues.y());
     }
 }
 
