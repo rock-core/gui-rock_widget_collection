@@ -50,8 +50,11 @@ SET(COLLECTION_MOC_HDRS
   artificial_horizon/orientationplugin.h
   virtual_joystick/VirtualJoystick.h  
   virtual_joystick/VirtualJoystickPlugin.h
-	generic_widgets/PaintWidget.h
+  generic_widgets/PaintWidget.h
+  generic_widgets/RockSlider.h
+  generic_widgets/RockSliderPlugin.h
 )
+
 SET(COLLECTION_HDRS
   image_view/ImageView.h
   image_view/ImageViewGL.h
@@ -96,7 +99,9 @@ SET(COLLECTION_HDRS
   artificial_horizon/orientationplugin.h
   virtual_joystick/VirtualJoystick.h  
   virtual_joystick/VirtualJoystickPlugin.h
-    generic_widgets/PaintWidget.h
+  generic_widgets/PaintWidget.h
+  generic_widgets/RockSlider.h
+  generic_widgets/RockSliderPlugin.h
 )
 
 FILE(GLOB COLLECTION_SOURCES 
