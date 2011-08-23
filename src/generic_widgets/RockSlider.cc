@@ -37,7 +37,8 @@ int RockSlider::rangeValueToPixelPos(int pos) const
         sliderMin = gr.y();
         sliderMax = gr.bottom() - sliderLength + 1;
     }
-    return QStyle::sliderPositionFromValue(minimum(), maximum(), pos, sliderMax - sliderMin, opt.upsideDown);
+    //TODO Dosn't fit perfect, a few pixel misaligment is there, reason unknown...
+    return QStyle::sliderPositionFromValue(minimum(), maximum(), pos, sliderMax - sliderMin, opt.upsideDown) + sliderLength/2.0;
 }
 
 void RockSlider::paint_p(QPainter *painter)
@@ -45,7 +46,7 @@ void RockSlider::paint_p(QPainter *painter)
     QStyleOptionSlider opt;
     initStyleOption(&opt);
     QRect gr = style()->subControlRect(QStyle::CC_Slider, &opt, QStyle::SC_SliderGroove, this);
-    QRect sr = style()->subControlRect(QStyle::CC_Slider, &opt, QStyle::SC_SliderHandle, this);
+//    QRect sr = style()->subControlRect(QStyle::CC_Slider, &opt, QStyle::SC_SliderHandle, this);
     
     for(int i=0;i<markers.size();i++){
         int pos = rangeValueToPixelPos(markers[i].position);
