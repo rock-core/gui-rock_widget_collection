@@ -8,7 +8,6 @@
 #define	SONARVIEW_H
 
 #include "image_view/ImageView.h"
-#include <base/samples/sonar_scan.h>
 
 class QDESIGNER_WIDGET_EXPORT SonarView : public ImageView
 {
@@ -21,7 +20,6 @@ public:
 
 public slots:    
 	void setOpenGL(bool flag);
-        void setSonarScan2(base::samples::SonarScan *scan);
         void setSonarScan(const char *data, int size, double angle,double timeBetweenBins ,bool fromBearing=false);
 	void setPosition(double posX, double posY, double sigmaX, double sigmaY);
      	void setOrientation(const double orientation);

@@ -52,21 +52,6 @@ void SonarView::setOpenGL(bool flag)
    
 }
 
-void SonarView::setSonarScan2(base::samples::SonarScan *scan){
-	SonarViewGL *window = dynamic_cast<SonarViewGL*>(image_view_gl);
-	if(!window){
-		fprintf(stderr,"Cannot set data have no widget?!\n");
-		return;
-	}
- 	double newScale = (scan->time_beetween_bins/1e-9)/640.0;
-	if(newScale != lastScale){
-		window->reset(newScale);
-		lastScale = newScale;
-	}
-	//this->lastScale =  lastScale;
-	window->setData(scan->scanData,scan->angle/2.0*M_PI*6399.0);
-}
-
 void SonarView::setDistance(double distance, double angle){
 	SonarViewGL *window = dynamic_cast<SonarViewGL*>(image_view_gl);
 	double bearing = angle/(M_PI*2.0)*6399.0;

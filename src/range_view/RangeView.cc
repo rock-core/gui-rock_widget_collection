@@ -46,16 +46,6 @@ void RangeView::setOpenGL(bool flag)
    
 }
 
-void RangeView::setRangeScan2(base::samples::LaserScan *scan){
-	RangeViewGL *window = dynamic_cast<RangeViewGL*>(image_view_gl);
-	if(!window){
-		fprintf(stderr,"Cannot set data have no widget?!\n");
-		return;
-	}
-	std::vector<Eigen::Vector3d> data = scan->convertScanToPointCloud(Eigen::Affine3d());
-	window->setData(data);
-}
-	
 void RangeView::setRangeScan3(const QList<double> &data){
 	setRangeScan(data.toVector().data(),data.size());
 }
