@@ -144,7 +144,7 @@ public slots:
      * <li>MODE_UYVY
      * </ul>
      */
-    void addRawImage(const QString &mode, int pixel_size, int width, int height,const char* pbuffer);
+    void addRawImage(const QString &mode, int pixel_size, int width, int height,const char* pbuffer, const int size);
 
     /**
      * Adds a QImage to the widget.

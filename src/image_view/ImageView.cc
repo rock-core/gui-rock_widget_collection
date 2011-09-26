@@ -222,11 +222,11 @@ void ImageView::crop(int x, int y, int w, int h)
   calculateRects();
 }
 
-void ImageView::addRawImage(const QString &mode, int pixel_size,  int width,  int height,const char* pbuffer)
+void ImageView::addRawImage(const QString &mode, int pixel_size,  int width,  int height,const char* pbuffer, const int size)
 {
   //check if image size has been changed
   //zoom factor must be recalculated
-  if(frame_converter.copyFrameToQImageRGB888(originalImage,mode, pixel_size, width, height,pbuffer))
+  if(frame_converter.copyFrameToQImageRGB888(originalImage,mode, pixel_size, width, height,pbuffer,size))
   {
     this->image = this->originalImage;
     if(image_view_gl)
