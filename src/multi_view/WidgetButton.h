@@ -38,7 +38,7 @@ public:
     /**
      * Enum to determine the position of the thumbnails
      */
-    enum Position{Left, Top, Right, Bottom};
+    enum Position{Default, Left, Top, Right, Bottom};
 		
 
     /**

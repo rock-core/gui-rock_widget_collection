@@ -291,7 +291,7 @@ WidgetButton* MultiViewWidget::getButtonForWidget(QWidget* widget)
     return NULL;
 }
 
-void MultiViewWidget::addWidget(const QString &name, QWidget* widget_, const QIcon &icon, bool useOnlyIcon)
+void MultiViewWidget::addWidget(const QString &name, QWidget* widget_, const QIcon &icon, bool useOnlyIcon, WidgetButton::Position position)
 {
 		QWidget *widget = widget_;
    
@@ -346,22 +346,38 @@ void MultiViewWidget::addWidget(const QString &name, QWidget* widget_, const QIc
     //left->addWidget(widgetButton);
 
 		
-    switch(currentWidget->getPosition())
-    {
-			case WidgetButton::Left:
-        left->addWidget(widgetButton);
-				break;
-			case WidgetButton::Right:
-        right->addWidget(widgetButton);
-				break;
-			case WidgetButton::Bottom:
-        bottom->addWidget(widgetButton);
-				break;
-			case WidgetButton::Top:
-        top->addWidget(widgetButton);
-				break;
-		}
-
+    if(position != WidgetButton::Default){
+        switch(position){
+	    case WidgetButton::Left:
+                left->addWidget(widgetButton);
+                break;
+	    case WidgetButton::Right:
+                right->addWidget(widgetButton);
+                break;
+	    case WidgetButton::Top:
+                top->addWidget(widgetButton);
+                break;
+	    case WidgetButton::Bottom:
+                bottom->addWidget(widgetButton);
+                break;
+        }
+    }else{
+        switch(currentWidget->getPosition())
+        {
+            case WidgetButton::Left:
+                left->addWidget(widgetButton);
+                break;
+            case WidgetButton::Right:
+                right->addWidget(widgetButton);
+                break;
+            case WidgetButton::Bottom:
+                bottom->addWidget(widgetButton);
+                break;
+            case WidgetButton::Top:
+                top->addWidget(widgetButton);
+                break;
+        }
+    }
 				
     connect(widgetButton, SIGNAL(clicked()), this, SLOT(widgetClicked()));
     emit widgetButtonAdded(widgetButton);
