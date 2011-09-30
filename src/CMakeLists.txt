@@ -120,7 +120,7 @@ rock_vizkit_widget(rock_widget_collection
     MOC ${COLLECTION_MOC_HDRS}
     DEPS_PKGCONFIG base-types frame_helper QtCore QtGui
     DEPS_CMAKE LIBXML2 QWT GLU VTK
-    LIBS ${QT_QTCORE_LIBRARY} QVTK ${QT_QTGUI_LIBRARY} ${QT_QTOPENGL_LIBRARY} ${QT_QTDESIGNER_LIBRARY}
+    LIBS ${QT_QTCORE_LIBRARY} vtkVolumeRendering vtkRendering vtkCommon vtkFiltering vtkIO vtkGraphics QVTK ${QT_QTGUI_LIBRARY} ${QT_QTOPENGL_LIBRARY} ${QT_QTDESIGNER_LIBRARY}
     )
 
 add_executable(sonarTest

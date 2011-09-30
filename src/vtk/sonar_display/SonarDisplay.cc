@@ -13,11 +13,34 @@
 #include <vtkRenderer.h>
 #include <vtkJPEGReader.h>
 
+#include <vtkVolumeRayCastCompositeFunction.h>
+#include <vtkVolumeRayCastMapper.h>
 #include <vtkMath.h>
 #include <vtkDoubleArray.h>
 #include <vtkFieldData.h>
 #include <vtkPolyData.h>
 #include <vtkXYPlotActor.h>
+
+#include <vtkStructuredGrid.h>
+#include <vtkMath.h>
+#include <vtkHedgeHog.h>
+#include <vtkContourFilter.h>
+#include <vtkStructuredGridOutlineFilter.h>
+#include <vtkStructuredGridToPolyDataFilter.h>
+#include <vtkStructuredGridGeometryFilter.h>
+#include <vtkContourFilter.h>
+#include <vtkDataSetMapper.h>
+#include <vtkStructuredPoints.h>
+#include <vtkVolumeProperty.h>
+#include <vtkPiecewiseFunction.h>
+#include <vtkColorTransferFunction.h>
+
+#include <vtkFloatArray.h>
+#include "vtkPointData.h"
+#include "vtkPoints.h"
+#include "vtkProperty.h"
+
+#include "vtkCamera.h"
 
 
 //Q_EXPORT_PLUGIN2(SonarDisplay, SonarDisplay)
@@ -27,62 +50,107 @@ SonarDisplay::SonarDisplay(QWidget *parent):
 {
     this->resize(256,256);
 
-    //setup sphere
-    vtkSmartPointer<vtkSphereSource> sphereSource = 
-        vtkSmartPointer<vtkSphereSource>::New();
-    sphereSource->Update();
-    vtkSmartPointer<vtkPolyDataMapper> sphereMapper = 
-        vtkSmartPointer<vtkPolyDataMapper>::New();
-    sphereMapper->SetInputConnection(sphereSource->GetOutputPort());
-    vtkSmartPointer<vtkActor> sphereActor = 
-        vtkSmartPointer<vtkActor>::New();
-    sphereActor->SetMapper(sphereMapper);
+    const int number_of_bins = 100;
+    const int number_of_beams = 121;
+    const float distance_resolution = 0.1;
+    const float horizontal_angular_resolution = 30 * vtkMath::DegreesToRadians();
+    const float vertical_angular_resolution = 3.0* vtkMath::DegreesToRadians();
+
+    // Create the structured grid.
+    vtkStructuredPoints *spoints = vtkStructuredPoints::New();
+    spoints->SetScalarTypeToUnsignedChar();
+    vtkStructuredGrid *sgrid = vtkStructuredGrid::New();
+    sgrid->SetDimensions(number_of_beams,number_of_bins,2);
+    spoints->SetDimensions(number_of_beams,number_of_bins,2);
+
+    vtkPoints *points = vtkPoints::New();
+    points->Allocate(number_of_bins*number_of_beams*2);
+    double point[3];
+    double radius;
+    double theta;
+
+    int offset =0;
+    for(int k= 1;k>=-1;k-=2)
+    {
+        for (int j=0; j<number_of_bins; j++) 
+        {
+            radius = j* distance_resolution;
+            point[2] = k*radius*sin(0.5*horizontal_angular_resolution);
+            for (int i=0; i< number_of_beams; i++) 
+            {
+                theta = vertical_angular_resolution*i;
+                point[0] = radius * cos(theta);
+                point[1] = radius * sin(theta);
+                points->InsertNextPoint(point);
+            }
+            spoints->SetScalarComponentFromFloat(10,j,k,0,200);
+        }
+    }
+    sgrid->SetPoints(points);
+    
+    //sgrid->GetPointData()->SetVectors(vectors);
+    //vectors->Delete();
+
+
+
+
+    // We create a simple pipeline to display the data.
+    vtkDataSetMapper *isoMapper = vtkDataSetMapper::New();
+    isoMapper->SetInput(sgrid);
+    isoMapper->ScalarVisibilityOff();
+
+    //   vtkPolyDataMapper *sgridMapper = vtkPolyDataMapper::New();
+    //   sgridMapper->SetInputConnection(isoMapper->GetOutputPort());
+    vtkActor *sgridActor = vtkActor::New();
+    //   sgridActor->SetMapper(sgridMapper);
+    sgridActor->SetMapper(isoMapper);
+    sgridActor->GetProperty()->SetColor(0,0,0);
+    sgridActor->GetProperty()->SetRepresentationToWireframe();
+
+    vtkVolumeProperty *volumeProperty = vtkVolumeProperty::New();
+    volumeProperty->ShadeOff();
+    volumeProperty->SetInterpolationType(VTK_LINEAR_INTERPOLATION);
+
+    vtkSmartPointer<vtkPiecewiseFunction> compositeOpacity = vtkSmartPointer<vtkPiecewiseFunction>::New();
+    compositeOpacity->AddPoint(0.0,0.0);
+    compositeOpacity->AddPoint(80.0,1.0);
+    compositeOpacity->AddPoint(80.1,0.0);
+    compositeOpacity->AddPoint(255.0,0.0);
+    volumeProperty->SetScalarOpacity(compositeOpacity); // composite first.
+
+    vtkSmartPointer<vtkColorTransferFunction> color = vtkSmartPointer<vtkColorTransferFunction>::New();
+    color->AddRGBPoint(0.0  ,0.0,0.0,1.0);
+    color->AddRGBPoint(40.0  ,1.0,0.0,0.0);
+    color->AddRGBPoint(255.0,1.0,1.0,1.0);
+    volumeProperty->SetColor(color);
+
+    vtkVolumeRayCastCompositeFunction *compositeFunction = vtkVolumeRayCastCompositeFunction::New();
+    vtkVolumeRayCastMapper *volumeMapper = vtkVolumeRayCastMapper::New();
+
+    volumeMapper->SetVolumeRayCastFunction(compositeFunction);
+    volumeMapper->SetInput(sgrid);
+
+    vtkSmartPointer<vtkVolume> volume = vtkSmartPointer<vtkVolume>::New();
+    volume->SetMapper(volumeMapper);
+    volume->SetProperty(volumeProperty);
 
     //setup window
     vtkSmartPointer<vtkRenderWindow> renderWindow = 
         vtkSmartPointer<vtkRenderWindow>::New();
 
     //setup renderer
-    vtkSmartPointer<vtkRenderer> renderer = 
-        vtkSmartPointer<vtkRenderer>::New();
+    vtkSmartPointer<vtkRenderer> renderer = vtkSmartPointer<vtkRenderer>::New();
     renderWindow->AddRenderer(renderer);
 
-    renderer->AddActor(sphereActor);
+    renderer->AddActor(sgridActor);
     renderer->ResetCamera();
 
+    renderer->AddVolume(volume);
 
-    vtkSmartPointer<vtkXYPlotActor> plot = 
-        vtkSmartPointer<vtkXYPlotActor>::New();
-    plot->ExchangeAxesOff();
-    plot->SetLabelFormat( "%g" );
-    plot->SetXTitle( "Level" );
-    plot->SetYTitle( "Frequency" );
-    plot->SetXValuesToIndex();
-
-    for (unsigned int i = 0 ; i < 2 ; i++)
-    {
-        vtkSmartPointer<vtkDoubleArray> array_s = 
-            vtkSmartPointer<vtkDoubleArray>::New();
-        vtkSmartPointer<vtkFieldData> field = 
-            vtkSmartPointer<vtkFieldData>::New();
-        vtkSmartPointer<vtkDataObject> data = 
-            vtkSmartPointer<vtkDataObject>::New();
-
-        for (int b = 0; b < 30; b++)   /// Assuming an array of 30 elements
-        {
-            double val = vtkMath::Random(0.0,2.0);
-            array_s->InsertValue(b,val);
-        }
-        field->AddArray(array_s);
-        data->SetFieldData(field);
-        plot->AddDataObjectInput(data);    
-    }
-
-    plot->SetPlotColor(0,1,0,0);
-    plot->SetPlotColor(1,0,1,0);
-
-
-    renderer->AddActor(plot);
+    renderer->SetBackground(1,1,1);
+    renderer->GetActiveCamera()->Elevation(60.0);
+    renderer->GetActiveCamera()->Azimuth(30.0);
+    renderer->GetActiveCamera()->Zoom(1.25);
     this->SetRenderWindow(renderWindow);
 }
 
