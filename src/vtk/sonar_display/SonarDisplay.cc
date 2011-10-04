@@ -78,21 +78,29 @@ SonarDisplay::SonarDisplay(QWidget *parent):
             lut->SetHueRange(0.55,1);
             lut->SetValueRange(1,1.0);
             lut->SetSaturationRange(1,1.0);
+            lut->SetTableRange(0,255);
             lut->Build();
     std::vector<vtkSmartPointer<vtkStructuredGrid> >::iterator iter = sonar_grid.begin();
     for(;iter != sonar_grid.end(); ++iter)
     {
-        vtkDataSetMapper *set_mapper = vtkDataSetMapper::New();
-        set_mapper->SetInputConnection((*iter)->GetProducerPort());
+        //vtkDataSetMapper *set_mapper = vtkDataSetMapper::New();
+        vtkStructuredGridGeometryFilter *filter = vtkStructuredGridGeometryFilter::New();
+        filter->SetExtent(0,1,0,2000,0,0);
+        filter->SetInputConnection((*iter)->GetProducerPort());
+        vtkPolyDataMapper *set_mapper = vtkPolyDataMapper::New();
+        set_mapper->SetInputConnection(filter->GetOutputPort());
         set_mapper->SetLookupTable(lut);
-        set_mapper->SetScalarRange(0,255);
+        set_mapper->UseLookupTableScalarRangeOn(); 
+        set_mapper->SetColorModeToMapScalars();
+       // set_mapper->SetScalarRange(0,255);
 
         vtkSmartPointer<vtkActor> sonar_grid_actor = vtkSmartPointer<vtkActor>::New();
         sonar_grid_actor->SetMapper(set_mapper);
-        //sonar_grid_actor->GetProperty()->SetOpacity(0.90);
+      //  sonar_grid_actor->GetProperty()->SetOpacity(0.80);
 
         renderer->AddActor(sonar_grid_actor);
         set_mapper->Delete();
+        filter->Delete();
     }
     lut->Delete();
 
@@ -167,10 +175,10 @@ void SonarDisplay::setUpStructuredGrid(vtkSmartPointer<vtkStructuredGrid> sgrid,
     vtkPoints *points = vtkPoints::New();
     points->Allocate(number_of_bins*number_of_beams*2);
 
-    int k =1;
+    int k =-1;
     if (vertical_resolution == 0)
         k = 0;
-    for(;k>=-1;k-=2)
+    for(;k<=1;k+=2)
     {
         for (int j=1; j<=number_of_bins; j++) 
         {
@@ -270,10 +278,10 @@ void SonarDisplay::addSonarBeam(float bearing,int number_of_bins,const char* pbu
         sonar_data[start_index]->Modified();
     }while(start_index != end_index && ++start_index);
 
-    if(abs((*oldest)->GetMTime() - sonar_data[end_index]->GetMTime()) > 1000)
+    if(last_index%3 && last_index != index && abs((*oldest)->GetMTime() - sonar_data[end_index]->GetMTime()) > 10e4)
     {
         void* p  = (*oldest)->WriteVoidPointer(0,number_of_bins);
-        memset(p,120,number_of_bins);
+        memset(p,0,number_of_bins);
         (*oldest)->Modified();
     }
 
