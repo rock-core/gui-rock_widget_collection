@@ -42,65 +42,131 @@
 #include "vtkPointData.h"
 #include "vtkPoints.h"
 #include "vtkProperty.h"
+#include <vtkPicker.h>
+#include <vtkPropPicker.h>
+#include <vtkTransform.h>
 
 #include "vtkCamera.h"
 
 
 //Q_EXPORT_PLUGIN2(SonarDisplay, SonarDisplay)
+void KeyEvent::Execute (vtkObject *caller, unsigned long eventId, void *callData)
+{
+    vtkRenderWindowInteractor *interactor = vtkRenderWindowInteractor::SafeDownCast(caller);
+    vtkPropPicker *picker = vtkPropPicker::SafeDownCast(interactor->GetPicker());
+    if(picker->GetActor())
+    {
+        int id =  p_sonar_display->getActorID(picker->GetActor());
+        vtkStructuredGridGeometryFilter *filter = p_sonar_display->getFilter(id);
+        int extent[6];
+        filter->GetExtent(extent);
+
+        switch(interactor->GetKeyCode())
+        {
+        case '1':
+            p_sonar_display->reset();
+            break;
+
+        case '2':
+            p_sonar_display->setPlotData(id);
+            break;
+
+        case '8':
+            filter->SetExtent(0,1,0,2000,1,1);
+            filter->Modified();
+            break;
+        case '9':
+            filter->SetExtent(0,0,0,2000,0,1);
+            filter->Modified();
+            break;
+        case '0':
+            filter->SetExtent(0,1,bin_number,bin_number,0,1);
+            filter->Modified();
+            break;
+        case '+':
+            if(extent[1] == 1 && extent[5] == 1)
+            {
+                ++bin_number;
+                filter->SetExtent(0,1,bin_number,bin_number,0,1);
+                filter->Modified();
+            }
+            break;
+        case '-':
+            if(extent[1] == 1 && extent[5] == 1)
+            {
+                --bin_number;
+                filter->SetExtent(0,1,bin_number,bin_number,0,1);
+                filter->Modified();
+            }
+            break;
+        }
+        p_sonar_display->GetRenderWindow()->Render();
+    }
+    else
+    {
+        switch(interactor->GetKeyCode())
+        {
+        case '1':
+            p_sonar_display->reset();
+            break;
+
+        }
+    
+    }
+}
+
 
 SonarDisplay::SonarDisplay(QWidget *parent):
-  QVTKWidget(parent),
-  number_of_beams(120), //121
-  number_of_bins(300),
-  start_bearing(0),
-  end_bearing(2*M_PI),
-  horizontal_resolution(3.0*vtkMath::DegreesToRadians()),
-  vertical_resolution(30.0*vtkMath::DegreesToRadians()),
-  distance_resolution(0.05),
-  paramerter_auto(false),
-  last_index(0),
-  number_of_writes(0),
-  sonar_wireframe(vtkSmartPointer<vtkStructuredGrid>::New()),
-  render_window(vtkSmartPointer<vtkRenderWindow>::New())
+    QVTKWidget(parent),
+    number_of_beams(120), //121
+    number_of_bins(300),
+    start_bearing(0),
+    end_bearing(2*M_PI),
+    horizontal_resolution(3.0*vtkMath::DegreesToRadians()),
+    vertical_resolution(30.0*vtkMath::DegreesToRadians()),
+    distance_resolution(0.05),
+    paramerter_auto(false),
+    last_index(0),
+    key_event(this),
+    sonar_wireframe(vtkSmartPointer<vtkStructuredGrid>::New()),
+    render_window(vtkSmartPointer<vtkRenderWindow>::New()),
+    renderer(vtkSmartPointer<vtkRenderer>::New()),
+    plot_actor(vtkSmartPointer<vtkXYPlotActor>::New())
 {
     this->resize(256,256);
     setUpSonar(number_of_beams,number_of_bins,horizontal_resolution,distance_resolution,vertical_resolution);
-
-    //setup renderer
-    vtkSmartPointer<vtkRenderer> renderer = vtkSmartPointer<vtkRenderer>::New();
     render_window->AddRenderer(renderer);
-    
+
     //set up pipeline (mapper + actors)
-    //volume grid 
 
     vtkLookupTable *lut = vtkLookupTable::New();
-            lut->SetNumberOfColors(255);
-            lut->SetHueRange(0.55,1);
-            lut->SetValueRange(1,1.0);
-            lut->SetSaturationRange(1,1.0);
-            lut->SetTableRange(0,255);
-            lut->Build();
+    lut->SetNumberOfColors(255);
+    lut->SetHueRange(0.55,1);
+    lut->SetValueRange(1,1.0);
+    lut->SetSaturationRange(1,1.0);
+    lut->SetTableRange(0,255);
+    lut->Build();
     std::vector<vtkSmartPointer<vtkStructuredGrid> >::iterator iter = sonar_grid.begin();
     for(;iter != sonar_grid.end(); ++iter)
     {
-        //vtkDataSetMapper *set_mapper = vtkDataSetMapper::New();
-        vtkStructuredGridGeometryFilter *filter = vtkStructuredGridGeometryFilter::New();
-        filter->SetExtent(0,1,0,2000,0,0);
+        vtkSmartPointer<vtkStructuredGridGeometryFilter> filter = vtkSmartPointer<vtkStructuredGridGeometryFilter>::New();
         filter->SetInputConnection((*iter)->GetProducerPort());
-        vtkPolyDataMapper *set_mapper = vtkPolyDataMapper::New();
-        set_mapper->SetInputConnection(filter->GetOutputPort());
-        set_mapper->SetLookupTable(lut);
-        set_mapper->UseLookupTableScalarRangeOn(); 
-        set_mapper->SetColorModeToMapScalars();
-       // set_mapper->SetScalarRange(0,255);
+        vtkSmartPointer<vtkPolyDataMapper> mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
+        mapper->SetInputConnection(filter->GetOutputPort());
+        mapper->SetLookupTable(lut);
+        mapper->UseLookupTableScalarRangeOn(); 
+        mapper->SetColorModeToMapScalars();
+        // set_mapper->SetScalarRange(0,255);
 
         vtkSmartPointer<vtkActor> sonar_grid_actor = vtkSmartPointer<vtkActor>::New();
-        sonar_grid_actor->SetMapper(set_mapper);
-      //  sonar_grid_actor->GetProperty()->SetOpacity(0.80);
+        sonar_grid_actor->SetMapper(mapper);
+        //  sonar_grid_actor->GetProperty()->SetOpacity(0.80);
+
+        sonar_filter.push_back(filter);
+        sonar_mapper.push_back(mapper);
+        sonar_actor.push_back(sonar_grid_actor);
 
         renderer->AddActor(sonar_grid_actor);
-        set_mapper->Delete();
-        filter->Delete();
     }
     lut->Delete();
 
@@ -114,27 +180,96 @@ SonarDisplay::SonarDisplay(QWidget *parent):
     wireframe_actor->SetMapper(set_mapper);
     wireframe_actor->GetProperty()->SetColor(0.5,0.5,0.5);
     wireframe_actor->GetProperty()->SetRepresentationToWireframe();
-    wireframe_actor->GetProperty()->SetLineWidth(1.1);
+    wireframe_actor->GetProperty()->SetLineWidth(1.2);
+    wireframe_actor->PickableOff();
+    wireframe_actor->SetPosition(0,0,0.1);
     set_mapper->Delete();
 
     renderer->AddActor(wireframe_actor);
-    renderer->ResetCamera();
-    renderer->SetBackground(0.1,0.1,0.1);
-    renderer->GetActiveCamera()->Elevation(60.0);
-    renderer->GetActiveCamera()->Azimuth(30.0);
-    renderer->GetActiveCamera()->Zoom(1.25);
     this->SetRenderWindow(render_window);
+
+    //plotting
+    //plot_actor->ExchangeAxesOff();
+    //plot_actor->SetXValuesToValue();
+    plot_actor->SetWidth(0.5);
+    plot_actor->SetHeight(0.50);
+    plot_actor->SetPosition(0.04,0);
+    plot_actor->PlotPointsOn();
+    plot_actor->PlotLinesOn();
+    //renderer->AddActor(plot_actor);
+
+    //register events
+    render_window->GetInteractor()->AddObserver(vtkCommand::KeyReleaseEvent,&key_event,0.0);
+
+    reset();
+}
+
+int SonarDisplay::getActorID(const vtkActor *actor)
+{
+    std::vector<vtkSmartPointer<vtkActor> >::iterator iter = sonar_actor.begin();
+    for(int i=0;iter != sonar_actor.end();++iter,++i)
+        if((*iter).GetPointer() == actor)
+            return i;
+
+    return -1;
+}
+
+vtkStructuredGridGeometryFilter* SonarDisplay::getFilter(int id)
+{
+    return sonar_filter[id];
+}
+vtkUnsignedCharArray* SonarDisplay::getData(int id)
+{
+    return sonar_data[id];
+}
+
+void SonarDisplay::setPlotData(int id)
+{
+    vtkSmartPointer<vtkFieldData> field = vtkSmartPointer<vtkFieldData>::New();
+    vtkSmartPointer<vtkDataObject> data = vtkSmartPointer<vtkDataObject>::New();
+    field->AddArray(sonar_data[id]);
+    data->SetFieldData(field);
+    plot_actor->RemoveAllInputs();
+    plot_actor->AddDataObjectInput(data);
+    renderer->AddActor(plot_actor);
+}
+
+
+void SonarDisplay::reset()
+{
+    std::vector<vtkSmartPointer<vtkStructuredGridGeometryFilter> >::iterator iter = sonar_filter.begin();
+    while(iter != sonar_filter.end())
+    {
+        (*iter)->SetExtent(0,1,0,number_of_bins,1,1);
+        (*iter)->Modified();
+        ++iter;
+    }
+
+    renderer->SetBackground(0.1,0.1,0.1);
+    renderer->GetActiveCamera()->SetPosition(0,0,1);
+    //renderer->GetActiveCamera()->Elevation(0.0);
+    //renderer->GetActiveCamera()->Azimuth(0.0);
+    //renderer->GetActiveCamera()->Dolly(0.0);
+    //renderer->GetActiveCamera()->SetViewUp(0,1,0);
+    renderer->GetActiveCamera()->Yaw(0.0);
+    renderer->GetActiveCamera()->Roll(0.0);
+    renderer->GetActiveCamera()->Pitch(0.0);
+    renderer->GetActiveCamera()->SetFocalPoint(0,0,0);
+    renderer->ResetCamera();
+    renderer->GetActiveCamera()->ParallelProjectionOn();
+    renderer->GetActiveCamera()->Zoom(1.40);
+    render_window->Render();
 }
 
 
 void SonarDisplay::setUpSonar(int number_of_beams, int number_of_bins,
-                               float horizontal_resolution, float distance_resolution,
-                               float vertical_resolution)
+        float horizontal_resolution, float distance_resolution,
+        float vertical_resolution)
 {
     this->number_of_beams = number_of_beams;
     this->number_of_bins = number_of_bins;
-   // this->start_bearing = start_bearing;
-   // this->end_bearing = end_bearing;
+    // this->start_bearing = start_bearing;
+    // this->end_bearing = end_bearing;
     this->horizontal_resolution = horizontal_resolution;
     this->vertical_resolution = vertical_resolution;
     this->distance_resolution = distance_resolution;
