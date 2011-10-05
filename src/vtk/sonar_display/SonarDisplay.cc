@@ -63,12 +63,21 @@ void KeyEvent::Execute (vtkObject *caller, unsigned long eventId, void *callData
 
         switch(interactor->GetKeyCode())
         {
+        case 'p':
+            p_sonar_display->setPlotData(id);
+            break;
         case '1':
             p_sonar_display->reset();
             break;
 
         case '2':
-            p_sonar_display->setPlotData(id);
+            if (p_sonar_display->isPlotVisible())
+                p_sonar_display->setPlotVisible(false);
+            else
+            {
+                p_sonar_display->setPlotVisible(true);
+                p_sonar_display->setPlotData(id);
+            }
             break;
 
         case '8':
@@ -191,12 +200,15 @@ SonarDisplay::SonarDisplay(QWidget *parent):
     //plotting
     //plot_actor->ExchangeAxesOff();
     //plot_actor->SetXValuesToValue();
-    plot_actor->SetWidth(0.5);
+    plot_actor->SetWidth(0.9);
+    plot_actor->SetXTitle("");
+    plot_actor->SetYTitle("");
     plot_actor->SetHeight(0.50);
     plot_actor->SetPosition(0.04,0);
     plot_actor->PlotPointsOn();
     plot_actor->PlotLinesOn();
-    //renderer->AddActor(plot_actor);
+    plot_actor->SetVisibility(false);
+    renderer->AddActor(plot_actor);
 
     //register events
     render_window->GetInteractor()->AddObserver(vtkCommand::KeyReleaseEvent,&key_event,0.0);
@@ -225,13 +237,23 @@ vtkUnsignedCharArray* SonarDisplay::getData(int id)
 
 void SonarDisplay::setPlotData(int id)
 {
+    if(!isPlotVisible())
+        return;
     vtkSmartPointer<vtkFieldData> field = vtkSmartPointer<vtkFieldData>::New();
     vtkSmartPointer<vtkDataObject> data = vtkSmartPointer<vtkDataObject>::New();
     field->AddArray(sonar_data[id]);
     data->SetFieldData(field);
     plot_actor->RemoveAllInputs();
     plot_actor->AddDataObjectInput(data);
-    renderer->AddActor(plot_actor);
+}
+bool SonarDisplay::isPlotVisible()
+{
+    return plot_actor->GetVisibility();
+}
+
+void SonarDisplay::setPlotVisible(bool val)
+{
+    plot_actor->SetVisibility(val);
 }
 
 

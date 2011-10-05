@@ -81,6 +81,8 @@ class QDESIGNER_WIDGET_EXPORT SonarDisplay : public QVTKWidget
         int getNumberOfBeams(){return number_of_beams;};
         void setPlotData(int id);
         void reset();
+        bool isPlotVisible();
+        void setPlotVisible(bool val);
 
     private:
         int number_of_beams;
