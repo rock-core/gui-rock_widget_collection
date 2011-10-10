@@ -18,7 +18,7 @@ PointItem::PointItem(const QList<int> &points_x,const QList<int> &points_y, int 
     
 }
 
-void PointItem::draw(QPainter* painter)
+void PointItem::draw(QPainter* painter, QRectF &source, QRectF &target)
 {
   //drawing on non opengl contexts is not supported at the moment
 }

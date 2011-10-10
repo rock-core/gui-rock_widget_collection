@@ -38,7 +38,7 @@ public:
     /**
      * @see DrawItem#draw
      */
-    void draw(QPainter* painter);
+    void draw(QPainter* painter, QRectF &source, QRectF &target);
     virtual void renderOnGl(QGLWidget &widget,QRectF &source,QRectF &target);
 
   public slots:

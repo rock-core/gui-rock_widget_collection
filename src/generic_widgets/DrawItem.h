@@ -52,7 +52,7 @@ class DrawItem : public QObject
      * avstract method to draw the item
      * @param painter the painter with wich to draw the shape
      */
-    virtual void draw(QPainter* painter) = 0;
+    virtual void draw(QPainter* painter,QRectF &source,QRectF &target) = 0;
     
     bool operator==(const DrawItem &other)
     {

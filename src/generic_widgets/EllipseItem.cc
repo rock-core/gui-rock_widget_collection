@@ -14,9 +14,9 @@ EllipseItem::EllipseItem(int posX, int posY, int groupNr, const QColor &color, i
 {
 }
 
-void EllipseItem::draw(QPainter* painter)
+void EllipseItem::draw(QPainter* painter, QRectF &source, QRectF &target)
 {
-    FillItem::draw(painter);
+    FillItem::draw(painter,source,target);
     painter->drawEllipse(posX, posY, width, height);
 }
 

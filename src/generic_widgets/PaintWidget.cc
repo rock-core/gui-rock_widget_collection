@@ -136,6 +136,8 @@ void PaintWidget::drawDrawItemsToPainter(QPainter &painter,bool all)
     if(!isOpenGL)
       all = true;
 
+    QRectF target = painter.viewport();
+
     if(!items.empty())
     {
         painter.setRenderHint(QPainter::TextAntialiasing, true);
@@ -144,7 +146,7 @@ void PaintWidget::drawDrawItemsToPainter(QPainter &painter,bool all)
         {
 	  if(!disabledGroups.contains((*iter)->getGroupNr()))
 	    if(!(*iter)->onOpenGL() || all == true)
-                (*iter)->draw(&painter);
+                (*iter)->draw(&painter,target,target);
         }
     }
 }

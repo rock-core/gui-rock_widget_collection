@@ -17,9 +17,9 @@ ArrowItem::~ArrowItem()
 {
 }
 
-void ArrowItem::draw(QPainter* painter)
+void ArrowItem::draw(QPainter* painter,QRectF &source,QRectF &target)
 {
-    FillItem::draw(painter);
+    FillItem::draw(painter,source,target);
     QPen pen = painter->pen();
     painter->drawLine(posX, posY, endX, endY);
     double arrowWidth = 10 + (2*lineWidth);

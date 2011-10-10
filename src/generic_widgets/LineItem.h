@@ -68,7 +68,7 @@ public slots:
      * @see DrawItem#draw
      */
     void renderOnGl(QGLWidget &widget,QRectF &source,QRectF &target);
-    void draw(QPainter* painter);
+    void draw(QPainter* painter, QRectF &source, QRectF &target);
 private:
     /** The x position of the end point*/
     int endX;

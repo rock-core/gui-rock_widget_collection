@@ -65,7 +65,7 @@ public:
     /**
      * @see DrawItem#draw
      */
-    void draw(QPainter* painter);
+    void draw(QPainter* painter, QRectF &source, QRectF &target);
 protected:
     /** The width of the Rectangle*/
     int width;

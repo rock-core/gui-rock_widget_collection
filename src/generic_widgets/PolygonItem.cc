@@ -20,9 +20,9 @@ PolygonItem::~PolygonItem()
 {
 }
 
-void PolygonItem::draw(QPainter* painter)
+void PolygonItem::draw(QPainter* painter, QRectF &source, QRectF &target)
 {
-    FillItem::draw(painter);
+    FillItem::draw(painter,source,target);
     painter->drawPolygon(getAllPoints(), getNumberOfPoints());
 }
 

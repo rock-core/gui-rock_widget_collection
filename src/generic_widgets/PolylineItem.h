@@ -70,7 +70,7 @@ public:
     /**
      * @see DrawItem#draw
      */
-    void draw(QPainter* painter);
+    void draw(QPainter* painter, QRectF &source, QRectF &target);
 protected:
     /** List of points for the polyline*/
     QList<QPoint> points;

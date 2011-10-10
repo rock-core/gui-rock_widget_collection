@@ -21,7 +21,7 @@ PolylineItem::~PolylineItem()
 {
 }
 
-void PolylineItem::draw(QPainter* painter)
+void PolylineItem::draw(QPainter* painter, QRectF &source, QRectF &target)
 {
     addPenStyle(painter);
     painter->drawPolyline(getAllPoints(), getNumberOfPoints());

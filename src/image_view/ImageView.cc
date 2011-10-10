@@ -260,7 +260,7 @@ void ImageView::drawDrawItemsToPainter(QPainter &painter,bool all)
         {
 	  if(!disabledGroups.contains((*iter)->getGroupNr()))
 	    if(!(*iter)->onOpenGL() || all == true)
-                (*iter)->draw(&painter);
+                (*iter)->draw(&painter,source,target);
         }
     }
 }
