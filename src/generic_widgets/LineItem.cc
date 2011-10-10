@@ -18,8 +18,13 @@ LineItem::LineItem(int posX, int posY, int groupNr, const QColor &color, int end
 
 void LineItem::draw(QPainter* painter, QRectF &source, QRectF &target)
 {
-    addPenStyle(painter);
-    painter->drawLine(posX, posY, endX, endY);
+  float factor_x = ((float)target.width())/source.width();
+  float factor_y = ((float)target.height())/source.height();
+  addPenStyle(painter);
+  painter->drawLine(factor_x*posX+target.x(),
+                    posY*factor_y+target.y(),
+                    target.x()+factor_x*endX,
+                    target.y()+factor_y*endY);
 }
 
 
