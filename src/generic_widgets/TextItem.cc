@@ -15,7 +15,7 @@ DrawItem(posX, posY, groupNr, QColor(0,0,0)),text(text),font(QFont("Serif")),bac
   original_point_size = font.pointSizeF();
 }
 
-void TextItem::draw(QPainter* painter)
+void TextItem::draw(QPainter* painter, QRectF &source, QRectF &target)
 {
     QRect rect = painter->viewport();
     painter->setFont(font);

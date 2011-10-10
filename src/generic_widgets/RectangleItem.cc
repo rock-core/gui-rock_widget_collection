@@ -16,9 +16,9 @@ RectangleItem::RectangleItem(int posX, int posY, int groupNr, const QColor &colo
     this->height = height;
 }
 
-void RectangleItem::draw(QPainter* painter)
+void RectangleItem::draw(QPainter* painter, QRectF &source, QRectF &target)
 {
-    FillItem::draw(painter);
+    FillItem::draw(painter,source,target);
     painter->drawRect(posX, posY, width, height);    
 }
 

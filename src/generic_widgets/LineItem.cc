@@ -16,7 +16,7 @@ LineItem::LineItem(int posX, int posY, int groupNr, const QColor &color, int end
     this->endY = endY;
 }
 
-void LineItem::draw(QPainter* painter)
+void LineItem::draw(QPainter* painter, QRectF &source, QRectF &target)
 {
     addPenStyle(painter);
     painter->drawLine(posX, posY, endX, endY);

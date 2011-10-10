@@ -55,7 +55,7 @@ public:
     /**
      * @see DrawItem#draw(QPainter*)
      */
-    void draw(QPainter* painter);
+    void draw(QPainter* painter, QRectF &source, QRectF &target);
 protected:
     /**
      * Adds the brush style handling filling the shape

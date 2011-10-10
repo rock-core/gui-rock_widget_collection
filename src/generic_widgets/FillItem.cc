@@ -23,7 +23,7 @@ void FillItem::addBrushStyle(QPainter* painter)
     }
 }
 
-void FillItem::draw(QPainter* painter)
+void FillItem::draw(QPainter* painter, QRectF &source, QRectF &target)
 {
     if(!drawBorder)
     {
