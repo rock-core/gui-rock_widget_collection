@@ -232,9 +232,9 @@ void ImageView::addRawImage(const QString &mode, int pixel_size,  int width,  in
     if(image_view_gl)
     {
       image_view_gl->setGLViewPoint();
-      calculateRects();
     }
   }
+  calculateRects();
   this->image = this->originalImage;
   no_input = false;
 }
