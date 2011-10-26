@@ -89,7 +89,7 @@ public slots:
      * @param icon an icon as alternative for text or the wisget itself
      * @param useOnlyIcon if only the icon and or text shall be displayed as thumbnail and NOT the widget
      */
-    void addWidget(const QString &name, QWidget* widget, const QIcon &icon=QIcon(), bool useOnlyIcon=false);
+    void addWidget(const QString &name, QWidget* widget, const QIcon &icon=QIcon(), bool useOnlyIcon=false, int position = 0);
 
     /**
      * Return sthe widget for the given name

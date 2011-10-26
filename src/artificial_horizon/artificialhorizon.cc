@@ -16,8 +16,8 @@ QWidget(parent)
 
 void ArtificialHorizon::setDataDir(QString const& data_dir)
 {
-    background_o = QPixmap(data_dir + "background.svg");
     stationary_o = QImage(data_dir + "stationary.svg");
+    background_o = QPixmap(stationary_o.size());
     rotate_o     = QImage(data_dir + "rotate.svg");
     dial_o       = QImage(data_dir + "dial.svg");
 		background = background_o;
@@ -53,22 +53,22 @@ void ArtificialHorizon::paintEvent(QPaintEvent*)
 {
     QPoint point=QPoint(0,0);
     QTransform transform;
-    transform.translate(background.width()/2,background.height()/2);
+    transform.translate(background.width()/2.0,background.height()/2.0);
     transform.rotate(rollangle*180.0/M_PI);
     transform.translate(0,pitchangle*180.0/M_PI*3.5);
-    transform.translate(-background.width()/2,-background.height()/2);
+    transform.translate(-background.width()/2.0,-background.height()/2.0);
 
     QPainter painter(this);
     painter.save(); // save the current painter settings before changing them
-		painter.setClipRect(0,0,background.width(),background.height());
+    painter.setClipRect(0,0,background.width(),background.height());
 
     painter.setTransform(transform);
-    painter.translate(0,-background.height()/2-10);
+    painter.translate(0,-background.height()/2.0-background.height()*0.0328947368421);
     painter.drawImage(0,0, rotate); // draw the stationary
 
-    transform.translate(background.width()/2,background.height()/2);
+    transform.translate(background.width()/2.0,background.height()/2.0);
     transform.translate(0,-pitchangle*180.0/M_PI*3.5);
-    transform.translate(-background.width()/2,-background.height()/2);
+    transform.translate(-background.width()/2.0,-background.height()/2.0);
     painter.setTransform(transform);
 
     painter.drawImage(0,0, dial); // draw the stationary

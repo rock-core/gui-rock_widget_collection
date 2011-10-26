@@ -145,7 +145,7 @@ MultiViewWidget::~MultiViewWidget()
 
 void MultiViewWidget::updateView(){
 		int midStart = 1;
-		int centerWidth = 2;
+		int centerWidth = 3;
 
 		if(top->count() == 0){
 			layout.removeItem(top);
@@ -181,7 +181,7 @@ void MultiViewWidget::updateView(){
 		}else{
 			layout.removeItem(bottom);
 		}
-    layout.update();
+                layout.update();
 		printf("The Number of Layouts inhere are: %i\n",layout.count());	
 	
 }
@@ -291,7 +291,7 @@ WidgetButton* MultiViewWidget::getButtonForWidget(QWidget* widget)
     return NULL;
 }
 
-void MultiViewWidget::addWidget(const QString &name, QWidget* widget_, const QIcon &icon, bool useOnlyIcon)
+void MultiViewWidget::addWidget(const QString &name, QWidget* widget_, const QIcon &icon, bool useOnlyIcon, int position)
 {
 		QWidget *widget = widget_;
    
@@ -346,30 +346,46 @@ void MultiViewWidget::addWidget(const QString &name, QWidget* widget_, const QIc
     //left->addWidget(widgetButton);
 
 		
-    switch(currentWidget->getPosition())
-    {
-			case WidgetButton::Left:
-        left->addWidget(widgetButton);
-				break;
-			case WidgetButton::Right:
-        right->addWidget(widgetButton);
-				break;
-			case WidgetButton::Bottom:
-        bottom->addWidget(widgetButton);
-				break;
-			case WidgetButton::Top:
-        top->addWidget(widgetButton);
-				break;
-		}
-
+    if(position != WidgetButton::Default){
+        switch(position){
+	    case WidgetButton::Left:
+                left->addWidget(widgetButton);
+                break;
+	    case WidgetButton::Right:
+                right->addWidget(widgetButton);
+                break;
+	    case WidgetButton::Top:
+                top->addWidget(widgetButton);
+                break;
+	    case WidgetButton::Bottom:
+                bottom->addWidget(widgetButton);
+                break;
+        }
+    }else{
+        switch(currentWidget->getPosition())
+        {
+            case WidgetButton::Left:
+                left->addWidget(widgetButton);
+                break;
+            case WidgetButton::Right:
+                right->addWidget(widgetButton);
+                break;
+            case WidgetButton::Bottom:
+                bottom->addWidget(widgetButton);
+                break;
+            case WidgetButton::Top:
+                top->addWidget(widgetButton);
+                break;
+        }
+    }
 				
     connect(widgetButton, SIGNAL(clicked()), this, SLOT(widgetClicked()));
     emit widgetButtonAdded(widgetButton);
-		updateView();
+    updateView();
 
-		timer.setSingleShot(true);
-		timer.start(500);
-	  connect(&timer,SIGNAL(timeout()),this,SLOT(fixStatus()));
+    timer.setSingleShot(true);
+    timer.start(500);
+    connect(&timer,SIGNAL(timeout()),this,SLOT(fixStatus()));
 }
 
 void MultiViewWidget::fixStatus(){
@@ -536,13 +552,13 @@ void MultiViewWidget::widgetClicked()
 		*/
     widget->setEnabled(true);
 
-		currentWidget->setActive(false);
-		sender->setActive(true);
+    currentWidget->setActive(false);
+    sender->setActive(true);
 
     mid->removeWidget(currentWidget->getWidget());
     mid->addWidget(widget);
     
-		currentWidget = sender;
+    currentWidget = sender;
     QList<QString> keys = widgets.keys();
     for(int i=0;i<keys.size();i++)
     {

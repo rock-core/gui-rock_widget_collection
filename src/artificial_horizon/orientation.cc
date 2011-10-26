@@ -8,11 +8,13 @@
 OrientationView::OrientationView(QWidget* parent): MultiWidget(parent)
 {
   layout = new QHBoxLayout;
-	setLayout(layout);
-	compass = new Compass();
-	horizon = new ArtificialHorizon();
-	layout->addWidget(compass);
-	layout->addWidget(horizon);
+  setLayout(layout);
+  compass = new Compass();
+  horizon = new ArtificialHorizon();
+  layout->addWidget(compass);
+  layout->addWidget(horizon);
+  setMinimumWidth(400);
+  setMinimumHeight(100);
 }
 
 OrientationView* OrientationView::newInstance()
