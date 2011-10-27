@@ -13,6 +13,7 @@
 #include "generic_widgets/RockSliderPlugin.h"
 #include "vtk/sonar_display/SonarDisplayPlugin.h"
 #include "vtk/plot2d/Plot2dPlugin.h"
+#include "2dvis/WaterwallDisplayPlugin.h"
 
 Q_EXPORT_PLUGIN2(RockWidgetCollection, RockWidgetCollection)
 
@@ -32,6 +33,7 @@ RockWidgetCollection::RockWidgetCollection(QObject *parent)
    widgets.append(new RockSliderPlugin(this));
    widgets.append(new SonarDisplayPlugin(this));
    widgets.append(new Plot2dPlugin(this));
+   widgets.append(new WaterfallDisplayPlugin(this));
 }
 
 QList<QDesignerCustomWidgetInterface*> RockWidgetCollection::customWidgets() const

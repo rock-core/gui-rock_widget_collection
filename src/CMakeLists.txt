@@ -57,6 +57,8 @@ SET(COLLECTION_MOC_HDRS
   vtk/sonar_display/SonarDisplayPlugin.h
   vtk/plot2d/Plot2d.h
   vtk/plot2d/Plot2dPlugin.h
+  2dvis/qwaterfalldisplay.h
+  2dvis/WaterwallDisplayPlugin.h
 )
 
 SET(COLLECTION_HDRS
@@ -96,6 +98,7 @@ SET(COLLECTION_HDRS
   generic_widgets/RockSlider.h
   vtk/sonar_display/SonarDisplay.h
   vtk/plot2d/Plot2d.h
+  2dvis/qwaterfalldisplay.h
 )
 
 FILE(GLOB COLLECTION_SOURCES 
@@ -109,6 +112,7 @@ FILE(GLOB COLLECTION_SOURCES
     virtual_joystick/*.cc
     vtk/sonar_display/*.cc
     vtk/plot2d/*.cc
+    2dvis/*.cc
     *.cc)
 
 SET(QtApp_RCCS resources.qrc)
