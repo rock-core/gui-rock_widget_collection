@@ -31,7 +31,7 @@
 
  QString WaterfallDisplayPlugin::name() const
  {
-     return "WaterfallDisplay";
+     return "QWaterfallDisplay";
  }
 
  QString WaterfallDisplayPlugin::group() const

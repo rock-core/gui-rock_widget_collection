@@ -5,6 +5,7 @@
 #include <QtGui/QPaintEvent>
 #include <iostream>
 
+#include <stdint.h>
 #include <math.h>
 
 //////////////////////////////////////////////////////////////////////////
@@ -259,7 +260,7 @@ void QWaterfallDisplay::pushDataFloat(float *new_data, int length)
 }
 
 
-void QWaterfallDisplay::pushDataUint(uint *new_data, int length)
+void QWaterfallDisplay::pushDataUint8(char *new_data, int length)
 {
     int i=0;
     QVarLengthArray<float> temp = QVarLengthArray<float>();
@@ -277,7 +278,50 @@ void QWaterfallDisplay::pushDataUint(uint *new_data, int length)
 
     // do the real push
     pushData(temp);
+}
 
+void QWaterfallDisplay::pushDataUint16(char *new_data_in, int length_in)
+{
+    int i=0;
+    uint16_t* new_data = (uint16_t*)new_data_in;
+    int length = length_in/2;
+    QVarLengthArray<float> temp = QVarLengthArray<float>();
+
+    if (length > m_cols) {
+        temp.resize(m_cols);
+        for(i=0;i<m_cols;i++)
+            temp[i] = (float)(new_data[i]);
+    }
+    else {
+        temp.resize(length);
+        for(i=0;i<length;i++)
+            temp[i] = (float)(new_data[i]);
+    }
+
+    // do the real push
+    pushData(temp);
+}
+
+void QWaterfallDisplay::pushDataUint32(char *new_data_in, int length_in)
+{
+    int i=0;
+    uint32_t* new_data = (uint32_t*)new_data_in;
+    int length = length_in/4;
+    QVarLengthArray<float> temp = QVarLengthArray<float>();
+
+    if (length > m_cols) {
+        temp.resize(m_cols);
+        for(i=0;i<m_cols;i++)
+            temp[i] = (float)(new_data[i]);
+    }
+    else {
+        temp.resize(length);
+        for(i=0;i<length;i++)
+            temp[i] = (float)(new_data[i]);
+    }
+
+    // do the real push
+    pushData(temp);
 }
 
 void QWaterfallDisplay::clearData()
@@ -573,15 +617,15 @@ void QWaterfallDisplay::drawLine(QRgb *line, int data_line)
 void QWaterfallDisplay::calcSizeHint()
 {
     // the size hint
-    m_size_hint.setWidth(m_cols*4);
-    m_size_hint.setHeight(m_rows*4);
+    m_size_hint.setWidth(m_cols);
+    m_size_hint.setHeight(m_rows);
 
     // minimum size hint
-    m_minimum_size.setWidth(m_cols*2);
-    m_minimum_size.setHeight(m_rows*2);
+    m_minimum_size.setWidth(m_cols/4);
+    m_minimum_size.setHeight(m_rows/4);
 
     // minimum size
-    setMinimumWidth(m_cols);
+    setMinimumWidth(m_cols/8);
 
     // update the geometry
     updateGeometry();

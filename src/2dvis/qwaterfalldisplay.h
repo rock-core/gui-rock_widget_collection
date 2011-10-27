@@ -113,16 +113,25 @@ public slots:
     // They all follow the same principle: Transform the input into a QVarLengthArray and then call
     // pushData(QVarLengthArray<float>)
 
-    // Uses the values in the double array. new_data MUST be at least the size of the current columns value,
-    // if it is not, you will get a erratic behavior or a segmentation fault. Handle with care!
+    // Uses the values in the double array. the new_data array has elements elements
     // The data will be copied.
-    void pushDataFloat(float *new_data, int length);
+    void pushDataFloat(float *new_data, int elements);
 
     // Uses the values in the list. The rules of pushData(QVarLengthArray<float>) apply here as well
     void pushDataQList(QList<float> new_data);
 
-    // Uses the values in the uint array and casts them to float
-    void pushDataUint(uint *new_data, int length);
+    // Interprets the data in the char* as uint_8. new_data has the length (memory) of the parameter lenthg
+    // The data will be copied.
+    void pushDataUint8(char *new_data, int length);
+
+    // Interprets the data in the char* as uint_16. new_data has the length (memory) of the parameter lenthg
+    // The data will be copied.
+    void pushDataUint16(char *new_data, int length);
+
+    // Interprets the data in the char* as uint_32. new_data has the length (memory) of the parameter lenthg
+    // The data will be copied.
+    void pushDataUint32(char *new_data, int length);
+
 
     // clear the data
     void clearData();
