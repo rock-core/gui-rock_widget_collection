@@ -63,7 +63,7 @@ QSize RangeViewGL::sizeHint() const
 
 
 void RangeViewGL::keyPressEvent ( QKeyEvent * event ){
-	printf("bla taste\n");
+	//printf("bla taste\n");
 	switch (event->key()) {
 		case Qt::Key_W:
 		return;
