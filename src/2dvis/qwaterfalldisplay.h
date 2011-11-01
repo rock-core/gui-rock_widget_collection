@@ -3,13 +3,15 @@
 
 #include <QtGui/QFrame>
 #include <QtGui/QColor>
-#include <QtCore/QList>
-#include <QtCore/QVarLengthArray>
 #include <QtGui/QImage>
 #include <QtCore/QSize>
+#include <QtCore/QList>
 #include <QtGui/QPainter>
 
 #include <QtDesigner/QDesignerExportWidget>
+
+#include <list>
+#include <vector>
 
 /*
 
@@ -26,8 +28,8 @@ class QDESIGNER_WIDGET_EXPORT QWaterfallDisplay : public QFrame
 {
     Q_OBJECT
     Q_CLASSINFO("Author", "Jan Albiez")
-    Q_PROPERTY(int rows READ rows WRITE setRows NOTIFY rowsChanged DESIGNABLE true)
-    Q_PROPERTY(int columns READ columns WRITE setColumns NOTIFY columnsChanged DESIGNABLE true)
+    Q_PROPERTY(uint rows READ rows WRITE setRows NOTIFY rowsChanged DESIGNABLE true)
+    Q_PROPERTY(uint columns READ columns WRITE setColumns NOTIFY columnsChanged DESIGNABLE true)
     Q_PROPERTY(Resizestyle resizestyle READ resizestyle WRITE setResizestyle DESIGNABLE true)
     Q_PROPERTY(QColor backColor READ backColor WRITE setBackColor DESIGNABLE true)
     Q_PROPERTY(double maxValue READ maxValue WRITE setMaxValue NOTIFY maxChanged DESIGNABLE true)
@@ -56,8 +58,8 @@ public:
 
 signals:
 
-    void rowsChanged(int);
-    void columnsChanged(int);
+    void rowsChanged(uint);
+    void columnsChanged(uint);
 
     void minChanged(double);
     void maxChanged(double);
@@ -74,11 +76,13 @@ public slots:
 
     // Setting the Properties columns and rows
     // Warning: Throws away the current data and start with a blank display!
+    void setColumns(uint cols);
+    void setRows(uint rows);
     void setColumns(int cols);
     void setRows(int rows);
-    void setColumnsRows(int cols, int rows); // for conveniance
-    int columns() const;
-    int rows() const;
+    void setColumnsRows(uint cols, uint rows); // for conveniance
+    uint columns() const;
+    uint rows() const;
 
     // Changes the resizestyle. Just makes the thing more ugly or nicer
     void setResizestyle(Resizestyle resizestyle);
@@ -104,33 +108,33 @@ public slots:
     // line will be discarded (FIFO)
 
     // The main data setting function
-    // Uses the values in the array. The array will be hardcore truncated to the current columns value,
-    // in the case of the shorter array, the end of the line will be filled with the background color
-    // while drawing. The array is copied.
-    void pushData(QVarLengthArray<float> new_data);
+    // Uses the values in the vector. The vector will be hardcore truncated to the current columns value,
+    // in the case of the shorter vector, the end of the line will be filled with the background color
+    // while drawing. The vector is copied.
+    void pushData(const std::vector<float> &new_data);
 
     // the following functions are implemented for onvenience (expand if you like).
-    // They all follow the same principle: Transform the input into a QVarLengthArray and then call
-    // pushData(QVarLengthArray<float>)
+    // They all follow the same principle: Transform the input into a std::vector and then call
+    // pushData(std::vector<float>)
 
     // Uses the values in the double array. the new_data array has elements elements
     // The data will be copied.
-    void pushDataFloat(float *new_data, int elements);
+    void pushDataFloat(const float *new_data, uint elements);
 
-    // Uses the values in the list. The rules of pushData(QVarLengthArray<float>) apply here as well
-    void pushDataQList(QList<float> new_data);
+    // Uses the values in the list. The rules of pushData(std::vector<float>) apply here as well
+    void pushDataQList(const QList<float> &new_data);
 
     // Interprets the data in the char* as uint_8. new_data has the length (memory) of the parameter lenthg
     // The data will be copied.
-    void pushDataUint8(char *new_data, int length);
+    void pushDataUint8(const char *new_data, uint length);
 
     // Interprets the data in the char* as uint_16. new_data has the length (memory) of the parameter lenthg
     // The data will be copied.
-    void pushDataUint16(char *new_data, int length);
+    void pushDataUint16(const char *new_data, uint length);
 
     // Interprets the data in the char* as uint_32. new_data has the length (memory) of the parameter lenthg
     // The data will be copied.
-    void pushDataUint32(char *new_data, int length);
+    void pushDataUint32(const char *new_data, uint length);
 
 
     // clear the data
@@ -158,16 +162,16 @@ private:
     // Functions
 
     // (re)init the datastorage, you should force a redraw after calling this function!
-    void initData(int cols, int rows);
+    void initData(uint cols, uint rows);
 
     // draws one line to the image
-    void drawLine(QRgb *line, int data_line);
+    void drawLine(QRgb *line, const std::vector<float> &data_line);
 
     // calculates the size hint variables and calls updateGeometry
     void calcSizeHint();
 
     // Members
-    int m_cols, m_rows;
+    uint m_cols, m_rows;
 
     Resizestyle m_resizes; // internal storage resize style
 
@@ -186,10 +190,10 @@ private:
     QSize m_minimum_size;
 
     // the image buffers
-    QImage *m_buffer;      // stores the widget state for quick repainting when no data has changed
-    QImage *waterfall;     // stores the unscaled waterfall
+    QImage m_buffer;      // stores the widget state for quick repainting when no data has changed
+    QImage waterfall;     // stores the unscaled waterfall
 
-    QList< QVarLengthArray<float> > data;
+    std::list< std::vector<float> > data;
 };
 
 #endif // QWATERFALLDISPLAY_H

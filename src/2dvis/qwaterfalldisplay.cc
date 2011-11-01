@@ -8,6 +8,8 @@
 #include <stdint.h>
 #include <math.h>
 
+using namespace std;
+
 //////////////////////////////////////////////////////////////////////////
 // Constructors
 QWaterfallDisplay::QWaterfallDisplay(int rows, int columns, QWidget *parent) :
@@ -15,14 +17,14 @@ QWaterfallDisplay::QWaterfallDisplay(int rows, int columns, QWidget *parent) :
     m_max(1.0), m_min(0.0),
     dirty_lines(0), widget_resized(true), redraw_all(true), is_drawing(true),
     m_size_hint(0,0), m_minimum_size(0,0),
-    data()
+    m_buffer(QSize(rows,columns),QImage::Format_RGB32), waterfall(QSize(rows,columns),QImage::Format_RGB32), data()
 {
 
     // Init the buffer
-    m_buffer = NULL;
+    m_buffer.fill(0);
 
     // Init the watterwafll image
-    waterfall = NULL;
+    waterfall.fill(0);
 
     // Init the data Array
     initData(m_cols, m_rows);
@@ -33,12 +35,11 @@ QWaterfallDisplay::QWaterfallDisplay(int rows, int columns, QWidget *parent) :
 
 QWaterfallDisplay::~QWaterfallDisplay()
 {
-    if (waterfall)
-        delete waterfall;
-
-    if (m_buffer)
-        delete m_buffer;
 }
+
+
+//////////////////////////////////////////////////////////////////////////
+// Public Functions
 
 QSize QWaterfallDisplay::minimumSizeHint()
 {
@@ -60,15 +61,13 @@ bool QWaterfallDisplay::isPaused()
     return !is_drawing;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// Public Functions
 
 
 //////////////////////////////////////////////////////////////////////////
 // Public Slots
 
 // Property Handling
-void QWaterfallDisplay::setColumns(int cols)
+void QWaterfallDisplay::setColumns(uint cols)
 {
     initData(cols,m_rows); // resize the data storage
     m_cols = cols;
@@ -81,12 +80,17 @@ void QWaterfallDisplay::setColumns(int cols)
     redrawData();
 }
 
-int QWaterfallDisplay::columns() const
+void QWaterfallDisplay::setColumns(int cols)
+{
+    setColumns((uint)cols);
+}
+
+uint QWaterfallDisplay::columns() const
 {
     return m_cols;
 }
 
-void QWaterfallDisplay::setRows(int rows)
+void QWaterfallDisplay::setRows(uint rows)
 {
     initData(m_cols,rows); // resize the data storage
     m_rows = rows;
@@ -99,12 +103,17 @@ void QWaterfallDisplay::setRows(int rows)
     redrawData();
 }
 
-int QWaterfallDisplay::rows() const
+void QWaterfallDisplay::setRows(int rows)
+{
+    setRows((uint)rows);
+}
+
+uint QWaterfallDisplay::rows() const
 {
     return m_rows;
 }
 
-void QWaterfallDisplay::setColumnsRows(int cols, int rows)
+void QWaterfallDisplay::setColumnsRows(uint cols, uint rows)
 {
     initData(cols,rows); // resize the data storage
     m_cols = cols;
@@ -202,22 +211,20 @@ void QWaterfallDisplay::setMaxMinValue(double max, double min)
 }
 
 //// Data Handling Slots
-void QWaterfallDisplay::pushData(QVarLengthArray<float> new_data)
+void QWaterfallDisplay::pushData(const vector<float> &new_data)
 {
-    QVarLengthArray<float> temp = QVarLengthArray<float>(new_data);
+    // push it to the std::list
+    data.push_front(new_data);
 
-    if (temp.size() > m_cols) {
+    if (data.front().size() > m_cols) {
         // shorten the thing
-        temp.resize(m_cols);
+        data.front().resize(m_cols);
     }
 
-    // prepend it to the list. If I understood the Qt documentation right at this point,
-    // There should be a deep copy to the list now, and not an implicit reference
-    data.prepend(temp);
 
     // check wether we have grown too much
     while (data.size() > m_rows) {
-        data.removeLast();
+        data.pop_back();
     }
 
     // increase the number of lines to be updated
@@ -227,18 +234,18 @@ void QWaterfallDisplay::pushData(QVarLengthArray<float> new_data)
     update();
 }
 
-void QWaterfallDisplay::pushDataQList(QList<float> new_data)
+void QWaterfallDisplay::pushDataQList(const QList<float> &new_data)
 {
-    int i=0;
-    QVarLengthArray<float> temp = QVarLengthArray<float>();
+    uint i=0;
+    vector<float> temp(new_data.size());
 
-    if (new_data.size() > m_cols) {
+    if ((uint)(new_data.size()) > m_cols) {
         temp.resize(m_cols);
         for(i=0;i<m_cols;i++)
             temp[i] = new_data[i];
     }
     else {
-        temp.resize(new_data.size());
+        //temp.resize(new_data.size());
         for(i=0;i<temp.size();i++)
             temp[i] = new_data[i];
     }
@@ -247,23 +254,21 @@ void QWaterfallDisplay::pushDataQList(QList<float> new_data)
     pushData(temp);
 }
 
-void QWaterfallDisplay::pushDataFloat(float *new_data, int length)
+void QWaterfallDisplay::pushDataFloat(const float *new_data, uint length)
 {
-    QVarLengthArray<float> temp = QVarLengthArray<float>();
-    if (length>m_cols)
-        temp.append(new_data,m_cols);
-    else
-        temp.append(new_data,length);
+    vector<float> temp(new_data, new_data + length);
+    if ((uint)(length)>m_cols)
+        temp.resize(m_cols);
 
     // do the real push
     pushData(temp);
 }
 
 
-void QWaterfallDisplay::pushDataUint8(char *new_data, int length)
+void QWaterfallDisplay::pushDataUint8(const char *new_data, uint length)
 {
-    int i=0;
-    QVarLengthArray<float> temp = QVarLengthArray<float>();
+    uint i=0;
+    vector<float> temp(length);
 
     if (length > m_cols) {
         temp.resize(m_cols);
@@ -271,7 +276,7 @@ void QWaterfallDisplay::pushDataUint8(char *new_data, int length)
             temp[i] = (float)(new_data[i]);
     }
     else {
-        temp.resize(length);
+        //temp.resize(length);
         for(i=0;i<length;i++)
             temp[i] = (float)(new_data[i]);
     }
@@ -280,12 +285,12 @@ void QWaterfallDisplay::pushDataUint8(char *new_data, int length)
     pushData(temp);
 }
 
-void QWaterfallDisplay::pushDataUint16(char *new_data_in, int length_in)
+void QWaterfallDisplay::pushDataUint16(const char *new_data_in, uint length_in)
 {
-    int i=0;
+    uint i=0;
     uint16_t* new_data = (uint16_t*)new_data_in;
-    int length = length_in/2;
-    QVarLengthArray<float> temp = QVarLengthArray<float>();
+    uint length = length_in/2;
+    vector<float> temp(length);
 
     if (length > m_cols) {
         temp.resize(m_cols);
@@ -293,7 +298,7 @@ void QWaterfallDisplay::pushDataUint16(char *new_data_in, int length_in)
             temp[i] = (float)(new_data[i]);
     }
     else {
-        temp.resize(length);
+        //temp.resize(length);
         for(i=0;i<length;i++)
             temp[i] = (float)(new_data[i]);
     }
@@ -302,12 +307,12 @@ void QWaterfallDisplay::pushDataUint16(char *new_data_in, int length_in)
     pushData(temp);
 }
 
-void QWaterfallDisplay::pushDataUint32(char *new_data_in, int length_in)
+void QWaterfallDisplay::pushDataUint32(const char *new_data_in, uint length_in)
 {
-    int i=0;
+    uint i=0;
     uint32_t* new_data = (uint32_t*)new_data_in;
-    int length = length_in/4;
-    QVarLengthArray<float> temp = QVarLengthArray<float>();
+    uint length = length_in/4;
+    vector<float> temp(length);
 
     if (length > m_cols) {
         temp.resize(m_cols);
@@ -315,7 +320,7 @@ void QWaterfallDisplay::pushDataUint32(char *new_data_in, int length_in)
             temp[i] = (float)(new_data[i]);
     }
     else {
-        temp.resize(length);
+        //temp.resize(length);
         for(i=0;i<length;i++)
             temp[i] = (float)(new_data[i]);
     }
@@ -359,12 +364,9 @@ void QWaterfallDisplay::pauseDrawing(bool onoff)
 // Protected Functions
 void QWaterfallDisplay::paintEvent(QPaintEvent *event)
 {
-    //qDebug() << "QWaterfallDisplay::paintEvent: data.isEmpty()=" << data.isEmpty();
     //
     // This function is currently the ONE AND ONLY function for PAINTING!!!
     //
-    QImage *new_buffer = NULL;    // the switch for the buffer
-    QImage *new_waterfall = NULL; // the switch for the waterfall
 
     // init the painter for the widget
     QPainter widget_painter(this);
@@ -381,43 +383,47 @@ void QWaterfallDisplay::paintEvent(QPaintEvent *event)
         if (is_drawing && (redraw_all || (dirty_lines>0))) {
         //if ((redraw_all || (dirty_lines>0))) {
             QSize waterfall_size(m_cols,m_rows);
-            new_waterfall = new QImage(waterfall_size,QImage::Format_RGB32);
-            new_waterfall->fill(0);
-            QPainter waterfall_painter(new_waterfall);
-            waterfall_painter.fillRect(new_waterfall->rect(),back_color);
+            QImage new_waterfall(waterfall_size,QImage::Format_RGB32);
+            new_waterfall.fill(0);
+            QPainter waterfall_painter(&new_waterfall);
+            waterfall_painter.fillRect(new_waterfall.rect(),back_color);
 
-            if (!(data.isEmpty())) { // for safety reasons
+            if (!(data.empty())) { // for safety reasons
                 QRgb* t_line = NULL;
+                list< vector<float> >::const_iterator it;
 
                 // we have to redraw the widget
                 if (redraw_all) {
+                    int it_count = 0;
                     // draw the widget line-by-line
-                    QRgb* t_line = NULL;
-                    for(int i=0;i<data.size();i++) {
-                        t_line = (QRgb*)(new_waterfall->scanLine(i));
-                        drawLine(t_line,i);
+                    for(it = data.begin(); it != data.end(); it++) {
+                        t_line = (QRgb*)(new_waterfall.scanLine(it_count));
+                        drawLine(t_line, *it);
+                        it_count++;
                     }
 
                     // there are no dirty lines anymore 8]
                     // neede to prevent a go in the next if, for the case of dirty_lines AND redraw_all
                     dirty_lines = 0;
                 }
-
-                if (dirty_lines>0) {
+                else if (dirty_lines>0) {
                     // first copy the first height-dirty_lines from the old
                     // waterfall
                     target.setTopLeft(QPoint(0,dirty_lines));
-                    target.setWidth(new_waterfall->width());
-                    target.setHeight((new_waterfall->height())-dirty_lines);
+                    target.setWidth(new_waterfall.width());
+                    target.setHeight((new_waterfall.height())-dirty_lines);
                     source.setTopLeft(QPoint(0,0));
-                    source.setWidth(waterfall->width());
-                    source.setHeight((waterfall->height())-dirty_lines);
+                    source.setWidth(waterfall.width());
+                    source.setHeight((waterfall.height())-dirty_lines);
 
-                    waterfall_painter.drawImage(target,*waterfall,source);
+                    waterfall_painter.drawImage(target,waterfall,source);
 
-                    for(int i=0;i<dirty_lines;i++) {
-                        t_line = (QRgb*)(new_waterfall->scanLine(i));
-                        drawLine(t_line,i);
+                    int it_count = 0;
+                    for(it = data.begin(); ((dirty_lines>0) && (it != data.end())); it++) {
+                        t_line = (QRgb*)(new_waterfall.scanLine(it_count));
+                        drawLine(t_line, *it);
+                        it_count++;
+                        dirty_lines--;
                     }
                 }
 
@@ -428,8 +434,6 @@ void QWaterfallDisplay::paintEvent(QPaintEvent *event)
 
 
             // switch the waterfall
-            if(waterfall)
-                delete waterfall;
             waterfall = new_waterfall;
 
             // clear the flags
@@ -443,11 +447,11 @@ void QWaterfallDisplay::paintEvent(QPaintEvent *event)
 
         // widget resized or new content (flag set to dirty above)
         if (widget_resized) {
-            new_buffer = new QImage(size(),QImage::Format_RGB32);
-            new_buffer->fill(0);
+            QImage new_buffer(size(),QImage::Format_RGB32);
+            new_buffer.fill(0);
 
-            QPainter buffer_painter(new_buffer);
-            buffer_painter.fillRect(new_buffer->rect(), back_color);
+            QPainter buffer_painter(&new_buffer);
+            buffer_painter.fillRect(new_buffer.rect(), back_color);
 
             QSize copy_size;
             float wf_aspect = 0;
@@ -462,40 +466,40 @@ void QWaterfallDisplay::paintEvent(QPaintEvent *event)
             switch(m_resizes) {
             case Scale:
                 // this is akward, but easy to implement
-                target = new_buffer->rect();
-                source = waterfall->rect();
-                buffer_painter.drawImage(target,*waterfall,source);
+                target = new_buffer.rect();
+                source = waterfall.rect();
+                buffer_painter.drawImage(target,waterfall,source);
                 break;
 
             case ScaleAspect:
                 // scales with respect to the aspect ratio of waterfall,
                 // looks nicer than Scale but still...
-                source = waterfall->rect();
-                wf_aspect = (float)(waterfall->width())/(float)(waterfall->height());
-                bf_aspect = (float)(new_buffer->width())/(float)(new_buffer->height());
+                source = waterfall.rect();
+                wf_aspect = (float)(waterfall.width())/(float)(waterfall.height());
+                bf_aspect = (float)(new_buffer.width())/(float)(new_buffer.height());
                 if (wf_aspect >= bf_aspect) {
                     // scale to width of new_buffer and center in height
-                    m_width = new_buffer->width();
-                    m_height = (int)((float)((new_buffer->width())*(waterfall->height()))/(float)(waterfall->width()));
-                    m_y = ((new_buffer->height()) - m_height) / 2;
+                    m_width = new_buffer.width();
+                    m_height = (int)((float)((new_buffer.width())*(waterfall.height()))/(float)(waterfall.width()));
+                    m_y = ((new_buffer.height()) - m_height) / 2;
                 }
                 else {
                     // scale to height of new buffer and center in width
-                    m_height = new_buffer->height();
-                    m_width = wf_aspect * (float)(new_buffer->height());
-                    m_x = ((new_buffer->width()) - m_width) / 2;
+                    m_height = new_buffer.height();
+                    m_width = wf_aspect * (float)(new_buffer.height());
+                    m_x = ((new_buffer.width()) - m_width) / 2;
                 }
                 target.setTopLeft(QPoint(m_x,m_y));
                 target.setHeight(m_height);
                 target.setWidth(m_width);
-                buffer_painter.drawImage(target,*waterfall,source);
+                buffer_painter.drawImage(target,waterfall,source);
                 break;
 
             case ScaleEven:
                 // Scales only n times columns while keeping the aspect ratio and the centers:
                 // widgetsize > n*cols -> centered
                 // is a bit more true to the values painted
-                source = waterfall->rect();
+                source = waterfall.rect();
                 qDebug()<<"QWaterfallDisplay: Resize Type:"<<m_resizes<<"not implemented ATM!";
                 break;
 
@@ -503,19 +507,19 @@ void QWaterfallDisplay::paintEvent(QPaintEvent *event)
                 // just put it into the window and cut of what can not be seen
                 target.setTopLeft(QPoint(0,0));
                 source.setTopLeft(QPoint(0,0));
-                if (new_buffer->width() > waterfall->width())
-                    copy_size.setWidth(waterfall->width());
+                if (new_buffer.width() > waterfall.width())
+                    copy_size.setWidth(waterfall.width());
                 else
-                    copy_size.setWidth(new_buffer->width());
-                if (new_buffer->height() > waterfall->height())
-                    copy_size.setHeight(waterfall->height());
+                    copy_size.setWidth(new_buffer.width());
+                if (new_buffer.height() > waterfall.height())
+                    copy_size.setHeight(waterfall.height());
                 else
-                    copy_size.setHeight(new_buffer->height());
+                    copy_size.setHeight(new_buffer.height());
                 target.setSize(copy_size);
                 source.setSize(copy_size);
 
                 // draw it
-                buffer_painter.drawImage(target,*waterfall,source);
+                buffer_painter.drawImage(target,waterfall,source);
                 break;
 
             case CutMixed:
@@ -531,8 +535,6 @@ void QWaterfallDisplay::paintEvent(QPaintEvent *event)
             buffer_painter.end();
 
             // switch the buffer
-            if (m_buffer)
-                delete m_buffer;
             m_buffer = new_buffer;
 
             // clear the flags
@@ -540,18 +542,13 @@ void QWaterfallDisplay::paintEvent(QPaintEvent *event)
         }
 
 
-        // Copy the our new buffer onto the widget if we done something
-        // Since new_buffer has the same size as the image
-        // In case the widget is paused and was not resized, we take the old buffer
-        if (new_buffer)
-            widget_painter.drawImage(rect(),*new_buffer,rect());
-        else
-            widget_painter.drawImage(event->rect(),*m_buffer,event->rect());
+        // Copy the the buffer onto the widget
+        widget_painter.drawImage(event->rect(),m_buffer,event->rect());
     }
     else {
         // we have to copy only the rect of the paint event
         // remember m_buffer is exactly the size of the widget!
-        widget_painter.drawImage(event->rect(),*m_buffer,event->rect());
+        widget_painter.drawImage(event->rect(),m_buffer,event->rect());
     }
 
     // just to be safe
@@ -565,21 +562,21 @@ void QWaterfallDisplay::resizeEvent(QResizeEvent *event)
 
 //////////////////////////////////////////////////////////////////////////
 // Private Functions
-void QWaterfallDisplay::initData(int cols, int rows)
+void QWaterfallDisplay::initData(uint cols, uint rows)
 {
     // Action depends on current state of the system
 
     // List is empty (for whatever reasons)
     // We have nothing to do
-    if(data.isEmpty()) {
+    if(data.empty()) {
         return;
     }
 
     // The number oc columns hasn't changed, but rows has gotten smaller
     // we have to throw all exessive data away
-    if((cols == m_cols) && (rows > m_rows)) {
+    if((cols == m_cols) && (rows < m_rows)) {
         while (data.size() > rows) {
-            data.removeLast();
+            data.pop_back();
         }
     }
 
@@ -590,20 +587,19 @@ void QWaterfallDisplay::initData(int cols, int rows)
     }
 }
 
-void QWaterfallDisplay::drawLine(QRgb *line, int data_line)
+void QWaterfallDisplay::drawLine(QRgb *line, const vector<float> &data_line)
 {
-    QVarLengthArray<float> t_line = data.at(data_line);
     int index = 0;
 
     // all the following code presumes, that there is no data_line bigger than the image line
     // but this should never happen anyway... *hust*
 
-    for (int i=0;i<t_line.size();i++) {
+    for (uint i=0;i<data_line.size();i++) {
         //std::cerr << QString(" %1").arg(t_line[i],6,'g',3).toAscii().data();
 
         // this all should be just prelimenary
         // Color Selection Begin
-        index = (int)( (((t_line[i]+fabs(m_min)) / (m_max+fabs(m_min))) * 255.0) + 0.5 );
+        index = (int)( (((data_line[i]+fabs(m_min)) / (m_max+fabs(m_min))) * 255.0) + 0.5 );
         index = (index<0)?0:index;
         index = (index>255)?255:index;
         // Color Selection End
