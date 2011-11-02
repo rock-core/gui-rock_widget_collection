@@ -254,7 +254,7 @@ void QWaterfallDisplay::pushDataQList(const QList<float> &new_data)
     pushData(temp);
 }
 
-void QWaterfallDisplay::pushDataFloat(const float *new_data, uint length)
+void QWaterfallDisplay::pushDataFloat(const float *new_data, int length)
 {
     vector<float> temp(new_data, new_data + length);
     if ((uint)(length)>m_cols)
@@ -265,7 +265,7 @@ void QWaterfallDisplay::pushDataFloat(const float *new_data, uint length)
 }
 
 
-void QWaterfallDisplay::pushDataUint8(const char *new_data, uint length)
+void QWaterfallDisplay::pushDataUint8(const char *new_data, int length)
 {
     uint i=0;
     vector<float> temp(length);
@@ -285,7 +285,7 @@ void QWaterfallDisplay::pushDataUint8(const char *new_data, uint length)
     pushData(temp);
 }
 
-void QWaterfallDisplay::pushDataUint16(const char *new_data_in, uint length_in)
+void QWaterfallDisplay::pushDataUint16(const char *new_data_in, int length_in)
 {
     uint i=0;
     uint16_t* new_data = (uint16_t*)new_data_in;
@@ -307,7 +307,7 @@ void QWaterfallDisplay::pushDataUint16(const char *new_data_in, uint length_in)
     pushData(temp);
 }
 
-void QWaterfallDisplay::pushDataUint32(const char *new_data_in, uint length_in)
+void QWaterfallDisplay::pushDataUint32(const char *new_data_in, int length_in)
 {
     uint i=0;
     uint32_t* new_data = (uint32_t*)new_data_in;

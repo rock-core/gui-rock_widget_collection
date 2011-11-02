@@ -119,22 +119,22 @@ public slots:
 
     // Uses the values in the double array. the new_data array has elements elements
     // The data will be copied.
-    void pushDataFloat(const float *new_data, uint elements);
+    void pushDataFloat(const float *new_data, int elements);
 
     // Uses the values in the list. The rules of pushData(std::vector<float>) apply here as well
     void pushDataQList(const QList<float> &new_data);
 
     // Interprets the data in the char* as uint_8. new_data has the length (memory) of the parameter lenthg
     // The data will be copied.
-    void pushDataUint8(const char *new_data, uint length);
+    void pushDataUint8(const char *new_data, int length);
 
     // Interprets the data in the char* as uint_16. new_data has the length (memory) of the parameter lenthg
     // The data will be copied.
-    void pushDataUint16(const char *new_data, uint length);
+    void pushDataUint16(const char *new_data, int length);
 
     // Interprets the data in the char* as uint_32. new_data has the length (memory) of the parameter lenthg
     // The data will be copied.
-    void pushDataUint32(const char *new_data, uint length);
+    void pushDataUint32(const char *new_data, int length);
 
 
     // clear the data
