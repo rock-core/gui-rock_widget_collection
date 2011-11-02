@@ -67,7 +67,7 @@ bool QWaterfallDisplay::isPaused()
 // Public Slots
 
 // Property Handling
-void QWaterfallDisplay::setColumns(uint cols)
+void QWaterfallDisplay::setColumns(int cols)
 {
     initData(cols,m_rows); // resize the data storage
     m_cols = cols;
@@ -80,17 +80,12 @@ void QWaterfallDisplay::setColumns(uint cols)
     redrawData();
 }
 
-void QWaterfallDisplay::setColumns(int cols)
-{
-    setColumns((uint)cols);
-}
-
-uint QWaterfallDisplay::columns() const
+int QWaterfallDisplay::columns() const
 {
     return m_cols;
 }
 
-void QWaterfallDisplay::setRows(uint rows)
+void QWaterfallDisplay::setRows(int rows)
 {
     initData(m_cols,rows); // resize the data storage
     m_rows = rows;
@@ -103,17 +98,12 @@ void QWaterfallDisplay::setRows(uint rows)
     redrawData();
 }
 
-void QWaterfallDisplay::setRows(int rows)
-{
-    setRows((uint)rows);
-}
-
-uint QWaterfallDisplay::rows() const
+int QWaterfallDisplay::rows() const
 {
     return m_rows;
 }
 
-void QWaterfallDisplay::setColumnsRows(uint cols, uint rows)
+void QWaterfallDisplay::setColumnsRows(int cols, int rows)
 {
     initData(cols,rows); // resize the data storage
     m_cols = cols;

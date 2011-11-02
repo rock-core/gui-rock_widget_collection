@@ -76,13 +76,11 @@ public slots:
 
     // Setting the Properties columns and rows
     // Warning: Throws away the current data and start with a blank display!
-    void setColumns(uint cols);
-    void setRows(uint rows);
     void setColumns(int cols);
     void setRows(int rows);
-    void setColumnsRows(uint cols, uint rows); // for conveniance
-    uint columns() const;
-    uint rows() const;
+    void setColumnsRows(int cols, int rows); // for conveniance
+    int columns() const;
+    int rows() const;
 
     // Changes the resizestyle. Just makes the thing more ugly or nicer
     void setResizestyle(Resizestyle resizestyle);
