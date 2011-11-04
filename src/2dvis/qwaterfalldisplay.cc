@@ -589,7 +589,7 @@ void QWaterfallDisplay::drawLine(QRgb *line, const vector<float> &data_line)
 
         // this all should be just prelimenary
         // Color Selection Begin
-        index = (int)( (((data_line[i]+fabs(m_min)) / (m_max+fabs(m_min))) * 255.0) + 0.5 );
+        index = (int)( (((data_line[i]-fabs(m_min)) / (m_max-fabs(m_min))) * 255.0) + 0.5 );
         index = (index<0)?0:index;
         index = (index>255)?255:index;
         // Color Selection End
