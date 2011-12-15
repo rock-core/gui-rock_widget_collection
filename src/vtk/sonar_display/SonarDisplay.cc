@@ -128,12 +128,12 @@ void KeyEvent::Execute (vtkObject *caller, unsigned long eventId, void *callData
 SonarDisplay::SonarDisplay(QWidget *parent):
     QVTKWidget(parent),
     number_of_beams(120), //121
-    number_of_bins(300),
+    number_of_bins(500),
     start_bearing(0),
     end_bearing(2*M_PI),
     horizontal_resolution(3.0*vtkMath::DegreesToRadians()),
     vertical_resolution(30.0*vtkMath::DegreesToRadians()),
-    distance_resolution(0.05),
+    distance_resolution(0.1),
     paramerter_auto(false),
     last_index(0),
     key_event(this),
@@ -315,7 +315,8 @@ void SonarDisplay::setUpSonar(int number_of_beams, int number_of_bins,
     }
 
     // Create wireframe
-    setUpStructuredGrid(sonar_wireframe,25,8, 15.0*vtkMath::DegreesToRadians(),2,vertical_resolution);
+    // every 2 meter and every 15 degrees 
+    setUpStructuredGrid(sonar_wireframe,25,number_of_bins*distance_resolution*0.5,15.0*vtkMath::DegreesToRadians(),2,vertical_resolution);
 }
 
 void SonarDisplay::setUpStructuredGrid(vtkSmartPointer<vtkStructuredGrid> sgrid, int number_of_beams, int number_of_bins,
@@ -374,10 +375,16 @@ void SonarDisplay::addSonarBeam(float bearing,int number_of_bins,const char* pbu
 {
     //check parameter
     if(start_bearing > bearing || end_bearing < bearing)
-        throw std::runtime_error("SonarDisplay: Bearing is out of range!");
+    {
+        std::cout << "SonarDisplay: Bearing is out of range!" << std::endl;
+        return;
+    }
 
     if(number_of_bins > this->number_of_bins)
-        throw std::runtime_error("SonarDisplay: Bin is out of range!");
+    {
+        std::cout << "SonarDisplay: Bin is out of range!" << std::endl;
+        return;
+    }
 
 
     //copy sonar data
