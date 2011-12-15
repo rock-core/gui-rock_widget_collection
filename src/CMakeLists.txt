@@ -53,12 +53,17 @@ SET(COLLECTION_MOC_HDRS
   generic_widgets/PaintWidget.h
   generic_widgets/RockSlider.h
   generic_widgets/RockSliderPlugin.h
+  vtk/sonar_display/SonarDisplay.h
+  vtk/sonar_display/SonarDisplayPlugin.h
+  vtk/plot2d/Plot2d.h
+  vtk/plot2d/Plot2dPlugin.h
+  2dvis/qwaterfalldisplay.h
+  2dvis/WaterwallDisplayPlugin.h
 )
 
 SET(COLLECTION_HDRS
   image_view/ImageView.h
   image_view/ImageViewGL.h
-  image_view/ImageViewPlugin.h
   generic_widgets/DrawItem.h
   generic_widgets/LineItem.h
   generic_widgets/FillItem.h
@@ -70,10 +75,8 @@ SET(COLLECTION_HDRS
   generic_widgets/PolylineItem.h
   sonar_view/SonarView.h
   sonar_view/SonarViewGL.h
-  sonar_view/SonarViewPlugin.h
   range_view/RangeView.h
   range_view/RangeViewGL.h
-  range_view/RangeViewPlugin.h
   RockWidgetCollection.h
   plotting/PlottingWidget.h 
   plotting/PlotWidget.h 
@@ -83,25 +86,19 @@ SET(COLLECTION_HDRS
   plotting/BorderLineOptionDialog.h 
   plotting/CurveOptionWidget.h
   plotting/CurveSelectionDialog.h 
-  plotting/PlotWidgetPlugin.h 
   plotting/AxisOptionsWidget.h
   artificial_horizon/artificialhorizon.h
-  artificial_horizon/artificialhorizonplugin.h
   multi_view/MultiViewWidget.h
   multi_view/WidgetButton.h
-  multi_view/MultiViewPlugin.h
-  multi_view/WidgetButtonPlugin.h
-  multi_view/MultiWidgetPlugin.h
   multi_view/MultiWidget.h
   artificial_horizon/compass.h
-  artificial_horizon/compassplugin.h
   artificial_horizon/orientation.h
-  artificial_horizon/orientationplugin.h
   virtual_joystick/VirtualJoystick.h  
-  virtual_joystick/VirtualJoystickPlugin.h
   generic_widgets/PaintWidget.h
   generic_widgets/RockSlider.h
-  generic_widgets/RockSliderPlugin.h
+  vtk/sonar_display/SonarDisplay.h
+  vtk/plot2d/Plot2d.h
+  2dvis/qwaterfalldisplay.h
 )
 
 FILE(GLOB COLLECTION_SOURCES 
@@ -113,6 +110,9 @@ FILE(GLOB COLLECTION_SOURCES
     multi_view/*.cc 
     generic_widgets/*.cc
     virtual_joystick/*.cc
+    vtk/sonar_display/*.cc
+    vtk/plot2d/*.cc
+    2dvis/*.cc
     *.cc)
 
 SET(QtApp_RCCS resources.qrc)
@@ -123,8 +123,8 @@ rock_vizkit_widget(rock_widget_collection
     HEADERS ${COLLECTION_HDRS}
     MOC ${COLLECTION_MOC_HDRS}
     DEPS_PKGCONFIG base-types frame_helper QtCore QtGui
-    DEPS_CMAKE LIBXML2 QWT GLU
-    LIBS ${QT_QTCORE_LIBRARY} ${QT_QTGUI_LIBRARY} ${QT_QTOPENGL_LIBRARY} ${QT_QTDESIGNER_LIBRARY}
+    DEPS_CMAKE LIBXML2 QWT GLU VTK
+    LIBS ${QT_QTCORE_LIBRARY} vtkVolumeRendering vtkRendering vtkCommon vtkFiltering vtkIO vtkGraphics QVTK ${QT_QTGUI_LIBRARY} ${QT_QTOPENGL_LIBRARY} ${QT_QTDESIGNER_LIBRARY}
     )
 
 add_executable(sonarTest
