@@ -112,13 +112,6 @@ public slots:
     void widgetClicked();
 
     /**
-     * Sets the position of the thumbnails. The given int corresponds to
-     * teh Position enum. int is taken for ruby mainly.
-     * @param position 0=left, 1=top, 2=right, 3=bottom
-     */
-//    void setThumbnailPosition(int position);
-
-    /**
      * Sets the size of teh thumbnail widgets. Defaults the thumbnails to
      * 150x150.
      * @param width teh width of the thumbnails, defaults to 150
@@ -180,20 +173,11 @@ protected:
     /** Main layout*/
     QGridLayout layout;
 
-		//QWidget *top_w, *bottom_w;
-		//QWidget  *left_w,*mid_w,*right_w;
-		
-		QHBoxLayout *top, *bottom;
-		QVBoxLayout *left,*mid,*right;
+    QHBoxLayout *top, *bottom;
+    QVBoxLayout *left,*mid,*right;
 
-    /**Layout if Top or Bottom position is used*/
-    //QHBoxLayout* upperLayout;
-    /** Layout if Left or Right position is used*/
-    //QVBoxLayout* vertLayout;
     /** The widget currently displayed in the center part of the widget*/
     WidgetButton* currentWidget;
-    /** A widget for layouting purposes*/
-    //QWidget layoutWidget;
     
     /** The width of thumbnails*/
     int thumbnailWidth;
@@ -211,8 +195,8 @@ protected:
     /** Whether the designer mode is enabled*/
     bool designerMode;
 
-		/**  Workaround to fix Ruby initialization, the widgets are not recognized well */
-		QTimer timer;
+    /**  Workaround to fix Ruby initialization, the widgets are not recognized well */
+    QTimer timer;
 };
 
 #endif	/* MULIVIEWWIDGET_H */

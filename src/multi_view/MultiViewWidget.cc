@@ -33,106 +33,16 @@ MultiViewWidget::MultiViewWidget(QWidget* parent) : QWidget(parent)
     thumbnailWidth = 150;
     thumbnailHeight = 150;
     
-//		//Central Widget
-//		mainLayout = new QVBoxLayout();
-//		mainWidget = new QWidget();
-//		mainLayout->addWidget(mainWidget);
-//
-//		topLayout = new QHBoxLayout(mainWidget);
-//		mainWidget->setLayout(topLayout);
-//		topWidget = new QWidget();
-//		top
-//
-//		midRowLayout = new QHBoxLayout(mainLayout);
-//		midLeftLayout = new QVBoxLayout(midRowLayout);
-//		centralLayout = new QVBoxLayout(midRowLayout);
-//		midRightLayout = new QVBoxLayout(midRowLayout);
-//		bottomLayout = new QHBoxLayout(mainLayout);
 
-
-		//upperLayout = new QHBoxLayout();
-    //upperLayout = new QHBoxLayout();
-    //vertLayout = new QVBoxLayout();
-		
-		//top_w = new QWidget();
-		//bottom_w = new QWidget();
-		//left_w = new QWidget();
-		//mid_w = new QWidget();
-		//right_w = new QWidget();
-
-		
-	/*
-		bottom_w->setMinimumSize(thumbnailWidth,thumbnailHeight+20);
-		bottom_w->setMaximumSize(10000,thumbnailHeight+20);
-		
-		top_w->setMinimumSize(thumbnailWidth,thumbnailHeight+20);
-		top_w->setMaximumSize(10000,thumbnailHeight+20);
-		
-		left_w->setMinimumSize(thumbnailWidth+20,thumbnailHeight);
-		left_w->setMaximumSize(thumbnailWidth+20,10000);
-		
-		
-		*/
-		
-		//left_w->setMinimumSize(thumbnailWidth,thumbnailHeight);
-		//right_w->setMinimumSize(thumbnailWidth,thumbnailHeight);
-
-		//top->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
-
-		//mid_w->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
-		//right_w->setSizePolicy(QSizePolicy::Fixed,QSizePolicy::Expanding);
-		//left_w->setSizePolicy(QSizePolicy::Fixed,QSizePolicy::Expanding);
-
-		top = new QHBoxLayout();
-		bottom = new QHBoxLayout();
-		left = new QVBoxLayout();
-		mid = new QVBoxLayout();
-		right = new QVBoxLayout();
-
-	//	top->addSpacerItem(new QSpacerItem(100,100));
-
-		//top_w->setPalette((QColor("red")));
-		//top_w->setBackgroundRole(QPalette::Window);
-		//mid_w->setPalette((QColor("green")));
-		//bottom_w->setPalette((QColor("blue")));
-
-/*
-		top->setAlignment(Qt::AlignVCenter | Qt::AlignHCenter);
-		bottom->setAlignment(Qt::AlignVCenter | Qt::AlignHCenter);
-		mid->setAlignment(Qt::AlignVCenter | Qt::AlignHCenter);
-		right->setAlignment(Qt::AlignVCenter | Qt::AlignHCenter);
-		left->setAlignment(Qt::AlignVCenter | Qt::AlignHCenter);
-	*/
-
-
-		//WidgetButton *button4 = new WidgetButton();
-		//WidgetButton *button2 = new WidgetButton();
-		//left->addWidget(button4);
-		//layout.addLayout(top,0,0,1,3);
-		//layout.addLayout(left,1,0,1,1);
-		//layout.addLayout(mid,1,1,1,2);
-
-
-    //layoutWidget.setLayout(upperLayout);
-    //layout.addWidget(&menuBar, 0, 0, 1, 1, Qt::AlignTop);
-    //layout.addWidget(&layoutWidget, 1, 0, 1, 1, Qt::AlignLeft | Qt::AlignTop);
+    top = new QHBoxLayout();
+    bottom = new QHBoxLayout();
+    left = new QVBoxLayout();
+    mid = new QVBoxLayout();
+    right = new QVBoxLayout();
     setLayout(&layout);
-    //setThumbnailPosition(position);
+    initialized=true;		
 		
 		
-		//layout.setAlignment(Qt::AlignVCenter | Qt::AlignHCenter);
-
-		//layout.addWidget(top_w,0,0,1,3);
-		//layout.addWidget(left_w,1,0,1,1);
-		//layout.addWidget(mid_w,1,0,1,1);
-		//layout.addWidget(right_w,1,2,1,1);
-		//layout.addWidget(bottom_w,2,0,1,3);
-    
-		//updateView();
-		initialized=true;		
-		
-		
-		//left->addWidget(button2);
     layout.update();
     layout.activate();
 
@@ -182,8 +92,6 @@ void MultiViewWidget::updateView(){
 			layout.removeItem(bottom);
 		}
                 layout.update();
-		printf("The Number of Layouts inhere are: %i\n",layout.count());	
-	
 }
 
 void MultiViewWidget::setThumbnailSize(int width, int height)
@@ -191,91 +99,6 @@ void MultiViewWidget::setThumbnailSize(int width, int height)
     thumbnailWidth = width;
     thumbnailHeight = height;
 }
-
-#if 0
-void MultiViewWidget::setThumbnailPosition(int position)
-{
-    this->position = (Position)position;
-    switch(position)
-    {
-        case Left:
-        {
-            layout.setAlignment(Qt::AlignLeft);
-            layout.removeWidget(&layoutWidget);
-            QList<QString> keys = widgets.keys();
-            for(int i=0;i<keys.size();i++)
-            {
-                WidgetButton* widget = widgets.value(keys[i]);
-                upperLayout->removeWidget(widget);
-                vertLayout->addWidget(widget);
-            }
-            delete upperLayout;
-            layoutWidget.setLayout(vertLayout);
-            layout.addWidget(&layoutWidget, 1, 0, 1, 1, Qt::AlignTop);
-            if(currentWidget != NULL)
-            {
-                layout.removeWidget(currentWidget->getWidget());
-                layout.addWidget(currentWidget->getWidget(), 1, 1, 1, 1);
-            }
-            layout.setRowStretch(2, 0);
-            layout.setRowStretch(1, 10);
-            layout.setColumnStretch(1, 10);
-            upperLayout = new QHBoxLayout();
-            break;
-        }
-        case Top:
-        {
-            layout.setAlignment(Qt::AlignTop);
-            layout.removeWidget(&layoutWidget);
-            layout.setRowStretch(2, 10);
-            layout.addWidget(&layoutWidget, 1, 0, 1, 1, Qt::AlignLeft | Qt::AlignTop);
-            break;
-        }
-        case Right:
-        {
-            layout.setAlignment(Qt::AlignRight);
-            layout.removeWidget(&layoutWidget);
-            QList<QString> keys = widgets.keys();
-            for(int i=0;i<keys.size();i++)
-            {
-                WidgetButton* widget = widgets.value(keys[i]);
-                upperLayout->removeWidget(widget);
-                vertLayout->addWidget(widget);
-            }
-            delete upperLayout;
-            layoutWidget.setLayout(vertLayout);
-            layout.addWidget(&layoutWidget, 1, 2, 1, 1, Qt::AlignTop);
-            if(currentWidget != NULL)
-            {
-                layout.removeWidget(currentWidget->getWidget());
-                layout.addWidget(currentWidget->getWidget(), 1, 1, 1, 1);
-            }
-            layout.setColumnStretch(1, 10);
-            layout.setRowStretch(2, 0);
-            layout.setRowStretch(1, 10);
-            upperLayout = new QHBoxLayout();
-            break;
-        }
-        case Bottom:
-        {
-            layout.setAlignment(Qt::AlignTop);
-            layout.removeWidget(&layoutWidget);
-            layout.setRowStretch(2, 10);
-            layout.addWidget(&layoutWidget, 3, 0, 1, 1, Qt::AlignLeft | Qt::AlignTop);
-            break;
-        }
-        // same as top
-        default:
-        {
-            layout.setAlignment(Qt::AlignTop);
-            layout.removeWidget(&layoutWidget);
-            layout.setRowStretch(2, 10);
-            layout.addWidget(&layoutWidget, 1, 0, 1, 1, Qt::AlignLeft | Qt::AlignTop);
-            break;
-        }
-    }
-}
-#endif 
 
 WidgetButton* MultiViewWidget::getButtonForWidget(QWidget* widget)
 {
@@ -317,15 +140,26 @@ void MultiViewWidget::addWidget(const QString &name, QWidget* widget_, const QIc
 #endif
 
 		
-		if(widgets.contains(name))
+    if(widgets.contains(name))
     {
        std::cerr << "A Widget with the name: [" << name.toStdString() << "] already exists!" << std::endl;
        return;
     }
-		WidgetButton* widgetButton=0;
+    WidgetButton* widgetButton=0;
 
-    widgetButton = new WidgetButton();
-    widgetButton->setFixedSize(thumbnailWidth, thumbnailHeight);
+    switch(position){
+        case WidgetButton::Left:
+        case WidgetButton::Right:
+            widgetButton = new WidgetButton(0,Qt::Vertical,thumbnailWidth, thumbnailHeight);
+            break;
+        case WidgetButton::Top:
+        case WidgetButton::Bottom:
+        default:
+            widgetButton = new WidgetButton(0,Qt::Horizontal,thumbnailWidth, thumbnailHeight);
+            break;
+    }
+
+    //widgetButton->setFixedSize(thumbnailWidth, thumbnailHeight);
     widgetButton->setIconAlternative(icon, useOnlyIcon);
 
     
@@ -437,7 +271,7 @@ bool MultiViewWidget::event(QEvent* event)
 
 void MultiViewWidget::childEvent(QChildEvent* event)
 {
-		//QWidget::childEvent(event);
+    //QWidget::childEvent(event);
     if(initialized)
     {
         
@@ -455,30 +289,11 @@ void MultiViewWidget::childEvent(QChildEvent* event)
                     }
                     // we never want to add a widget which is already added
                     QWidget* child = (QWidget*)event->child();
-                    QList<QString> keys = widgets.keys();
-                    for(int i=0;i<keys.size();i++)
-                    {
-                        WidgetButton* button = widgets[keys[i]];
-                        if(button->getWidget() == child)
-                        {
-    //                        if(button->isEnabled())
-    //                        {
-    //                            child->setMaximumSize(0, 0);
-    //                        }
-    //                        else
-    //                        {
-    //                            child->setMaximumSize(1000000, 1000000);
-    //                        }
-                            return;
-                        }
-                        
-                    }
-										if(child->windowTitle().isEmpty())
+	            if(child->windowTitle().isEmpty())
                     	addWidget(QString::number(currentWidgetIndex), child);
-										else
+		    else
                     	addWidget(child->windowTitle(), child);
-			
-                    currentWidgetIndex++;
+		    currentWidgetIndex++;
                 }
             }
         }
@@ -523,11 +338,11 @@ void MultiViewWidget::widgetClicked()
 {
     clicking = true;
 
-		WidgetButton *sender = dynamic_cast<WidgetButton*>(QObject::sender());
-		if(sender <= 0){
-			fprintf(stderr,"FATAL: Cannot Handle unknown Widget %s:%i\n",__FILE__,__LINE__);
-			return;
-		}
+    WidgetButton *sender = dynamic_cast<WidgetButton*>(QObject::sender());
+    if(sender <= 0){
+        fprintf(stderr,"FATAL: Cannot Handle unknown Widget %s:%i\n",__FILE__,__LINE__);
+        return;
+    }
 
     //sender->printStatus();
     sender->showWidget(false);
@@ -569,7 +384,7 @@ void MultiViewWidget::widgetClicked()
         }
     }
 
-		/*
+	/*	
     // try to be stupid and use an arbitary large number
     // this is NOT a good solution, if you've got a better one....
     if(currentWidget->getWidget()->maximumHeight() < 1000000 || currentWidget->getWidget()->maximumWidth() < 1000000)
@@ -621,7 +436,7 @@ void MultiViewWidget::widgetClicked()
             }
         }
     }
-		*/
+	*/	
     clicking = false;
 //    repaint();
 }

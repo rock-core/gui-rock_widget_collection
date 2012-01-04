@@ -9,7 +9,7 @@
 #define	WIDGETBUTTON_H
 
 #include <QPushButton>
-#include <QHBoxLayout>
+#include <QBoxLayout>
 #include <QTimer>
 #include <QIcon>
 #include <QLabel>
@@ -44,7 +44,7 @@ public:
     /**
      * Constructor
      */
-    WidgetButton(QWidget *widget=0);
+    WidgetButton(QWidget *widget=0, Qt::Orientations dir=Qt::Horizontal, int width=150,int height=150);
 
     /**
      * Destructor
@@ -112,7 +112,6 @@ public slots:
     
 
 		void corrcetName();
-
 protected:
     /** The main widget*/
     QWidget* mainWidget;
@@ -124,7 +123,7 @@ protected:
     /** The name of the widget*/
     QString name;
     /** The layout of the button*/
-    QHBoxLayout layout;
+    QBoxLayout *layout;
     /** The default palette of teh button*/
     QPalette defaultPalette;
     /** A red palette*/
@@ -137,6 +136,8 @@ protected:
     bool isAlternative;
 		/** True if this Widget is Active (not minimized) */
 		bool isActive;
+
+    Qt::Orientations dir; 
 };
 		
 Q_DECLARE_METATYPE(WidgetButton::Position)

@@ -131,8 +131,8 @@ SonarDisplay::SonarDisplay(QWidget *parent):
     number_of_bins(500),
     start_bearing(0),
     end_bearing(2*M_PI),
-    horizontal_resolution(3.0*vtkMath::DegreesToRadians()),
-    vertical_resolution(30.0*vtkMath::DegreesToRadians()),
+    horizontal_resolution(3.0/180.0*M_PI),
+    vertical_resolution(30.0/180.0*M_PI),
     distance_resolution(0.1),
     paramerter_auto(false),
     last_index(0),
@@ -316,7 +316,7 @@ void SonarDisplay::setUpSonar(int number_of_beams, int number_of_bins,
 
     // Create wireframe
     // every 2 meter and every 15 degrees 
-    setUpStructuredGrid(sonar_wireframe,25,number_of_bins*distance_resolution*0.5,15.0*vtkMath::DegreesToRadians(),2,vertical_resolution);
+    setUpStructuredGrid(sonar_wireframe,25,number_of_bins*distance_resolution*0.5,15.0/180.0*M_PI,2,vertical_resolution);
 }
 
 void SonarDisplay::setUpStructuredGrid(vtkSmartPointer<vtkStructuredGrid> sgrid, int number_of_beams, int number_of_bins,

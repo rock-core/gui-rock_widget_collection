@@ -17,26 +17,38 @@
 #include <stdio.h>
 #include <typeinfo>
 
+#include <QHBoxLayout>
+#include <QVBoxLayout>
 
-WidgetButton::WidgetButton(QWidget *widget) : QPushButton(widget),
-        redPalette(QPalette(Qt::red))
+WidgetButton::WidgetButton(QWidget *widget, Qt::Orientations dir,int width,int height) : 
+        QPushButton(widget),
+        redPalette(QPalette(Qt::red)),
+        dir(dir)
 {
+    if(dir == Qt::Horizontal){
+        layout = new QHBoxLayout(this);
+    }else{
+        layout = new QVBoxLayout(this);
+    }
+    mainWidget=0; 
+    
+    setSizePolicy(QSizePolicy(QSizePolicy::Fixed,QSizePolicy::Fixed));
+
+
+    setFixedSize(width,height);
     isAlternative = false;
     paletteTimer.setInterval(750);
     connect(&paletteTimer, SIGNAL(timeout()), this, SLOT(changePalette()));
     defaultPalette = this->palette();
-		layout.setContentsMargins(3,3,3,3);
-    setLayout(&layout);
-		position = Left;
-	  qRegisterMetaType<WidgetButton::Position>("WidgetButton::Position");
-		setMinimumSize(100,100);
-		setMaximumSize(100,100);
+    layout->setContentsMargins(3,3,3,3);
+    position = Left;
+    qRegisterMetaType<WidgetButton::Position>("WidgetButton::Position");
 }
 
 WidgetButton::~WidgetButton()
 {
 }
-
+    
 
 const WidgetButton::Position WidgetButton::getPosition() const{
 	return position;
@@ -62,11 +74,12 @@ void WidgetButton::setActive(bool active){
 
 
 void WidgetButton::corrcetName(){
-		//The next lines will fail if the objects was constructed by rubqt ui loder because all objects are recognized as qwidget
-		MultiWidget *w = dynamic_cast<MultiWidget*>(mainWidget);
-		if(w > 0){
-			name = w->getMinimizedLabel();
-	  }
+    //The next lines will fail if the objects was constructed by rubqt ui loder because all objects are recognized as qwidget
+    MultiWidget *w = dynamic_cast<MultiWidget*>(mainWidget);
+    if(w > 0){
+        name = w->getMinimizedLabel();
+    }
+
     if(isActive)
     {
         if(isAlternative == false)
@@ -82,8 +95,8 @@ void WidgetButton::corrcetName(){
             }
             else
             {
-							setText(name);
-              setIcon(QIcon());
+	        setText(name);
+                setIcon(QIcon());
             }
         }
     }
@@ -91,7 +104,7 @@ void WidgetButton::corrcetName(){
     {
         if(icon.isNull() || isAlternative == false)
         {
-							setText(name);
+            setText(name);
         }
         else
         {
@@ -133,7 +146,7 @@ void WidgetButton::setWidget(const QString &name_, QWidget* widget, bool shown)
         if(isAlternative == false)
         {
             setIcon(QIcon());
-            layout.addWidget(mainWidget);
+            layout->addWidget(mainWidget);
         }
         else
         {
@@ -144,8 +157,8 @@ void WidgetButton::setWidget(const QString &name_, QWidget* widget, bool shown)
             }
             else
             {
-							setText(name);
-              setIcon(QIcon());
+                setText(name);
+                setIcon(QIcon());
             }
         }
         mainWidget->setEnabled(false);
@@ -154,7 +167,7 @@ void WidgetButton::setWidget(const QString &name_, QWidget* widget, bool shown)
     {
         if(icon.isNull() || isAlternative == false)
         {
-							setText(name);
+            setText(name);
         }
         else
         {
@@ -175,7 +188,7 @@ void WidgetButton::setWidget(const QString &name_, QWidget* widget, bool shown)
         std::cout << "No notifyUpdate(int) method found, updates will not be displayed for: " << name.toStdString() << std::endl;
     }
 
-		setActive(shown);
+    setActive(shown);
 }
 
 void WidgetButton::showWidget(bool shown)
@@ -186,12 +199,10 @@ void WidgetButton::showWidget(bool shown)
         setPalette(defaultPalette);
         if(isAlternative == false)
         {
-            setIcon(QIcon());
-            layout.addWidget(mainWidget);
+            layout->addWidget(mainWidget);
         }
         else
         {
-            layout.removeWidget(mainWidget);
             if(!icon.isNull())
             {
                 setText("");
@@ -210,8 +221,7 @@ void WidgetButton::showWidget(bool shown)
     {
         paletteTimer.stop();
         setPalette(QPalette(QColor(0, 255, 0)));
-        layout.removeWidget(mainWidget);
-        mainWidget->setEnabled(true);
+        layout->removeWidget(mainWidget);
         if(icon.isNull())
         {
             setText(name);
@@ -261,4 +271,6 @@ void WidgetButton::changePalette()
         setPalette(redPalette);
     }
 }
+
+
 
