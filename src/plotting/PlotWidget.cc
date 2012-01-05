@@ -966,14 +966,10 @@ void PlotWidget::setAutoscrolling(bool enable)
     yLeftSlider.setEnabled(!enable);
     zoomer->setEnabled(!enable);
     plottingWidget.setMouseWheelZoomAxis(!enable, !enable);
-    autoScale = !enable;
-    if(enable)
-    {
-        dataManager->setAutoscaling(false);
-        dataManager->setAutoscrolling(true);
-        dataManager->setIsFixedSize(false);
-        autoscrollAction.setChecked(true);
-    }
+    dataManager->setAutoscaling(!enable);
+    dataManager->setAutoscrolling(enable);
+    dataManager->setIsFixedSize(!enable);
+    autoscrollAction.setChecked(enable);
 }
 
 void PlotWidget::setAutoscale(bool autoscale)
