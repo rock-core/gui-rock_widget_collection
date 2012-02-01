@@ -51,7 +51,7 @@
 
  QString Plot2dPlugin::whatsThis() const
  {
-     return "widgte for plotting 2d data";
+     return "widget for plotting 2d data";
  }
 
  bool Plot2dPlugin::isContainer() const
