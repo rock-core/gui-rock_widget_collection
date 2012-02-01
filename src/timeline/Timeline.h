@@ -4,8 +4,8 @@
 **
 ****************************************************************************/
 
-#ifndef TIMELINEWIDGET_H
-#define TIMELINEWIDGET_H
+#ifndef TIMELINE_H
+#define TIMELINE_H
 
 #include <QtGui>
 #include "BoundarySlider.h"
@@ -14,7 +14,6 @@
 class Timeline : public QGraphicsView
 {
     Q_OBJECT
-    // syntax: Q_PROPERTY(type name READ getFunction)
     Q_PROPERTY(int bookmark_height READ getBookmarkHeight WRITE setBookmarkHeight)
     Q_PROPERTY(int index_slider_height READ getIndexSliderHeight WRITE setIndexSliderHeight)
     Q_PROPERTY(int margin_topbot READ getMarginTopBot WRITE setMarginTopBot)
@@ -74,4 +73,4 @@ private:
     
 };
 
-#endif // TIMELINEWIDGET_H
+#endif // TIMELINE_H
