@@ -4,7 +4,7 @@
 #include <QPixmap>
 
 
-Timeline::Timeline(qreal width, unsigned startIndex, unsigned steps, unsigned stepSize, QWidget *parent) {
+Timeline::Timeline(QWidget *parent) {
     setParent(parent);
     
     // Default property values
@@ -13,9 +13,16 @@ Timeline::Timeline(qreal width, unsigned startIndex, unsigned steps, unsigned st
     marginTopBot = 5;
     marginLR = 5;
     bgColor = QColor(Qt::white);
+    ordered_width = 400;
+    minIndex = 0;
+    steps = 100;
+    stepSize = 1;
+    
+    setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     
     // Setup scene
-    ordered_width = width;
+    ordered_width = getWidth();
     scene = new QGraphicsScene;
     scene->setBackgroundBrush(getBackgroundColor());
     setAlignment(Qt::AlignLeft | Qt::AlignTop);
@@ -24,7 +31,7 @@ Timeline::Timeline(qreal width, unsigned startIndex, unsigned steps, unsigned st
     setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
 
     // Add items
-    slidebar = new SlideBarItem(startIndex, steps, stepSize);
+    slidebar = new SlideBarItem(getMinIndex(), getSteps(), getStepSize());
     slidebar->setBookmarkHeight(getBookmarkHeight());
     slidebar->setOrderedWidth(ordered_width - getMarginLR()*2);
     
@@ -90,9 +97,42 @@ void Timeline::setBackgroundColor(const QColor & color) {
     bgColor = color;
 }
 
+int Timeline::getWidth() {
+    return ordered_width;
+}
+
+void Timeline::setWidth(int width) {
+    ordered_width = width;
+}
+
+unsigned Timeline::getMinIndex() {
+    return minIndex;
+}
+
+void Timeline::setMinIndex(unsigned minIndex) {
+    this->minIndex = minIndex;
+}
+
+unsigned Timeline::getSteps() {
+    return steps;
+}
+
+void Timeline::setSteps(unsigned steps) {
+    this->steps = steps;
+}
+
+unsigned Timeline::getStepSize() {
+    return stepSize;
+}
+
+void Timeline::setStepSize(unsigned stepSize) {
+    this->stepSize = stepSize;
+}
+
 int Timeline::getSliderIndex() {
     return slidebar->markerIndex(slidebar->getIndexSlider());
 }
+
 int Timeline::getStartMarkerIndex() {
     return slidebar->markerIndex(startmarker);
 }

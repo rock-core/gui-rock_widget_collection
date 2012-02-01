@@ -21,7 +21,7 @@ public:
     qreal getBookmarkHeight() const;
     void setBookmarkHeight(qreal height);
     void setIndexSliderHeight(int height);
-    void setOrderedWidth(qreal width);
+    void setOrderedWidth(int width);
     void addTimeMarker(BoundarySlider *marker);
     const QList<BoundarySlider*>& getTimeMarkers();
     const QList<Slider*>& getAllSliders();

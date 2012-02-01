@@ -57,7 +57,7 @@ void SlideBarItem::setIndexSliderHeight(int height) {
     slider->setHeight(height);
 }
 
-void SlideBarItem::setOrderedWidth(qreal width) {
+void SlideBarItem::setOrderedWidth(int width) {
     this->ordered_width = width;
     //update();
 }

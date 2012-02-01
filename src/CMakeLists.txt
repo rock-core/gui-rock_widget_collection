@@ -65,6 +65,7 @@ SET(COLLECTION_MOC_HDRS
   timeline/BoundarySlider.h
   timeline/IndexSlider.h
   timeline/SlideBarItem.h
+  timeline/TimelinePlugin.h
 )
 
 SET(COLLECTION_HDRS

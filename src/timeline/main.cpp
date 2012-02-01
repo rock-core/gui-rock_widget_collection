@@ -19,7 +19,12 @@ int main(int argc, char **argv)
     QVBoxLayout vbox(window);
     vbox.setAlignment(Qt::AlignTop);
     
-    tw = new Timeline(400, 0, 10/*0000*/, 1, window);
+    tw = new Timeline(window);
+    tw->setWidth(400);
+    tw->setMinIndex(0);
+    tw->setSteps(10);
+    tw->setStepSize(1);
+    
     tw->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     tw->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     tw->setSliderIndex(3);
