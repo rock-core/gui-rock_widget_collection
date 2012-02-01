@@ -22,7 +22,7 @@ Timeline::Timeline(QWidget *parent) {
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     
     // Setup scene
-    ordered_width = getWidth();
+    //ordered_width = getWidth();
     scene = new QGraphicsScene;
     scene->setBackgroundBrush(getBackgroundColor());
     setAlignment(Qt::AlignLeft | Qt::AlignTop);

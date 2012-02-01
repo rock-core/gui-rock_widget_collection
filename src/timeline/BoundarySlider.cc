@@ -10,6 +10,9 @@ BoundarySlider::BoundarySlider() : Slider() {
 BoundarySlider::BoundarySlider(QGraphicsItem* parent, QPointF initPos) : Slider(parent, initPos, 0) {
     setPixmap(QPixmap(":/timeline/triangle_slider"));
     setPointingOffset(width()/2.0);
+    
+    /* Set item coordinate origin to the center */
+    setOffset( -0.5 * QPointF( width(), height() ) );
 }
 
 Direction BoundarySlider::leftRight(BoundarySlider *otherMarker) {
