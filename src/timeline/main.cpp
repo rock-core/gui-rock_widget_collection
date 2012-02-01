@@ -2,10 +2,10 @@
 #include <QtCore>
 #include <iostream>
 
-#include "TimelineWidget.h"
+#include "Timeline.h"
 #include "TestWidget.h"
 
-TimelineWidget *tw = 0;
+Timeline *tw = 0;
 TestWidget *testWidget = 0;
 
 int main(int argc, char **argv)
@@ -19,7 +19,7 @@ int main(int argc, char **argv)
     QVBoxLayout vbox(window);
     vbox.setAlignment(Qt::AlignTop);
     
-    tw = new TimelineWidget(400, 0, 10/*0000*/, 1, window);
+    tw = new Timeline(400, 0, 10/*0000*/, 1, window);
     tw->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     tw->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     tw->setSliderIndex(3);

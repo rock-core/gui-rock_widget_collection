@@ -11,7 +11,7 @@
 #include "BoundarySlider.h"
 #include "SlideBarItem.h"
 
-class TimelineWidget : public QGraphicsView
+class Timeline : public QGraphicsView
 {
     Q_OBJECT
     // syntax: Q_PROPERTY(type name READ getFunction)
@@ -22,7 +22,7 @@ class TimelineWidget : public QGraphicsView
     Q_PROPERTY(QColor backgroundColor READ getBackgroundColor WRITE setBackgroundColor)
 
 public:
-    TimelineWidget(qreal width, unsigned startIndex, unsigned steps, unsigned stepSize, QWidget* parent = 0);
+    Timeline(qreal width, unsigned startIndex, unsigned steps, unsigned stepSize, QWidget* parent = 0);
 
 public slots:
     int getBookmarkHeight() const;

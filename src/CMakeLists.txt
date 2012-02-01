@@ -59,7 +59,7 @@ SET(COLLECTION_MOC_HDRS
   vtk/plot2d/Plot2dPlugin.h
   2dvis/qwaterfalldisplay.h
   2dvis/WaterwallDisplayPlugin.h
-  timeline/TimelineWidget.h
+  timeline/Timeline.h
   timeline/TestWidget.h
   timeline/Slider.h
   timeline/BoundarySlider.h
@@ -105,7 +105,8 @@ SET(COLLECTION_HDRS
   vtk/sonar_display/SonarDisplay.h
   vtk/plot2d/Plot2d.h
   2dvis/qwaterfalldisplay.h
-  timeline/TimelineWidget.h
+  generic_widgets/RockSliderPlugin.h
+  timeline/Timeline.h
   timeline/TestWidget.h
   timeline/Slider.h
   timeline/BoundarySlider.h

@@ -1,10 +1,10 @@
-#include "TimelineWidget.h"
+#include "Timeline.h"
 #include <iostream>
 #include <algorithm>
 #include <QPixmap>
 
 
-TimelineWidget::TimelineWidget(qreal width, unsigned startIndex, unsigned steps, unsigned stepSize, QWidget *parent) {
+Timeline::Timeline(qreal width, unsigned startIndex, unsigned steps, unsigned stepSize, QWidget *parent) {
     setParent(parent);
     
     // Default property values
@@ -50,83 +50,83 @@ TimelineWidget::TimelineWidget(qreal width, unsigned startIndex, unsigned steps,
     
 }
 
-int TimelineWidget::getBookmarkHeight() const {
+int Timeline::getBookmarkHeight() const {
     return bookmarkHeight;
 }
 
-void TimelineWidget::setBookmarkHeight(int height) {
+void Timeline::setBookmarkHeight(int height) {
     bookmarkHeight = height;
 }
 
-int TimelineWidget::getIndexSliderHeight() const {
+int Timeline::getIndexSliderHeight() const {
     return indexSliderHeight;
 }
 
-void TimelineWidget::setIndexSliderHeight(int height) {
+void Timeline::setIndexSliderHeight(int height) {
     indexSliderHeight = height;
 }
 
-int TimelineWidget::getMarginTopBot() {
+int Timeline::getMarginTopBot() {
     return marginTopBot;
 }
 
-void TimelineWidget::setMarginTopBot(int margin) {
+void Timeline::setMarginTopBot(int margin) {
     marginTopBot = margin;
 }
 
-int TimelineWidget::getMarginLR() {
+int Timeline::getMarginLR() {
     return marginLR;
 }
 
-void TimelineWidget::setMarginLR(int margin) {
+void Timeline::setMarginLR(int margin) {
     marginLR = margin;
 }
 
-const QColor& TimelineWidget::getBackgroundColor() const {
+const QColor& Timeline::getBackgroundColor() const {
     return bgColor;
 }
 
-void TimelineWidget::setBackgroundColor(const QColor & color) {
+void Timeline::setBackgroundColor(const QColor & color) {
     bgColor = color;
 }
 
-int TimelineWidget::getSliderIndex() {
+int Timeline::getSliderIndex() {
     return slidebar->markerIndex(slidebar->getIndexSlider());
 }
-int TimelineWidget::getStartMarkerIndex() {
+int Timeline::getStartMarkerIndex() {
     return slidebar->markerIndex(startmarker);
 }
-int TimelineWidget::getEndMarkerIndex() {
+int Timeline::getEndMarkerIndex() {
     return slidebar->markerIndex(endmarker);
 }
 
-void TimelineWidget::setSliderIndex(int idx) {
+void Timeline::setSliderIndex(int idx) {
     std::cout << "Setting slider index to " << idx << std::endl;
     setSliderIndex(idx, slidebar->getIndexSlider());
 }
 
 // This method is private!
-void TimelineWidget::setSliderIndex(int idx, Slider* slider) {
+void Timeline::setSliderIndex(int idx, Slider* slider) {
     // TODO check boundaries!!!
     slider->setLastIndex(idx);
     //startmarker->setLastIndex(idx); // TODO ONLY FOR DEBUGGING!!! REMOVE!!!
     updateScene();
 }
 
-void TimelineWidget::addBookmark(int idx) {
+void Timeline::addBookmark(int idx) {
     QVector<int> vec;
     vec << idx;
     addBookmarks(vec);
 }
 
-void TimelineWidget::addBookmarks(QVector<int> bookmarks) {
+void Timeline::addBookmarks(QVector<int> bookmarks) {
     Q_FOREACH(int bookmark, bookmarks) {
         this->bookmarks << bookmark;
     }
     slidebar->updateBookmarks(this->bookmarks);
 }
 
-void TimelineWidget::removeBookmark(int idx) {
+void Timeline::removeBookmark(int idx) {
     for(int i = 0; i < bookmarks.size(); i++) {
         // std::cout << "idx = " << idx << std::endl;
         // std::cout << "bookmarks.at(i) = " << bookmarks.at(i) << std::endl;
@@ -140,7 +140,7 @@ void TimelineWidget::removeBookmark(int idx) {
     }
 }
 
-void TimelineWidget::resizeEvent(QResizeEvent * event) {
+void Timeline::resizeEvent(QResizeEvent * event) {
     // TODO Update all items in the scene
     
     QSize size = event->size();
@@ -154,11 +154,11 @@ void TimelineWidget::resizeEvent(QResizeEvent * event) {
     updateScene(size);
 }
 
-void TimelineWidget::updateScene() {
+void Timeline::updateScene() {
     updateScene(size());
 }
 
-void TimelineWidget::updateScene(QSizeF newSize) {
+void Timeline::updateScene(QSizeF newSize) {
     scene->setBackgroundBrush(getBackgroundColor());
     qreal sceneHeight = std::max(getBookmarkHeight(), getIndexSliderHeight()) + getMarginTopBot()*2;
 //    qreal sceneWidth = this->width();
@@ -194,6 +194,6 @@ void TimelineWidget::updateScene(QSizeF newSize) {
 
 }
 
-void TimelineWidget::fireTimeout() {
+void Timeline::fireTimeout() {
     emit timeout();
 }

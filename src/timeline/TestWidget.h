@@ -2,7 +2,7 @@
 #define	TESTWIDGET_H
 
 #include <QtGui>
-#include "TimelineWidget.h"
+#include "Timeline.h"
 #include <iostream>
 
 class TestWidget : public QWidget {
@@ -30,7 +30,7 @@ public slots:
     }
     
 public:
-    TestWidget(TimelineWidget *tw) {
+    TestWidget(Timeline *tw) {
         this->tw = tw;
         
         connect(tw, SIGNAL(timeout()), this, SLOT(updateValueDisplay()));
@@ -72,7 +72,7 @@ public:
 
     
 private:
-    TimelineWidget *tw;
+    Timeline *tw;
     QLineEdit *ledit;
     QPushButton *butSetIndexSlider;
     QPushButton *butAddBookmark;
