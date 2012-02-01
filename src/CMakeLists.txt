@@ -132,6 +132,8 @@ add_executable(sonarTest
 )
 target_link_libraries(sonarTest rock_widget_collection)
 
+add_subdirectory(stream_aligner_widget)
+
 rock_executable(virtualJoystickTest 
 		virtual_joystick/main.cpp
 		DEPS rock_widget_collection)
