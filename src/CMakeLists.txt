@@ -61,10 +61,6 @@ SET(COLLECTION_MOC_HDRS
   2dvis/WaterwallDisplayPlugin.h
   timeline/Timeline.h
   timeline/TestWidget.h
-  timeline/Slider.h
-  timeline/BoundarySlider.h
-  timeline/IndexSlider.h
-  timeline/SlideBarItem.h
   timeline/TimelinePlugin.h
 )
 
