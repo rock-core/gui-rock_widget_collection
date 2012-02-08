@@ -6,13 +6,9 @@ Slider::Slider() {
 
 }
 
-Slider::Slider(QGraphicsItem* parent, QPointF initPos, double pointing_offset) {
+Slider::Slider(QGraphicsItem* parent, QPointF initPos) {
     setParentItem(parent);
-    this->initPos = initPos;
-    this->pointing_offset = pointing_offset;
-    
-    // Set the pointer correctly
-    setInitPos(QPointF((initPos.x() - pointing_offset), initPos.y()));
+    this->initPos = initPos; 
 }
 
 const QPointF Slider::getInitPos() {
@@ -24,23 +20,18 @@ void Slider::setInitPos(QPointF initPos) {
     setPos(initPos);
 }
 
-void Slider::setPointingOffset(double pointing_offset) {
-    this->pointing_offset = pointing_offset;
-    setInitPos(QPointF((initPos.x() - pointing_offset), initPos.y()));
-}
-
 QPointF Slider::boundarySnapPos(QPointF eventPos, qreal clickPosOffsetX, qreal leftBoundary, qreal rightBoundary) {
     
     QPointF newPos;
 
     // Restricting the sliding area. The left and right boundaries of the slider bar
     // cannot be surpassed.
-    if(mapToParent(eventPos).x() - clickPosOffsetX + getPointingOffset() < leftBoundary) {
+    if(mapToParent(eventPos).x() - clickPosOffsetX < leftBoundary) {
         // Stepped over left boundary.
-        newPos = QPointF(leftBoundary - getPointingOffset(), pos().y());
-    } else if (mapToParent(eventPos).x() + width() - getPointingOffset() - clickPosOffsetX > rightBoundary) {
+        newPos = QPointF(leftBoundary, pos().y());
+    } else if (mapToParent(eventPos).x() - clickPosOffsetX > rightBoundary) {
         // Stepped over right boundary.
-        newPos = QPointF(rightBoundary - width() + getPointingOffset(), pos().y());
+        newPos = QPointF(rightBoundary, pos().y());
     } else {
         // Slider position is within boundaries.
         newPos = QPointF(mapToParent(eventPos).x() - clickPosOffsetX /*- getPointingOffset()*/,
@@ -60,10 +51,6 @@ int Slider::height() {
 
 int Slider::width() {
     return pixmap().width();
-}
-
-double Slider::getPointingOffset() {
-    return pointing_offset;
 }
 
 unsigned Slider::getLastIndex() {

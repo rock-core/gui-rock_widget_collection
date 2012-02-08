@@ -7,9 +7,8 @@ BoundarySlider::BoundarySlider() : Slider() {
 
 }
 
-BoundarySlider::BoundarySlider(QGraphicsItem* parent, QPointF initPos) : Slider(parent, initPos, 0) {
+BoundarySlider::BoundarySlider(QGraphicsItem* parent, QPointF initPos) : Slider(parent, initPos) {
     setPixmap(QPixmap(":/timeline/triangle_slider"));
-    setPointingOffset(width()/2.0);
     
     /* Set item coordinate origin to the center */
     setOffset( -0.5 * QPointF( width(), height() ) );
@@ -48,7 +47,7 @@ void BoundarySlider::mouseMoveEvent(QGraphicsSceneMouseEvent *event) {
             break;
         case RIGHT:
             // the overlapping marker is left hand side
-            overlapLeftBoundary = overlappingMarker->pos().x() + overlappingMarker->width();
+            overlapLeftBoundary = overlappingMarker->pos().x();
             overlapRightBoundary = rightBoundary;
             break;
         default :

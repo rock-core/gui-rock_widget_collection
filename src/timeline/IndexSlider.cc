@@ -6,7 +6,7 @@ IndexSlider::IndexSlider() {
     
 }
 
-IndexSlider::IndexSlider(QGraphicsItem* parent, QPointF initPos) : Slider(parent, initPos, 0) {
+IndexSlider::IndexSlider(QGraphicsItem* parent, QPointF initPos) : Slider(parent, initPos) {
     setLastIndex(((SlideBarItem*)parentItem())->getStartIndex()); // initialize variable to first index for safety reasons.
     setHeight(40); // default
 }
