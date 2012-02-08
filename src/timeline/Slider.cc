@@ -87,3 +87,7 @@ void Slider::mouseMoveEvent(QGraphicsSceneMouseEvent *event) {
     std::cout << "Computed real position for that index: " << ((SlideBarItem*)parentItem())->markerPositionForIndex(index) << std::endl;
     update();
 }
+
+void Slider::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
+//    this->getView sliderReleased(this);
+}

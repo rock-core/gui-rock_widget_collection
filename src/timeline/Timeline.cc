@@ -247,3 +247,13 @@ void Timeline::updateScene(QSizeF newSize) {
 void Timeline::fireTimeout() {
     emit timeout();
 }
+
+void Timeline::sliderReleased(Slider* slider) {
+    Slider* indexSlider = slidebar->getIndexSlider();
+    
+    if(slider == indexSlider) {
+        emit indexSliderReleased(slider->getLastIndex());
+    } else {
+        std::cout << "unknown slider released: " << slider << std::endl;
+    }
+}
