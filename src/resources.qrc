@@ -9,5 +9,6 @@
     <file alias="image_view/icon.png">image_view/resources/icon.png</file>
     <file alias="plotting/icon.png">plotting/resources/icon.png</file>
     <file alias="timeline/triangle_slider">timeline/resources/triangle_slider.png</file>
+    <file alias="timeline/test_index_slider">timeline/resources/test_index_slider.png</file>
  </qresource>
  </RCC>

@@ -53,10 +53,6 @@ void SlideBarItem::setBookmarkHeight(qreal bookmark_height) {
     this->bookmark_height = bookmark_height;
 }
 
-void SlideBarItem::setIndexSliderHeight(int height) {
-    slider->setHeight(height);
-}
-
 void SlideBarItem::setOrderedWidth(int width) {
     this->ordered_width = width;
     //update();

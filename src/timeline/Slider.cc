@@ -45,11 +45,11 @@ qreal Slider::getClickPosOffsetX(QGraphicsSceneMouseEvent *event) {
     return mapToParent(event->buttonDownPos((Qt::LeftButton))).x() - pos().x(); 
 }
 
-int Slider::height() {
+int Slider::height() const {
     return pixmap().height();
 }
 
-int Slider::width() {
+int Slider::width() const {
     return pixmap().width();
 }
 

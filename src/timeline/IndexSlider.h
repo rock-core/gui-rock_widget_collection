@@ -15,12 +15,13 @@ public:
     IndexSlider();
     IndexSlider(QGraphicsItem* parent, QPointF initPos);
     
-    void setHeight(int height);
-    int height();
-    int width();
+//    int height() const;
+//    int width() const;
+    QRectF boundingRect() const;
     
 protected:
-     void paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget);
+    //void mousePressEvent(QGraphicsSceneMouseEvent *event);
+    //void paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget);
      
  private:
      int sliderHeight;

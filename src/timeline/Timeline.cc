@@ -9,7 +9,6 @@ Timeline::Timeline(QWidget *parent) {
     
     // Default property values
     bookmarkHeight = 6;
-    indexSliderHeight = 40;
     marginTopBot = 5;
     marginLR = 5;
     bgColor = QColor(Qt::white);
@@ -63,14 +62,6 @@ int Timeline::getBookmarkHeight() const {
 
 void Timeline::setBookmarkHeight(int height) {
     bookmarkHeight = height;
-}
-
-int Timeline::getIndexSliderHeight() const {
-    return indexSliderHeight;
-}
-
-void Timeline::setIndexSliderHeight(int height) {
-    indexSliderHeight = height;
 }
 
 int Timeline::getMarginTopBot() {
@@ -219,7 +210,7 @@ void Timeline::updateScene() {
 
 void Timeline::updateScene(QSizeF newSize) {
     scene->setBackgroundBrush(getBackgroundColor());
-    qreal sceneHeight = std::max(getBookmarkHeight(), getIndexSliderHeight()) + getMarginTopBot()*2;
+    qreal sceneHeight = std::max(getBookmarkHeight(), slidebar->getIndexSlider()->height()) + getMarginTopBot()*2;
 //    qreal sceneWidth = this->width();
     qreal sceneWidth = newSize.width() + getMarginLR()*2;//ordered_width;//std::max((double)SlideBarItem::DESIGNED_WIDTH, (double)width) + PADDING;
     //scene = new QGraphicsScene(-sceneWidth/2.0, -sceneHeight/2.0, sceneWidth, sceneHeight); // TODO fit correct size

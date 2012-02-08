@@ -17,8 +17,8 @@ public:
     void setLastIndex(unsigned index);
     QPointF boundarySnapPos(QPointF eventPos, qreal clickPosOffsetX, qreal leftBoundary, qreal rightBoundary);
     qreal getClickPosOffsetX(QGraphicsSceneMouseEvent *event);
-    virtual int height();
-    virtual int width();
+    virtual int height() const;
+    virtual int width() const;
 
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event);

@@ -15,7 +15,6 @@ class Timeline : public QGraphicsView
 {
     Q_OBJECT
     Q_PROPERTY(int bookmark_height READ getBookmarkHeight WRITE setBookmarkHeight)
-    Q_PROPERTY(int index_slider_height READ getIndexSliderHeight WRITE setIndexSliderHeight)
     Q_PROPERTY(int margin_topbot READ getMarginTopBot WRITE setMarginTopBot)
     Q_PROPERTY(int margin_lr READ getMarginLR WRITE setMarginLR)
     Q_PROPERTY(QColor backgroundColor READ getBackgroundColor WRITE setBackgroundColor)
@@ -31,8 +30,6 @@ public slots:
     /* Property functions */
     int getBookmarkHeight() const;
     void setBookmarkHeight(int height);
-    int getIndexSliderHeight() const;
-    void setIndexSliderHeight(int height);
     int getMarginTopBot();
     void setMarginTopBot(int margin);
     int getMarginLR();
@@ -81,7 +78,6 @@ private:
     QTimer *timer;
     
     int bookmarkHeight;
-    int indexSliderHeight;
     int marginTopBot;
     int marginLR;
     QColor bgColor;
