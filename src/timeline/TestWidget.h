@@ -10,8 +10,19 @@ class TestWidget : public QWidget {
 public slots:
     void updateSliderIndex() {
         int value = ledit->text().toInt();
-        std::cout << "line edit value: " << value << std::endl;
         tw->setSliderIndex(value);
+        updateValueDisplay();
+    }
+    
+    void updateStartMarkerIndex() {
+        int value = ledit->text().toInt();
+        tw->setStartMarkerIndex(value);
+        updateValueDisplay();
+    }
+    
+    void updateEndMarkerIndex() {
+        int value = ledit->text().toInt();
+        tw->setEndMarkerIndex(value);
         updateValueDisplay();
     }
     
@@ -44,13 +55,19 @@ public:
         ledit = new QLineEdit();
         
         butSetIndexSlider = new QPushButton("Set IndexSlider");
+        butSetStartMarker = new QPushButton("Set start marker index");
+        butSetEndMarker = new QPushButton("Set end marker index");
         butAddBookmark = new QPushButton("Add bookmark");
         butRemoveBookmark = new QPushButton("Remove bookmark");
+        butRemoveAllBookmarks = new QPushButton("Remove all bookmarks");
         
         vbox.addWidget(ledit);
         vbox.addWidget(butSetIndexSlider);
+        vbox.addWidget(butSetStartMarker);
+        vbox.addWidget(butSetEndMarker);
         vbox.addWidget(butAddBookmark);
         vbox.addWidget(butRemoveBookmark);
+        vbox.addWidget(butRemoveAllBookmarks);
 
         QFormLayout formLayout(this);
         vbox.addLayout(&formLayout);
@@ -59,8 +76,11 @@ public:
         formLayout.addRow("Index slider index:", sliderIndex = new QLabel("value"));
         
         connect(butSetIndexSlider, SIGNAL(pressed()), this, SLOT(updateSliderIndex()));
+        connect(butSetStartMarker, SIGNAL(pressed()), this, SLOT(updateStartMarkerIndex()));
+        connect(butSetEndMarker, SIGNAL(pressed()), this, SLOT(updateEndMarkerIndex()));
         connect(butAddBookmark, SIGNAL(pressed()), this, SLOT(addBookmarkRequest()));
         connect(butRemoveBookmark, SIGNAL(pressed()), this, SLOT(removeBookmarkRequest()));
+        connect(butRemoveAllBookmarks, SIGNAL(pressed()), tw, SLOT(removeAllBookmarks()));
 
         updateValueDisplay();
         
@@ -69,14 +89,15 @@ public:
     }
     
 
-
-    
 private:
     Timeline *tw;
     QLineEdit *ledit;
     QPushButton *butSetIndexSlider;
+    QPushButton *butSetStartMarker;
+    QPushButton *butSetEndMarker;
     QPushButton *butAddBookmark;
     QPushButton *butRemoveBookmark;
+    QPushButton *butRemoveAllBookmarks;
     QLabel *startMarkerIndex;
     QLabel *endMarkerIndex;
     QLabel *sliderIndex;

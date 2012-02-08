@@ -28,7 +28,7 @@ public:
     Timeline(QWidget* parent = 0);
 
 public slots:
-    /* PROPERTIES */
+    /* Property functions */
     int getBookmarkHeight() const;
     void setBookmarkHeight(int height);
     int getIndexSliderHeight() const;
@@ -48,13 +48,18 @@ public slots:
     unsigned getStepSize();
     void setStepSize(unsigned stepSize);
     
+    /* Other slots */
     int getSliderIndex();
     int getStartMarkerIndex();
+    void setStartMarkerIndex(int idx);
     int getEndMarkerIndex();
+    void setEndMarkerIndex(int idx);
     void setSliderIndex(int idx);
     void addBookmark(int idx);
     void addBookmarks(QVector<int> bookmarks);
     void removeBookmark(int idx);
+    void removeAllBookmarks();
+    bool hasBookmarkAtIndex(int idx);
 
 signals:
     void bookmarkRemoved(int idx);

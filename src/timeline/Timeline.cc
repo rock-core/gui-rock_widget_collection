@@ -40,12 +40,12 @@ Timeline::Timeline(QWidget *parent) {
     scene->addItem(slidebar);
     
     startmarker = new BoundarySlider(slidebar, QPointF(0, SlideBarItem::HEIGHT - 1));
-   // startmarker->setLastIndex(1);
     slidebar->addTimeMarker(startmarker);
+    setStartMarkerIndex(getMinIndex());
     
     endmarker = new BoundarySlider(slidebar, QPointF(250, SlideBarItem::HEIGHT - 1));
-    //endmarker->setLastIndex(4);
     slidebar->addTimeMarker(endmarker);
+    setEndMarkerIndex(getMinIndex()+getSteps()*getStepSize());
     
     timer = new QTimer(this);
     timer->setInterval(25);
@@ -136,8 +136,17 @@ int Timeline::getSliderIndex() {
 int Timeline::getStartMarkerIndex() {
     return slidebar->markerIndex(startmarker);
 }
+
+void Timeline::setStartMarkerIndex(int idx) {
+    setSliderIndex(idx, startmarker);
+}
+
 int Timeline::getEndMarkerIndex() {
     return slidebar->markerIndex(endmarker);
+}
+
+void Timeline::setEndMarkerIndex(int idx) {
+    setSliderIndex(idx, endmarker);
 }
 
 void Timeline::setSliderIndex(int idx) {
@@ -149,7 +158,6 @@ void Timeline::setSliderIndex(int idx) {
 void Timeline::setSliderIndex(int idx, Slider* slider) {
     // TODO check boundaries!!!
     slider->setLastIndex(idx);
-    //startmarker->setLastIndex(idx); // TODO ONLY FOR DEBUGGING!!! REMOVE!!!
     updateScene();
 }
 
@@ -168,16 +176,27 @@ void Timeline::addBookmarks(QVector<int> bookmarks) {
 
 void Timeline::removeBookmark(int idx) {
     for(int i = 0; i < bookmarks.size(); i++) {
-        // std::cout << "idx = " << idx << std::endl;
-        // std::cout << "bookmarks.at(i) = " << bookmarks.at(i) << std::endl;
         if (bookmarks.at(i) == idx) {
-            // std::cout << "Removing " << idx << std::endl;
             bookmarks.remove(i);    
             emit bookmarkRemoved(idx);
             slidebar->updateBookmarks(bookmarks);
             break;
         }
     }
+}
+
+void Timeline::removeAllBookmarks() {
+    bookmarks.clear();
+    slidebar->updateBookmarks(bookmarks);
+}
+
+bool Timeline::hasBookmarkAtIndex(int idx) {
+    for(int i = 0; i < bookmarks.size(); i++) {
+        if (bookmarks.at(i) == idx) {
+            return true;
+        }
+    }
+    return false;
 }
 
 void Timeline::resizeEvent(QResizeEvent * event) {
