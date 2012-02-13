@@ -46,6 +46,7 @@ public slots:
     void setStepSize(unsigned stepSize);
     
     /* Other slots */
+    unsigned getMaxIndex();
     int getSliderIndex();
     int getStartMarkerIndex();
     void setStartMarkerIndex(int idx);
@@ -83,6 +84,7 @@ private:
     BoundarySlider *endmarker;
     QVector<int> bookmarks;
     QTimer *timer;
+    bool reconfigure_slidebar;
     
     int bookmarkHeight;
     int marginTopBot;
@@ -95,6 +97,7 @@ private:
     void updateScene();
     void updateScene(QSizeF newsize);
     void setSliderIndex(int idx, Slider* slider);
+    void reconfigureSlidebar();
     
 };
 

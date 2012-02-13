@@ -14,8 +14,10 @@ Timeline::Timeline(QWidget *parent) {
     bgColor = QColor(Qt::white);
     ordered_width = 400;
     minIndex = 0;
-    steps = 10000;
+    steps = 10;
     stepSize = 1;
+    
+    reconfigure_slidebar = false;
     
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -44,7 +46,7 @@ Timeline::Timeline(QWidget *parent) {
     
     endmarker = new BoundarySlider(slidebar, QPointF(250, SlideBarItem::HEIGHT - 1));
     slidebar->addTimeMarker(endmarker);
-    setEndMarkerIndex(getMinIndex()+getSteps()*getStepSize());
+    setEndMarkerIndex(getMaxIndex());
     
     connect(slidebar->getIndexSlider(), SIGNAL(sliderReleased(Slider*, int)), this, SLOT(sliderReleased(Slider*, int)));
     connect(startmarker, SIGNAL(sliderReleased(Slider*, int)), this, SLOT(sliderReleased(Slider*, int)));
@@ -108,6 +110,7 @@ unsigned Timeline::getMinIndex() {
 
 void Timeline::setMinIndex(unsigned minIndex) {
     this->minIndex = minIndex;
+    reconfigure_slidebar = true;
 }
 
 unsigned Timeline::getSteps() {
@@ -116,6 +119,7 @@ unsigned Timeline::getSteps() {
 
 void Timeline::setSteps(unsigned steps) {
     this->steps = steps;
+    reconfigure_slidebar = true;
 }
 
 unsigned Timeline::getStepSize() {
@@ -124,6 +128,7 @@ unsigned Timeline::getStepSize() {
 
 void Timeline::setStepSize(unsigned stepSize) {
     this->stepSize = stepSize;
+    reconfigure_slidebar = true;
 }
 
 int Timeline::getSliderIndex() {
@@ -220,6 +225,10 @@ void Timeline::updateScene() {
 }
 
 void Timeline::updateScene(QSizeF newSize) {
+    std::cout << "updateScene: " << std::endl;
+    if(reconfigure_slidebar) {
+        reconfigureSlidebar();
+    }
     scene->setBackgroundBrush(getBackgroundColor());
     qreal sceneHeight = std::max(getBookmarkHeight(), slidebar->getIndexSlider()->height()) + getMarginTopBot()*2;
 //    qreal sceneWidth = this->width();
@@ -280,4 +289,17 @@ void Timeline::sliderReleased(Slider* slider, int idx) {
     } else {
         std::cout << "********************** UNKNOWN SLIDER RELEASED at index " << idx << "!!!!! ****************" << std::endl;
     }
+}
+
+void Timeline::reconfigureSlidebar() {
+    std::cout << "reconfigureSlidebar()" << std::endl;
+    reconfigure_slidebar = false;
+    slidebar->reconfigure(getMinIndex(), getSteps(), getStepSize());
+
+    setStartMarkerIndex(getMinIndex());
+    setEndMarkerIndex(getMaxIndex());
+}
+
+unsigned Timeline::getMaxIndex() {
+    return getMinIndex() + getSteps() * getStepSize();
 }

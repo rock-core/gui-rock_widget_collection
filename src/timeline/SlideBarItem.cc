@@ -6,12 +6,17 @@
 
 SlideBarItem::SlideBarItem(unsigned startIndex, unsigned steps, unsigned stepSize, QGraphicsItem *parent) : QGraphicsItem(parent), color(QColor(Qt::gray)) {
     setAcceptDrops(true); // TODO necessary??
-    this->startIndex = startIndex;
-    this->steps = steps;
-    this->stepSize = stepSize;
+    reconfigure(startIndex, steps, stepSize);
     
     slider = new IndexSlider(this, QPointF(20,0));
     allSliders.append(slider);
+}
+
+void SlideBarItem::reconfigure(unsigned startIndex, unsigned steps, unsigned stepSize) {
+    printf("Reconfiguring slidebar: startIndex=%d, steps=%d, stepSize=%d\n", startIndex, steps, stepSize);
+    this->startIndex = startIndex;
+    this->steps = steps;
+    this->stepSize = stepSize;
 }
 
 QRectF SlideBarItem::boundingRect() const {

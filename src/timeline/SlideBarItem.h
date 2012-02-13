@@ -15,7 +15,8 @@ public:
     static const int HEIGHT = 3;
 
     SlideBarItem(unsigned startIndex, unsigned steps, unsigned stepSize, QGraphicsItem *parent = 0);
-
+    void reconfigure(unsigned startIndex, unsigned steps, unsigned stepSize);
+    
     QRectF boundingRect() const;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
     qreal getHeight() const;
