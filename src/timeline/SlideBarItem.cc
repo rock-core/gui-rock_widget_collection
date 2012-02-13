@@ -135,3 +135,13 @@ void SlideBarItem::updateBookmarks(QVector<int> & bookmarks) {
     this->bookmarks = bookmarks;
     update();
 }
+
+void SlideBarItem::mousePressEvent(QGraphicsSceneMouseEvent *event) {
+    // check if bookmark was clicked
+    Q_FOREACH(int bookmark, bookmarks) {
+        QRectF(markerPositionForIndex(bookmark), pos().y(), 3, getBookmarkHeight());
+        
+        //if(markerPositionForIndex(bookmark)).
+    }
+    // if yes, emit signal
+}

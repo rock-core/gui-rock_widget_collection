@@ -63,6 +63,7 @@ SET(COLLECTION_MOC_HDRS
   timeline/TestWidget.h
   timeline/TimelinePlugin.h
   timeline/Slider.h
+  timeline/SlideBarItem.h
 )
 
 SET(COLLECTION_HDRS

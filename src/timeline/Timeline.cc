@@ -49,6 +49,7 @@ Timeline::Timeline(QWidget *parent) {
     connect(slidebar->getIndexSlider(), SIGNAL(sliderReleased(Slider*, int)), this, SLOT(sliderReleased(Slider*, int)));
     connect(startmarker, SIGNAL(sliderReleased(Slider*, int)), this, SLOT(sliderReleased(Slider*, int)));
     connect(endmarker, SIGNAL(sliderReleased(Slider*, int)), this, SLOT(sliderReleased(Slider*, int)));
+    connect(slidebar, SIGNAL(bookmarkClicked(int)), this, SLOT(bookmarkClickedSlot(int)));
     
     /* Timeout, at the moment only used for TestWidget */
     timer = new QTimer(this);
@@ -253,6 +254,11 @@ void Timeline::updateScene(QSizeF newSize) {
     
     update();
 
+}
+
+void Timeline::bookmarkClickedSlot(int idx) {
+    std::cout << "********************** BOOKMARK CLICKED at index " << idx << "!!!!! ****************" << std::endl;
+    emit bookmarkClicked(idx);
 }
 
 void Timeline::fireTimeout() {

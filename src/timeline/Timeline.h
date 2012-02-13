@@ -59,11 +59,11 @@ public slots:
     bool hasBookmarkAtIndex(int idx);
 
 signals:
-    //void indexSliderMoved(int idx);
     void indexSliderReleased(int idx);
     void startMarkerReleased(int idx);
     void endMarkerReleased(int idx);
 
+    void bookmarkClicked(int idx);
     void bookmarkRemoved(int idx);
     void timeout();
 
@@ -71,6 +71,7 @@ protected:
     void resizeEvent(QResizeEvent * event);
 
 private slots:
+    void bookmarkClickedSlot(int idx);
     void fireTimeout();
     void sliderReleased(Slider* slider, int idx);
     

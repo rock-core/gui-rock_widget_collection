@@ -5,8 +5,11 @@
 #include "BoundarySlider.h"
 #include "IndexSlider.h"
 
-class SlideBarItem : public QGraphicsItem
+class SlideBarItem : public QObject, public QGraphicsItem
 {
+    Q_OBJECT
+    Q_INTERFACES(QGraphicsItem)
+    
 public:
 
     static const int HEIGHT = 3;
@@ -31,7 +34,13 @@ public:
     int markerPositionForIndex(unsigned index);
     IndexSlider* getIndexSlider();
     void updateBookmarks(QVector<int> & bookmarks);
+    
+signals:
+    void bookmarkClicked(int idx);
 
+protected:
+    void mousePressEvent(QGraphicsSceneMouseEvent *event);
+    
 private:
     qreal ordered_width;
     qreal bookmark_height;
