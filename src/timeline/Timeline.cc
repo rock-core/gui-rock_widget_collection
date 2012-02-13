@@ -154,6 +154,10 @@ void Timeline::setSliderIndex(int idx, Slider* slider) {
 }
 
 void Timeline::addBookmark(int idx) {
+    if(hasBookmarkAtIndex(idx)) {
+        return;
+    }
+    
     QVector<int> vec;
     vec << idx;
     addBookmarks(vec);
