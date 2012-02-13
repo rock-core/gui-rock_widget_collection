@@ -121,19 +121,20 @@ void Timeline::setStepSize(unsigned stepSize) {
 }
 
 int Timeline::getSliderIndex() {
-    return slidebar->markerIndex(slidebar->getIndexSlider());
+    return slidebar->getIndexSlider()->getLastIndex();
 }
 
 int Timeline::getStartMarkerIndex() {
-    return slidebar->markerIndex(startmarker);
+    return startmarker->getLastIndex();
 }
 
 void Timeline::setStartMarkerIndex(int idx) {
     setSliderIndex(idx, startmarker);
+    
 }
 
 int Timeline::getEndMarkerIndex() {
-    return slidebar->markerIndex(endmarker);
+    return endmarker->getLastIndex();
 }
 
 void Timeline::setEndMarkerIndex(int idx) {
