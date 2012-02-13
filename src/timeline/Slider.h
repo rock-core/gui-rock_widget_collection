@@ -4,8 +4,10 @@
 #include <QtGui>
 #include <QGraphicsItem>
 
-class Slider : public QGraphicsPixmapItem
+class Slider : public QObject, public QGraphicsPixmapItem
 {
+    Q_OBJECT
+    
 public:
 
     Slider();
@@ -19,6 +21,10 @@ public:
     qreal getClickPosOffsetX(QGraphicsSceneMouseEvent *event);
     virtual int height() const;
     virtual int width() const;
+    
+signals:
+    void sliderMoved(Slider* slider, int idx);
+    void sliderReleased(Slider* slider, int idx);
 
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event);
