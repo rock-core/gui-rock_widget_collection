@@ -22,7 +22,7 @@ int main(int argc, char **argv)
     tw = new Timeline(window);
     tw->setWidth(400);
     tw->setMinIndex(0);
-    tw->setSteps(10);
+    tw->setSteps(10000);
     tw->setStepSize(1);
     
     tw->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -30,7 +30,7 @@ int main(int argc, char **argv)
     tw->setSliderIndex(3);
     
     QVector<int> bookmarks;
-    bookmarks << 0 << 1 << 4 << 5 << 6 << 8 << 9 << 10;
+    bookmarks << 0 << 123 << 3334 << 5543 << 8888 << 9456;
     tw->addBookmarks(bookmarks);
     tw->show();
     
