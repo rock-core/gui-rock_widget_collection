@@ -59,6 +59,11 @@ SET(COLLECTION_MOC_HDRS
   vtk/plot2d/Plot2dPlugin.h
   2dvis/qwaterfalldisplay.h
   2dvis/WaterwallDisplayPlugin.h
+  timeline/Timeline.h
+  timeline/TestWidget.h
+  timeline/TimelinePlugin.h
+  timeline/Slider.h
+  timeline/SlideBarItem.h
 )
 
 SET(COLLECTION_HDRS
@@ -99,6 +104,13 @@ SET(COLLECTION_HDRS
   vtk/sonar_display/SonarDisplay.h
   vtk/plot2d/Plot2d.h
   2dvis/qwaterfalldisplay.h
+  generic_widgets/RockSliderPlugin.h
+  timeline/Timeline.h
+  timeline/TestWidget.h
+  timeline/Slider.h
+  timeline/BoundarySlider.h
+  timeline/IndexSlider.h
+  timeline/SlideBarItem.h
 )
 
 FILE(GLOB COLLECTION_SOURCES 
@@ -113,6 +125,7 @@ FILE(GLOB COLLECTION_SOURCES
     vtk/sonar_display/*.cc
     vtk/plot2d/*.cc
     2dvis/*.cc
+    timeline/*.cc
     *.cc)
 
 SET(QtApp_RCCS resources.qrc)
@@ -130,7 +143,12 @@ rock_vizkit_widget(rock_widget_collection
 add_executable(sonarTest
     sonar_view/sonarTest.cpp
 )
+add_executable(timelineTest
+    timeline/main.cpp
+)
+
 target_link_libraries(sonarTest rock_widget_collection)
+target_link_libraries(timelineTest rock_widget_collection)
 
 add_subdirectory(stream_aligner_widget)
 
