@@ -14,7 +14,7 @@ Timeline::Timeline(QWidget *parent) {
     bgColor = QColor(Qt::white);
     ordered_width = 400;
     minIndex = 0;
-    steps = 100;
+    steps = 10000;
     stepSize = 1;
     
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -46,6 +46,11 @@ Timeline::Timeline(QWidget *parent) {
     slidebar->addTimeMarker(endmarker);
     setEndMarkerIndex(getMinIndex()+getSteps()*getStepSize());
     
+    connect(slidebar->getIndexSlider(), SIGNAL(sliderReleased(Slider*, int)), this, SLOT(sliderReleased(Slider*, int)));
+    connect(startmarker, SIGNAL(sliderReleased(Slider*, int)), this, SLOT(sliderReleased(Slider*, int)));
+    connect(endmarker, SIGNAL(sliderReleased(Slider*, int)), this, SLOT(sliderReleased(Slider*, int)));
+    
+    /* Timeout, at the moment only used for TestWidget */
     timer = new QTimer(this);
     timer->setInterval(25);
     connect(timer, SIGNAL(timeout()), this, SLOT(fireTimeout()));
@@ -200,11 +205,11 @@ void Timeline::resizeEvent(QResizeEvent * event) {
     
     QSize size = event->size();
     
-    std::cout << "ResizeEvent!" << std::endl;
-    std::cout << "TimelineWidget newsize: H=" << size.height() << ", W=" << size.width() << std::endl;
+//    std::cout << "ResizeEvent!" << std::endl;
+//    std::cout << "TimelineWidget newsize: H=" << size.height() << ", W=" << size.width() << std::endl;
     
     QSizeF sceneSize = sceneRect().size();
-    std::cout << "Current scenerect size: H=" << sceneSize.height() << ", W=" << sceneSize.width() << std::endl;
+//    std::cout << "Current scenerect size: H=" << sceneSize.height() << ", W=" << sceneSize.width() << std::endl;
     
     updateScene(size);
 }
@@ -225,11 +230,11 @@ void Timeline::updateScene(QSizeF newSize) {
     scene->setSceneRect(-getMarginLR(), -sceneHeight/2.0, sceneWidth, sceneHeight);
     
     slidebar->setOrderedWidth(newSize.width() - getMarginLR()*2);
-    std::cout << "updateScene(): updating slider positions" << std::endl;
+//    std::cout << "updateScene(): updating slider positions" << std::endl;
     Q_FOREACH(Slider *slider, slidebar->getAllSliders()) {
         //bs.setPos(bs.boundarySnapPos(slidebar->markerPositionForIndex(bs.g)))
         unsigned index = slidebar->markerIndex(slider);
-        std::cout << "Logical marker position: " << index << ", old pos: " << slider->getLastIndex() << std::endl;
+//        std::cout << "Logical marker position: " << index << ", old pos: " << slider->getLastIndex() << std::endl;
         
 //// **** TODO Tried to remove pointing offset and do boundary safe positioning but there seems to be a coordinate system mismatch. ****
 //        slider->setPos(slider->boundarySnapPos(QPointF(slidebar->markerPositionForIndex(slider->getLastIndex()), slider->pos().y()),
@@ -237,13 +242,14 @@ void Timeline::updateScene(QSizeF newSize) {
 //                                                    slidebar->boundingRect().left(),
 //                                                    slidebar->boundingRect().right())
 //                                                );
-        std::cout << "old slider xPos: " << slider->pos().x() << ", new pos: " << slidebar->markerPositionForIndex(slider->getLastIndex()) << std::endl;
+
+//        std::cout << "old slider xPos: " << slider->pos().x() << ", new pos: " << slidebar->markerPositionForIndex(slider->getLastIndex()) << std::endl;
         slider->setPos(slidebar->markerPositionForIndex(slider->getLastIndex()), slider->pos().y());
     }
 
-    std::cout << "this->height(): " << this->height() << std::endl;
-    std::cout << "this->width(): " << this->width() << std::endl;
-    std::cout << "this->viewport()->size().width()" << this->viewport()->size().width() << std::endl;
+//    std::cout << "this->height(): " << this->height() << std::endl;
+//    std::cout << "this->width(): " << this->width() << std::endl;
+//    std::cout << "this->viewport()->size().width()" << this->viewport()->size().width() << std::endl;
     
     update();
 
@@ -253,12 +259,19 @@ void Timeline::fireTimeout() {
     emit timeout();
 }
 
-void Timeline::sliderReleased(Slider* slider) {
+void Timeline::sliderReleased(Slider* slider, int idx) {
     Slider* indexSlider = slidebar->getIndexSlider();
     
     if(slider == indexSlider) {
-        emit indexSliderReleased(slider->getLastIndex());
+        emit indexSliderReleased(idx);
+        std::cout << "********************** INDEX SLIDER RELEASED at index " << idx << "!!!!! ****************" << std::endl;
+    } else if (slider == startmarker) {
+        emit startMarkerReleased(idx);
+        std::cout << "********************** START MARKER RELEASED at index " << idx << "!!!!! ****************" << std::endl;
+    } else if (slider == endmarker) {
+        emit endMarkerReleased(idx);
+        std::cout << "********************** END MARKER RELEASED at index " << idx << "!!!!! ****************" << std::endl;
     } else {
-        std::cout << "unknown slider released: " << slider << std::endl;
+        std::cout << "********************** UNKNOWN SLIDER RELEASED at index " << idx << "!!!!! ****************" << std::endl;
     }
 }

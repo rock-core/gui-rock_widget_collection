@@ -62,17 +62,18 @@ void Slider::setLastIndex(unsigned index) {
 }
 
 void Slider::mousePressEvent(QGraphicsSceneMouseEvent *event) {    
-    std::cout << "Click Pos. in parent coordinates:"
-            << mapToParent(event->pos()).x() << ","
-            << mapToParent(event->pos()).y() << std::endl;
-    std::cout << "Parent Pos. x_left/x_right:"
-            << parentItem()->boundingRect().left() << "/"
-            << parentItem()->boundingRect().right() << std::endl;
+//    std::cout << "Click Pos. in parent coordinates:"
+//            << mapToParent(event->pos()).x() << ","
+//            << mapToParent(event->pos()).y() << std::endl;
+//    std::cout << "Parent Pos. x_left/x_right:"
+//            << parentItem()->boundingRect().left() << "/"
+//            << parentItem()->boundingRect().right() << std::endl;
 
     update();
 }
 
 void Slider::mouseMoveEvent(QGraphicsSceneMouseEvent *event) {   
+//    std::cout << "In Slider::mouseMoveEvent" << std::endl;
     /* Sliding bounds in parent's coords */
     qreal leftBoundary = parentItem()->boundingRect().left();
     qreal rightBoundary = parentItem()->boundingRect().right();
@@ -83,11 +84,11 @@ void Slider::mouseMoveEvent(QGraphicsSceneMouseEvent *event) {
     unsigned index = ((SlideBarItem*)parentItem())->markerIndex(this);
     setLastIndex(index);
     
-    std::cout << "Logical marker position: " << index << std::endl;
-    std::cout << "Computed real position for that index: " << ((SlideBarItem*)parentItem())->markerPositionForIndex(index) << std::endl;
+//    std::cout << "Logical marker position: " << index << std::endl;
+//    std::cout << "Computed real position for that index: " << ((SlideBarItem*)parentItem())->markerPositionForIndex(index) << std::endl;
     update();
 }
 
 void Slider::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
-//    this->getView sliderReleased(this);
+    emit sliderReleased(this, getLastIndex());
 }
