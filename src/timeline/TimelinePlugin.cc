@@ -29,14 +29,14 @@ QString TimelinePlugin::domXml() const
 {
     return "<ui language=\"c++\">\n"
         " <widget class=\"Timeline\" name=\"timeline\">\n"
-//        "  <property name=\"geometry\">\n"
-//        "   <rect>\n"
-//        "    <x>0</x>\n"
-//        "    <y>0</y>\n"
-//        "    <width>100</width>\n"
-//        "    <height>100</height>\n"
-//        "   </rect>\n"
-//        "  </property>\n"
+        "  <property name=\"geometry\">\n"
+        "   <rect>\n"
+        "    <x>0</x>\n"
+        "    <y>0</y>\n"
+        "    <width>250</width>\n"
+//         "    <height>100</height>\n"
+        "   </rect>\n"
+        "  </property>\n"
 //        "  <property name=\"toolTip\" >\n"
 //        "   <string>The current time</string>\n"
 //        "  </property>\n"
@@ -52,7 +52,7 @@ QString TimelinePlugin::group() const {
 }
 
 QString TimelinePlugin::includeFile() const {
-    
+    return "rock_widget_collection/Timeline.h";
 }
 
 QString TimelinePlugin::name() const {
