@@ -13,7 +13,7 @@ public:
     static const int WIDTH = 1;
 
     IndexSlider();
-    IndexSlider(QGraphicsItem* parent, QPointF initPos);
+    IndexSlider(QGraphicsItem* parent, unsigned initIdx);
     
 //    int height() const;
 //    int width() const;

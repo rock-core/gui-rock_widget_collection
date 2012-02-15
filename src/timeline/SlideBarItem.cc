@@ -8,7 +8,7 @@ SlideBarItem::SlideBarItem(unsigned startIndex, unsigned steps, unsigned stepSiz
     setAcceptDrops(true); // TODO necessary??
     reconfigure(startIndex, steps, stepSize);
     
-    slider = new IndexSlider(this, QPointF(20,0));
+    slider = new IndexSlider(this, startIndex);
     allSliders.append(slider);
 }
 

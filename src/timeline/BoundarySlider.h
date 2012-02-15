@@ -13,7 +13,7 @@ class BoundarySlider : public Slider
 public:
 
     BoundarySlider();
-    BoundarySlider(QGraphicsItem* parent, QPointF initPos);
+    BoundarySlider(QGraphicsItem* parent, unsigned initIdx);
 
     Direction leftRight(BoundarySlider *otherMarker);
 

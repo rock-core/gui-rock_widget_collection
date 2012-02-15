@@ -11,10 +11,9 @@ class Slider : public QObject, public QGraphicsPixmapItem
 public:
 
     Slider();
-    Slider(QGraphicsItem* parent, QPointF initPos);
-    
-    const QPointF getInitPos();
-    void setInitPos(QPointF initPos);
+    Slider(QGraphicsItem* parent, unsigned initIdx);
+
+    unsigned getInitIdx();
     unsigned getLastIndex();
     void setLastIndex(unsigned index);
     QPointF boundarySnapPos(QPointF eventPos, qreal clickPosOffsetX, qreal leftBoundary, qreal rightBoundary);
@@ -31,7 +30,7 @@ protected:
     void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
     
-    QPointF initPos;
+    unsigned initIdx;
     unsigned lastIndex;
 };
 

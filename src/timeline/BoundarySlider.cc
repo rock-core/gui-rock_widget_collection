@@ -7,7 +7,7 @@ BoundarySlider::BoundarySlider() : Slider() {
 
 }
 
-BoundarySlider::BoundarySlider(QGraphicsItem* parent, QPointF initPos) : Slider(parent, initPos) {
+BoundarySlider::BoundarySlider(QGraphicsItem* parent, unsigned initIdx) : Slider(parent, initIdx) {
     setPixmap(QPixmap(":/timeline/triangle_slider"));
     
     /* Set item coordinate origin to the x_center and let the slider tip overlap the slidebar a little.
@@ -16,7 +16,7 @@ BoundarySlider::BoundarySlider(QGraphicsItem* parent, QPointF initPos) : Slider(
 }
 
 Direction BoundarySlider::leftRight(BoundarySlider *otherMarker) {
-    if(this->getInitPos().x() > otherMarker->getInitPos().x()) {
+    if(this->getInitIdx() > otherMarker->getInitIdx()) {
         return RIGHT;
     }
     else {

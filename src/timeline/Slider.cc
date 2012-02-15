@@ -6,18 +6,13 @@ Slider::Slider() {
 
 }
 
-Slider::Slider(QGraphicsItem* parent, QPointF initPos) {
+Slider::Slider(QGraphicsItem* parent, unsigned initIdx) {
     setParentItem(parent);
-    this->initPos = initPos; 
+    this->initIdx = initIdx; 
 }
 
-const QPointF Slider::getInitPos() {
-    return initPos;
-}
-
-void Slider::setInitPos(QPointF initPos) {
-    this->initPos = initPos;
-    setPos(initPos);
+unsigned Slider::getInitIdx() {
+    return initIdx;
 }
 
 QPointF Slider::boundarySnapPos(QPointF eventPos, qreal clickPosOffsetX, qreal leftBoundary, qreal rightBoundary) {

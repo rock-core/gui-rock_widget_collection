@@ -6,7 +6,7 @@ IndexSlider::IndexSlider() {
     
 }
 
-IndexSlider::IndexSlider(QGraphicsItem* parent, QPointF initPos) : Slider(parent, initPos) {
+IndexSlider::IndexSlider(QGraphicsItem* parent, unsigned initIdx) : Slider(parent, initIdx) {
     setLastIndex(((SlideBarItem*)parentItem())->getStartIndex()); // initialize variable to first index for safety reasons.
     setShapeMode(BoundingRectShape);
     //setAcceptTouchEvents(true);

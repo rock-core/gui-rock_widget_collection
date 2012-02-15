@@ -40,13 +40,13 @@ Timeline::Timeline(QWidget *parent) {
     //slidebar->setPos(0,0);
     scene->addItem(slidebar);
     
-    startmarker = new BoundarySlider(slidebar, QPointF(0, SlideBarItem::HEIGHT - 1));
+    startmarker = new BoundarySlider(slidebar, getMinIndex());
     slidebar->addTimeMarker(startmarker);
-    setStartMarkerIndex(getMinIndex());
+    //setStartMarkerIndex(getMinIndex());
     
-    endmarker = new BoundarySlider(slidebar, QPointF(250, SlideBarItem::HEIGHT - 1));
+    endmarker = new BoundarySlider(slidebar, getMaxIndex());
     slidebar->addTimeMarker(endmarker);
-    setEndMarkerIndex(getMaxIndex());
+    //setEndMarkerIndex(getMaxIndex());
     
     connect(slidebar->getIndexSlider(), SIGNAL(sliderReleased(Slider*, int)), this, SLOT(sliderReleased(Slider*, int)));
     connect(startmarker, SIGNAL(sliderReleased(Slider*, int)), this, SLOT(sliderReleased(Slider*, int)));
