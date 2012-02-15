@@ -1,8 +1,10 @@
 /****************************************************************************
-**
-** Timeline Main Widget.
-**
-****************************************************************************/
+ *
+ * Timeline Main Widget.
+ * 
+ * @author Allan E. Conquest - allan.conquest@dfki.de
+ *
+ ***************************************************************************/
 
 #ifndef TIMELINE_H
 #define TIMELINE_H
@@ -11,6 +13,15 @@
 #include "BoundarySlider.h"
 #include "SlideBarItem.h"
 
+/**
+ * This widget provides an improved Slider. Besides the standard slider 
+ * functionality you can mark a region on the slide bar to select a certain
+ * interval between two indices. There are two markers: the start marker (left)
+ * and the end marker (right). The thin vertical slider is the index slider 
+ * which is the pendant to the standard slider.
+ * 
+ * @author Allan E. Conquest - allan.conquest@dfki.de
+ */
 class Timeline : public QGraphicsView
 {
     Q_OBJECT
@@ -46,20 +57,69 @@ public slots:
     void setStepSize(unsigned stepSize);
     
     /* Other slots */
+    
+    /**
+     * Returns the maximum index, i.e. the highest index on the timeline.
+     */
     unsigned getMaxIndex();
+    
+    /**
+     * Returns the current index of the index slider.
+     */
     int getSliderIndex();
+    
+    /**
+     * Returns the current index of the start marker.
+     */
     int getStartMarkerIndex();
+    
+    /**
+     * Sets the index of the start marker.
+     */
     void setStartMarkerIndex(int idx);
+    
+    /**
+     * Returns the current index of the start marker.
+     */
     int getEndMarkerIndex();
+    
+    /**
+     * Sets the index of the end marker.
+     */
     void setEndMarkerIndex(int idx);
+    
+    /**
+     * Sets the index of the index slider.
+     */
     void setSliderIndex(int idx);
+    
+    /**
+     * Adds a bookmark for the specified index. Only one bookmark per index is possible.
+     */
     void addBookmark(int idx);
+    
+    /**
+     * Adds multiple bookmarks at once. See addBookmark().
+     */
     void addBookmarks(QVector<int> bookmarks);
+    
+    /**
+     * Removes the bookmark at the specified index if there one.
+     */
     void removeBookmark(int idx);
+    
+    /**
+     * Removes all bookmarks.
+     */
     void removeAllBookmarks();
+    
+    /**
+     * Returns true if there is a bookmark located at the specified index.
+     */
     bool hasBookmarkAtIndex(int idx);
 
 signals:
+
     void indexSliderReleased(int idx);
     void startMarkerReleased(int idx);
     void endMarkerReleased(int idx);
