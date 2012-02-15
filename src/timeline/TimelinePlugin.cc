@@ -22,7 +22,7 @@ bool TimelinePlugin::isInitialized() const
 
 QIcon TimelinePlugin::icon() const
 {
-    // TODO
+    return QIcon(":/timeline/icon");
 }
 
 QString TimelinePlugin::domXml() const
