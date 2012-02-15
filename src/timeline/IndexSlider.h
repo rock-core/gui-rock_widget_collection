@@ -4,8 +4,6 @@
 #include <QGraphicsItem>
 #include "Slider.h"
 
-
-
 class IndexSlider : public Slider
 {
 public:
@@ -15,16 +13,12 @@ public:
     IndexSlider();
     IndexSlider(QGraphicsItem* parent, unsigned initIdx);
     
-//    int height() const;
-//    int width() const;
     QRectF boundingRect() const;
     
 protected:
-    //void mousePressEvent(QGraphicsSceneMouseEvent *event);
-    //void paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget);
      
- private:
-     int sliderHeight;
+private:
+    int sliderHeight;
 };
 
 #endif	/* INDEXSLIDER_H */

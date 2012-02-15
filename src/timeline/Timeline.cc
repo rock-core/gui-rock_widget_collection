@@ -23,7 +23,6 @@ Timeline::Timeline(QWidget *parent) {
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     
     // Setup scene
-    //ordered_width = getWidth();
     scene = new QGraphicsScene;
     scene->setBackgroundBrush(getBackgroundColor());
     setAlignment(Qt::AlignLeft | Qt::AlignTop);
@@ -36,17 +35,13 @@ Timeline::Timeline(QWidget *parent) {
     slidebar->setBookmarkHeight(getBookmarkHeight());
     slidebar->setOrderedWidth(ordered_width - getMarginLR()*2);
     
-    //slidebar->setPos(-(slidebar->getWidth() / 2), 0);
-    //slidebar->setPos(0,0);
     scene->addItem(slidebar);
     
     startmarker = new BoundarySlider(slidebar, getMinIndex());
     slidebar->addTimeMarker(startmarker);
-    //setStartMarkerIndex(getMinIndex());
     
     endmarker = new BoundarySlider(slidebar, getMaxIndex());
     slidebar->addTimeMarker(endmarker);
-    //setEndMarkerIndex(getMaxIndex());
     
     connect(slidebar->getIndexSlider(), SIGNAL(sliderReleased(Slider*, int)), this, SLOT(sliderReleased(Slider*, int)));
     connect(startmarker, SIGNAL(sliderReleased(Slider*, int)), this, SLOT(sliderReleased(Slider*, int)));
@@ -58,10 +53,8 @@ Timeline::Timeline(QWidget *parent) {
     timer->setInterval(25);
     connect(timer, SIGNAL(timeout()), this, SLOT(fireTimeout()));
     timer->start();
-    
-    
+       
     updateScene();
-    
 }
 
 int Timeline::getBookmarkHeight() const {
@@ -207,16 +200,7 @@ bool Timeline::hasBookmarkAtIndex(int idx) {
 }
 
 void Timeline::resizeEvent(QResizeEvent * event) {
-    // TODO Update all items in the scene
-    
     QSize size = event->size();
-    
-//    std::cout << "ResizeEvent!" << std::endl;
-//    std::cout << "TimelineWidget newsize: H=" << size.height() << ", W=" << size.width() << std::endl;
-    
-    QSizeF sceneSize = sceneRect().size();
-//    std::cout << "Current scenerect size: H=" << sceneSize.height() << ", W=" << sceneSize.width() << std::endl;
-    
     updateScene(size);
 }
 
@@ -225,44 +209,24 @@ void Timeline::updateScene() {
 }
 
 void Timeline::updateScene(QSizeF newSize) {
-    std::cout << "updateScene: " << std::endl;
     if(reconfigure_slidebar) {
         reconfigureSlidebar();
     }
+    
     scene->setBackgroundBrush(getBackgroundColor());
+    
     qreal sceneHeight = std::max(getBookmarkHeight(), slidebar->getIndexSlider()->height()) + getMarginTopBot()*2;
-//    qreal sceneWidth = this->width();
-    qreal sceneWidth = newSize.width() + getMarginLR()*2;//ordered_width;//std::max((double)SlideBarItem::DESIGNED_WIDTH, (double)width) + PADDING;
-    //scene = new QGraphicsScene(-sceneWidth/2.0, -sceneHeight/2.0, sceneWidth, sceneHeight); // TODO fit correct size
+    qreal sceneWidth = newSize.width() + getMarginLR()*2;
     setMaximumHeight(sceneHeight);
     setMinimumHeight(sceneHeight);
-//    setMinimumWidth(sceneWidth);
     scene->setSceneRect(-getMarginLR(), -sceneHeight/2.0, sceneWidth, sceneHeight);
     
     slidebar->setOrderedWidth(newSize.width() - getMarginLR()*2);
-//    std::cout << "updateScene(): updating slider positions" << std::endl;
     Q_FOREACH(Slider *slider, slidebar->getAllSliders()) {
-        //bs.setPos(bs.boundarySnapPos(slidebar->markerPositionForIndex(bs.g)))
-        unsigned index = slidebar->markerIndex(slider);
-//        std::cout << "Logical marker position: " << index << ", old pos: " << slider->getLastIndex() << std::endl;
-        
-//// **** TODO Tried to remove pointing offset and do boundary safe positioning but there seems to be a coordinate system mismatch. ****
-//        slider->setPos(slider->boundarySnapPos(QPointF(slidebar->markerPositionForIndex(slider->getLastIndex()), slider->pos().y()),
-//                                                    0,
-//                                                    slidebar->boundingRect().left(),
-//                                                    slidebar->boundingRect().right())
-//                                                );
-
-//        std::cout << "old slider xPos: " << slider->pos().x() << ", new pos: " << slidebar->markerPositionForIndex(slider->getLastIndex()) << std::endl;
         slider->setPos(slidebar->markerPositionForIndex(slider->getLastIndex()), slider->pos().y());
     }
 
-//    std::cout << "this->height(): " << this->height() << std::endl;
-//    std::cout << "this->width(): " << this->width() << std::endl;
-//    std::cout << "this->viewport()->size().width()" << this->viewport()->size().width() << std::endl;
-    
     update();
-
 }
 
 void Timeline::bookmarkClickedSlot(int idx) {
@@ -292,10 +256,8 @@ void Timeline::sliderReleased(Slider* slider, int idx) {
 }
 
 void Timeline::reconfigureSlidebar() {
-    std::cout << "reconfigureSlidebar()" << std::endl;
     reconfigure_slidebar = false;
     slidebar->reconfigure(getMinIndex(), getSteps(), getStepSize());
-
     setStartMarkerIndex(getMinIndex());
     setEndMarkerIndex(getMaxIndex());
 }

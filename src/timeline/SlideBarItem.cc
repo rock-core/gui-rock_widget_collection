@@ -5,7 +5,6 @@
 #include<iostream>
 
 SlideBarItem::SlideBarItem(unsigned startIndex, unsigned steps, unsigned stepSize, QGraphicsItem *parent) : QGraphicsItem(parent), color(QColor(Qt::gray)) {
-    setAcceptDrops(true); // TODO necessary??
     reconfigure(startIndex, steps, stepSize);
     
     slider = new IndexSlider(this, startIndex);

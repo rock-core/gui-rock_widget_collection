@@ -68,7 +68,5 @@ void BoundarySlider::mouseMoveEvent(QGraphicsSceneMouseEvent *event) {
 //    std::cout << "Logical marker position: " << index << std::endl;
     //std::cout << "Computed real position for that index: " << ((SlideBarItem*)parentItem())->markerPositionForIndex(index) << std::endl;
 //    std::cout << "boundary slider pos.x: " << pos().x() << std::endl;
-    parentItem()->update(); // updates index slider as well
-//    update();
-    
+    parentItem()->update(); // updates index slider as well    
 }

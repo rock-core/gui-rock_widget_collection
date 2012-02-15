@@ -56,19 +56,10 @@ void Slider::setLastIndex(unsigned index) {
     this->lastIndex = index;
 }
 
-void Slider::mousePressEvent(QGraphicsSceneMouseEvent *event) {    
-//    std::cout << "Click Pos. in parent coordinates:"
-//            << mapToParent(event->pos()).x() << ","
-//            << mapToParent(event->pos()).y() << std::endl;
-//    std::cout << "Parent Pos. x_left/x_right:"
-//            << parentItem()->boundingRect().left() << "/"
-//            << parentItem()->boundingRect().right() << std::endl;
-
-    update();
+void Slider::mousePressEvent(QGraphicsSceneMouseEvent *event) {
 }
 
-void Slider::mouseMoveEvent(QGraphicsSceneMouseEvent *event) {   
-//    std::cout << "In Slider::mouseMoveEvent" << std::endl;
+void Slider::mouseMoveEvent(QGraphicsSceneMouseEvent *event) {
     /* Sliding bounds in parent's coords */
     qreal leftBoundary = parentItem()->boundingRect().left();
     qreal rightBoundary = parentItem()->boundingRect().right();
