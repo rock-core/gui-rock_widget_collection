@@ -1,4 +1,4 @@
 build/*
 *.swp
 doc/Doxyfile
-/nbproject/private/
+/nbproject/*
