@@ -1,7 +1,9 @@
 #include "BoundarySlider.h"
 #include "SlideBarItem.h"
 
-#include<iostream>
+#include <iostream>
+
+#include <base/logging.h>
 
 BoundarySlider::BoundarySlider() : Slider() {
 
@@ -36,7 +38,7 @@ void BoundarySlider::mouseMoveEvent(QGraphicsSceneMouseEvent *event) {
     if( BoundarySlider *overlappingMarker = ((SlideBarItem*) parentItem())->markerOverlap(this) ) {
         /* Collision detected! Do not move further in this direction! */
 
-        std::cout << "Overlapping time markers!" << std::endl;
+        LOG_DEBUG_S << "Overlapping time markers!";
 
         qreal overlapLeftBoundary;
         qreal overlapRightBoundary;

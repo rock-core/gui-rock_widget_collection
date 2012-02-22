@@ -3,6 +3,8 @@
 #include <algorithm>
 #include <QPixmap>
 
+#include <base/logging.h>
+
 
 Timeline::Timeline(QWidget *parent) {
     setParent(parent);
@@ -146,7 +148,6 @@ void Timeline::setEndMarkerIndex(int idx) {
 }
 
 void Timeline::setSliderIndex(int idx) {
-    std::cout << "Setting slider index to " << idx << std::endl;
     setSliderIndex(idx, slidebar->getIndexSlider());
 }
 
@@ -230,7 +231,7 @@ void Timeline::updateScene(QSizeF newSize) {
 }
 
 void Timeline::bookmarkClickedSlot(int idx) {
-    std::cout << "********************** BOOKMARK CLICKED at index " << idx << "!!!!! ****************" << std::endl;
+    LOG_DEBUG("BOOKMARK clicked at index %d", idx);
     emit bookmarkClicked(idx);
 }
 
@@ -243,15 +244,15 @@ void Timeline::sliderReleased(Slider* slider, int idx) {
     
     if(slider == indexSlider) {
         emit indexSliderReleased(idx);
-        std::cout << "********************** INDEX SLIDER RELEASED at index " << idx << "!!!!! ****************" << std::endl;
+        LOG_DEBUG("INDEX SLIDER released at index %d", idx);
     } else if (slider == startmarker) {
         emit startMarkerReleased(idx);
-        std::cout << "********************** START MARKER RELEASED at index " << idx << "!!!!! ****************" << std::endl;
+        LOG_DEBUG("START MARKER released at index %d", idx);
     } else if (slider == endmarker) {
         emit endMarkerReleased(idx);
-        std::cout << "********************** END MARKER RELEASED at index " << idx << "!!!!! ****************" << std::endl;
+        LOG_DEBUG("END MARKER released at index %d", idx);
     } else {
-        std::cout << "********************** UNKNOWN SLIDER RELEASED at index " << idx << "!!!!! ****************" << std::endl;
+        LOG_WARN("UNKNOWN SLIDER released at index %d", idx);
     }
 }
 

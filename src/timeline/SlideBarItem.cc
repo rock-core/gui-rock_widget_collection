@@ -1,8 +1,10 @@
 #include "SlideBarItem.h"
 
-#include<QtGui>
+#include <QtGui>
 
-#include<iostream>
+#include <iostream>
+
+#include <base/logging.h>
 
 SlideBarItem::SlideBarItem(unsigned startIndex, unsigned steps, unsigned stepSize, QGraphicsItem *parent) : QGraphicsItem(parent), color(QColor(Qt::gray)) {
     reconfigure(startIndex, steps, stepSize);
@@ -12,7 +14,7 @@ SlideBarItem::SlideBarItem(unsigned startIndex, unsigned steps, unsigned stepSiz
 }
 
 void SlideBarItem::reconfigure(unsigned startIndex, unsigned steps, unsigned stepSize) {
-    printf("Reconfiguring slidebar: startIndex=%d, steps=%d, stepSize=%d\n", startIndex, steps, stepSize);
+    LOG_DEBUG("Reconfiguring slidebar: startIndex=%d, steps=%d, stepSize=%d\n", startIndex, steps, stepSize);
     this->startIndex = startIndex;
     this->steps = steps;
     this->stepSize = stepSize;
