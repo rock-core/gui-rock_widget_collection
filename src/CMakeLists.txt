@@ -135,7 +135,7 @@ rock_vizkit_widget(rock_widget_collection
     SOURCES ${COLLECTION_SOURCES} ${QtApp_RCC_SRCS} 
     HEADERS ${COLLECTION_HDRS}
     MOC ${COLLECTION_MOC_HDRS}
-    DEPS_PKGCONFIG base-types frame_helper QtCore QtGui
+    DEPS_PKGCONFIG base-types base-lib frame_helper QtCore QtGui
     DEPS_CMAKE LIBXML2 QWT GLU VTK
     LIBS ${QT_QTCORE_LIBRARY} vtkVolumeRendering vtkRendering vtkCommon vtkFiltering vtkIO vtkGraphics QVTK ${QT_QTGUI_LIBRARY} ${QT_QTOPENGL_LIBRARY} ${QT_QTDESIGNER_LIBRARY}
     )
