@@ -13,8 +13,6 @@ public:
     IndexSlider();
     IndexSlider(QGraphicsItem* parent, unsigned initIdx);
     
-    QRectF boundingRect() const;
-    
 protected:
      
 private:
