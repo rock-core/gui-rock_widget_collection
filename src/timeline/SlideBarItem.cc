@@ -6,9 +6,10 @@
 
 #include <base/logging.h>
 
-SlideBarItem::SlideBarItem(unsigned startIndex, unsigned steps, unsigned stepSize, QGraphicsItem *parent) : QGraphicsItem(parent), color(QColor(Qt::gray)) {
+SlideBarItem::SlideBarItem(unsigned startIndex, unsigned steps, unsigned stepSize, QGraphicsItem *parent) :
+    QGraphicsItem(parent),height(10),width(100), color(QColor(Qt::gray)) 
+{
     reconfigure(startIndex, steps, stepSize);
-    
     slider = new IndexSlider(this, startIndex);
     allSliders.append(slider);
 }
@@ -21,7 +22,7 @@ void SlideBarItem::reconfigure(unsigned startIndex, unsigned steps, unsigned ste
 }
 
 QRectF SlideBarItem::boundingRect() const {
-    return QRectF(0, 0, getWidth(), HEIGHT);
+    return QRectF(0, 0, getWidth(), getHeight());
 }
 
 void SlideBarItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
@@ -29,21 +30,14 @@ void SlideBarItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *opti
     Q_UNUSED(widget);
     painter->setPen(QPen(Qt::black, 1));
     painter->setBrush(QBrush(color));
-    painter->fillRect(0, 0, getWidth(), HEIGHT, color);
+    int center = getHeight() * 0.5;
+    painter->fillRect(0, center, getWidth(), HEIGHT, color);
     Q_FOREACH(unsigned bookmark, bookmarks) {
         int x_pos = markerPositionForIndex(bookmark);
-        int y_top = -(getBookmarkHeight()/2)+SlideBarItem::HEIGHT/2;
+        int y_top = center-(getBookmarkHeight()/2)+SlideBarItem::HEIGHT/2;
         int y_bottom = y_top + getBookmarkHeight();
         painter->drawLine(x_pos, y_top, x_pos, y_bottom);
     }
-}
-
-qreal SlideBarItem::getHeight() const {
-    return HEIGHT;
-}
-
-qreal SlideBarItem::getWidth() const {
-    return ordered_width;
 }
 
 unsigned SlideBarItem::getStartIndex() const {
@@ -59,9 +53,20 @@ void SlideBarItem::setBookmarkHeight(qreal bookmark_height) {
     this->bookmark_height = bookmark_height;
 }
 
-void SlideBarItem::setOrderedWidth(int width) {
-    this->ordered_width = width;
-    //update();
+void SlideBarItem::setWidth(int width) {
+    this->width = width;
+}
+
+void SlideBarItem::setHeight(int height) {
+    this->height  = height;
+}
+
+int SlideBarItem::getWidth()const {
+    return width;
+}
+
+int SlideBarItem::getHeight() const{
+    return height;
 }
 
 void SlideBarItem::addTimeMarker(BoundarySlider* marker) {

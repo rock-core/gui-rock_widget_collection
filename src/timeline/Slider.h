@@ -23,6 +23,7 @@ public:
     
 signals:
     void sliderMoved(Slider* slider, int idx);
+    void sliderClicked(Slider* slider);
     void sliderReleased(Slider* slider, int idx);
 
 protected:

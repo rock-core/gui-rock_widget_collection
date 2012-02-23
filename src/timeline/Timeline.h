@@ -49,19 +49,19 @@ public slots:
     void setBackgroundColor(const QColor & color);
     int getWidth();
     void setWidth(int width);
-    unsigned getMinIndex();
-    void setMinIndex(unsigned minIndex);
-    unsigned getSteps();
-    void setSteps(unsigned steps);
-    unsigned getStepSize();
-    void setStepSize(unsigned stepSize);
+    int getMinIndex();
+    void setMinIndex(int minIndex);
+    int getSteps();
+    void setSteps(int steps);
+    int getStepSize();
+    void setStepSize(int stepSize);
     
     /* Other slots */
     
     /**
      * Returns the maximum index, i.e. the highest index on the timeline.
      */
-    unsigned getMaxIndex();
+    int getMaxIndex();
     
     /**
      * Returns the current index of the index slider.
@@ -120,7 +120,13 @@ public slots:
 
 signals:
 
+    void indexSliderClicked();
+    void endMarkerClicked();
+    void startMarkerClicked();
     void indexSliderReleased(int idx);
+    void startMarkerMoved(int idx);
+    void endMarkerMoved(int idx);
+    void indexSliderMoved(int idx);
     void startMarkerReleased(int idx);
     void endMarkerReleased(int idx);
 
@@ -135,6 +141,8 @@ private slots:
     void bookmarkClickedSlot(int idx);
     void fireTimeout();
     void sliderReleased(Slider* slider, int idx);
+    void sliderMoved(Slider* slider, int idx);
+    void sliderClicked(Slider* slider);
     
 private:
     int ordered_width;

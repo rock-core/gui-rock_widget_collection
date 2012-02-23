@@ -5,7 +5,7 @@
 #include "BoundarySlider.h"
 #include "IndexSlider.h"
 
-class SlideBarItem : public QObject, public QGraphicsItem
+class SlideBarItem : public QObject,public QGraphicsItem
 {
     Q_OBJECT
     Q_INTERFACES(QGraphicsItem)
@@ -19,13 +19,10 @@ public:
     
     QRectF boundingRect() const;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
-    qreal getHeight() const;
-    qreal getWidth() const;
     unsigned getStartIndex() const;
     qreal getBookmarkHeight() const;
     void setBookmarkHeight(qreal height);
     void setIndexSliderHeight(int height);
-    void setOrderedWidth(int width);
     void addTimeMarker(BoundarySlider *marker);
     const QList<BoundarySlider*>& getTimeMarkers();
     const QList<Slider*>& getAllSliders();
@@ -36,6 +33,11 @@ public:
     IndexSlider* getIndexSlider();
     void updateBookmarks(QVector<int> & bookmarks);
     
+    void setWidth(int width);
+    void setHeight(int width);
+    int getWidth()const;
+    int getHeight()const;
+    
 signals:
     void bookmarkClicked(int idx);
 
@@ -43,7 +45,8 @@ protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event);
     
 private:
-    qreal ordered_width;
+    qreal height;
+    qreal width;
     qreal bookmark_height;
     unsigned startIndex, steps, stepSize;
     QColor color;

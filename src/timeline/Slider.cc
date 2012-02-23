@@ -53,10 +53,14 @@ unsigned Slider::getLastIndex() {
 }
 
 void Slider::setLastIndex(unsigned index) {
+    if(index != lastIndex)
+        emit sliderMoved(this, index);
     this->lastIndex = index;
 }
 
-void Slider::mousePressEvent(QGraphicsSceneMouseEvent *event) {
+void Slider::mousePressEvent(QGraphicsSceneMouseEvent *event) 
+{
+    sliderClicked(this);
 }
 
 void Slider::mouseMoveEvent(QGraphicsSceneMouseEvent *event) {
@@ -68,6 +72,7 @@ void Slider::mouseMoveEvent(QGraphicsSceneMouseEvent *event) {
     setPos(newPos);
     
     unsigned index = ((SlideBarItem*)parentItem())->markerIndex(this);
+
     setLastIndex(index);
     
 //    std::cout << "Logical marker position: " << index << std::endl;

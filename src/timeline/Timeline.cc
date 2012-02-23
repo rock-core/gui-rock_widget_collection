@@ -35,7 +35,8 @@ Timeline::Timeline(QWidget *parent) {
     // Add items
     slidebar = new SlideBarItem(getMinIndex(), getSteps(), getStepSize());
     slidebar->setBookmarkHeight(getBookmarkHeight());
-    slidebar->setOrderedWidth(ordered_width - getMarginLR()*2);
+    slidebar->setWidth(ordered_width - getMarginLR()*2);
+    slidebar->setHeight(ordered_width - height());
     
     scene->addItem(slidebar);
     
@@ -48,6 +49,12 @@ Timeline::Timeline(QWidget *parent) {
     connect(slidebar->getIndexSlider(), SIGNAL(sliderReleased(Slider*, int)), this, SLOT(sliderReleased(Slider*, int)));
     connect(startmarker, SIGNAL(sliderReleased(Slider*, int)), this, SLOT(sliderReleased(Slider*, int)));
     connect(endmarker, SIGNAL(sliderReleased(Slider*, int)), this, SLOT(sliderReleased(Slider*, int)));
+    connect(slidebar->getIndexSlider(), SIGNAL(sliderMoved(Slider*, int)), this, SLOT(sliderMoved(Slider*, int)));
+    connect(startmarker, SIGNAL(sliderMoved(Slider*, int)), this, SLOT(sliderMoved(Slider*, int)));
+    connect(endmarker, SIGNAL(sliderMoved(Slider*, int)), this, SLOT(sliderMoved(Slider*, int)));
+    connect(slidebar->getIndexSlider(), SIGNAL(sliderClicked(Slider*)), this, SLOT(sliderClicked(Slider*)));
+    connect(startmarker, SIGNAL(sliderClicked(Slider*)), this, SLOT(sliderClicked(Slider*)));
+    connect(endmarker, SIGNAL(sliderClicked(Slider*)), this, SLOT(sliderClicked(Slider*)));
     connect(slidebar, SIGNAL(bookmarkClicked(int)), this, SLOT(bookmarkClickedSlot(int)));
     
     /* Timeout, at the moment only used for TestWidget */
@@ -99,29 +106,29 @@ void Timeline::setWidth(int width) {
     ordered_width = width;
 }
 
-unsigned Timeline::getMinIndex() {
+int Timeline::getMinIndex() {
     return minIndex;
 }
 
-void Timeline::setMinIndex(unsigned minIndex) {
+void Timeline::setMinIndex(int minIndex) {
     this->minIndex = minIndex;
     reconfigure_slidebar = true;
 }
 
-unsigned Timeline::getSteps() {
+int Timeline::getSteps() {
     return steps;
 }
 
-void Timeline::setSteps(unsigned steps) {
+void Timeline::setSteps(int steps) {
     this->steps = steps;
     reconfigure_slidebar = true;
 }
 
-unsigned Timeline::getStepSize() {
+int Timeline::getStepSize() {
     return stepSize;
 }
 
-void Timeline::setStepSize(unsigned stepSize) {
+void Timeline::setStepSize(int stepSize) {
     this->stepSize = stepSize;
     reconfigure_slidebar = true;
 }
@@ -215,18 +222,15 @@ void Timeline::updateScene(QSizeF newSize) {
     }
     
     scene->setBackgroundBrush(getBackgroundColor());
+    scene->setSceneRect(0, 0, newSize.width(), newSize.height());
     
-    qreal sceneHeight = std::max(getBookmarkHeight(), slidebar->getIndexSlider()->height()) + getMarginTopBot()*2;
-    qreal sceneWidth = newSize.width() + getMarginLR()*2;
-    setMaximumHeight(sceneHeight);
-    setMinimumHeight(sceneHeight);
-    scene->setSceneRect(-getMarginLR(), -sceneHeight/2.0, sceneWidth, sceneHeight);
-    
-    slidebar->setOrderedWidth(newSize.width() - getMarginLR()*2);
-    Q_FOREACH(Slider *slider, slidebar->getAllSliders()) {
-        slider->setPos(slidebar->markerPositionForIndex(slider->getLastIndex()), slider->pos().y());
-    }
+    slidebar->setWidth(newSize.width() - getMarginLR()*2);
+    slidebar->setHeight(newSize.height() - getMarginTopBot()*2);
+    slidebar->setPos(getMarginLR(),getMarginTopBot());
 
+    Q_FOREACH(Slider *slider, slidebar->getAllSliders()) {
+        slider->setPos(slidebar->markerPositionForIndex(slider->getLastIndex()),newSize.height()*0.5-getMarginTopBot());
+    }
     update();
 }
 
@@ -256,6 +260,32 @@ void Timeline::sliderReleased(Slider* slider, int idx) {
     }
 }
 
+void Timeline::sliderMoved(Slider* slider, int idx) {
+
+    Slider* indexSlider = slidebar->getIndexSlider();
+    if(slider == indexSlider) {
+        emit indexSliderMoved(idx);
+    } else if (slider == startmarker) {
+        emit startMarkerMoved(idx);
+    } else if (slider == endmarker) {
+        emit endMarkerMoved(idx);
+    } else {
+        LOG_WARN("UNKNOWN SLIDER released at index %d", idx);
+    }
+}
+void Timeline::sliderClicked(Slider* slider) {
+
+    Slider* indexSlider = slidebar->getIndexSlider();
+    if(slider == indexSlider) {
+        emit indexSliderClicked();
+    } else if (slider == startmarker) {
+        emit startMarkerClicked();
+    } else if (slider == endmarker) {
+        emit endMarkerClicked();
+    } else {
+        LOG_WARN("UNKNOWN SLIDER clicked");
+    }
+}
 void Timeline::reconfigureSlidebar() {
     reconfigure_slidebar = false;
     slidebar->reconfigure(getMinIndex(), getSteps(), getStepSize());
@@ -263,6 +293,6 @@ void Timeline::reconfigureSlidebar() {
     setEndMarkerIndex(getMaxIndex());
 }
 
-unsigned Timeline::getMaxIndex() {
+int Timeline::getMaxIndex() {
     return getMinIndex() + getSteps() * getStepSize();
 }
