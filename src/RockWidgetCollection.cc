@@ -12,7 +12,7 @@
 #include "virtual_joystick/VirtualJoystickPlugin.h"
 #include "generic_widgets/RockSliderPlugin.h"
 #include "vtk/sonar_display/SonarDisplayPlugin.h"
-#include "vtk/plot2d/Plot2dPlugin.h"
+#include "plot2d/Plot2dPlugin.h"
 #include "2dvis/WaterwallDisplayPlugin.h"
 #include "timeline/TimelinePlugin.h"
 

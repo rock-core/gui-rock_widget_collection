@@ -55,8 +55,9 @@ SET(COLLECTION_MOC_HDRS
   generic_widgets/RockSliderPlugin.h
   vtk/sonar_display/SonarDisplay.h
   vtk/sonar_display/SonarDisplayPlugin.h
-  vtk/plot2d/Plot2d.h
-  vtk/plot2d/Plot2dPlugin.h
+  plot2d/Plot2d.h
+  plot2d/qcustomplot.h
+  plot2d/Plot2dPlugin.h
   2dvis/qwaterfalldisplay.h
   2dvis/WaterwallDisplayPlugin.h
   timeline/Timeline.h
@@ -102,7 +103,8 @@ SET(COLLECTION_HDRS
   generic_widgets/PaintWidget.h
   generic_widgets/RockSlider.h
   vtk/sonar_display/SonarDisplay.h
-  vtk/plot2d/Plot2d.h
+  plot2d/Plot2d.h
+  plot2d/qcustomplot.h
   2dvis/qwaterfalldisplay.h
   generic_widgets/RockSliderPlugin.h
   timeline/Timeline.h
@@ -123,7 +125,7 @@ FILE(GLOB COLLECTION_SOURCES
     generic_widgets/*.cc
     virtual_joystick/*.cc
     vtk/sonar_display/*.cc
-    vtk/plot2d/*.cc
+    plot2d/*.cc
     2dvis/*.cc
     timeline/*.cc
     *.cc)
