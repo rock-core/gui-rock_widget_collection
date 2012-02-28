@@ -568,7 +568,7 @@ public:
                       PSBottomLeft,  ///< Legend is positioned in the bottom left corner of the axis rect with distance to the border corresponding to the currently set bottom and left margins
                       PSLeft         ///< Legend is vertically centered at the left of the axis rect with distance to the border corresponding to the currently set left margin
                      };
-  Q_ENUMS(PositionStyle)
+  //Q_ENUMS(PositionStyle)
   
   explicit QCPLegend(QCustomPlot *parentPlot);
   virtual ~QCPLegend();
