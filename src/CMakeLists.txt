@@ -53,8 +53,6 @@ SET(COLLECTION_MOC_HDRS
   generic_widgets/PaintWidget.h
   generic_widgets/RockSlider.h
   generic_widgets/RockSliderPlugin.h
-  vtk/sonar_display/SonarDisplay.h
-  vtk/sonar_display/SonarDisplayPlugin.h
   plot2d/Plot2d.h
   plot2d/qcustomplot.h
   plot2d/Plot2dPlugin.h
@@ -102,7 +100,6 @@ SET(COLLECTION_HDRS
   virtual_joystick/VirtualJoystick.h  
   generic_widgets/PaintWidget.h
   generic_widgets/RockSlider.h
-  vtk/sonar_display/SonarDisplay.h
   plot2d/Plot2d.h
   plot2d/qcustomplot.h
   2dvis/qwaterfalldisplay.h
@@ -124,11 +121,27 @@ FILE(GLOB COLLECTION_SOURCES
     multi_view/*.cc 
     generic_widgets/*.cc
     virtual_joystick/*.cc
-    vtk/sonar_display/*.cc
     plot2d/*.cc
     2dvis/*.cc
     timeline/*.cc
     *.cc)
+
+if (USE_VTK)
+    find_package(VTK)
+    list(APPEND COLLECTION_MOC_HDRS
+        vtk/sonar_display/SonarDisplay.h
+        vtk/sonar_display/SonarDisplayPlugin.h
+    )
+    list(APPEND COLLECTION_HDRS
+        vtk/sonar_display/SonarDisplay.h
+    )
+    list(APPEND COLLECTION_SOURCES
+      vtk/sonar_display/SonarDisplay.cc vtk/sonar_display/SonarDisplayPlugin.cc
+    )
+    set(VTK_DEPS VTK)
+    set(VTK_LIBS vtkVolumeRendering vtkRendering vtkCommon vtkFiltering vtkIO vtkGraphics QVTK )
+    add_definitions(-DUSE_VTK)
+endif()
 
 SET(QtApp_RCCS resources.qrc)
 QT4_ADD_RESOURCES(QtApp_RCC_SRCS ${QtApp_RCCS})
@@ -138,22 +151,25 @@ rock_vizkit_widget(rock_widget_collection
     HEADERS ${COLLECTION_HDRS}
     MOC ${COLLECTION_MOC_HDRS}
     DEPS_PKGCONFIG base-types base-lib frame_helper QtCore QtGui
-    DEPS_CMAKE LIBXML2 QWT GLU VTK
-    LIBS ${QT_QTCORE_LIBRARY} vtkVolumeRendering vtkRendering vtkCommon vtkFiltering vtkIO vtkGraphics QVTK ${QT_QTGUI_LIBRARY} ${QT_QTOPENGL_LIBRARY} ${QT_QTDESIGNER_LIBRARY}
+    DEPS_CMAKE LIBXML2 QWT GLU ${VTK_DEPS}
+    LIBS ${QT_QTCORE_LIBRARY} ${VTK_LIBS} ${QT_QTGUI_LIBRARY} ${QT_QTOPENGL_LIBRARY} ${QT_QTDESIGNER_LIBRARY}
     )
 
-add_executable(sonarTest
-    sonar_view/sonarTest.cpp
-)
-add_executable(timelineTest
-    timeline/main.cpp
-)
-
-target_link_libraries(sonarTest rock_widget_collection)
-target_link_libraries(timelineTest rock_widget_collection)
 
 add_subdirectory(stream_aligner_widget)
 
+if (USE_VTK)
+    rock_executable(sonarTest sonar_view/sonarTest.cpp
+        DEPS rock_widget_collection
+        NOINSTALL)
+endif()
+
+rock_executable(timelineTest timeline/main.cpp
+    DEPS rock_widget_collection
+    NOINSTALL)
+
 rock_executable(virtualJoystickTest 
-		virtual_joystick/main.cpp
-		DEPS rock_widget_collection)
+    virtual_joystick/main.cpp
+    DEPS rock_widget_collection
+    NOINSTALL)
+
