@@ -145,6 +145,7 @@ public slots:
      * </ul>
      */
     void addRawImage(const QString &mode, int pixel_size, int width, int height,const char* pbuffer, const int size);
+    void addFrame(const base::samples::frame::Frame &frame);
 
     /**
      * Adds a QImage to the widget.
