@@ -247,6 +247,21 @@ void ImageView::addImage(const QImage &image)
   no_input = false;
 }
 
+void ImageView::addFrame(const base::samples::frame::Frame &frame)
+{
+  if(frame_converter.copyFrameToQImageRGB888(originalImage,frame))
+  {
+    this->image = this->originalImage;
+    if(image_view_gl)
+    {
+      image_view_gl->setGLViewPoint();
+    }
+  }
+  calculateRects();
+  this->image = this->originalImage;
+  no_input = false;
+}
+
 void ImageView::drawDrawItemsToPainter(QPainter &painter,bool all)
 {
     if(!image_view_gl)
