@@ -126,6 +126,9 @@ FILE(GLOB COLLECTION_SOURCES
     timeline/*.cc
     *.cc)
 
+option(USE_VTK "Use VTK for additional Widgets" FALSE)
+
+
 if (USE_VTK)
     find_package(VTK)
     list(APPEND COLLECTION_MOC_HDRS
