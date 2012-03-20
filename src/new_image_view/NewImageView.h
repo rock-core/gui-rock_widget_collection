@@ -17,6 +17,7 @@ public slots:
     void update2();
     
 protected:
+//    void paintEvent(QPaintEvent *event);
     void resizeEvent(QResizeEvent *event);
     
 private:
@@ -26,6 +27,7 @@ private:
     QGraphicsView *view;
     QGraphicsScene *scene;
     QGraphicsPixmapItem *imageItem;
+    QGraphicsSimpleTextItem *textOverlay;
     QImage image;
             
 //    QLabel *imageLabel;

@@ -29,11 +29,19 @@ NewImageView::NewImageView(QWidget *parent)
     imageItem = new QGraphicsPixmapItem(QPixmap::fromImage(image));
     scene->addItem(imageItem);
     
-   
+    /* Text Overlay */
+    textOverlay = new QGraphicsSimpleTextItem("New image view widget (by Allan E. Conquest)", imageItem);
+    textOverlay->show();
+    textOverlay->setZValue(10);
+    textOverlay->setBrush(Qt::red);
+    
+    scene->addItem(textOverlay);
+    
     
     //view->fitInView(imageItem, Qt::KeepAspectRatio);
 
     resize(500,400);
+    update();
 }
 
 NewImageView::~NewImageView()
@@ -51,6 +59,7 @@ void NewImageView::setFrame(const base::samples::frame::Frame &frame)
     }
     imageSize = image.size();
     imageItem->setPixmap(QPixmap::fromImage(image.scaled(size(), Qt::KeepAspectRatio)));
+    textOverlay->setText(QString::fromStdString(frame.time.toString()));
     update();
 }
 
@@ -58,6 +67,15 @@ void NewImageView::update2()
 {
     QWidget::update();
 }
+
+//void NewImageView::paintEvent(QPaintEvent *event)
+//{
+//    std::cout << "PaintEvent!" << std::endl;
+//    QPainter painter(this);
+//    painter.set
+//    painter.drawText(QRectF(20,20,80,80), Qt::AlignRight, "Right aligned text");
+//    //update();
+//}
 
 void NewImageView::resizeEvent(QResizeEvent *event)
 { 
