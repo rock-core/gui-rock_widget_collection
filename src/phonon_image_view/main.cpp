@@ -12,7 +12,8 @@ int main(int argc, char *argv[])
     PhononImageView *phonon_image_view = new PhononImageView;
     phonon_image_view->show();
     
-    Phonon::MediaObject *mediaObject = new Phonon::MediaObject(phonon_image_view);
+    //Phonon::MediaObject *mediaObject = new Phonon::MediaObject(phonon_image_view);
+    phonon_image_view->go();
     
 
     return app.exec();

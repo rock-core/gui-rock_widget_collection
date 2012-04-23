@@ -15,14 +15,16 @@ public:
     
     qint64 bytesAvailable() const;
     bool isSequential() const;
-    void setFrame(base::samples::frame::Frame *frame);
+    void setFrame(const base::samples::frame::Frame &frame);
     
 protected:
     qint64 readData(char *data, qint64 maxSize);
     qint64 writeData(const char *data, qint64 len);
     
 private:
-    base::samples::frame::Frame *frame;
+    base::samples::frame::Frame frame;
+    char *image_buffer;
+    size_t image_bytesize;
 
 };
 

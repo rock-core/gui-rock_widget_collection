@@ -17,12 +17,14 @@ public:
     virtual ~PhononImageView();
     
 public slots:
-    void setFrame(base::samples::frame::Frame *frame);
+    void setFrame(const base::samples::frame::Frame &frame);
+    void update2();
+    void go();
     
 private:
     Phonon::MediaObject *mediaObject;
     Phonon::VideoWidget *videoWidget;
-    FrameDevice frameDevice;
+    FrameDevice *frameDevice;
     
 };
 
