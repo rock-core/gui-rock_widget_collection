@@ -1,5 +1,3 @@
-#include <qt4/phonon/mediaobject.h>
-
 #include <iostream>
 
 #include "PhononImageView.h"
@@ -11,9 +9,9 @@ PhononImageView::PhononImageView(QWidget *parent)
     : QWidget(parent)
 {
     
-    frameDevice = new FrameDevice;
+    frameDevice = new FrameDevice(this);
     
-    resize(300,120);
+    resize(500,500);
 
     
     // Set up media graph
@@ -50,7 +48,8 @@ void PhononImageView::setFrame(const base::samples::frame::Frame &frame)
         std::cout << mediaObject->errorString().toStdString() << std::endl;
     }
     frameDevice->setFrame(frame);
-    go(); // TODO always necessary? maybe only when state not playing?
+    //go(); // TODO always necessary? maybe only when state not playing?
+    //update(); // seems unnecessary since videowidget should get updated automatically.
 }
 
 void PhononImageView::update2()

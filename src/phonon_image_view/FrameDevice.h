@@ -10,7 +10,7 @@
  */
 class FrameDevice : public QIODevice {
 public:
-    FrameDevice();
+    FrameDevice(QObject *parent = 0);
     virtual ~FrameDevice();
     
     qint64 bytesAvailable() const;
