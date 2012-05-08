@@ -31,7 +31,9 @@ public :
 public slots:
     
 	void nextVal() {
+	    status.time = status.time + base::Time::fromSeconds( 0.1 );
 	    status.streams[2].buffer_fill++;
+	    status.streams[2].samples_received++;
 	    if(status.streams[2].buffer_fill > status.streams[2].buffer_size)
 		status.streams[2].buffer_fill = 0;
 	    

@@ -6,6 +6,8 @@
 #include <QApplication>
 #include <QAbstractItemModel>
 #include <stdexcept>
+#include <deque>
+#include <limits>
 
 enum CustomRoles {
     BufferSize = Qt::UserRole + 2,
@@ -19,12 +21,45 @@ public:
 	name = QString::fromStdString(status.name);
     };
     
-    void updateData(const aggregator::StreamStatus &status)
+    void updateData(const aggregator::StreamStatus &status, const base::Time& time)
     {
 	bufferStatusSize = QVariant::fromValue<int>(status.buffer_size);
 	bufferStatusFill = QVariant::fromValue<int>(status.buffer_fill);
 	droppedFull= QString("%0").arg(status.samples_dropped_buffer_full);
 	droppedLate= QString("%0").arg(status.samples_dropped_late_arriving);
+	droppedOrdering= QString("%0").arg(status.samples_backward_in_time);
+
+	// make sure the history buffer is of the desired size
+	const size_t avg_size = 30;
+	statusHistory.push_front( std::make_pair( time, status ) );
+	while( statusHistory.size() > (avg_size+1) )
+	    statusHistory.pop_back();
+
+	const size_t intervals[3] = {1,5,30};
+	float avg_rate[3];
+	for( int i=0; i<3; i++ )
+	{
+	    float rate = std::numeric_limits<float>::quiet_NaN();
+	    const size_t idx = intervals[i];
+	    if( statusHistory.size() > idx )
+	    {
+		long sample_diff = 
+		    statusHistory[idx].second.samples_received - 
+		    statusHistory.front().second.samples_received;
+
+		base::Time time_diff =
+		    statusHistory[idx].first - 
+		    statusHistory.front().first;
+
+		rate = (float)sample_diff / time_diff.toSeconds();
+	    }
+	    avg_rate[i] = rate;
+	}
+
+	sampleRate = QString("%0/%1/%2")
+	    .arg( avg_rate[0], 0, 'f', 1 )
+	    .arg( avg_rate[1], 0, 'f', 1 )
+	    .arg( avg_rate[2], 0, 'f', 1 );
     }
     
     QVariant data(int col, int role)
@@ -47,6 +82,12 @@ public:
 		    break;
 		case 3:
 		    return droppedLate;
+		    break;
+		case 4:
+		    return droppedOrdering;
+		    break;
+		case 5:
+		    return sampleRate;
 		    break;
 	    }
 	}	
@@ -71,6 +112,12 @@ public:
 		case 3:
 		    return QString("Dropped Late");
 		    break;
+		case 4:
+		    return QString("Dropped Ordering");
+		    break;
+		case 5:
+		    return QString("Samples/s Avg.(1/5/30)");
+		    break;
 	    }
 	}	
 	return QVariant();
@@ -81,6 +128,10 @@ public:
     QVariant bufferStatusFill;
     QVariant droppedFull;
     QVariant droppedLate;  
+    QVariant droppedOrdering;
+    QVariant sampleRate;
+
+    std::deque<std::pair<base::Time, aggregator::StreamStatus> > statusHistory;
 };
 
 class TaskRepresentation {
@@ -116,7 +167,7 @@ public:
 	    }
 
 	    if(it->active) {
-		streams[i]->updateData(*it);
+		streams[i]->updateData(*it, status.time);
 		i++;
 		childCount++;
 	    }
@@ -221,7 +272,7 @@ int StreamAlignerModel::rowCount(const QModelIndex& parent) const
 
 int StreamAlignerModel::columnCount(const QModelIndex& parent) const
 {
-    return 4;    
+    return 6;    
 }
 
 QVariant StreamAlignerModel::data(const QModelIndex& index, int role) const
