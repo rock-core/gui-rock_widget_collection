@@ -165,11 +165,9 @@ public:
 		streams[i] = new StreamRepresentation(*it);
 	    }
 
-	    if(it->active) {
-		streams[i]->updateData(*it, status.time);
-		i++;
-		childCount++;
-	    }
+	    streams[i]->updateData(*it, status.time);
+	    i++;
+	    childCount++;
 	}
     }
 
