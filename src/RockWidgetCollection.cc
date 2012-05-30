@@ -16,6 +16,7 @@
 #include "timeline/TimelinePlugin.h"
 #include "new_image_view/NewImageViewPlugin.h"
 #include "phonon_image_view/PhononImageViewPlugin.h"
+#include "gst_image_view/GstImageViewPlugin.h"
 #ifdef USE_VTK
 #include "vtk/sonar_display/SonarDisplayPlugin.h"
 #endif
@@ -41,6 +42,7 @@ RockWidgetCollection::RockWidgetCollection(QObject *parent)
    widgets.append(new TimelinePlugin(this));
    widgets.append(new NewImageViewPlugin(this));
    widgets.append(new PhononImageViewPlugin(this));
+   widgets.append(new GstImageViewPlugin(this));
 #ifdef USE_VTK
    widgets.append(new SonarDisplayPlugin(this));
 #endif
