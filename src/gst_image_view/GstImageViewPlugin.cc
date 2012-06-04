@@ -1,8 +1,6 @@
 #include "GstImageViewPlugin.h"
 #include "GstImageView.h"
 
-Q_EXPORT_PLUGIN2(GstImageView, GstImageViewPlugin)
-
 GstImageViewPlugin::GstImageViewPlugin(QObject *parent)
     : QObject(parent)
 {
