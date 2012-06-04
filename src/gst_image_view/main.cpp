@@ -15,10 +15,12 @@
 #include <QGst/Ui/GraphicsVideoSurface>
 #include <QGst/Ui/GraphicsVideoWidget>
 
+#include "GstImageView.h"
+
 int main(int argc, char *argv[])
 {
     QApplication qapp(argc, argv);
-    QGst::init(&argc, &argv);
+//     QGst::init(&argc, &argv);
     
 #if 0
 
@@ -83,7 +85,7 @@ int main(int argc, char *argv[])
 
 #endif
     
-#if 1
+#if 0
 
     QGst::ElementPtr videoSrc = QGst::ElementFactory::make("videotestsrc");
     QGst::ElementPtr videoSink = QGst::ElementFactory::make("qtglvideosink");
@@ -104,6 +106,9 @@ int main(int argc, char *argv[])
     
     
 #endif
+
+    GstImageView gstImageView;
+    gstImageView.show();
     
     qapp.exec();
 }
