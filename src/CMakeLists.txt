@@ -130,6 +130,7 @@ SET(COLLECTION_HDRS
   phonon_image_view/PhononImageView.h
   phonon_image_view/FrameDevice.h
   gst_image_view/GstImageView.h
+#   gst_image_view/FrameAppSrc.h
 )
 
 FILE(GLOB COLLECTION_SOURCES 
