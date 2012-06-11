@@ -2,6 +2,7 @@
 #define GSTIMAGEVIEW_H
 
 #include <QtGui>
+#include <QtCore>
 
 #include <base/samples/frame.h>
 #include <frame_helper/FrameQImageConverter.h>

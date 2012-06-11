@@ -20,9 +20,9 @@
 int main(int argc, char *argv[])
 {
     QApplication qapp(argc, argv);
-//     QGst::init(&argc, &argv);
     
 #if 0
+    QGst::init(&argc, &argv);
 
     QGst::ElementPtr videoSrc = QGst::ElementFactory::make("videotestsrc");
     QGst::ElementPtr fallbackVideoSink = QGst::ElementFactory::make("qtvideosink");
@@ -31,7 +31,7 @@ int main(int argc, char *argv[])
       
     QGraphicsScene *scene = new QGraphicsScene;
     QGraphicsView *view = new QGraphicsView(scene);
-//     view->setViewport(new QGLWidget); // indicator to use qtglvideosink (hardware rendering!)
+    view->setViewport(new QGLWidget); // indicator to use qtglvideosink (hardware rendering!)
     
     QGst::Ui::GraphicsVideoSurface *surface = new QGst::Ui::GraphicsVideoSurface(view); 
     QGst::Ui::GraphicsVideoWidget *widget = new QGst::Ui::GraphicsVideoWidget;
@@ -107,8 +107,10 @@ int main(int argc, char *argv[])
     
 #endif
 
+#if 1
     GstImageView gstImageView;
     gstImageView.show();
-    
+#endif
+
     qapp.exec();
 }

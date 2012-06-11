@@ -1,24 +1,54 @@
 #include "GstImageView.h"
 
 #include <base/logging.h>
+#include <iostream>
+
+#include <QtOpenGL/QGLWidget>
 
 #include <QGst/Init>
 #include <QGst/Parse>
 #include <QGst/Pipeline>
+#include <QGst/ElementFactory>
+#include <QGst/Ui/VideoWidget>
+#include <QGst/Ui/GraphicsVideoSurface>
+#include <QGst/Ui/GraphicsVideoWidget>
 
 
 GstImageView::GstImageView(QWidget *parent)
     : QWidget(parent)
 {
-    resize(300,120);
+    resize(500,500);
     frame = NULL;
     
     /* Default widget property values */
-    pipelineDescription = "videotestsrc ! qtglvideosink";
+    pipelineDescription = "videotestsrc ! ximagesink";//qtglvideosink";
     
     /* GStreamer setup */
     QGst::init();
-    QGst::PipelinePtr pipeline = QGst::Parse::launch(pipelineDescription).dynamicCast<QGst::Pipeline>();
+    
+    //QGst::PipelinePtr pipeline = QGst::Parse::launch(pipelineDescription).dynamicCast<QGst::Pipeline>();
+    QGst::PipelinePtr pipeline = QGst::Pipeline::create("pipeline"); // Create hard coded pipeline for debugging
+    QGst::ElementPtr videoSrc = QGst::ElementFactory::make("videotestsrc");
+    
+    
+    /* Setup video sink */
+    QGraphicsScene *scene = new QGraphicsScene;
+    QGraphicsView *view = new QGraphicsView(scene, this);
+//     view->setViewport(new QGLWidget); // indicator to use qtglvideosink (hardware rendering!)
+    
+    QGst::Ui::GraphicsVideoSurface *surface = new QGst::Ui::GraphicsVideoSurface(view); 
+    QGst::Ui::GraphicsVideoWidget *widget = new QGst::Ui::GraphicsVideoWidget;
+    widget->setSurface(surface);
+    
+    scene->addItem(widget);
+//     view->show();
+    view->resize(400,400);
+    widget->resize(300,300);
+    
+    pipeline->add(videoSrc, surface->videoSink());
+    videoSrc->link(surface->videoSink());
+    
+    std::cout << "Video source name: " << surface->videoSink()->property("name").toString().toStdString() << std::endl;
     
     /* Try to start playing */
     if(!pipeline->setState(QGst::StatePlaying)) {
@@ -47,6 +77,7 @@ void GstImageView::setPipelineDescription(QString descr)
 
 void GstImageView::setFrame(const base::samples::frame::Frame &frame)
 {   
+    std::cout << "GstImageView: Got frame!" << std::endl;
     
     // TODO store frame in a pointer?
     // this->frame = frame;
@@ -73,5 +104,6 @@ void GstImageView::setFrame(const base::samples::frame::Frame &frame)
 
 void GstImageView::update2()
 {
+    std::cout << "GstImageView: update2()" << std::endl;
     QWidget::update();
 }
