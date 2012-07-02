@@ -491,9 +491,9 @@ void QCPGraph::setDataBothError(const QVector<double> &key, const QVector<double
   setScatterStyle to the desired scatter style.
   \see setScatterStyle
 */
-void QCPGraph::setLineStyle(LineStyle ls)
+void QCPGraph::setLineStyle(int ls)
 {
-  mLineStyle = ls;
+  mLineStyle = (LineStyle)ls;
 }
 
 /*! 
@@ -501,9 +501,9 @@ void QCPGraph::setLineStyle(LineStyle ls)
   are drawn (e.g. for line-only-plots with appropriate line style).
   \see ScatterStyle, setLineStyle
 */
-void QCPGraph::setScatterStyle(ScatterStyle ss)
+void QCPGraph::setScatterStyle(int ss)
 {
-  mScatterStyle = ss;
+  mScatterStyle = (ScatterStyle)ss;
 }
 
 /*! 
@@ -5371,25 +5371,6 @@ QCPGraph *QCustomPlot::addGraph(QCPAxis *keyAxis, QCPAxis *valueAxis)
     return 0;
   }
 }
-
-QCPGraph *QCustomPlot::custom_addGraph(QCPAxis *keyAxis, QCPAxis *valueAxis)
-{
-  if (!keyAxis) keyAxis = xAxis;
-  if (!valueAxis) valueAxis = yAxis;
-  QCPGraph *newGraph = new QCPGraph(keyAxis, valueAxis);
-  if (addPlottable(newGraph))
-  {
-    newGraph->setName("Graph "+QString::number(mGraphs.size()));
-    newGraph->setLineStyle(QCPGraph::LSNone);
-    newGraph->setScatterStyle(QCPGraph::SSDot);
-    return newGraph;
-  } else
-  {
-    delete newGraph;
-    return 0;
-  }
-}
-
 
 /*!
   Removes the specified \a graph from the plot and, if necessary, from the legend. If
