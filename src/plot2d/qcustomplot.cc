@@ -5363,7 +5363,7 @@ QCPGraph *QCustomPlot::addGraph(QCPAxis *keyAxis, QCPAxis *valueAxis)
   QCPGraph *newGraph = new QCPGraph(keyAxis, valueAxis);
   if (addPlottable(newGraph))
   {
-    newGraph->setName("Graph "+QString::number(mGraphs.size()));
+    newGraph->setName("Graph "+QString::number(mGraphs.size()));    
     return newGraph;
   } else
   {
@@ -5371,6 +5371,25 @@ QCPGraph *QCustomPlot::addGraph(QCPAxis *keyAxis, QCPAxis *valueAxis)
     return 0;
   }
 }
+
+QCPGraph *QCustomPlot::custom_addGraph(QCPAxis *keyAxis, QCPAxis *valueAxis)
+{
+  if (!keyAxis) keyAxis = xAxis;
+  if (!valueAxis) valueAxis = yAxis;
+  QCPGraph *newGraph = new QCPGraph(keyAxis, valueAxis);
+  if (addPlottable(newGraph))
+  {
+    newGraph->setName("Graph "+QString::number(mGraphs.size()));
+    newGraph->setLineStyle(QCPGraph::LSNone);
+    newGraph->setScatterStyle(QCPGraph::SSDot);
+    return newGraph;
+  } else
+  {
+    delete newGraph;
+    return 0;
+  }
+}
+
 
 /*!
   Removes the specified \a graph from the plot and, if necessary, from the legend. If

@@ -975,6 +975,7 @@ public slots:
   void setAxisBackground(const QPixmap &pm, bool scaled, Qt::AspectRatioMode mode=Qt::KeepAspectRatioByExpanding);
   void setAxisBackgroundScaled(bool scaled);
   void setAxisBackgroundScaledMode(Qt::AspectRatioMode mode);
+
   
   // non-property methods:
   QCPAbstractPlottable *plottable(int index);
@@ -988,6 +989,7 @@ public slots:
   QCPGraph *graph(int index) const;
   QCPGraph *graph() const;
   QCPGraph *addGraph(QCPAxis *keyAxis=0, QCPAxis *valueAxis=0);
+  QCPGraph *custom_addGraph(QCPAxis *keyAxis=0, QCPAxis *valueAxis=0);  // currently add a graph with data points in "dot" - need to generalise later
   bool removeGraph(QCPGraph *graph);
   bool removeGraph(int index);
   int clearGraphs();
