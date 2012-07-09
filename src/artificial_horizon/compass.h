@@ -25,13 +25,11 @@ public slots:
     void setHeading(double value);
 
 protected:
-		QHBoxLayout *layout2;
-		QVBoxLayout *layout;
-		double heading;
-		QwtCompass *compass;		
-		QwtCompassMagnetNeedle *needle;
-		QLCDNumber *number;
-		QLabel *label;
+    QVBoxLayout *layout;
+    double heading;
+    QwtCompass *compass;		
+    QwtCompassMagnetNeedle *needle;
+    QLabel *number;
 };
 
 #endif //Compass
