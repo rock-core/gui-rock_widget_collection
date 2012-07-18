@@ -15,7 +15,7 @@
 
 
 GstImageView::GstImageView(QWidget *parent)
-    : QWidget(parent)
+    : QWidget(parent), use_gl(false), use_gst(false), pipelineDescription("videotestsrc ! ximagesink") //qtglvideosink
 {
     resize(500,500);
     imageItem = NULL;
@@ -24,9 +24,6 @@ GstImageView::GstImageView(QWidget *parent)
     /* TODO does this overwrite the user's widget property setting? */
     
     // TODO Currently using hard coded pipeline instead of text based pipeline description from property
-    pipelineDescription = "videotestsrc ! ximagesink";//qtglvideosink"; 
-    use_gl = false;
-    use_gst = false;
 
     QGst::PipelinePtr pipeline;
     QGst::ElementPtr videoSrc;
