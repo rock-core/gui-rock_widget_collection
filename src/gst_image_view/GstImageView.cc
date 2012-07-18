@@ -15,7 +15,7 @@
 
 
 GstImageView::GstImageView(QWidget *parent)
-    : QWidget(parent), use_gl(false), use_gst(false), pipelineDescription("videotestsrc ! ximagesink") //qtglvideosink
+    : QWidget(parent), bgColor(QColor(Qt::darkGray)), use_gl(false), use_gst(false), pipelineDescription("videotestsrc ! ximagesink") //qtglvideosink
 {
     resize(500,500);
     imageItem = NULL;
@@ -39,7 +39,7 @@ GstImageView::GstImageView(QWidget *parent)
     
     /* Setup video sink */
     scene = new QGraphicsScene;
-    //scene->setBackgroundBrush(Qt::darkGray);
+    scene->setBackgroundBrush(getBackgroundColor());
     
     view = new QGraphicsView(scene, this);
     
@@ -95,6 +95,14 @@ GstImageView::~GstImageView()
     // pipeline->setState(QGst::StateNull);
 }
 
+const QColor& GstImageView::getBackgroundColor() const {
+    return bgColor;
+}
+
+void GstImageView::setBackgroundColor(const QColor & color) {
+    bgColor = color;
+    scene->setBackgroundBrush(bgColor);
+}
 
 QString GstImageView::getPipelineDescription()
 {

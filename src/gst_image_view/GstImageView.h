@@ -19,6 +19,9 @@ class GstImageView : public QWidget
 {
     Q_OBJECT
     Q_CLASSINFO("Author", "Allan Conquest")
+    
+    Q_PROPERTY(QColor backgroundColor READ getBackgroundColor WRITE setBackgroundColor)
+    
     Q_PROPERTY(QString pipelineDescription READ getPipelineDescription WRITE setPipelineDescription)
     Q_PROPERTY(bool useGl READ getUseGl WRITE setUseGl)
     Q_PROPERTY(bool useGst READ getUseGst WRITE setUseGst)
@@ -29,6 +32,8 @@ public:
     virtual ~GstImageView();
     
 public slots:
+    const QColor& getBackgroundColor() const;
+    void setBackgroundColor(const QColor & color);
     QString getPipelineDescription();
     void setPipelineDescription(QString descr);
     bool getUseGl();
@@ -60,6 +65,7 @@ protected:
 private:
     void addDrawItem(QGraphicsItem *item, bool persistent = 0); 
     
+    QColor bgColor;
     QString pipelineDescription;
     bool use_gst;
     bool use_gl;
