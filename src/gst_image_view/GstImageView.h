@@ -45,8 +45,7 @@ public slots:
     void clearOverlays(bool clear_persistent_items = 0);
     
     /**
-     * Rotates the displayed image about deg degrees. Only steps of 90 degrees
-     * are allowed: 0, 90, 180, 270, 360
+     * Rotates the displayed image about deg degrees while keeping its aspect ratio.
      */
     void rotate(int deg);
     

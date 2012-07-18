@@ -126,12 +126,6 @@ void GstImageView::setUseGl(bool use_gl)
     this->use_gl = use_gl;
 }
 
-
-
-
-
-
-
 void GstImageView::addCircle(QPointF center, double radius, bool persistent)
 {
     QGraphicsEllipseItem *circlePtr = 
@@ -178,7 +172,7 @@ void GstImageView::addText(QString text, TextLocation location, bool persistent)
 void GstImageView::clearOverlays(bool clear_persistent_items)
 {
     if(clear_persistent_items) {
-        Q_FOREACH(QGraphicsItem *item, persistentDrawItems + volatileDrawItems) {
+        Q_FOREACH(QGraphicsItem *item, persistentDrawItems) {
             scene->removeItem(item);
         }
         persistentDrawItems.clear();
@@ -227,6 +221,8 @@ void GstImageView::setFrame(const base::samples::frame::Frame &frame)
     }
     update();
 }
+
+/* PROTECTED METHODS ---------------------------------------------------------- */
 
 void GstImageView::resizeEvent(QResizeEvent *event)
 { 
