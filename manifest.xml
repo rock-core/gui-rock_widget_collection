@@ -12,5 +12,6 @@
   <depend package="qwt5" />
   <depend package="vtk-qt4" />
   <rosdep name="qt4" />
+  <rosdep name="qt4-opengl" />
   <versioncontrol type="git" url="" />
 </package>
