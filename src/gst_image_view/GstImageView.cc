@@ -66,12 +66,12 @@ GstImageView::GstImageView(QWidget *parent)
         pipeline->add(videoSrc, surface->videoSink());
         videoSrc->link(surface->videoSink());
         
-        std::cout << "Video source name: " << surface->videoSink()->property("name").toString().toStdString() << std::endl;
+        LOG_INFO_S << "Video source name: " << surface->videoSink()->property("name").toString().toStdString();
         
         /* Try to start playing */
         if(!pipeline->setState(QGst::StatePlaying)) {
             // TODO proper fallback handling
-            std::cout << "Could not play pipeline." << std::endl;
+            LOG_WARN("Could not play pipeline.");
         }
     } else {
         imageItem = new QGraphicsPixmapItem;
@@ -194,23 +194,20 @@ void GstImageView::clearOverlays(bool clear_persistent_items)
 
 void GstImageView::rotate(int deg)
 {
-    std::cout << "rotating " << deg << " degrees." << std::endl;
     view->rotate(deg);
     view->fitInView(imageItem, Qt::KeepAspectRatio);
     //view->fitInView(view->sceneRect(), Qt::KeepAspectRatio);
 }
 
 void GstImageView::setFrame(const base::samples::frame::Frame &frame)
-{   
-    std::cout << "GstImageView: Got frame!" << std::endl;
-    
+{     
     if(use_gst) {
         // TODO
     } else {
         clearOverlays();
 
         if(1 == frame_converter.copyFrameToQImageRGB888(image,frame)) {
-            LOG_DEBUG("Frame size changed while converting frame to QImage (says converter)");
+            LOG_WARN("Frame size changed while converting frame to QImage (says converter)");
         }
         imageSize = image.size();
         //std::cout << "Image size: x=" << image.width() <<", y=" << image.height() << std::endl;
@@ -221,7 +218,7 @@ void GstImageView::setFrame(const base::samples::frame::Frame &frame)
         if(imageItem) {
             imageItem->setPixmap(pixmap);
         } else {
-            std::cout << "imageItem undefined!" << std::endl;
+            LOG_WARN("imageItem undefined!");
         }
         
         //std::cout << "ImageItem BoundingRect: x=" << imageItem->boundingRect().width() <<", y=" << imageItem->boundingRect().height() << std::endl;
@@ -235,8 +232,6 @@ void GstImageView::setFrame(const base::samples::frame::Frame &frame)
 void GstImageView::resizeEvent(QResizeEvent *event)
 { 
     QWidget::resizeEvent(event);
-    std::cout << "ResizeEvent" << std::endl;
-    
     view->resize(event->size());
 
     //imageItem->setPixmap(QPixmap::fromImage(image.scaled(event->size(), Qt::KeepAspectRatio)));
@@ -261,6 +256,5 @@ void GstImageView::addDrawItem(QGraphicsItem *item, bool persistent)
 
 void GstImageView::update2()
 {
-    std::cout << "GstImageView: update2()" << std::endl;
     QWidget::update();
 }

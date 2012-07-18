@@ -22,9 +22,18 @@ class GstImageView : public QWidget
     
     Q_PROPERTY(QColor backgroundColor READ getBackgroundColor WRITE setBackgroundColor)
     
-    Q_PROPERTY(QString pipelineDescription READ getPipelineDescription WRITE setPipelineDescription)
-    Q_PROPERTY(bool useGl READ getUseGl WRITE setUseGl)
+    /* Properties for use with GStreamer. That means in particluar that any of 
+     * the following properties is unimportant if useGst is set to false. */
+    
+    /** Use GStreamer. This is the main flag to switch hardware acceleration (achieved by GStreamer) on or off. */
     Q_PROPERTY(bool useGst READ getUseGst WRITE setUseGst)
+    
+    /** Text based GStreamer pipeline description */
+    Q_PROPERTY(QString pipelineDescription READ getPipelineDescription WRITE setPipelineDescription)
+    
+    /** Use OpenGL. Makes only sense if your graphics hardware supports OpenGL. 
+     * If set to false, software rendering is used instead. */
+    Q_PROPERTY(bool useGl READ getUseGl WRITE setUseGl)
     
     
 public:
