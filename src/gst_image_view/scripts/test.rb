@@ -3,7 +3,6 @@
 require 'orocos/log'
 #require 'testgui.rb'
 require 'vizkit'
-include Orocos
 
 @line_ctr = 0;
 @line_direction = 1;
@@ -41,12 +40,12 @@ if ARGV.length != 1
     exit
 end
 
-log = Log::Replay.open(ARGV[0])
 
 @view = Vizkit.default_loader.GstImageView
-@view.setUseGst true
 
-@view.extend QtTypelibExtension
+@view.setUseGst false
+
+#@view.extend Vizkit::QtTypelibExtension
 @view.show
 
 @view.addCircle(Qt::PointF.new(0,0), 50, true);
@@ -63,8 +62,11 @@ log = Log::Replay.open(ARGV[0])
 @testgui.clear_overlays_button.connect(SIGNAL('clicked()')) {clear_overlays}
 
 
-log.front_camera.frame.connect_to @view
+Vizkit::ReaderWriterProxy.default_policy = {:port_proxy => nil}
 
+log = Orocos::Log::Replay.open(ARGV[0])
+
+log.front_camera.frame.connect_to @view
 Vizkit.control log
 
 Vizkit.exec
