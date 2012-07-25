@@ -44,11 +44,12 @@ end
 @view = Vizkit.default_loader.GstImageView
 
 @view.setUseGst false
+@view.progress_indicator_timeout = 2500
 
 #@view.extend Vizkit::QtTypelibExtension
 @view.show
 
-@view.addCircle(Qt::PointF.new(0,0), 50, true);
+#@view.addCircle(Qt::PointF.new(0,0), 50, true);
 
 #@view.addLine(Qt::LineF.new(200, 0, 200, 300))
 #@view.addLine(Qt::LineF.new(250, 0, 250, 300))
@@ -60,9 +61,6 @@ end
 @testgui.line_button.connect(SIGNAL('clicked()')) {add_line}
 @testgui.circle_button.connect(SIGNAL('clicked()')) {add_circle}
 @testgui.clear_overlays_button.connect(SIGNAL('clicked()')) {clear_overlays}
-
-
-Vizkit::ReaderWriterProxy.default_policy = {:port_proxy => nil}
 
 log = Orocos::Log::Replay.open(ARGV[0])
 

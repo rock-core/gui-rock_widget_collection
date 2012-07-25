@@ -6,6 +6,7 @@
 
 #include <base/samples/frame.h>
 #include <frame_helper/FrameQImageConverter.h>
+#include "rock_widget_collection/ProgressIndicator.h"
 
 enum TextLocation
 {
@@ -21,6 +22,9 @@ class GstImageView : public QWidget
     Q_CLASSINFO("Author", "Allan Conquest")
     
     Q_PROPERTY(QColor backgroundColor READ getBackgroundColor WRITE setBackgroundColor)
+    
+    /** The time without frame update in ms after which the progress indicator gets started  */
+    Q_PROPERTY(int progress_indicator_timeout READ getProgressIndicatorTimeout WRITE setProgressIndicatorTimeout)
     
     /* Properties for use with GStreamer. That means in particluar that any of 
      * the following properties is unimportant if useGst is set to false. */
@@ -43,15 +47,16 @@ public:
 public slots:
     const QColor& getBackgroundColor() const;
     void setBackgroundColor(const QColor & color);
-    QString getPipelineDescription();
+    const QString getPipelineDescription() const;
     void setPipelineDescription(QString descr);
+    const int getProgressIndicatorTimeout() const;
+    void setProgressIndicatorTimeout(int timeout);
     bool getUseGl();
     void setUseGl(bool use_gl);
     bool getUseGst();
     void setUseGst(bool use_gst);
     
     /* Overlays */
-    
     void addCircle(QPointF center, double radius, bool persistent = 0);
     void addLine(QLineF &line, bool persistent = 0);
     void addText(QString text, TextLocation location, bool persistent = 0);
@@ -64,7 +69,6 @@ public slots:
     void rotate(int deg);
     
     /* Other slots */
-    
     void setFrame(const base::samples::frame::Frame &frame);
     void update2();
 
@@ -72,10 +76,12 @@ protected:
     void resizeEvent(QResizeEvent *event);
     
 private:
-    void addDrawItem(QGraphicsItem *item, bool persistent = 0); 
+    void addDrawItem(QGraphicsItem *item, bool persistent = 0);
+    void setItemPositions();
     
     QColor bgColor;
     QString pipelineDescription;
+    int progress_indicator_timeout;
     bool use_gst;
     bool use_gl;
 
@@ -90,6 +96,10 @@ private:
     QSize imageSize;
 
     frame_helper::FrameQImageConverter frame_converter;
+    
+    ProgressIndicator *progress_indicator;
+    QGraphicsProxyWidget *proxy_progress_indicator;
+    QTimer *progress_indicator_timer;
 };
 
 #endif /* GST_IMAGE_VIEW_H */

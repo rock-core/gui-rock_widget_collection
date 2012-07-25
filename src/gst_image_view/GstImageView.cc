@@ -15,16 +15,23 @@
 
 
 GstImageView::GstImageView(QWidget *parent)
-    : QWidget(parent), bgColor(QColor(Qt::darkGray)), use_gl(false), use_gst(false), pipelineDescription("videotestsrc ! ximagesink") //qtglvideosink
+    : QWidget(parent), bgColor(QColor(Qt::darkGray)), progress_indicator_timeout(5000), use_gl(false), use_gst(false), pipelineDescription("videotestsrc ! ximagesink") //qtglvideosink
 {
     resize(500,500);
     imageItem = NULL;
     
-    /* Default widget property values */
-    /* TODO does this overwrite the user's widget property setting? */
+    /* Configure progress indicator */
+    progress_indicator = new ProgressIndicator;
+    progress_indicator->setAnimationDelay(40);
+    progress_indicator->setDisplayedWhenStopped(false);
+    progress_indicator->resize(30,30);
+    progress_indicator->show();
     
-    // TODO Currently using hard coded pipeline instead of text based pipeline description from property
-
+    /* Set up timer for progress indicator */
+    progress_indicator_timer = new QTimer(this);
+    progress_indicator_timer->setInterval(getProgressIndicatorTimeout());
+    connect(progress_indicator_timer, SIGNAL(timeout()), progress_indicator, SLOT(startAnimation()));
+    
     QGst::PipelinePtr pipeline;
     QGst::ElementPtr videoSrc;
     if(use_gst) {
@@ -42,6 +49,7 @@ GstImageView::GstImageView(QWidget *parent)
     scene->setBackgroundBrush(getBackgroundColor());
     
     view = new QGraphicsView(scene, this);
+    progress_indicator->setParent(view);
     
     if(use_gl) {
         // Indicator to use qtglvideosink (hardware rendering!) instead of qtvideosink
@@ -78,8 +86,10 @@ GstImageView::GstImageView(QWidget *parent)
         scene->addItem(imageItem);
     }
     
-    view->resize(400,400);
+    //view->resize(400,400);
 //     widget->resize(300,300);
+
+    setItemPositions();
     update();
 }
 
@@ -93,18 +103,22 @@ GstImageView::~GstImageView()
     delete scene;
     delete view;
     // pipeline->setState(QGst::StateNull);
+    delete progress_indicator;
+    delete progress_indicator_timer;
 }
 
-const QColor& GstImageView::getBackgroundColor() const {
+const QColor& GstImageView::getBackgroundColor() const
+{
     return bgColor;
 }
 
-void GstImageView::setBackgroundColor(const QColor & color) {
+void GstImageView::setBackgroundColor(const QColor & color)
+{
     bgColor = color;
     scene->setBackgroundBrush(bgColor);
 }
 
-QString GstImageView::getPipelineDescription()
+const QString GstImageView::getPipelineDescription() const
 {
     return pipelineDescription;
 }
@@ -112,6 +126,17 @@ QString GstImageView::getPipelineDescription()
 void GstImageView::setPipelineDescription(QString descr)
 {
     this->pipelineDescription = descr;
+}
+
+const int GstImageView::getProgressIndicatorTimeout() const
+{
+    return progress_indicator_timeout;
+}
+
+void GstImageView::setProgressIndicatorTimeout(int timeout)
+{
+    progress_indicator_timeout = timeout;
+    progress_indicator_timer->setInterval(timeout);
 }
 
 bool GstImageView::getUseGst()
@@ -137,8 +162,7 @@ void GstImageView::setUseGl(bool use_gl)
 void GstImageView::addCircle(QPointF center, double radius, bool persistent)
 {
     QGraphicsEllipseItem *circlePtr = 
-            new QGraphicsEllipseItem(QRectF(center.x() - radius/2.0, center.y() - radius/2.0, radius, radius), 
-                                     imageItem);
+            new QGraphicsEllipseItem(QRectF(center.x() - radius/2.0, center.y() - radius/2.0, radius, radius));
     addDrawItem(circlePtr, persistent);
 }
 
@@ -148,7 +172,7 @@ void GstImageView::addLine(QLineF &line, bool persistent)
     //mappedLine.setPoints(imageItem->mapFromItem(imageItem, line.p1()), 
     //                     imageItem->mapFromItem(imageItem, line.p2()));
                         
-    QGraphicsLineItem *linePtr = new QGraphicsLineItem(line, imageItem);
+    QGraphicsLineItem *linePtr = new QGraphicsLineItem(line);
     //std::cout << "lineptr=" << linePtr << std::endl;
     
     //scene->addLine(mappedLine);
@@ -160,7 +184,7 @@ void GstImageView::addLine(QLineF &line, bool persistent)
 
 void GstImageView::addText(QString text, TextLocation location, bool persistent)
 {
-    QGraphicsSimpleTextItem *textOverlay = new QGraphicsSimpleTextItem(text, imageItem);
+    QGraphicsSimpleTextItem *textOverlay = new QGraphicsSimpleTextItem(text);
     switch(location) {
     case TOPLEFT :
         textOverlay->show();
@@ -200,7 +224,10 @@ void GstImageView::rotate(int deg)
 }
 
 void GstImageView::setFrame(const base::samples::frame::Frame &frame)
-{     
+{   
+    progress_indicator_timer->start();
+    progress_indicator->stopAnimation();
+    
     if(use_gst) {
         // TODO
     } else {
@@ -209,6 +236,10 @@ void GstImageView::setFrame(const base::samples::frame::Frame &frame)
         if(1 == frame_converter.copyFrameToQImageRGB888(image,frame)) {
             LOG_WARN("Frame size changed while converting frame to QImage (says converter)");
         }
+
+        // Backup image size for detecting size change
+        QSize oldSize = imageSize;
+        
         imageSize = image.size();
         //std::cout << "Image size: x=" << image.width() <<", y=" << image.height() << std::endl;
         QPixmap pixmap = QPixmap::fromImage(image);
@@ -223,6 +254,12 @@ void GstImageView::setFrame(const base::samples::frame::Frame &frame)
         
         //std::cout << "ImageItem BoundingRect: x=" << imageItem->boundingRect().width() <<", y=" << imageItem->boundingRect().height() << std::endl;
         addText(QString::fromStdString(frame.time.toString()), TOPRIGHT, 0);
+        
+        /* Resize and repositioning if frame size changes (and on start) */
+        if((imageSize != oldSize)) {
+            resize(width(),height());
+            setItemPositions();
+        }
     }
     update();
 }
@@ -235,8 +272,11 @@ void GstImageView::resizeEvent(QResizeEvent *event)
     view->resize(event->size());
 
     //imageItem->setPixmap(QPixmap::fromImage(image.scaled(event->size(), Qt::KeepAspectRatio)));
+    std::cout << "resize event.\nview.width: " << view->width() << "\n"
+              << "view.height: " << view->height() << std::endl;
     
     view->fitInView(imageItem, Qt::KeepAspectRatio);
+    setItemPositions();
 }
 
 
@@ -251,10 +291,18 @@ void GstImageView::addDrawItem(QGraphicsItem *item, bool persistent)
     } else {
         volatileDrawItems.push_back(item);
     }
+    scene->addItem(item);
     update();
 }
 
 void GstImageView::update2()
 {
     QWidget::update();
+}
+
+void GstImageView::setItemPositions()
+{
+//    std::cout << "setItemPositions" << std::endl;
+    // Align to top-left corner of view (scene gets always fit in view)   
+    progress_indicator->move(view->width() - progress_indicator->width(), 0);
 }
