@@ -16,6 +16,8 @@
 #include "timeline/TimelinePlugin.h"
 #include "new_image_view/NewImageViewPlugin.h"
 #include "gst_image_view/GstImageViewPlugin.h"
+#include "progress_indicator/ProgressIndicatorPlugin.h"
+
 #ifdef USE_VTK
 #include "vtk/sonar_display/SonarDisplayPlugin.h"
 #endif
@@ -41,6 +43,7 @@ RockWidgetCollection::RockWidgetCollection(QObject *parent)
    widgets.append(new TimelinePlugin(this));
    widgets.append(new NewImageViewPlugin(this));
    widgets.append(new GstImageViewPlugin(this));
+   widgets.append(new ProgressIndicatorPlugin(this));
 #ifdef USE_VTK
    widgets.append(new SonarDisplayPlugin(this));
 #endif

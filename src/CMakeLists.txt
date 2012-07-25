@@ -75,6 +75,8 @@ SET(COLLECTION_MOC_HDRS
   timeline/SlideBarItem.h
   gst_image_view/GstImageView.h
   gst_image_view/GstImageViewPlugin.h
+  progress_indicator/ProgressIndicator.h
+  progress_indicator/ProgressIndicatorPlugin.h
 )
 
 SET(COLLECTION_HDRS
@@ -125,6 +127,7 @@ SET(COLLECTION_HDRS
   timeline/SlideBarItem.h
   gst_image_view/GstImageView.h
 #   gst_image_view/FrameAppSrc.h
+  progress_indicator/ProgressIndicator.h
 )
 
 FILE(GLOB COLLECTION_SOURCES 
@@ -141,6 +144,7 @@ FILE(GLOB COLLECTION_SOURCES
     2dvis/*.cc
     timeline/*.cc
     gst_image_view/*.cc
+    progress_indicator/*.cc
     *.cc)
 
 option(USE_VTK "Use VTK for additional Widgets" FALSE)
