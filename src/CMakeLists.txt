@@ -1,5 +1,5 @@
 
-find_package(Qt4 REQUIRED QtCore QtGui QtOpengl QtDesigner phonon)
+find_package(Qt4 REQUIRED QtCore QtGui QtOpengl QtDesigner )
 
 #include(/usr/local/lib/QtGStreamer/QtGStreamerConfig.cmake)
 find_package(QtGStreamer PATHS /usr/local/lib/QtGStreamer NO_DEFAULT_PATH)
@@ -10,7 +10,6 @@ include_directories(multi_view/ generic_widgets/)
 include_directories(${QT_INCLUDE_DIR})
 include_directories(${QT_QTCORE_INCLUDE_DIR})
 include_directories(${QT_QTGUI_INCLUDE_DIR})
-include_directories(${QT_PHONON_INCLUDE_DIR})
 
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
@@ -74,9 +73,6 @@ SET(COLLECTION_MOC_HDRS
   timeline/TimelinePlugin.h
   timeline/Slider.h
   timeline/SlideBarItem.h
-  phonon_image_view/PhononImageView.h
-  phonon_image_view/PhononImageViewPlugin.h
-  phonon_image_view/FrameDevice.h
   gst_image_view/GstImageView.h
   gst_image_view/GstImageViewPlugin.h
 )
@@ -127,8 +123,6 @@ SET(COLLECTION_HDRS
   timeline/BoundarySlider.h
   timeline/IndexSlider.h
   timeline/SlideBarItem.h
-  phonon_image_view/PhononImageView.h
-  phonon_image_view/FrameDevice.h
   gst_image_view/GstImageView.h
 #   gst_image_view/FrameAppSrc.h
 )
@@ -146,7 +140,6 @@ FILE(GLOB COLLECTION_SOURCES
     plot2d/*.cc
     2dvis/*.cc
     timeline/*.cc
-    phonon_image_view/*.cc
     gst_image_view/*.cc
     *.cc)
 
@@ -179,7 +172,7 @@ rock_vizkit_widget(rock_widget_collection
     MOC ${COLLECTION_MOC_HDRS}
     DEPS_PKGCONFIG base-types base-lib frame_helper QtCore QtGui
     DEPS_CMAKE LIBXML2 QWT GLU ${VTK_DEPS}
-    LIBS ${QT_QTCORE_LIBRARY} ${VTK_LIBS} ${QT_QTGUI_LIBRARY} ${QT_QTOPENGL_LIBRARY} ${QT_QTDESIGNER_LIBRARY} ${QT_PHONON_LIBRARY} ${QTGSTREAMER_LIBRARIES} ${QTGSTREAMER_UI_LIBRARIES} 
+    LIBS ${QT_QTCORE_LIBRARY} ${VTK_LIBS} ${QT_QTGUI_LIBRARY} ${QT_QTOPENGL_LIBRARY} ${QT_QTDESIGNER_LIBRARY} ${QTGSTREAMER_LIBRARIES} ${QTGSTREAMER_UI_LIBRARIES} 
     )
 
 
@@ -196,9 +189,6 @@ rock_executable(timelineTest timeline/main.cpp
     NOINSTALL)
 
 rock_executable(newimageviewTest new_image_view/main.cpp
-    DEPS rock_widget_collection
-    NOINSTALL)
-rock_executable(phononimageviewTest phonon_image_view/main.cpp
     DEPS rock_widget_collection
     NOINSTALL)
 
