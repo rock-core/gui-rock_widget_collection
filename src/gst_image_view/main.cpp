@@ -7,13 +7,15 @@
 #include <QtGui>
 #include <QtOpenGL/QGLWidget>
 
-#include <QGst/Init>
-#include <QGst/Parse>
-#include <QGst/Pipeline>
-#include <QGst/ElementFactory>
-#include <QGst/Ui/VideoWidget>
-#include <QGst/Ui/GraphicsVideoSurface>
-#include <QGst/Ui/GraphicsVideoWidget>
+#ifdef USE_GST
+    #include <QGst/Init>
+    #include <QGst/Parse>
+    #include <QGst/Pipeline>
+    #include <QGst/ElementFactory>
+    #include <QGst/Ui/VideoWidget>
+    #include <QGst/Ui/GraphicsVideoSurface>
+    #include <QGst/Ui/GraphicsVideoWidget>
+#endif
 
 #include "GstImageView.h"
 

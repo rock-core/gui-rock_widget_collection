@@ -5,17 +5,18 @@
 
 #include <QtOpenGL/QGLWidget>
 
-#include <QGst/Init>
-#include <QGst/Parse>
-#include <QGst/Pipeline>
-#include <QGst/ElementFactory>
-#include <QGst/Ui/VideoWidget>
-#include <QGst/Ui/GraphicsVideoSurface>
-#include <QGst/Ui/GraphicsVideoWidget>
-
+#ifdef USE_GST
+    #include <QGst/Init>
+    #include <QGst/Parse>
+    #include <QGst/Pipeline>
+    #include <QGst/ElementFactory>
+    #include <QGst/Ui/VideoWidget>
+    #include <QGst/Ui/GraphicsVideoSurface>
+    #include <QGst/Ui/GraphicsVideoWidget>
+#endif
 
 GstImageView::GstImageView(QWidget *parent)
-    : QWidget(parent), bgColor(QColor(Qt::darkGray)), progress_indicator_timeout(5000), use_gl(false), use_gst(false), pipelineDescription("videotestsrc ! ximagesink") //qtglvideosink
+    : QWidget(parent), bgColor(QColor(Qt::darkGray)), progress_indicator_timeout(5000), use_gl(false), pipelineDescription("videotestsrc ! ximagesink") //qtglvideosink
 {
     resize(500,500);
     imageItem = NULL;
@@ -32,16 +33,16 @@ GstImageView::GstImageView(QWidget *parent)
     progress_indicator_timer->setInterval(getProgressIndicatorTimeout());
     connect(progress_indicator_timer, SIGNAL(timeout()), progress_indicator, SLOT(startAnimation()));
     
+#ifdef USE_GST
     QGst::PipelinePtr pipeline;
     QGst::ElementPtr videoSrc;
-    if(use_gst) {
         /* GStreamer setup */
         QGst::init();
 
 //         pipeline = QGst::Parse::launch(pipelineDescription).dynamicCast<QGst::Pipeline>();
         pipeline = QGst::Pipeline::create("pipeline"); // Create hard coded pipeline for debugging
         videoSrc = QGst::ElementFactory::make("videotestsrc");
-    }
+#endif
 
     
     /* Setup video sink */
@@ -59,32 +60,32 @@ GstImageView::GstImageView(QWidget *parent)
     view->setAlignment(Qt::AlignCenter);
     view->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     view->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    
+
+#ifdef USE_GST    
     QGst::Ui::GraphicsVideoSurface *surface = NULL;
     QGst::Ui::GraphicsVideoWidget *widget = NULL;
     
-    if(use_gst) {
-        surface = new QGst::Ui::GraphicsVideoSurface(view); 
-        widget = new QGst::Ui::GraphicsVideoWidget;
-        widget->setSurface(surface);
-        
-        scene->addItem(widget);
+    surface = new QGst::Ui::GraphicsVideoSurface(view); 
+    widget = new QGst::Ui::GraphicsVideoWidget;
+    widget->setSurface(surface);
+    
+    scene->addItem(widget);
 
-        // Connect hard coded pipeline
-        pipeline->add(videoSrc, surface->videoSink());
-        videoSrc->link(surface->videoSink());
-        
-        LOG_INFO_S << "Video source name: " << surface->videoSink()->property("name").toString().toStdString();
-        
-        /* Try to start playing */
-        if(!pipeline->setState(QGst::StatePlaying)) {
-            // TODO proper fallback handling
-            LOG_WARN("Could not play pipeline.");
-        }
-    } else {
-        imageItem = new QGraphicsPixmapItem;
-        scene->addItem(imageItem);
+    // Connect hard coded pipeline
+    pipeline->add(videoSrc, surface->videoSink());
+    videoSrc->link(surface->videoSink());
+    
+    LOG_INFO_S << "Video source name: " << surface->videoSink()->property("name").toString().toStdString();
+    
+    /* Try to start playing */
+    if(!pipeline->setState(QGst::StatePlaying)) {
+        // TODO proper fallback handling
+        LOG_WARN("Could not play pipeline.");
     }
+#else
+    imageItem = new QGraphicsPixmapItem;
+    scene->addItem(imageItem);
+#endif
     
     //view->resize(400,400);
 //     widget->resize(300,300);
@@ -137,16 +138,6 @@ void GstImageView::setProgressIndicatorTimeout(int timeout)
 {
     progress_indicator_timeout = timeout;
     progress_indicator_timer->setInterval(timeout);
-}
-
-bool GstImageView::getUseGst()
-{
-    return this->use_gst;
-}
-
-void GstImageView::setUseGst(bool use_gst)
-{
-    this->use_gst = use_gst;
 }
 
 bool GstImageView::getUseGl()
@@ -228,41 +219,41 @@ void GstImageView::setFrame(const base::samples::frame::Frame &frame)
     progress_indicator_timer->start();
     progress_indicator->stopAnimation();
     
-    if(use_gst) {
-        // TODO
-    } else {
-        clearOverlays();
+#ifdef USE_GST
+    // TODO
+#else
+    clearOverlays();
 
-        if(1 == frame_converter.copyFrameToQImageRGB888(image,frame)) {
-            LOG_WARN("Frame size changed while converting frame to QImage (says converter)");
-        }
-
-        // Backup image size for detecting size change
-        QSize oldSize = imageSize;
-        
-        imageSize = image.size();
-        //std::cout << "Image size: x=" << image.width() <<", y=" << image.height() << std::endl;
-        QPixmap pixmap = QPixmap::fromImage(image);
-        pixmap.scaled(size(), Qt::KeepAspectRatio);
-
-        //std::cout << "Pixmap size: x=" << pixmap.width() <<", y=" << pixmap.height() << std::endl;
-        if(imageItem) {
-            imageItem->setPixmap(pixmap);
-        } else {
-            LOG_WARN("imageItem undefined!");
-        }
-        
-        //std::cout << "ImageItem BoundingRect: x=" << imageItem->boundingRect().width() <<", y=" << imageItem->boundingRect().height() << std::endl;
-        addText(QString::fromStdString(frame.time.toString()), TOPRIGHT, 0);
-        
-        /* Resize and repositioning if frame size changes (and on start) */
-        if(imageSize != oldSize) {
-            std::cout << "image size changed. resize." << std::endl;
-            setVisible(false); setVisible(true); // For some reason the first frame is not scaled to fit the full space. Calling update or even repaint did not help but a simple resize or setVisible does.
-            setItemPositions();
-        }
+    if(1 == frame_converter.copyFrameToQImageRGB888(image,frame)) {
+        LOG_WARN("Frame size changed while converting frame to QImage (says converter)");
     }
+
+    // Backup image size for detecting size change
+    QSize oldSize = imageSize;
+    imageSize = image.size();
+    //std::cout << "Image size: x=" << image.width() <<", y=" << image.height() << std::endl;
+    QPixmap pixmap = QPixmap::fromImage(image);
+    pixmap.scaled(size(), Qt::KeepAspectRatio);
+
+    //std::cout << "Pixmap size: x=" << pixmap.width() <<", y=" << pixmap.height() << std::endl;
+    if(imageItem) {
+        imageItem->setPixmap(pixmap);
+    } else {
+        LOG_WARN("imageItem undefined!");
+    }
+    
+    //std::cout << "ImageItem BoundingRect: x=" << imageItem->boundingRect().width() <<", y=" << imageItem->boundingRect().height() << std::endl;
+    addText(QString::fromStdString(frame.time.toString()), TOPRIGHT, 0);
+    
+    /* Resize and repositioning if frame size changes (and on start) */
+    if(imageSize != oldSize) {
+        LOG_INFO("image size changed. resize.");
+        setVisible(false); setVisible(true); // For some reason the first frame is not scaled to fit the full space. Calling update or even repaint did not help but a simple resize or setVisible does.
+        setItemPositions();
+    }
+    
     update();
+#endif
 }
 
 /* PROTECTED METHODS ---------------------------------------------------------- */
@@ -272,9 +263,8 @@ void GstImageView::resizeEvent(QResizeEvent *event)
     QWidget::resizeEvent(event);
     view->resize(event->size());
 
-    //imageItem->setPixmap(QPixmap::fromImage(image.scaled(event->size(), Qt::KeepAspectRatio)));
-    std::cout << "resize event.\nview.width: " << view->width() << "\n"
-              << "view.height: " << view->height() << std::endl;
+//    std::cout << "resize event.\nview.width: " << view->width() << "\n"
+//              << "view.height: " << view->height() << std::endl;
     
     view->fitInView(imageItem, Qt::KeepAspectRatio);
     setItemPositions();

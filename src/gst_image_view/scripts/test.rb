@@ -43,7 +43,6 @@ end
 
 @view = Vizkit.default_loader.GstImageView
 
-@view.setUseGst false
 @view.progress_indicator_timeout = 2500
 
 #@view.extend Vizkit::QtTypelibExtension

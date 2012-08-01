@@ -29,9 +29,6 @@ class GstImageView : public QWidget
     /* Properties for use with GStreamer. That means in particluar that any of 
      * the following properties is unimportant if useGst is set to false. */
     
-    /** Use GStreamer. This is the main flag to switch hardware acceleration (achieved by GStreamer) on or off. */
-    Q_PROPERTY(bool useGst READ getUseGst WRITE setUseGst)
-    
     /** Text based GStreamer pipeline description */
     Q_PROPERTY(QString pipelineDescription READ getPipelineDescription WRITE setPipelineDescription)
     
@@ -53,8 +50,6 @@ public slots:
     void setProgressIndicatorTimeout(int timeout);
     bool getUseGl();
     void setUseGl(bool use_gl);
-    bool getUseGst();
-    void setUseGst(bool use_gst);
     
     /* Overlays */
     void addCircle(QPointF center, double radius, bool persistent = 0);
@@ -82,7 +77,6 @@ private:
     QColor bgColor;
     QString pipelineDescription;
     int progress_indicator_timeout;
-    bool use_gst;
     bool use_gl;
 
     QGraphicsView *view;

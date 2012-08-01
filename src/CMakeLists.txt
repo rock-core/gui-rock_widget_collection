@@ -148,7 +148,14 @@ FILE(GLOB COLLECTION_SOURCES
     *.cc)
 
 option(USE_VTK "Use VTK for additional Widgets" FALSE)
+option(USE_GST "Use GStreamer in GstImageView" OFF)
 
+## If you want to use GStreamer, uncomment the following
+#set(USE_GST ON)
+
+if (USE_GST)
+    add_definitions(-DUSE_GST)
+endif()
 
 if (USE_VTK)
     find_package(VTK)
