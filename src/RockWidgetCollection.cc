@@ -14,7 +14,6 @@
 #include "plot2d/Plot2dPlugin.h"
 #include "2dvis/WaterwallDisplayPlugin.h"
 #include "timeline/TimelinePlugin.h"
-#include "new_image_view/NewImageViewPlugin.h"
 #include "gst_image_view/GstImageViewPlugin.h"
 #include "progress_indicator/ProgressIndicatorPlugin.h"
 
@@ -41,7 +40,6 @@ RockWidgetCollection::RockWidgetCollection(QObject *parent)
    widgets.append(new Plot2dPlugin(this));
    widgets.append(new WaterfallDisplayPlugin(this));
    widgets.append(new TimelinePlugin(this));
-   widgets.append(new NewImageViewPlugin(this));
    widgets.append(new GstImageViewPlugin(this));
    widgets.append(new ProgressIndicatorPlugin(this));
 #ifdef USE_VTK

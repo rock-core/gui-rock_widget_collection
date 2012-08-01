@@ -18,8 +18,6 @@ SET(COLLECTION_MOC_HDRS
   image_view/ImageView.h
   image_view/ImageViewGL.h
   image_view/ImageViewPlugin.h
-  new_image_view/NewImageView.h
-  new_image_view/NewImageViewPlugin.h
   generic_widgets/DrawItem.h
   generic_widgets/RectangleItem.h
   generic_widgets/FillItem.h
@@ -82,7 +80,6 @@ SET(COLLECTION_MOC_HDRS
 SET(COLLECTION_HDRS
   image_view/ImageView.h
   image_view/ImageViewGL.h
-  new_image_view/NewImageView.h
   generic_widgets/DrawItem.h
   generic_widgets/LineItem.h
   generic_widgets/FillItem.h
@@ -133,7 +130,6 @@ SET(COLLECTION_HDRS
 FILE(GLOB COLLECTION_SOURCES 
     range_view/*.cc 
     image_view/*.cc 
-    new_image_view/*.cc
     sonar_view/*.cc 
     plotting/*.cc 
     artificial_horizon/*.cc 
@@ -196,10 +192,6 @@ if (USE_VTK)
 endif()
 
 rock_executable(timelineTest timeline/main.cpp
-    DEPS rock_widget_collection
-    NOINSTALL)
-
-rock_executable(newimageviewTest new_image_view/main.cpp
     DEPS rock_widget_collection
     NOINSTALL)
 
