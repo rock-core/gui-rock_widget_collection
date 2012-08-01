@@ -256,8 +256,9 @@ void GstImageView::setFrame(const base::samples::frame::Frame &frame)
         addText(QString::fromStdString(frame.time.toString()), TOPRIGHT, 0);
         
         /* Resize and repositioning if frame size changes (and on start) */
-        if((imageSize != oldSize)) {
-            resize(width(),height());
+        if(imageSize != oldSize) {
+            std::cout << "image size changed. resize." << std::endl;
+            setVisible(false); setVisible(true); // For some reason the first frame is not scaled to fit the full space. Calling update or even repaint did not help but a simple resize or setVisible does.
             setItemPositions();
         }
     }
