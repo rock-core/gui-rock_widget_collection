@@ -3,8 +3,8 @@ find_package(Qt4 REQUIRED QtCore QtGui QtOpengl QtDesigner )
 
 #include(/usr/local/lib/QtGStreamer/QtGStreamerConfig.cmake)
 find_package(QtGStreamer PATHS /usr/local/lib/QtGStreamer NO_DEFAULT_PATH)
-#include_directories(/usr/local/include/QtGStreamer)
-include_directories(${QTGSTREAMER_INCLUDES})
+include_directories(/usr/local/include/QtGStreamer)
+#include_directories(${QTGSTREAMER_INCLUDES})
 
 include_directories(multi_view/ generic_widgets/)
 include_directories(${QT_INCLUDE_DIR})
