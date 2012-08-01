@@ -6,7 +6,7 @@
 
 #include <base/samples/frame.h>
 #include <frame_helper/FrameQImageConverter.h>
-#include "rock_widget_collection/ProgressIndicator.h"
+#include "rock_widget_collection/progress_indicator/ProgressIndicator.h"
 
 enum TextLocation
 {
