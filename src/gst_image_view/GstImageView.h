@@ -62,6 +62,7 @@ public slots:
      * Rotates the displayed image about deg degrees while keeping its aspect ratio.
      */
     void rotate(int deg);
+    void saveImage(QString path = QString(), bool overlay = 0);
     
     /* Other slots */
     void setFrame(const base::samples::frame::Frame &frame);
@@ -69,10 +70,19 @@ public slots:
 
 protected:
     void resizeEvent(QResizeEvent *event);
+    void contextMenuEvent ( QContextMenuEvent * event );
+
+private slots:
+    void rotate_clockwise();
+    void rotate_counterclockwise();
+    void rotate_180();
+    void save_image();
+    void save_image_overlay();
     
 private:
     void addDrawItem(QGraphicsItem *item, bool persistent = 0);
     void setItemPositions();
+    void setupContextMenu();
     
     QColor bgColor;
     QString pipelineDescription;
@@ -94,6 +104,14 @@ private:
     ProgressIndicator *progress_indicator;
     QGraphicsProxyWidget *proxy_progress_indicator;
     QTimer *progress_indicator_timer;
+    
+    /* Menus and actions */
+    QMenu *contextMenu;
+    QAction *rotate_image_clockwise_act;
+    QAction *rotate_image_counterclockwise_act;
+    QAction *rotate_image_180_act;
+    QAction *save_image_act;
+    QAction *save_image_overlay_act;
 };
 
 #endif /* GST_IMAGE_VIEW_H */

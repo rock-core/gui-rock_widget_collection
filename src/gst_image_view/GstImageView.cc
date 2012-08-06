@@ -33,6 +33,8 @@ GstImageView::GstImageView(QWidget *parent)
     progress_indicator_timer->setInterval(getProgressIndicatorTimeout());
     connect(progress_indicator_timer, SIGNAL(timeout()), progress_indicator, SLOT(startAnimation()));
     
+    setupContextMenu();
+    
 #ifdef USE_GST
     QGst::PipelinePtr pipeline;
     QGst::ElementPtr videoSrc;
@@ -106,6 +108,13 @@ GstImageView::~GstImageView()
     // pipeline->setState(QGst::StateNull);
     delete progress_indicator;
     delete progress_indicator_timer;
+    
+    delete contextMenu;
+    delete rotate_image_clockwise_act;
+    delete rotate_image_counterclockwise_act;
+    delete rotate_image_180_act;
+    delete save_image_act;
+    delete save_image_overlay_act;
 }
 
 const QColor& GstImageView::getBackgroundColor() const
@@ -214,6 +223,30 @@ void GstImageView::rotate(int deg)
     //view->fitInView(view->sceneRect(), Qt::KeepAspectRatio);
 }
 
+void GstImageView::saveImage(QString path, bool overlay)
+{
+    QImage saveImage(scene->sceneRect().size().toSize(), image.format());
+    saveImage.fill(0); // Painter cannnot handle null image
+    
+    /* Get destination path if not submitted */
+    if(path.isEmpty()) {
+	path = QFileDialog::getSaveFileName(this, tr("Save Image"),
+                            QString(),
+                            tr("Images (*.png)"));
+    }
+    
+    /* Save original image or also the overlay? */
+    if(overlay) {	
+        QPainter painter(&saveImage);
+        scene->render(&painter);	
+    } else {
+        saveImage = image;
+    }
+    
+    saveImage.save(path, "PNG", 100);
+}
+
+
 void GstImageView::setFrame(const base::samples::frame::Frame &frame)
 {   
     progress_indicator_timer->start();
@@ -270,6 +303,37 @@ void GstImageView::resizeEvent(QResizeEvent *event)
     setItemPositions();
 }
 
+void GstImageView::contextMenuEvent ( QContextMenuEvent * event )
+{
+   contextMenu->exec(event->globalPos());
+}
+
+/* PRIVATE SLOTS ------------------------------------------------------------ */
+
+void GstImageView::rotate_clockwise()
+{
+    rotate(90);
+}
+
+void GstImageView::rotate_counterclockwise()
+{
+    rotate(270);
+}
+
+void GstImageView::rotate_180()
+{
+    rotate(180);
+}
+
+void GstImageView::save_image()
+{
+    saveImage(QString(), false);
+}
+
+void GstImageView::save_image_overlay()
+{
+    saveImage(QString(), true);
+}
 
 /* PRIVATE METHODS ---------------------------------------------------------- */
 
@@ -297,3 +361,29 @@ void GstImageView::setItemPositions()
     // Align to top-left corner of view (scene gets always fit in view)   
     progress_indicator->move(view->width() - progress_indicator->width(), 0);
 }
+
+void GstImageView::setupContextMenu()
+{
+    contextMenu = new QMenu(this);
+    
+    rotate_image_clockwise_act = new QAction("Rotate Image by 90 deg. clockwise",this);
+    connect(rotate_image_clockwise_act,SIGNAL(triggered()),this,SLOT(rotate_clockwise()));
+    contextMenu->addAction(rotate_image_clockwise_act);
+    
+    rotate_image_counterclockwise_act = new QAction("Rotate Image by 90 deg. counter-clockwise",this);
+    connect(rotate_image_counterclockwise_act,SIGNAL(triggered()),this,SLOT(rotate_counterclockwise()));
+    contextMenu->addAction(rotate_image_counterclockwise_act);
+    
+    rotate_image_180_act = new QAction("Rotate Image by 180 deg.",this);
+    connect(rotate_image_180_act,SIGNAL(triggered()),this,SLOT(rotate_180()));
+    contextMenu->addAction(rotate_image_180_act);
+    
+    save_image_act = new QAction("Save image", this);
+    connect(save_image_act,SIGNAL(triggered()),this,SLOT(save_image()));
+    contextMenu->addAction(save_image_act);
+    
+    save_image_overlay_act = new QAction("Save image with overlay", this);
+    connect(save_image_overlay_act,SIGNAL(triggered()),this,SLOT(save_image_overlay()));
+    contextMenu->addAction(save_image_overlay_act);
+}
+
