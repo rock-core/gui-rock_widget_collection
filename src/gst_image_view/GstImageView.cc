@@ -46,8 +46,7 @@ GstImageView::GstImageView(QWidget *parent)
         videoSrc = QGst::ElementFactory::make("videotestsrc");
 #endif
 
-    
-    /* Setup video sink */
+    /* Setup GraphicsScene and view */
     scene = new QGraphicsScene;
     scene->setBackgroundBrush(getBackgroundColor());
     
@@ -89,9 +88,6 @@ GstImageView::GstImageView(QWidget *parent)
     scene->addItem(imageItem);
 #endif
     
-    //view->resize(400,400);
-//     widget->resize(300,300);
-
     setItemPositions();
     update();
 }
@@ -230,15 +226,15 @@ void GstImageView::saveImage(QString path, bool overlay)
     
     /* Get destination path if not submitted */
     if(path.isEmpty()) {
-	path = QFileDialog::getSaveFileName(this, tr("Save Image"),
-                            QString(),
-                            tr("Images (*.png)"));
+        path = QFileDialog::getSaveFileName(this, "Save Image",
+                                path+"rock_image.png",
+                                "Images (*.png)");
     }
     
     /* Save original image or also the overlay? */
-    if(overlay) {	
+    if(overlay) {
         QPainter painter(&saveImage);
-        scene->render(&painter);	
+        scene->render(&painter);
     } else {
         saveImage = image;
     }
