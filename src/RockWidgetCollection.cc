@@ -11,10 +11,12 @@
 #include "multi_view/MultiWidgetPlugin.h"
 #include "virtual_joystick/VirtualJoystickPlugin.h"
 #include "generic_widgets/RockSliderPlugin.h"
-#include "vtk/sonar_display/SonarDisplayPlugin.h"
 #include "plot2d/Plot2dPlugin.h"
 #include "2dvis/WaterwallDisplayPlugin.h"
 #include "timeline/TimelinePlugin.h"
+#ifdef USE_VTK
+#include "vtk/sonar_display/SonarDisplayPlugin.h"
+#endif
 
 Q_EXPORT_PLUGIN2(RockWidgetCollection, RockWidgetCollection)
 
@@ -32,10 +34,12 @@ RockWidgetCollection::RockWidgetCollection(QObject *parent)
    widgets.append(new OrientationPlugin(this));
    widgets.append(new VirtualJoystickPlugin(this));
    widgets.append(new RockSliderPlugin(this));
-   widgets.append(new SonarDisplayPlugin(this));
    widgets.append(new Plot2dPlugin(this));
    widgets.append(new WaterfallDisplayPlugin(this));
    widgets.append(new TimelinePlugin(this));
+#ifdef USE_VTK
+   widgets.append(new SonarDisplayPlugin(this));
+#endif
 }
 
 QList<QDesignerCustomWidgetInterface*> RockWidgetCollection::customWidgets() const
