@@ -277,8 +277,15 @@ void GstImageView::setFrame(const base::samples::frame::Frame &frame)
     /* Resize and repositioning if frame size changes (and on start) */
     if(imageSize != oldSize) {
         LOG_INFO("image size changed. resize.");
-        setVisible(false); setVisible(true); // For some reason the first frame is not scaled to fit the full space. Calling update or even repaint did not help but a simple resize or setVisible does.
         setItemPositions();
+        
+        /* For some reason the first frame is not scaled to fit the full space. 
+         * Calling update or even repaint did not help but a simple resize or 
+         * setVisible does. On Debian, you have to call both ???
+         */
+        setVisible(false); setVisible(true); 
+        resize(width(),height()-1); 
+        resize(width(),height()+1);
     }
     
     update();
