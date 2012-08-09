@@ -11,5 +11,6 @@
     <file alias="timeline/triangle_slider">timeline/resources/triangle_slider.png</file>
     <file alias="timeline/index_slider">timeline/resources/index_slider.png</file>
     <file alias="timeline/icon">timeline/resources/icon.png</file>
+    <file alias="progress_indicator/icon">progress_indicator/resources/icon.png</file>
  </qresource>
  </RCC>

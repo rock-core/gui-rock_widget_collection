@@ -23,7 +23,7 @@ bool ProgressIndicatorPlugin::isInitialized() const
 
 QIcon ProgressIndicatorPlugin::icon() const
 {
-    return QIcon("");
+    return QIcon(":/progress_indicator/icon");
 }
 
 QString ProgressIndicatorPlugin::domXml() const
