@@ -110,6 +110,23 @@ GstImageView::GstImageView(QWidget *parent)
     fixedOverlayView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     fixedOverlayView->setFocusPolicy(Qt::NoFocus);
     
+    /* Layout for outer scene to help positioning text overlay */
+    overlay_grid = new QGraphicsGridLayout;
+    
+    /* XXX Transparent middle item with variable size (default). This snaps the border items the border.
+     * TODO That seems to eliminate the possibility of a middle widget with fixed size. 
+     */
+    QGraphicsWidget *label_mi = fixedOverlayScene->addWidget(new QLabel());
+    QPalette label_mi_pal;
+    label_mi_pal.setColor(QPalette::Window, QColor(Qt::transparent));
+    label_mi->setPalette(label_mi_pal);
+    overlay_grid->addItem(label_mi, 1, 1, Qt::AlignVCenter|Qt::AlignCenter);
+    
+    overlayWidget = new QGraphicsWidget;
+    overlayWidget->setLayout(overlay_grid);
+    overlayWidget->setZValue(12);
+    fixedOverlayScene->addItem(overlayWidget);
+    
     // Nest inner view in outer scene
     imageViewProxy = fixedOverlayScene->addWidget(imageView);
     
@@ -205,52 +222,64 @@ void GstImageView::addLine(QLineF &line, QColor &color, double width, bool persi
     addDrawItem(imageScene, linePtr, persistent);
 }
 
-void GstImageView::addText(QPointF location, QString text, QColor color, bool persistent)
-{
-    QGraphicsSimpleTextItem *textOverlay = new QGraphicsSimpleTextItem(text);
-    textOverlay->setPos(location);
-    textOverlay->setZValue(10);
-    textOverlay->setBrush(color);
-
+void GstImageView::addText(QString text, TextLocation location, QColor color, bool persistent)
+{   
+    QPalette palette;    
+    QColor labelBgColor(Qt::white);
+    labelBgColor.setAlphaF(0.7);
+    palette.setColor(QPalette::Window, labelBgColor);
+    palette.setColor(QPalette::WindowText, color);
+    palette.setColor(QPalette::Text, color); // <-- this one seems to be working but WindowText should be correct according to docu
+    
+    QGraphicsWidget *textLabel = fixedOverlayScene->addWidget(new QLabel(text));
+    textLabel->setPalette(palette);
+    textLabel->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     QFont font;
     font.setPointSize(12);
-    //std::cout << "text overlay pixel size: " << height()/20 << " (desired), " << font.pixelSize() << " (real)" << std::endl;
-    textOverlay->setFont(font);
+    textLabel->setFont(font);
     
-    /* Create transparent text background */
-    Qt::GlobalColor bgColor = Qt::white;
-    qreal opacity = 0.7;
-    int padding = 0; //5
+    /* Positioning */
+    int row = 0;
+    int col = 0;
+    Qt::Alignment alignment = Qt::AlignLeft;
     
-    QColor penColor(bgColor);
-    penColor.setAlphaF(opacity);
-    QPen pen;
-    pen.setColor(penColor);
-    pen.setWidth(padding);
-    
-    QGraphicsRectItem *textBackground = new QGraphicsRectItem(textOverlay->boundingRect());
-    textBackground->setPos(location);
-    textBackground->setBrush(bgColor);
-    textBackground->setPen(pen); // increase margin. like cellpadding in HTML tables.
-    textBackground->setOpacity(opacity);
-    
-/*    
     switch(location) {
     case TOPLEFT :
-
+        row = 0;
+        col = 0;
+        alignment = Qt::AlignTop|Qt::AlignLeft;
+        break;
+    case TOPRIGHT :
+        row = 0;
+        col = 2;
+        alignment = Qt::AlignTop|Qt::AlignRight;
+        break;
+    case BOTTOMLEFT :
+        row = 2;
+        col = 0;
+        alignment = Qt::AlignBottom|Qt::AlignLeft;
+        break;
+    case BOTTOMRIGHT :
+        row = 2;
+        col = 2;
+        alignment = Qt::AlignBottom|Qt::AlignRight;
         break;
     default:
         LOG_WARN("Unsupported text location. Switching to TOPLEFT.");
-        delete textOverlay;
+        delete textLabel;
         addText(text, TOPLEFT, persistent);
         return;
     }
-*/    
-    //addDrawItem(imageScene, textOverlay, persistent);
-    addDrawItem(fixedOverlayScene, textOverlay, persistent);
-    addDrawItem(fixedOverlayScene, textBackground, persistent);
     
-    textOverlay->stackBefore(textBackground); // call this after adding items to scene in order to make them siblings
+    /* Overwrite cell if occupied */
+    QGraphicsLayoutItem *itemInCell = NULL;
+    if(itemInCell = overlay_grid->itemAt(row,col)) {
+        overlay_grid->removeItem(itemInCell);
+        delete itemInCell;
+    }
+    
+    overlay_grid->addItem(textLabel, row, col, alignment);
+    addDrawItem(NULL, textLabel, persistent); // TODO check correctness of deletion etc.
 }
 
 void GstImageView::clearOverlays(bool clear_persistent_items)
@@ -329,7 +358,7 @@ void GstImageView::setFrame(const base::samples::frame::Frame &frame)
     
     //std::cout << "ImageItem BoundingRect: x=" << imageItem->boundingRect().width() <<", y=" << imageItem->boundingRect().height() << std::endl;
     timestamp = QString::fromStdString(frame.time.toString());
-    addText(QPointF(5,5), timestamp, QColor(Qt::yellow), 0); // TODO remove colons from timestamp string. get timeval object?
+    addText(timestamp, BOTTOMRIGHT, QColor(Qt::blue), 0); // TODO remove colons from timestamp string. get timeval object?
     
     /* Resize and repositioning if frame size changes (and on start) */
     if(imageSize != oldSize) {
@@ -356,6 +385,7 @@ void GstImageView::resizeEvent(QResizeEvent *event)
     QWidget::resizeEvent(event);
     fixedOverlayView->resize(event->size());
     imageView->resize(event->size());
+    overlayWidget->resize(event->size());
 
 //    std::cout << "resize event.\nview.width: " << view->width() << "\n"
 //              << "view.height: " << view->height() << std::endl;
@@ -397,7 +427,8 @@ void GstImageView::addDrawItem(QGraphicsScene* scene, QGraphicsItem *item, bool 
     } else {
         volatileDrawItems.push_back(item);
     }
-    scene->addItem(item);
+    if(scene) // Text overlays are already in the scene and have therefore scene==null
+        scene->addItem(item);
     update();
 }
 

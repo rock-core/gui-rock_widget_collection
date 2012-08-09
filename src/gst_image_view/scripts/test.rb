@@ -6,6 +6,8 @@ require 'vizkit'
 
 @line_ctr = 0;
 @line_direction = 1;
+@line_color = Qt::Color.new(Qt::green)
+@line_width = 1
 
 @frame_width = 600
 @frame_height = 300
@@ -15,7 +17,7 @@ def rotate
 end
 
 def add_line
-    @view.addLine(Qt::LineF.new(@line_ctr, 0, @line_ctr, @frame_height), false)
+    @view.addLine(Qt::LineF.new(@line_ctr, 0, @line_ctr, @frame_height-1), @line_color, @line_width, false)
     if(@line_ctr == @frame_height)
         @line_direction = -1
     elsif(@line_ctr == 0)
@@ -42,8 +44,14 @@ end
 
 
 @view = Vizkit.default_loader.GstImageView
+#@oldview = Vizkit.default_loader.ImageView
+#@oldview.Aspect_Ratio=true
+#@oldview.show
+#@property_control = Vizkit.default_loader.property_control
+#@property_control.show
 
 @view.progress_indicator_timeout = 2500
+@view.use_smooth_transformation = true
 
 #@view.extend Vizkit::QtTypelibExtension
 @view.show
@@ -61,9 +69,15 @@ end
 @testgui.circle_button.connect(SIGNAL('clicked()')) {add_circle}
 @testgui.clear_overlays_button.connect(SIGNAL('clicked()')) {clear_overlays}
 
+@view.addLine(Qt::LineF.new(0, 0, 300, 200), Qt::Color.new(Qt::yellow), 5.0, true)
+#puts :TOPRIGHT
+#@view.addText("AVALON im Studiobad", :TOPRIGHT, Qt::Color.new(Qt::green), true)
+
 log = Orocos::Log::Replay.open(ARGV[0])
 
 log.front_camera.frame.connect_to @view
+#log.front_camera.frame.connect_to @oldview
+
 Vizkit.control log
 
 Vizkit.exec

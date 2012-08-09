@@ -8,18 +8,12 @@
 #include <frame_helper/FrameQImageConverter.h>
 #include "rock_widget_collection/progress_indicator/ProgressIndicator.h"
 
-enum TextLocation
-{
-    TOPLEFT = 0,
-    TOPRIGHT,
-    BOTTOMLEFT,
-    BOTTOMRIGHT
-};
-
 class GstImageView : public QWidget
 {
     Q_OBJECT
     Q_CLASSINFO("Author", "Allan Conquest")
+    
+    Q_ENUMS(TextLocation)
     
     Q_PROPERTY(QColor backgroundColor READ getBackgroundColor WRITE setBackgroundColor)
     
@@ -46,6 +40,14 @@ public:
     GstImageView(QWidget *parent = 0);
     virtual ~GstImageView();
     
+    enum TextLocation
+    {
+        TOPLEFT = 0,
+        TOPRIGHT,
+        BOTTOMLEFT,
+        BOTTOMRIGHT
+    };
+    
 public slots:
     const QColor& getBackgroundColor() const;
     void setBackgroundColor(const QColor & color);
@@ -61,7 +63,9 @@ public slots:
     /* Overlays */
     void addCircle(QPointF &center, double radius, QColor &color, double width, bool persistent = 0);
     void addLine(QLineF &line, QColor &color, double width, bool persistent = 0);
-    void addText(QPointF location, QString text, QColor color = QColor(Qt::black), bool persistent = 0);
+    
+    /** Writes text on top of the image. The text is immune to image transformation, i.e. rotation or scaling. */
+    void addText(QString text, TextLocation location, QColor color = QColor(Qt::black), bool persistent = 0);
     
     void clearOverlays(bool clear_persistent_items = 0);
     
@@ -100,6 +104,8 @@ private:
     QGraphicsScene *imageScene;
     QGraphicsView *fixedOverlayView;
     QGraphicsScene *fixedOverlayScene;
+    QGraphicsWidget *overlayWidget;
+    QGraphicsGridLayout *overlay_grid;
     QGraphicsPixmapItem *imageItem;
     QImage image;
 
