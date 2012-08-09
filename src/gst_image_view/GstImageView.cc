@@ -46,21 +46,21 @@ GstImageView::GstImageView(QWidget *parent)
         videoSrc = QGst::ElementFactory::make("videotestsrc");
 #endif
 
-    /* Setup GraphicsScene and view */
-    scene = new QGraphicsScene;
-    scene->setBackgroundBrush(getBackgroundColor());
+    /* Setup inner graphicsscene and view. This scene contains the image and image related overlays. */
+    imageScene = new QGraphicsScene;
+    imageScene->setBackgroundBrush(getBackgroundColor());
     
-    view = new QGraphicsView(scene, this);
-    progress_indicator->setParent(view);
+    imageView = new QGraphicsView(imageScene);
     
     if(use_gl) {
         // Indicator to use qtglvideosink (hardware rendering!) instead of qtvideosink
-        view->setViewport(new QGLWidget); 
+        imageView->setViewport(new QGLWidget); 
     }
     
-    view->setAlignment(Qt::AlignCenter);
-    view->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    view->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    imageView->setAlignment(Qt::AlignCenter);
+    imageView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    imageView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    imageView->setFocusPolicy(Qt::NoFocus);
 
 #ifdef USE_GST    
     QGst::Ui::GraphicsVideoSurface *surface = NULL;
@@ -85,8 +85,27 @@ GstImageView::GstImageView(QWidget *parent)
     }
 #else
     imageItem = new QGraphicsPixmapItem;
-    scene->addItem(imageItem);
+    imageScene->addItem(imageItem);
 #endif
+    
+    /* Setup outer graphicsscene and view. This scene contains fixed overlays like the 
+     * image timestamp which are immune to rotation etc. i.e. they stay at the same place
+     * nevertheless the inner scene gets rotated or scaled.
+     */
+    fixedOverlayScene = new QGraphicsScene;
+    fixedOverlayScene->setBackgroundBrush(getBackgroundColor());
+    
+    fixedOverlayView = new QGraphicsView(fixedOverlayScene, this);
+    fixedOverlayView->setAlignment(Qt::AlignCenter);
+    fixedOverlayView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    fixedOverlayView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    fixedOverlayView->setFocusPolicy(Qt::NoFocus);
+    
+    // Nest inner view in outer scene
+    imageViewProxy = fixedOverlayScene->addWidget(imageView);
+    
+    progress_indicator->setParent(fixedOverlayView);
+    
     
     setItemPositions();
     update();
@@ -99,8 +118,11 @@ GstImageView::~GstImageView()
     }
     
     delete imageItem;
-    delete scene;
-    delete view;
+    delete imageScene;
+    delete imageView;
+    delete imageViewProxy;
+    delete fixedOverlayScene;
+    delete fixedOverlayView;
     // pipeline->setState(QGst::StateNull);
     delete progress_indicator;
     delete progress_indicator_timer;
@@ -121,7 +143,7 @@ const QColor& GstImageView::getBackgroundColor() const
 void GstImageView::setBackgroundColor(const QColor & color)
 {
     bgColor = color;
-    scene->setBackgroundBrush(bgColor);
+    imageScene->setBackgroundBrush(bgColor);
 }
 
 const QString GstImageView::getPipelineDescription() const
@@ -159,7 +181,7 @@ void GstImageView::addCircle(QPointF center, double radius, bool persistent)
 {
     QGraphicsEllipseItem *circlePtr = 
             new QGraphicsEllipseItem(QRectF(center.x() - radius/2.0, center.y() - radius/2.0, radius, radius));
-    addDrawItem(circlePtr, persistent);
+    addDrawItem(imageScene, circlePtr, persistent);
 }
 
 void GstImageView::addLine(QLineF &line, bool persistent)
@@ -173,7 +195,7 @@ void GstImageView::addLine(QLineF &line, bool persistent)
     
     //scene->addLine(mappedLine);
     //scene->addLine(line);
-    addDrawItem(linePtr, persistent);
+    addDrawItem(imageScene, linePtr, persistent);
 
     //addDrawItem(linePtr);
 }
@@ -181,11 +203,36 @@ void GstImageView::addLine(QLineF &line, bool persistent)
 void GstImageView::addText(QString text, TextLocation location, bool persistent)
 {
     QGraphicsSimpleTextItem *textOverlay = new QGraphicsSimpleTextItem(text);
+    textOverlay->show();
+    textOverlay->setZValue(10);
+    textOverlay->setBrush(Qt::black);
+
+    QFont font;
+    font.setPointSize(12);
+    //std::cout << "text overlay pixel size: " << height()/20 << " (desired), " << font.pixelSize() << " (real)" << std::endl;
+    textOverlay->setFont(font);
+    
+    /* Create transparent text background */
+    Qt::GlobalColor bgColor = Qt::white;
+    qreal opacity = 0.7;
+    int padding = 0; //5
+    
+    QColor penColor(bgColor);
+    penColor.setAlphaF(opacity);
+    QPen pen;
+    pen.setColor(penColor);
+    pen.setWidth(padding);
+    
+    QGraphicsRectItem *textBackground = new QGraphicsRectItem(textOverlay->boundingRect());
+    textBackground->setBrush(bgColor);
+    textBackground->setPen(pen); // increase margin. like cellpadding in HTML tables.
+    textBackground->setOpacity(opacity);
+    
+    textOverlay->stackBefore(textBackground);
+/*    
     switch(location) {
     case TOPLEFT :
-        textOverlay->show();
-        textOverlay->setZValue(10);
-        textOverlay->setBrush(Qt::red);
+
         break;
     default:
         LOG_WARN("Unsupported text location. Switching to TOPLEFT.");
@@ -193,35 +240,37 @@ void GstImageView::addText(QString text, TextLocation location, bool persistent)
         addText(text, TOPLEFT, persistent);
         return;
     }
-    
-    addDrawItem(textOverlay, persistent);
+*/    
+    //addDrawItem(imageScene, textOverlay, persistent);
+    addDrawItem(fixedOverlayScene, textOverlay, persistent);
+    addDrawItem(fixedOverlayScene, textBackground, persistent);
 }
 
 void GstImageView::clearOverlays(bool clear_persistent_items)
 {
     if(clear_persistent_items) {
         Q_FOREACH(QGraphicsItem *item, persistentDrawItems) {
-            scene->removeItem(item);
+            item->scene()->removeItem(item);
         }
         persistentDrawItems.clear();
     }
     
     Q_FOREACH(QGraphicsItem *item, volatileDrawItems) {
-        scene->removeItem(item);
+        item->scene()->removeItem(item);
     }
     volatileDrawItems.clear();
 }
 
 void GstImageView::rotate(int deg)
 {
-    view->rotate(deg);
-    view->fitInView(imageItem, Qt::KeepAspectRatio);
+    imageView->rotate(deg);
+    imageView->fitInView(imageItem, Qt::KeepAspectRatio);
     //view->fitInView(view->sceneRect(), Qt::KeepAspectRatio);
 }
 
 void GstImageView::saveImage(QString path, bool overlay)
 {
-    QImage saveImage(scene->sceneRect().size().toSize(), image.format());
+    QImage saveImage(imageScene->sceneRect().size().toSize(), image.format());
     saveImage.fill(0); // Painter cannnot handle null image
     
     /* Get destination path if not submitted */
@@ -234,7 +283,7 @@ void GstImageView::saveImage(QString path, bool overlay)
     /* Save original image or also the overlay? */
     if(overlay) {
         QPainter painter(&saveImage);
-        scene->render(&painter);
+        imageScene->render(&painter);
     } else {
         saveImage = image;
     }
@@ -297,12 +346,13 @@ void GstImageView::setFrame(const base::samples::frame::Frame &frame)
 void GstImageView::resizeEvent(QResizeEvent *event)
 { 
     QWidget::resizeEvent(event);
-    view->resize(event->size());
+    fixedOverlayView->resize(event->size());
+    imageView->resize(event->size());
 
 //    std::cout << "resize event.\nview.width: " << view->width() << "\n"
 //              << "view.height: " << view->height() << std::endl;
     
-    view->fitInView(imageItem, Qt::KeepAspectRatio);
+    imageView->fitInView(imageItem, Qt::KeepAspectRatio);
     setItemPositions();
 }
 
@@ -340,7 +390,7 @@ void GstImageView::save_image_overlay()
 
 /* PRIVATE METHODS ---------------------------------------------------------- */
 
-void GstImageView::addDrawItem(QGraphicsItem *item, bool persistent)
+void GstImageView::addDrawItem(QGraphicsScene* scene, QGraphicsItem *item, bool persistent)
 {   
     //std::cout << "addDrawItem: adding item: " << item << std::endl;
     
@@ -362,7 +412,7 @@ void GstImageView::setItemPositions()
 {
 //    std::cout << "setItemPositions" << std::endl;
     // Align to top-left corner of view (scene gets always fit in view)   
-    progress_indicator->move(view->width() - progress_indicator->width(), 0);
+    progress_indicator->move(imageView->width() - progress_indicator->width(), 0);
 }
 
 void GstImageView::setupContextMenu()

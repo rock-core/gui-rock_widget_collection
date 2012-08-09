@@ -80,7 +80,7 @@ private slots:
     void save_image_overlay();
     
 private:
-    void addDrawItem(QGraphicsItem *item, bool persistent = 0);
+    void addDrawItem(QGraphicsScene *scene, QGraphicsItem *item, bool persistent = 0);
     void setItemPositions();
     void setupContextMenu();
     
@@ -89,8 +89,11 @@ private:
     int progress_indicator_timeout;
     bool use_gl;
 
-    QGraphicsView *view;
-    QGraphicsScene *scene;
+    QGraphicsView *imageView;
+    QGraphicsProxyWidget *imageViewProxy;
+    QGraphicsScene *imageScene;
+    QGraphicsView *fixedOverlayView;
+    QGraphicsScene *fixedOverlayScene;
     QGraphicsPixmapItem *imageItem;
     QImage image;
 
@@ -102,7 +105,6 @@ private:
     frame_helper::FrameQImageConverter frame_converter;
     
     ProgressIndicator *progress_indicator;
-    QGraphicsProxyWidget *proxy_progress_indicator;
     QTimer *progress_indicator_timer;
     
     /* Menus and actions */
