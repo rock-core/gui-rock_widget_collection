@@ -288,7 +288,7 @@ void GstImageView::saveImage(QString path, bool overlay)
         saveImage = image;
     }
     
-    saveImage.save(path, "PNG", 100);
+    saveImage.save(path, "PNG", 80);
 }
 
 
