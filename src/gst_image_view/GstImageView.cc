@@ -52,7 +52,7 @@ GstImageView::GstImageView(QWidget *parent)
 #endif
 
     /* Setup inner graphicsscene and view. This scene contains the image and image related overlays. */
-    imageScene = new QGraphicsScene;
+    imageScene = new QGraphicsScene(this);
     imageScene->setBackgroundBrush(getBackgroundColor());
     
     imageView = new QGraphicsView(imageScene);
@@ -101,7 +101,7 @@ GstImageView::GstImageView(QWidget *parent)
      * image timestamp which are immune to rotation etc. i.e. they stay at the same place
      * nevertheless the inner scene gets rotated or scaled.
      */
-    fixedOverlayScene = new QGraphicsScene;
+    fixedOverlayScene = new QGraphicsScene(this);
     fixedOverlayScene->setBackgroundBrush(getBackgroundColor());
     
     fixedOverlayView = new QGraphicsView(fixedOverlayScene, this);
@@ -122,24 +122,7 @@ GstImageView::GstImageView(QWidget *parent)
 
 GstImageView::~GstImageView()
 {
-    Q_FOREACH(QGraphicsItem *item, persistentDrawItems + volatileDrawItems) {
-        delete item;
-    }
     
-    delete imageItem;
-    delete imageScene;
-    delete imageView;
-    delete imageViewProxy;
-    delete fixedOverlayScene;
-    delete fixedOverlayView;
-    // pipeline->setState(QGst::StateNull);
-    delete progress_indicator;
-    delete progress_indicator_timer;
-    
-    delete contextMenu;
-    delete rotate_image_clockwise_act;
-    delete save_image_act;
-    delete save_image_overlay_act;
 }
 
 const QColor& GstImageView::getBackgroundColor() const
