@@ -81,8 +81,6 @@ protected:
 
 private slots:
     void rotate_clockwise();
-    void rotate_counterclockwise();
-    void rotate_180();
     void save_image();
     void save_image_overlay();
     
@@ -118,8 +116,6 @@ private:
     /* Menus and actions */
     QMenu *contextMenu;
     QAction *rotate_image_clockwise_act;
-    QAction *rotate_image_counterclockwise_act;
-    QAction *rotate_image_180_act;
     QAction *save_image_act;
     QAction *save_image_overlay_act;
 };

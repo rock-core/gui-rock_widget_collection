@@ -16,7 +16,12 @@
 #endif
 
 GstImageView::GstImageView(QWidget *parent)
-    : QWidget(parent), bgColor(QColor(Qt::darkGray)), progress_indicator_timeout(5000), use_gl(false), pipelineDescription("videotestsrc ! ximagesink") //qtglvideosink
+      : QWidget(parent),
+        bgColor(QColor(Qt::black)),
+        use_smooth_transformation(true),
+        progress_indicator_timeout(5000),
+        use_gl(false),
+        pipelineDescription("videotestsrc ! ximagesink") //qtglvideosink
 {
     resize(500,500);
     imageItem = NULL;
@@ -85,8 +90,10 @@ GstImageView::GstImageView(QWidget *parent)
     }
 #else
     imageItem = new QGraphicsPixmapItem;
+    
     if(use_smooth_transformation)
         imageItem->setTransformationMode(Qt::SmoothTransformation);
+    
     imageScene->addItem(imageItem);
 #endif
     
@@ -131,8 +138,6 @@ GstImageView::~GstImageView()
     
     delete contextMenu;
     delete rotate_image_clockwise_act;
-    delete rotate_image_counterclockwise_act;
-    delete rotate_image_180_act;
     delete save_image_act;
     delete save_image_overlay_act;
 }
@@ -385,16 +390,6 @@ void GstImageView::rotate_clockwise()
     rotate(90);
 }
 
-void GstImageView::rotate_counterclockwise()
-{
-    rotate(270);
-}
-
-void GstImageView::rotate_180()
-{
-    rotate(180);
-}
-
 void GstImageView::save_image()
 {
     saveImage(QString(), false);
@@ -436,17 +431,9 @@ void GstImageView::setupContextMenu()
 {
     contextMenu = new QMenu(this);
     
-    rotate_image_clockwise_act = new QAction("Rotate Image by 90 deg. clockwise",this);
+    rotate_image_clockwise_act = new QAction("Rotate 90 deg.",this);
     connect(rotate_image_clockwise_act,SIGNAL(triggered()),this,SLOT(rotate_clockwise()));
     contextMenu->addAction(rotate_image_clockwise_act);
-    
-    rotate_image_counterclockwise_act = new QAction("Rotate Image by 90 deg. counter-clockwise",this);
-    connect(rotate_image_counterclockwise_act,SIGNAL(triggered()),this,SLOT(rotate_counterclockwise()));
-    contextMenu->addAction(rotate_image_counterclockwise_act);
-    
-    rotate_image_180_act = new QAction("Rotate Image by 180 deg.",this);
-    connect(rotate_image_180_act,SIGNAL(triggered()),this,SLOT(rotate_180()));
-    contextMenu->addAction(rotate_image_180_act);
     
     save_image_act = new QAction("Save image", this);
     connect(save_image_act,SIGNAL(triggered()),this,SLOT(save_image()));
