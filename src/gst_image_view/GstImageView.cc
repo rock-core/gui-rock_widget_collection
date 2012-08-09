@@ -182,27 +182,27 @@ void GstImageView::setUseGl(bool use_gl)
     this->use_gl = use_gl;
 }
 
-void GstImageView::addCircle(QPointF center, double radius, bool persistent)
+void GstImageView::addCircle(QPointF &center, double radius, QColor &color, double width, bool persistent)
 {
     QGraphicsEllipseItem *circlePtr = 
             new QGraphicsEllipseItem(QRectF(center.x() - radius/2.0, center.y() - radius/2.0, radius, radius));
+    QPen pen;
+    pen.setColor(color);
+    pen.setWidth(width);
+    circlePtr->setPen(pen);
+    
     addDrawItem(imageScene, circlePtr, persistent);
 }
 
-void GstImageView::addLine(QLineF &line, bool persistent)
-{
-    //QLineF mappedLine;
-    //mappedLine.setPoints(imageItem->mapFromItem(imageItem, line.p1()), 
-    //                     imageItem->mapFromItem(imageItem, line.p2()));
-                        
+void GstImageView::addLine(QLineF &line, QColor &color, double width, bool persistent)
+{                     
     QGraphicsLineItem *linePtr = new QGraphicsLineItem(line);
-    //std::cout << "lineptr=" << linePtr << std::endl;
-    
-    //scene->addLine(mappedLine);
-    //scene->addLine(line);
-    addDrawItem(imageScene, linePtr, persistent);
+    QPen pen;
+    pen.setColor(color);
+    pen.setWidth(width);
+    linePtr->setPen(pen);
 
-    //addDrawItem(linePtr);
+    addDrawItem(imageScene, linePtr, persistent);
 }
 
 void GstImageView::addText(QPointF location, QString text, QColor color, bool persistent)

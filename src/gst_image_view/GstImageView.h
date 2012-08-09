@@ -59,8 +59,8 @@ public slots:
     void setUseGl(bool use_gl);
     
     /* Overlays */
-    void addCircle(QPointF center, double radius, bool persistent = 0);
-    void addLine(QLineF &line, bool persistent = 0);
+    void addCircle(QPointF &center, double radius, QColor &color, double width, bool persistent = 0);
+    void addLine(QLineF &line, QColor &color, double width, bool persistent = 0);
     void addText(QPointF location, QString text, QColor color = QColor(Qt::black), bool persistent = 0);
     
     void clearOverlays(bool clear_persistent_items = 0);
