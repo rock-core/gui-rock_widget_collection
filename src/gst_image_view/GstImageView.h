@@ -26,6 +26,11 @@ class GstImageView : public QWidget
     /** The time without frame update in ms after which the progress indicator gets started  */
     Q_PROPERTY(int progress_indicator_timeout READ getProgressIndicatorTimeout WRITE setProgressIndicatorTimeout)
     
+    /** Do antialiased transformation by using costly techniques like bilinear filtering. This is produces
+     *  higher CPU load but the displayed image is much smoother. This property only applies to the displayed
+     *  image - not to the overlays. */
+    Q_PROPERTY(bool use_smooth_transformation READ useSmoothTransformation WRITE setSmoothTransformation)
+    
     /* Properties for use with GStreamer. That means in particluar that any of 
      * the following properties is unimportant if useGst is set to false. */
     
@@ -44,6 +49,8 @@ public:
 public slots:
     const QColor& getBackgroundColor() const;
     void setBackgroundColor(const QColor & color);
+    bool useSmoothTransformation();
+    void setSmoothTransformation(bool smooth);
     const QString getPipelineDescription() const;
     void setPipelineDescription(QString descr);
     const int getProgressIndicatorTimeout() const;
@@ -85,6 +92,7 @@ private:
     void setupContextMenu();
     
     QColor bgColor;
+    bool use_smooth_transformation;
     QString pipelineDescription;
     int progress_indicator_timeout;
     bool use_gl;

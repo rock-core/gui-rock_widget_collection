@@ -85,6 +85,8 @@ GstImageView::GstImageView(QWidget *parent)
     }
 #else
     imageItem = new QGraphicsPixmapItem;
+    if(use_smooth_transformation)
+        imageItem->setTransformationMode(Qt::SmoothTransformation);
     imageScene->addItem(imageItem);
 #endif
     
@@ -145,6 +147,21 @@ void GstImageView::setBackgroundColor(const QColor & color)
     bgColor = color;
     imageScene->setBackgroundBrush(bgColor);
 }
+
+bool GstImageView::useSmoothTransformation()
+{
+    return use_smooth_transformation;
+}
+
+void GstImageView::setSmoothTransformation(bool smooth)
+{
+    use_smooth_transformation = smooth;
+    if(smooth)
+        imageItem->setTransformationMode(Qt::SmoothTransformation);
+    else
+        imageItem->setTransformationMode(Qt::FastTransformation);
+}
+
 
 const QString GstImageView::getPipelineDescription() const
 {
