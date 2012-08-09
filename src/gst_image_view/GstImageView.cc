@@ -222,12 +222,12 @@ void GstImageView::addLine(QLineF &line, bool persistent)
     //addDrawItem(linePtr);
 }
 
-void GstImageView::addText(QString text, TextLocation location, bool persistent)
+void GstImageView::addText(QPointF location, QString text, QColor color, bool persistent)
 {
     QGraphicsSimpleTextItem *textOverlay = new QGraphicsSimpleTextItem(text);
-    textOverlay->show();
+    textOverlay->setPos(location);
     textOverlay->setZValue(10);
-    textOverlay->setBrush(Qt::black);
+    textOverlay->setBrush(color);
 
     QFont font;
     font.setPointSize(12);
@@ -246,11 +246,11 @@ void GstImageView::addText(QString text, TextLocation location, bool persistent)
     pen.setWidth(padding);
     
     QGraphicsRectItem *textBackground = new QGraphicsRectItem(textOverlay->boundingRect());
+    textBackground->setPos(location);
     textBackground->setBrush(bgColor);
     textBackground->setPen(pen); // increase margin. like cellpadding in HTML tables.
     textBackground->setOpacity(opacity);
     
-    textOverlay->stackBefore(textBackground);
 /*    
     switch(location) {
     case TOPLEFT :
@@ -266,6 +266,8 @@ void GstImageView::addText(QString text, TextLocation location, bool persistent)
     //addDrawItem(imageScene, textOverlay, persistent);
     addDrawItem(fixedOverlayScene, textOverlay, persistent);
     addDrawItem(fixedOverlayScene, textBackground, persistent);
+    
+    textOverlay->stackBefore(textBackground); // call this after adding items to scene in order to make them siblings
 }
 
 void GstImageView::clearOverlays(bool clear_persistent_items)
@@ -343,7 +345,8 @@ void GstImageView::setFrame(const base::samples::frame::Frame &frame)
     }
     
     //std::cout << "ImageItem BoundingRect: x=" << imageItem->boundingRect().width() <<", y=" << imageItem->boundingRect().height() << std::endl;
-    addText(QString::fromStdString(frame.time.toString()), TOPRIGHT, 0);
+    timestamp = QString::fromStdString(frame.time.toString());
+    addText(QPointF(5,5), timestamp, QColor(Qt::yellow), 0); // TODO remove colons from timestamp string. get timeval object?
     
     /* Resize and repositioning if frame size changes (and on start) */
     if(imageSize != oldSize) {

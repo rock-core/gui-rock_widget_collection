@@ -61,7 +61,7 @@ public slots:
     /* Overlays */
     void addCircle(QPointF center, double radius, bool persistent = 0);
     void addLine(QLineF &line, bool persistent = 0);
-    void addText(QString text, TextLocation location, bool persistent = 0);
+    void addText(QPointF location, QString text, QColor color = QColor(Qt::black), bool persistent = 0);
     
     void clearOverlays(bool clear_persistent_items = 0);
     
@@ -107,6 +107,7 @@ private:
     QList<QGraphicsItem*> volatileDrawItems;
 
     QSize imageSize;
+    QString timestamp;
 
     frame_helper::FrameQImageConverter frame_converter;
     
