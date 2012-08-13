@@ -73,6 +73,7 @@ SET(COLLECTION_MOC_HDRS
   timeline/SlideBarItem.h
   gst_image_view/GstImageView.h
   gst_image_view/GstImageViewPlugin.h
+  gst_image_view/ContextMenuGraphicsWidget.h
   progress_indicator/ProgressIndicator.h
   progress_indicator/ProgressIndicatorPlugin.h
 )
@@ -123,6 +124,7 @@ SET(COLLECTION_HDRS
   timeline/IndexSlider.h
   timeline/SlideBarItem.h
   gst_image_view/GstImageView.h
+  gst_image_view/ContextMenuGraphicsWidget.h
 #   gst_image_view/FrameAppSrc.h
   progress_indicator/ProgressIndicator.h
 )

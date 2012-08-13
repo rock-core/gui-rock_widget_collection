@@ -113,16 +113,18 @@ GstImageView::GstImageView(QWidget *parent)
     /* Layout for outer scene to help positioning text overlay */
     overlay_grid = new QGraphicsGridLayout;
     
-    /* XXX Transparent middle item with variable size (default). This snaps the border items the border.
+    /* XXX Transparent middle item with variable size (default). This snaps the border items to the border.
      * TODO That seems to eliminate the possibility of a middle widget with fixed size. 
      */
-    QGraphicsWidget *label_mi = fixedOverlayScene->addWidget(new QLabel());
+    QGraphicsWidget *label_mi = fixedOverlayScene->addWidget(new QLabel);
     QPalette label_mi_pal;
     label_mi_pal.setColor(QPalette::Window, QColor(Qt::transparent));
+    //label_mi_pal.setColor(QPalette::Window, QColor(Qt::white));
     label_mi->setPalette(label_mi_pal);
     overlay_grid->addItem(label_mi, 1, 1, Qt::AlignVCenter|Qt::AlignCenter);
     
-    overlayWidget = new QGraphicsWidget;
+    overlayWidget = new ContextMenuGraphicsWidget;//new QGraphicsWidget;
+    connect(overlayWidget, SIGNAL(contextMenuRequest(QPoint)), this, SLOT(displayContextMenu(QPoint)));
     overlayWidget->setLayout(overlay_grid);
     overlayWidget->setZValue(12);
     fixedOverlayScene->addItem(overlayWidget);
@@ -231,12 +233,16 @@ void GstImageView::addText(QString text, TextLocation location, QColor color, bo
     palette.setColor(QPalette::WindowText, color);
     palette.setColor(QPalette::Text, color); // <-- this one seems to be working but WindowText should be correct according to docu
     
-    QGraphicsWidget *textLabel = fixedOverlayScene->addWidget(new QLabel(text));
-    textLabel->setPalette(palette);
-    textLabel->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    QLabel *label = new QLabel(text);
+    label->setVisible(false);
+    label->setPalette(palette);
+    label->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    
     QFont font;
     font.setPointSize(12);
-    textLabel->setFont(font);
+    label->setFont(font);
+    
+    QGraphicsWidget *textLabel = fixedOverlayScene->addWidget(label);
     
     /* Positioning */
     int row = 0;
@@ -279,7 +285,9 @@ void GstImageView::addText(QString text, TextLocation location, QColor color, bo
     }
     
     overlay_grid->addItem(textLabel, row, col, alignment);
-    addDrawItem(NULL, textLabel, persistent); // TODO check correctness of deletion etc.
+    textLabel->setVisible(true);
+    //addDrawItem(NULL, textLabel, persistent); // TODO check correctness of deletion etc.
+    update();
 }
 
 void GstImageView::clearOverlays(bool clear_persistent_items)
@@ -401,6 +409,12 @@ void GstImageView::contextMenuEvent ( QContextMenuEvent * event )
 
 /* PRIVATE SLOTS ------------------------------------------------------------ */
 
+void GstImageView::displayContextMenu(QPoint screenPos)
+{
+    LOG_DEBUG("Got context menu request signal");
+    contextMenu->exec(screenPos);
+}
+
 void GstImageView::rotate_clockwise()
 {
     rotate(90);
@@ -427,8 +441,10 @@ void GstImageView::addDrawItem(QGraphicsScene* scene, QGraphicsItem *item, bool 
     } else {
         volatileDrawItems.push_back(item);
     }
-    if(scene) // Text overlays are already in the scene and have therefore scene==null
+    if(scene) {// Text overlays are already in the scene and have therefore scene==null
+        LOG_DEBUG("Adding item to scene");
         scene->addItem(item);
+    }
     update();
 }
 

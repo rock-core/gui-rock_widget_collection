@@ -84,6 +84,7 @@ protected:
     void contextMenuEvent ( QContextMenuEvent * event );
 
 private slots:
+    void displayContextMenu(QPoint screenPos);
     void rotate_clockwise();
     void save_image();
     void save_image_overlay();
