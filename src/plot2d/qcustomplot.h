@@ -185,7 +185,7 @@ public:
                   LSStepCenter, ///< line is drawn as steps where the step is in between two data points
                   LSImpulse     ///< data points are represented by a straight line parallel to the value axis, which ranges down/up to the key axis
                  };
-    //Q_ENUMS(LineStyle)
+   Q_ENUMS(LineStyle)
   /*!
     This defines the visual appearance of the points, which are all drawn with the pen of the graph
     (\ref setPen). The sizes of these visualizations (with exception of \ref SSDot and \ref SSPixmap) can be
@@ -209,7 +209,7 @@ public:
                      SSPeace,    ///< a circle which is not filled, with one vertical and two downward diagonal lines
                      SSPixmap    ///< a custom pixmap specified by setScatterPixmap, centered on the data point coordinates. \ref setScatterSize has no influence on its size.
                     };
-  //Q_ENUMS(ScatterStyle)
+  Q_ENUMS(ScatterStyle)
   /*!
     Defines what kind of error bars are drawn for each data point
   */
@@ -245,8 +245,8 @@ public slots:
   void setDataValueError(const QVector<double> &key, const QVector<double> &value, const QVector<double> &valueErrorMinus, const QVector<double> &valueErrorPlus);
   void setDataBothError(const QVector<double> &key, const QVector<double> &value, const QVector<double> &keyError, const QVector<double> &valueError);
   void setDataBothError(const QVector<double> &key, const QVector<double> &value, const QVector<double> &keyErrorMinus, const QVector<double> &keyErrorPlus, const QVector<double> &valueErrorMinus, const QVector<double> &valueErrorPlus);
-  void setLineStyle(LineStyle ls);
-  void setScatterStyle(ScatterStyle ss);
+  void setLineStyle(int ls);
+  void setScatterStyle(int ss);
   void setScatterSize(double size);
   void setScatterPixmap(const QPixmap &pixmap);
   void setErrorType(ErrorType errorType);
@@ -975,6 +975,7 @@ public slots:
   void setAxisBackground(const QPixmap &pm, bool scaled, Qt::AspectRatioMode mode=Qt::KeepAspectRatioByExpanding);
   void setAxisBackgroundScaled(bool scaled);
   void setAxisBackgroundScaledMode(Qt::AspectRatioMode mode);
+
   
   // non-property methods:
   QCPAbstractPlottable *plottable(int index);
