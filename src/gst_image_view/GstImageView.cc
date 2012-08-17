@@ -103,7 +103,7 @@ GstImageView::GstImageView(QWidget *parent)
      * nevertheless the inner scene gets rotated or scaled.
      */
     fixedOverlayScene = new QGraphicsScene(this);
-    fixedOverlayScene->setBackgroundBrush(getBackgroundColor());
+    fixedOverlayScene->setBackgroundBrush(Qt::transparent);
     
     fixedOverlayView = new QGraphicsView(fixedOverlayScene, this);
     fixedOverlayView->setAlignment(Qt::AlignCenter);
@@ -126,16 +126,16 @@ GstImageView::GstImageView(QWidget *parent)
     
     overlayWidget = new ContextMenuGraphicsWidget;//new QGraphicsWidget;
     connect(overlayWidget, SIGNAL(contextMenuRequest(QPoint)), this, SLOT(displayContextMenu(QPoint)));
+    
     overlayWidget->setLayout(overlay_grid);
     overlayWidget->setZValue(12);
     fixedOverlayScene->addItem(overlayWidget);
-    
+
     // Nest inner view in outer scene
     imageViewProxy = fixedOverlayScene->addWidget(imageView);
     
     progress_indicator->setParent(fixedOverlayView);
-    
-    
+     
     setItemPositions();
     update();
 }
@@ -328,7 +328,27 @@ void GstImageView::saveImage(QString path, bool overlay)
     /* Save original image or also the overlay? */
     if(overlay) {
         QPainter painter(&saveImage);
+        
+        // Render image and image overlays first
         imageScene->render(&painter);
+        
+        QSize oldSize = size();
+        QSize newSize = imageScene->sceneRect().size().toSize();
+        
+        // Hide image view from outer scene. It is already painted.
+        imageViewProxy->hide();
+        
+        fixedOverlayScene->setSceneRect(imageScene->sceneRect());
+        overlayWidget->resize(newSize);
+        
+        // Render outer scene (text overlays) on top
+        fixedOverlayScene->render(&painter);
+        
+        imageViewProxy->show();
+        
+        // restore old sizes
+        resize(oldSize.width(),oldSize.height()+1);
+        resize(oldSize.width(),oldSize.height()-1);
     } else {
         saveImage = image;
     }
@@ -392,15 +412,25 @@ void GstImageView::setFrame(const base::samples::frame::Frame &frame)
 void GstImageView::resizeEvent(QResizeEvent *event)
 { 
     QWidget::resizeEvent(event);
-    fixedOverlayView->resize(event->size());
-    imageView->resize(event->size());
-    overlayWidget->resize(event->size());
+    
+    //fixedOverlayScene->setSceneRect(fixedOverlayScene->itemsBoundingRect());
+    QSize eventSize = event->size();
+    fixedOverlayScene->setSceneRect(0, 0, eventSize.width(), eventSize.height());
+    imageView->resize(eventSize);
+    
 
 //    std::cout << "resize event.\nview.width: " << view->width() << "\n"
 //              << "view.height: " << view->height() << std::endl;
     
     imageView->fitInView(imageItem, Qt::KeepAspectRatio);
+    
+    
+    fixedOverlayView->resize(eventSize);
+    overlayWidget->resize(eventSize);
     setItemPositions();
+    LOG_DEBUG_S << "scene dimensions:\n"
+            << "fixedOverlayScene (w/h): (" << fixedOverlayScene->width() << "," << fixedOverlayScene->height() << ")\n"
+            << "imageScene (w/h): (" << imageScene->width() << "," << imageScene->height() << ")\n";
 }
 
 void GstImageView::contextMenuEvent ( QContextMenuEvent * event )
