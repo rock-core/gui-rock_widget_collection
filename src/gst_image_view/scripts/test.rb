@@ -69,9 +69,8 @@ end
 @testgui.circle_button.connect(SIGNAL('clicked()')) {add_circle}
 @testgui.clear_overlays_button.connect(SIGNAL('clicked()')) {clear_overlays}
 
-@view.addLine(Qt::LineF.new(0, 0, 300, 200), Qt::Color.new(Qt::yellow), 5.0, true)
-#puts :TOPRIGHT
-#@view.addText("AVALON im Studiobad", :TOPRIGHT, Qt::Color.new(Qt::green), true)
+@view.addLine(Qt::LineF.new(10, 10, 300, 200), Qt::Color.new(Qt::yellow), 5.0, true)
+@view.addTextWrapper("AVALON im Studiobad", :bottomleft, Qt::Color.new(Qt::black), true)
 
 log = Orocos::Log::Replay.open(ARGV[0])
 

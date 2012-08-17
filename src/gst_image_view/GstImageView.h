@@ -11,9 +11,7 @@
 class GstImageView : public QWidget
 {
     Q_OBJECT
-    Q_CLASSINFO("Author", "Allan Conquest")
-    
-    Q_ENUMS(TextLocation)
+    Q_CLASSINFO("Author", "Allan Conquest") 
     
     Q_PROPERTY(QColor backgroundColor READ getBackgroundColor WRITE setBackgroundColor)
     
@@ -42,11 +40,12 @@ public:
     
     enum TextLocation
     {
-        TOPLEFT = 0,
+        TOPLEFT,
         TOPRIGHT,
         BOTTOMLEFT,
         BOTTOMRIGHT
     };
+    Q_ENUMS(TextLocation)
     
 public slots:
     const QColor& getBackgroundColor() const;
@@ -65,7 +64,7 @@ public slots:
     void addLine(QLineF &line, QColor &color, double width, bool persistent = 0);
     
     /** Writes text on top of the image. The text is immune to image transformation, i.e. rotation or scaling. */
-    void addText(QString text, TextLocation location, QColor color = QColor(Qt::black), bool persistent = 0);
+    void addText(QString text, /*TextLocation*/ int location, QColor color = QColor(Qt::black), bool persistent = 0);
     
     void clearOverlays(bool clear_persistent_items = 0);
     

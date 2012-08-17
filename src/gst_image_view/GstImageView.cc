@@ -225,7 +225,7 @@ void GstImageView::addLine(QLineF &line, QColor &color, double width, bool persi
     addDrawItem(imageScene, linePtr, persistent);
 }
 
-void GstImageView::addText(QString text, TextLocation location, QColor color, bool persistent)
+void GstImageView::addText(QString text, /*TextLocation*/ int location, QColor color, bool persistent)
 {   
     QPalette palette;    
     QColor labelBgColor(Qt::white);
