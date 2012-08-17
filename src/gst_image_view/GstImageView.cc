@@ -249,8 +249,8 @@ void GstImageView::addLine(QLineF &line, QColor &color, double width, bool persi
     addDrawItem(imageScene, linePtr, persistent);
 }
 
-void GstImageView::addPoints(const QList<int> points_x,QList<int> points_y, QColor &color,double width, bool persistent)
-{                     
+void GstImageView::addPoints(const QList<int> points_x,QList<int> points_y, QColor &color, int width, bool persistent)
+{   
     QList<QPoint> points;
     QList<int>::const_iterator iter1 = points_x.begin();
     QList<int>::const_iterator iter2 = points_y.begin();

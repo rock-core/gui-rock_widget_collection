@@ -20,7 +20,6 @@ class GraphicsPointsItem : public QGraphicsItem
         QRectF calcBoundingRect() const;
 
     private:
-        QRectF bounding_rect;
         QList<QPoint> points;
         QPen pen;
 };
