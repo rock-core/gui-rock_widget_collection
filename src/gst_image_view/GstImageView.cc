@@ -5,6 +5,7 @@
 #include <iostream>
 
 #include <QtOpenGL/QGLWidget>
+#include "GraphicsPointsItem.h"
 
 #ifdef USE_GST
     #include <QGst/Init>
@@ -22,8 +23,8 @@ GstImageView::GstImageView(QWidget *parent)
         use_progress_indicator(true),
         use_smooth_transformation(true),
         progress_indicator_timeout(2500),
-        use_gl(false),
-        pipelineDescription("videotestsrc ! ximagesink") //qtglvideosink
+        pipelineDescription("videotestsrc ! ximagesink"), //qtglvideosink
+        use_gl(false)
 {
     resize(500,500);
     imageItem = NULL;
@@ -246,6 +247,36 @@ void GstImageView::addLine(QLineF &line, QColor &color, double width, bool persi
     linePtr->setPen(pen);
 
     addDrawItem(imageScene, linePtr, persistent);
+}
+
+void GstImageView::addPoints(const QList<int> points_x,QList<int> points_y, QColor &color,double width, bool persistent)
+{                     
+    QList<QPoint> points;
+    QList<int>::const_iterator iter1 = points_x.begin();
+    QList<int>::const_iterator iter2 = points_y.begin();
+    for(;iter1 != points_x.end() && iter2 != points_y.end();++iter1,++iter2)
+    {
+        points.push_back(QPoint(*iter1,*iter2));
+    }
+
+    GraphicsPointsItem *pointsPtr = new GraphicsPointsItem(points);
+    QPen pen;
+    pen.setColor(color);
+    pen.setWidth(width);
+    pointsPtr->setPen(pen);
+
+    addDrawItem(imageScene, pointsPtr, persistent);
+}
+
+void GstImageView::addPolygon(QPolygonF &polygon, QColor &color, double width, bool persistent)
+{                     
+    QGraphicsPolygonItem *polygonPtr = new QGraphicsPolygonItem(polygon);
+    QPen pen;
+    pen.setColor(color);
+    pen.setWidth(width);
+    polygonPtr->setPen(pen);
+
+    addDrawItem(imageScene, polygonPtr, persistent);
 }
 
 void GstImageView::addText(QString text, /*TextLocation*/ int location, QColor color, bool persistent)
