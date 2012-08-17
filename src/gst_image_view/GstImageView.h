@@ -15,6 +15,8 @@ class GstImageView : public QWidget
     
     Q_PROPERTY(QColor backgroundColor READ getBackgroundColor WRITE setBackgroundColor)
     
+    Q_PROPERTY(bool use_progress_indicator READ useProgressIndicator WRITE setUseProgressIndicator)
+    
     /** The time without frame update in ms after which the progress indicator gets started  */
     Q_PROPERTY(int progress_indicator_timeout READ getProgressIndicatorTimeout WRITE setProgressIndicatorTimeout)
     
@@ -50,6 +52,8 @@ public:
 public slots:
     const QColor& getBackgroundColor() const;
     void setBackgroundColor(const QColor & color);
+    bool useProgressIndicator();
+    void setUseProgressIndicator(bool use);
     bool useSmoothTransformation();
     void setSmoothTransformation(bool smooth);
     const QString getPipelineDescription() const;
@@ -94,6 +98,7 @@ private:
     void setupContextMenu();
     
     QColor bgColor;
+    bool use_progress_indicator;
     bool use_smooth_transformation;
     QString pipelineDescription;
     int progress_indicator_timeout;
@@ -125,6 +130,7 @@ private:
     QAction *rotate_image_clockwise_act;
     QAction *save_image_act;
     QAction *save_image_overlay_act;
+    QAction *activate_progress_indicator_act;
 };
 
 #endif /* GST_IMAGE_VIEW_H */

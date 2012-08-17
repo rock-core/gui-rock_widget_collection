@@ -19,8 +19,9 @@
 GstImageView::GstImageView(QWidget *parent)
       : QWidget(parent),
         bgColor(QColor(Qt::black)),
+        use_progress_indicator(true),
         use_smooth_transformation(true),
-        progress_indicator_timeout(5000),
+        progress_indicator_timeout(2500),
         use_gl(false),
         pipelineDescription("videotestsrc ! ximagesink") //qtglvideosink
 {
@@ -154,6 +155,28 @@ void GstImageView::setBackgroundColor(const QColor & color)
 {
     bgColor = color;
     imageScene->setBackgroundBrush(bgColor);
+}
+
+bool GstImageView::useProgressIndicator()
+{
+    return use_progress_indicator;
+}
+  
+
+void GstImageView::setUseProgressIndicator(bool use)
+{
+    use_progress_indicator = use;
+    
+    if(use) {
+        progress_indicator_timer->start();
+        // TODO Maybe unwanted behavior since the timer starts even if there is not a single frame yet.
+        //      But it is nice if you trigger the use of the progress indicator while the replay is stopped.
+    }
+    else {
+        // Disable possibly already running widget
+        progress_indicator_timer->stop();
+        progress_indicator->stopAnimation();
+    }
 }
 
 bool GstImageView::useSmoothTransformation()
@@ -359,8 +382,10 @@ void GstImageView::saveImage(QString path, bool overlay)
 
 void GstImageView::setFrame(const base::samples::frame::Frame &frame)
 {   
-    progress_indicator_timer->start();
-    progress_indicator->stopAnimation();
+    if(use_progress_indicator) {
+        progress_indicator_timer->start();
+        progress_indicator->stopAnimation();
+    }
     
 #ifdef USE_GST
     // TODO
@@ -506,5 +531,11 @@ void GstImageView::setupContextMenu()
     save_image_overlay_act = new QAction("Save image with overlay", this);
     connect(save_image_overlay_act,SIGNAL(triggered()),this,SLOT(save_image_overlay()));
     contextMenu->addAction(save_image_overlay_act);
+    
+    activate_progress_indicator_act = new QAction("Activate progress indicator", this);
+    activate_progress_indicator_act->setCheckable(true);
+    activate_progress_indicator_act->setChecked(true);
+    connect(activate_progress_indicator_act,SIGNAL(triggered(bool)),this,SLOT(setUseProgressIndicator(bool)));
+    contextMenu->addAction(activate_progress_indicator_act);
 }
 
