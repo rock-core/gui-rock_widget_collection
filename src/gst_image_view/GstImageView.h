@@ -8,6 +8,8 @@
 #include <frame_helper/FrameQImageConverter.h>
 #include "rock_widget_collection/progress_indicator/ProgressIndicator.h"
 
+#include "GraphicsPointsItem.h"
+
 class GstImageView : public QWidget
 {
     Q_OBJECT
@@ -62,7 +64,9 @@ public slots:
     /* Overlays */
     void addCircle(QPointF &center, double radius, QColor &color, double width, bool persistent = 0);
     void addLine(QLineF &line, QColor &color, double width, bool persistent = 0);
-    
+    void addPolygon(QPolygonF &polygon, QColor &color, double width, bool persistent = 0);
+    void addPoints(const QList<int> points_x,QList<int> points_y, QColor &color,double width, bool persistent=0);
+
     /** Writes text on top of the image. The text is immune to image transformation, i.e. rotation or scaling. */
     void addText(QString text, /*TextLocation*/ int location, QColor color = QColor(Qt::black), bool persistent = 0);
     
@@ -95,8 +99,8 @@ private:
     
     QColor bgColor;
     bool use_smooth_transformation;
-    QString pipelineDescription;
     int progress_indicator_timeout;
+    QString pipelineDescription;
     bool use_gl;
 
     QGraphicsView *imageView;
