@@ -1,4 +1,5 @@
 #include "GstImageView.h"
+#include "ContextMenuGraphicsWidget.h"
 
 #include <base/logging.h>
 #include <iostream>
