@@ -19,6 +19,7 @@ class ProgressIndicator : public QWidget
     Q_PROPERTY(int delay READ animationDelay WRITE setAnimationDelay)
     Q_PROPERTY(bool displayedWhenStopped READ isDisplayedWhenStopped WRITE setDisplayedWhenStopped)
     Q_PROPERTY(QColor color READ color WRITE setColor)
+    Q_PROPERTY(QColor penColor READ penColor WRITE setPenColor)
 public:
     ProgressIndicator(QWidget* parent = 0);
 
@@ -44,6 +45,11 @@ public:
         \sa setColor
       */
     const QColor & color() const { return m_color; }
+    
+    /*! Returns the color of the outline of the component.
+        \sa setColor
+      */
+    const QColor & penColor() const { return m_penColor; }
 
     virtual QSize sizeHint() const;
     int heightForWidth(int w) const;
@@ -75,6 +81,11 @@ public slots:
         \sa color
      */
     void setColor(const QColor & color);
+    
+    /*! Sets the color of the pen (responsible for the outline of the components) to the given color.
+        \sa color
+     */
+    void setPenColor(const QColor & color);
 protected:
     virtual void timerEvent(QTimerEvent * event); 
     virtual void paintEvent(QPaintEvent * event);
@@ -84,6 +95,7 @@ private:
     int m_delay;
     bool m_displayedWhenStopped;
     QColor m_color;
+    QColor m_penColor;
 };
 
 #endif // PROGRESSINDICATOR_H

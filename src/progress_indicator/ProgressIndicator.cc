@@ -8,7 +8,8 @@ ProgressIndicator::ProgressIndicator(QWidget* parent)
         m_timerId(-1),
         m_delay(40),
         m_displayedWhenStopped(false),
-        m_color(Qt::black)
+        m_color(Qt::black),
+        m_penColor(Qt::lightGray)
 {
     setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     setFocusPolicy(Qt::NoFocus);
@@ -67,6 +68,13 @@ void ProgressIndicator::setColor(const QColor & color)
     update();
 }
 
+void ProgressIndicator::setPenColor(const QColor & color)
+{
+    m_penColor = color;
+
+    update();
+}
+
 QSize ProgressIndicator::sizeHint() const
 {
     return QSize(20,20);
@@ -104,8 +112,16 @@ void ProgressIndicator::paintEvent(QPaintEvent * /*event*/)
     for (int i=0; i<12; i++)
     {
         QColor color = m_color;
-        color.setAlphaF(1.0f - (i/12.0f));
-        p.setPen(Qt::NoPen);
+        qreal alpha = 1.0f - (i/12.0f);
+        color.setAlphaF(alpha);
+        
+        QColor penColor = m_penColor;
+        penColor.setAlphaF(alpha);
+        QPen pen;
+        pen.setWidth(1);
+        pen.setColor(penColor);
+        p.setPen(pen);
+        
         p.setBrush(color);       
         p.save();
         p.translate(rect().center());
