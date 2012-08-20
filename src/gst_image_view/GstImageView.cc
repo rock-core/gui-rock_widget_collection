@@ -226,7 +226,7 @@ void GstImageView::setUseGl(bool use_gl)
     this->use_gl = use_gl;
 }
 
-void GstImageView::addCircle(QPointF &center, double radius, QColor &color, double width, bool persistent)
+void GstImageView::addCircle(QPointF &center, double radius, QColor &color, int width, bool persistent)
 {
     QGraphicsEllipseItem *circlePtr = 
             new QGraphicsEllipseItem(QRectF(center.x() - radius/2.0, center.y() - radius/2.0, radius, radius));
@@ -238,7 +238,7 @@ void GstImageView::addCircle(QPointF &center, double radius, QColor &color, doub
     addDrawItem(imageScene, circlePtr, persistent);
 }
 
-void GstImageView::addLine(QLineF &line, QColor &color, double width, bool persistent)
+void GstImageView::addLine(QLineF &line, QColor &color, int width, bool persistent)
 {                     
     QGraphicsLineItem *linePtr = new QGraphicsLineItem(line);
     QPen pen;
@@ -268,7 +268,7 @@ void GstImageView::addPoints(const QList<int> points_x,QList<int> points_y, QCol
     addDrawItem(imageScene, pointsPtr, persistent);
 }
 
-void GstImageView::addPolygon(QPolygonF &polygon, QColor &color, double width, bool persistent)
+void GstImageView::addPolygon(QPolygonF &polygon, QColor &color, int width, bool persistent)
 {                     
     QGraphicsPolygonItem *polygonPtr = new QGraphicsPolygonItem(polygon);
     QPen pen;

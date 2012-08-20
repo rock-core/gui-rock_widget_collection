@@ -66,9 +66,9 @@ public slots:
     void setUseGl(bool use_gl);
     
     /* Overlays */
-    void addCircle(QPointF &center, double radius, QColor &color, double width, bool persistent = 0);
-    void addLine(QLineF &line, QColor &color, double width, bool persistent = 0);
-    void addPolygon(QPolygonF &polygon, QColor &color, double width, bool persistent = 0);
+    void addCircle(QPointF &center, double radius, QColor &color, int width, bool persistent = 0);
+    void addLine(QLineF &line, QColor &color, int width, bool persistent = 0);
+    void addPolygon(QPolygonF &polygon, QColor &color, int width, bool persistent = 0);
     void addPoints(const QList<int> points_x,QList<int> points_y, QColor &color, int width, bool persistent=0);
 
     /** Writes text on top of the image. The text is immune to image transformation, i.e. rotation or scaling. */
