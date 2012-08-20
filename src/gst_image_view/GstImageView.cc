@@ -546,9 +546,9 @@ void GstImageView::update2()
 
 void GstImageView::setItemPositions()
 {
-//    std::cout << "setItemPositions" << std::endl;
-    // Align to top-left corner of view (scene gets always fit in view)   
-    progress_indicator->move(imageView->width() - progress_indicator->width(), 0);
+    // Align to center of view (scene gets always fit in view)   
+    progress_indicator->move(imageView->width()/2 - progress_indicator->width()/2,
+                             imageView->height()/2 - progress_indicator->height()/2);
 }
 
 void GstImageView::setupContextMenu()
