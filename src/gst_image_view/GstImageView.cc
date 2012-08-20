@@ -448,6 +448,10 @@ void GstImageView::setFrame(const base::samples::frame::Frame &frame)
     /* Resize and repositioning if frame size changes (and on start) */
     if(imageSize != oldSize) {
         LOG_INFO("image size changed. resize.");
+        
+        // Avoid dynamic scene growth
+        imageScene->setSceneRect(0, 0, imageSize.width(), imageSize.height());
+        
         setItemPositions();
         
         /* For some reason the first frame is not scaled to fit the full space. 
