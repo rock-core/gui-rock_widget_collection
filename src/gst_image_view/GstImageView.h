@@ -115,6 +115,7 @@ private:
     QGraphicsScene *fixedOverlayScene;
     QGraphicsWidget *overlayWidget;
     QGraphicsGridLayout *overlay_grid;
+    QMap<int, QLabel*> overlayMap;
     QGraphicsPixmapItem *imageItem;
     QImage image;
 

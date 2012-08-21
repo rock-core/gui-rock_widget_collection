@@ -31,6 +31,10 @@ def add_circle
     @view.addCircle(Qt::PointF.new(rand(@frame_width), rand(@frame_height)), rand(max_radius), true)
 end
 
+def add_text
+    @view.addTextWrapper(@testgui.text_input.text, :bottomleft, Qt::Color.new(Qt::black), true)
+end
+
 def clear_overlays
     @view.clearOverlays(true);
 end
@@ -68,9 +72,12 @@ end
 @testgui.line_button.connect(SIGNAL('clicked()')) {add_line}
 @testgui.circle_button.connect(SIGNAL('clicked()')) {add_circle}
 @testgui.clear_overlays_button.connect(SIGNAL('clicked()')) {clear_overlays}
+@testgui.text_button.connect(SIGNAL('clicked()')) {add_text}
 
 @view.addLine(Qt::LineF.new(10, 10, 300, 200), Qt::Color.new(Qt::yellow), 5.0, true)
+@view.addTextWrapper("ABC", :bottomleft, Qt::Color.new(Qt::black), true)
 @view.addTextWrapper("AVALON im Studiobad", :bottomleft, Qt::Color.new(Qt::black), true)
+@view.addTextWrapper("DEFGHI", :bottomleft, Qt::Color.new(Qt::black), true)
 
 log = Orocos::Log::Replay.open(ARGV[0])
 

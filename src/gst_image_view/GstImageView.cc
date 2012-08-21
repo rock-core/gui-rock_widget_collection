@@ -124,6 +124,7 @@ GstImageView::GstImageView(QWidget *parent)
     label_mi_pal.setColor(QPalette::Window, QColor(Qt::transparent));
     //label_mi_pal.setColor(QPalette::Window, QColor(Qt::white));
     label_mi->setPalette(label_mi_pal);
+    label_mi->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     overlay_grid->addItem(label_mi, 1, 1, Qt::AlignVCenter|Qt::AlignCenter);
     
     overlayWidget = new ContextMenuGraphicsWidget;//new QGraphicsWidget;
@@ -281,24 +282,6 @@ void GstImageView::addPolygon(QPolygonF &polygon, QColor &color, int width, bool
 
 void GstImageView::addText(QString text, /*TextLocation*/ int location, QColor color, bool persistent)
 {   
-    QPalette palette;    
-    QColor labelBgColor(Qt::white);
-    labelBgColor.setAlphaF(0.7);
-    palette.setColor(QPalette::Window, labelBgColor);
-    palette.setColor(QPalette::WindowText, color);
-    palette.setColor(QPalette::Text, color); // <-- this one seems to be working but WindowText should be correct according to docu
-    
-    QLabel *label = new QLabel(text);
-    label->setVisible(false);
-    label->setPalette(palette);
-    label->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-    
-    QFont font;
-    font.setPointSize(12);
-    label->setFont(font);
-    
-    QGraphicsWidget *textLabel = fixedOverlayScene->addWidget(label);
-    
     /* Positioning */
     int row = 0;
     int col = 0;
@@ -327,20 +310,53 @@ void GstImageView::addText(QString text, /*TextLocation*/ int location, QColor c
         break;
     default:
         LOG_WARN("Unsupported text location. Switching to TOPLEFT.");
-        delete textLabel;
         addText(text, TOPLEFT, persistent);
         return;
     }
     
-    /* Overwrite cell if occupied */
-    QGraphicsLayoutItem *itemInCell = NULL;
-    if(itemInCell = overlay_grid->itemAt(row,col)) {
-        overlay_grid->removeItem(itemInCell);
-        delete itemInCell;
+    QLabel *label = NULL;
+    QGraphicsWidget *textLabel = NULL;
+    
+    // Label for text location already exists?
+    if(overlayMap.contains(location)) {
+        // Alter existing label
+        label = overlayMap[location];
+        label->setText(text);
+        label->adjustSize();
+    } else {
+        // Add new label to map
+        label = new QLabel(text);
+        label->setVisible(false);
+        label->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
+        
+        overlayMap[location] = label;
+        
+        textLabel = fixedOverlayScene->addWidget(label);
+        overlay_grid->addItem(textLabel, row, col, alignment);
+        textLabel->setVisible(true); // TODO use label instead?
     }
     
-    overlay_grid->addItem(textLabel, row, col, alignment);
-    textLabel->setVisible(true);
+    QPalette palette;    
+    QColor labelBgColor(Qt::white);
+    labelBgColor.setAlphaF(0.7);
+    palette.setColor(QPalette::Window, labelBgColor);
+    palette.setColor(QPalette::WindowText, color);
+    palette.setColor(QPalette::Text, color); // <-- this one seems to be working but WindowText should be correct according to docu
+        
+    label->setPalette(palette);
+       
+    QFont font;
+    font.setPointSize(12);
+    label->setFont(font);
+    
+    label->setMaximumSize(label->sizeHint());
+    
+//     std::cout << "label size hint: " << label->sizeHint().width() << "," << label->sizeHint().height() << " ('" << text.toStdString().data() << "')" << std::endl;
+//     std::cout << "label size: " << label->width() << "," << label->height() << " ('" << text.toStdString().data() << "')" << std::endl;
+//     std::cout << "label maximum size: " << label->maximumSize().width() << "," << label->maximumSize().height() << " ('" << text.toStdString().data() << "')" << std::endl;
+//     std::cout << "---" << std::endl;
+    
+    overlay_grid->invalidate();
     //addDrawItem(NULL, textLabel, persistent); // TODO check correctness of deletion etc.
     update();
 }
