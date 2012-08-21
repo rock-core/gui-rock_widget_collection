@@ -85,10 +85,14 @@ public slots:
     /* Other slots */
     void setFrame(const base::samples::frame::Frame &frame);
     void update2();
+    
+signals:
+    void clickedImage(const QPoint &point);
 
 protected:
     void resizeEvent(QResizeEvent *event);
     void contextMenuEvent ( QContextMenuEvent * event );
+    bool eventFilter(QObject *obj, QEvent *event);
 
 private slots:
     void displayContextMenu(QPoint screenPos);

@@ -57,6 +57,7 @@ GstImageView::GstImageView(QWidget *parent)
     /* Setup inner graphicsscene and view. This scene contains the image and image related overlays. */
     imageScene = new QGraphicsScene(this);
     imageScene->setBackgroundBrush(getBackgroundColor());
+    imageScene->installEventFilter(this); // to get mouse press events to emit clicked image coordinate
     
     imageView = new QGraphicsView(imageScene);
     
@@ -514,6 +515,29 @@ void GstImageView::contextMenuEvent ( QContextMenuEvent * event )
 {
    contextMenu->exec(event->globalPos());
 }
+
+bool GstImageView::eventFilter(QObject* obj, QEvent* event)
+{
+    //std::cout << "Got an event: " << event->type() << std::endl;
+    
+    if (event->type() == QEvent::GraphicsSceneMousePress) {
+         QGraphicsSceneMouseEvent *mouseEvent = static_cast<QGraphicsSceneMouseEvent *>(event);
+         
+         QPoint scenePos = mouseEvent->scenePos().toPoint();
+         
+         // Clicked on image scene?
+         if(imageScene->sceneRect().contains(scenePos)) {
+             LOG_INFO_S << "Clicked at image coordinate (w,h) (" << scenePos.x() << "," << scenePos.y() << ")";
+             emit clickedImage(scenePos);
+         } 
+         
+         return true;
+     } else {
+         // standard event processing
+         return QObject::eventFilter(obj, event);
+     }
+}
+
 
 /* PRIVATE SLOTS ------------------------------------------------------------ */
 
