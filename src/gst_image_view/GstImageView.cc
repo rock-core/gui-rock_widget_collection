@@ -349,6 +349,7 @@ void GstImageView::addText(QString text, /*TextLocation*/ int location, QColor c
        
     QFont font;
     font.setPointSize(12);
+    font.setStyleHint(QFont::Monospace);
     label->setFont(font);
     
     label->setMaximumSize(label->sizeHint());
