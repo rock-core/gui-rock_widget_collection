@@ -137,6 +137,7 @@ private:
     QAction *save_image_act;
     QAction *save_image_overlay_act;
     QAction *activate_progress_indicator_act;
+    QAction *activate_smooth_transformation_act;
 };
 
 #endif /* GST_IMAGE_VIEW_H */

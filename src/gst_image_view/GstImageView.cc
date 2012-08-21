@@ -591,10 +591,16 @@ void GstImageView::setupContextMenu()
     connect(save_image_overlay_act,SIGNAL(triggered()),this,SLOT(save_image_overlay()));
     contextMenu->addAction(save_image_overlay_act);
     
-    activate_progress_indicator_act = new QAction("Activate progress indicator", this);
+    activate_progress_indicator_act = new QAction("Use progress indicator", this);
     activate_progress_indicator_act->setCheckable(true);
-    activate_progress_indicator_act->setChecked(true);
+    activate_progress_indicator_act->setChecked(use_progress_indicator);
     connect(activate_progress_indicator_act,SIGNAL(triggered(bool)),this,SLOT(setUseProgressIndicator(bool)));
     contextMenu->addAction(activate_progress_indicator_act);
+    
+    activate_smooth_transformation_act = new QAction("Use smooth transformation", this);
+    activate_smooth_transformation_act->setCheckable(true);
+    activate_smooth_transformation_act->setChecked(use_smooth_transformation);
+    connect(activate_smooth_transformation_act,SIGNAL(triggered(bool)),this,SLOT(setSmoothTransformation(bool)));
+    contextMenu->addAction(activate_smooth_transformation_act);  
 }
 
