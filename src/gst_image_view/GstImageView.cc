@@ -34,12 +34,12 @@ GstImageView::GstImageView(QWidget *parent)
     progress_indicator->setAnimationDelay(40);
     progress_indicator->setDisplayedWhenStopped(false);
     progress_indicator->resize(30,30);
-    progress_indicator->show();
+    progress_indicator->hide();
     
     /* Set up timer for progress indicator */
     progress_indicator_timer = new QTimer(this);
     progress_indicator_timer->setInterval(getProgressIndicatorTimeout());
-    connect(progress_indicator_timer, SIGNAL(timeout()), progress_indicator, SLOT(startAnimation()));
+    connect(progress_indicator_timer, SIGNAL(timeout()), this, SLOT(startProgressIndicator()));
     
     setupContextMenu();
     
@@ -168,6 +168,7 @@ bool GstImageView::useProgressIndicator()
 void GstImageView::setUseProgressIndicator(bool use)
 {
     use_progress_indicator = use;
+    progress_indicator->hide();
     
     if(use) {
         progress_indicator_timer->start();
@@ -430,6 +431,7 @@ void GstImageView::saveImage(QString path, bool overlay)
 void GstImageView::setFrame(const base::samples::frame::Frame &frame)
 {   
     if(use_progress_indicator) {
+        progress_indicator->hide();
         progress_indicator_timer->start();
         progress_indicator->stopAnimation();
     }
@@ -478,7 +480,6 @@ void GstImageView::setFrame(const base::samples::frame::Frame &frame)
         resize(width(),height()-1); 
         resize(width(),height()+1);
     }
-    
     update();
 #endif
 }
@@ -536,6 +537,13 @@ void GstImageView::save_image_overlay()
 {
     saveImage(QString(), true);
 }
+
+void GstImageView::startProgressIndicator()
+{
+    progress_indicator->show();
+    progress_indicator->startAnimation();
+}
+
 
 /* PRIVATE METHODS ---------------------------------------------------------- */
 

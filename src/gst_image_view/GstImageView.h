@@ -95,6 +95,7 @@ private slots:
     void rotate_clockwise();
     void save_image();
     void save_image_overlay();
+    void startProgressIndicator();
     
 private:
     void addDrawItem(QGraphicsScene *scene, QGraphicsItem *item, bool persistent = 0);
