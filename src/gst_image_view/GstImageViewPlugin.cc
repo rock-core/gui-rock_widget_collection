@@ -1,35 +1,35 @@
 #include "GstImageViewPlugin.h"
 #include "GstImageView.h"
 
-GstImageViewPlugin::GstImageViewPlugin(QObject *parent)
+ImageViewPlugin::ImageViewPlugin(QObject *parent)
     : QObject(parent)
 {
     initialized = false;
 }
 
-GstImageViewPlugin::~GstImageViewPlugin()
+ImageViewPlugin::~ImageViewPlugin()
 {
 }
 
-bool GstImageViewPlugin::isContainer() const
+bool ImageViewPlugin::isContainer() const
 {
     return false;
 }
 
-bool GstImageViewPlugin::isInitialized() const
+bool ImageViewPlugin::isInitialized() const
 {
     return initialized;
 }
 
-QIcon GstImageViewPlugin::icon() const
+QIcon ImageViewPlugin::icon() const
 {
     return QIcon("");
 }
 
-QString GstImageViewPlugin::domXml() const
+QString ImageViewPlugin::domXml() const
 {
         return "<ui language=\"c++\">\n"
-            " <widget class=\"GstImageView\" name=\"gstimageview\">\n"
+            " <widget class=\"ImageView\" name=\"imageview\">\n"
             "  <property name=\"geometry\">\n"
             "   <rect>\n"
             "    <x>0</x>\n"
@@ -48,33 +48,33 @@ QString GstImageViewPlugin::domXml() const
             "</ui>\n";
 }
 
-QString GstImageViewPlugin::group() const {
+QString ImageViewPlugin::group() const {
     return "Rock-Robotics";
 }
 
-QString GstImageViewPlugin::includeFile() const {
-    return "GstImageView/GstImageView.h";
+QString ImageViewPlugin::includeFile() const {
+    return "rock_widget_collection/ImageView.h";
 }
 
-QString GstImageViewPlugin::name() const {
-    return "GstImageView";
+QString ImageViewPlugin::name() const {
+    return "ImageView";
 }
 
-QString GstImageViewPlugin::toolTip() const {
+QString ImageViewPlugin::toolTip() const {
     return whatsThis();
 }
 
-QString GstImageViewPlugin::whatsThis() const
+QString ImageViewPlugin::whatsThis() const
 {
     return "";
 }
 
-QWidget* GstImageViewPlugin::createWidget(QWidget *parent)
+QWidget* ImageViewPlugin::createWidget(QWidget *parent)
 {
-    return new GstImageView(parent);
+    return new ImageView(parent);
 }
 
-void GstImageViewPlugin::initialize(QDesignerFormEditorInterface *core)
+void ImageViewPlugin::initialize(QDesignerFormEditorInterface *core)
 {
      if (initialized)
          return;

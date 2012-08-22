@@ -110,7 +110,7 @@ int main(int argc, char *argv[])
 #endif
 
 #if 1
-    GstImageView gstImageView;
+    ImageView gstImageView;
     gstImageView.show();
 #endif
 

@@ -40,7 +40,7 @@ RockWidgetCollection::RockWidgetCollection(QObject *parent)
    widgets.append(new Plot2dPlugin(this));
    widgets.append(new WaterfallDisplayPlugin(this));
    widgets.append(new TimelinePlugin(this));
-   widgets.append(new GstImageViewPlugin(this));
+   widgets.append(new ImageViewPlugin(this));
    widgets.append(new ProgressIndicatorPlugin(this));
 #ifdef USE_VTK
    widgets.append(new SonarDisplayPlugin(this));

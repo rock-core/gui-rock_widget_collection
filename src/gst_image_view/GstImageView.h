@@ -1,9 +1,9 @@
 /**
- * \file GstImageView.h
+ * \file ImageView.h
  */
 
-#ifndef GST_IMAGE_VIEW_H
-#define GST_IMAGE_VIEW_H
+#ifndef IMAGE_VIEW_H
+#define IMAGE_VIEW_H
 
 #include <QtGui>
 #include <QtCore>
@@ -18,7 +18,7 @@
  * \brief Image viewer with optional text and geometry overlay functionality.
  * \author Allan Conquest (allan.conquest[at]dfki.de)
  */
-class GstImageView : public QWidget
+class ImageView : public QWidget
 {
     Q_OBJECT
     Q_CLASSINFO("Author", "Allan Conquest") 
@@ -47,8 +47,8 @@ class GstImageView : public QWidget
     
     
 public:
-    GstImageView(QWidget *parent = 0);
-    virtual ~GstImageView();
+    ImageView(QWidget *parent = 0);
+    virtual ~ImageView();
     
     enum TextLocation
     {
@@ -152,4 +152,4 @@ private:
     QAction *activate_smooth_transformation_act;
 };
 
-#endif /* GST_IMAGE_VIEW_H */
+#endif /* IMAGE_VIEW_H */

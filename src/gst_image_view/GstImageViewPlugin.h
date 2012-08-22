@@ -4,14 +4,14 @@
 #include <QtGui>
 #include <QtDesigner/QDesignerCustomWidgetInterface>
 
-class GstImageViewPlugin : public QObject, public QDesignerCustomWidgetInterface
+class ImageViewPlugin : public QObject, public QDesignerCustomWidgetInterface
 {
     Q_OBJECT
     Q_INTERFACES(QDesignerCustomWidgetInterface)
 
 public:
-    GstImageViewPlugin(QObject *parent = 0);
-    virtual ~GstImageViewPlugin();
+    ImageViewPlugin(QObject *parent = 0);
+    virtual ~ImageViewPlugin();
 
     bool isContainer() const;
     bool isInitialized() const;

@@ -1,5 +1,5 @@
 /**
- * \file GstImageView.cc
+ * \file ImageView.cc
  */
 
 #include "GstImageView.h"
@@ -21,7 +21,7 @@
     #include <QGst/Ui/GraphicsVideoWidget>
 #endif
 
-GstImageView::GstImageView(QWidget *parent)
+ImageView::ImageView(QWidget *parent)
       : QWidget(parent),
         bgColor(QColor(Qt::black)),
         use_progress_indicator(true),
@@ -147,29 +147,29 @@ GstImageView::GstImageView(QWidget *parent)
     update();
 }
 
-GstImageView::~GstImageView()
+ImageView::~ImageView()
 {
     
 }
 
-const QColor& GstImageView::getBackgroundColor() const
+const QColor& ImageView::getBackgroundColor() const
 {
     return bgColor;
 }
 
-void GstImageView::setBackgroundColor(const QColor & color)
+void ImageView::setBackgroundColor(const QColor & color)
 {
     bgColor = color;
     imageScene->setBackgroundBrush(bgColor);
 }
 
-bool GstImageView::useProgressIndicator()
+bool ImageView::useProgressIndicator()
 {
     return use_progress_indicator;
 }
   
 
-void GstImageView::setUseProgressIndicator(bool use)
+void ImageView::setUseProgressIndicator(bool use)
 {
     use_progress_indicator = use;
     progress_indicator->hide();
@@ -186,12 +186,12 @@ void GstImageView::setUseProgressIndicator(bool use)
     }
 }
 
-bool GstImageView::useSmoothTransformation()
+bool ImageView::useSmoothTransformation()
 {
     return use_smooth_transformation;
 }
 
-void GstImageView::setSmoothTransformation(bool smooth)
+void ImageView::setSmoothTransformation(bool smooth)
 {
     use_smooth_transformation = smooth;
     if(smooth)
@@ -201,38 +201,38 @@ void GstImageView::setSmoothTransformation(bool smooth)
 }
 
 
-const QString GstImageView::getPipelineDescription() const
+const QString ImageView::getPipelineDescription() const
 {
     return pipelineDescription;
 }
 
-void GstImageView::setPipelineDescription(QString descr)
+void ImageView::setPipelineDescription(QString descr)
 {
     this->pipelineDescription = descr;
 }
 
-const int GstImageView::getProgressIndicatorTimeout() const
+const int ImageView::getProgressIndicatorTimeout() const
 {
     return progress_indicator_timeout;
 }
 
-void GstImageView::setProgressIndicatorTimeout(int timeout)
+void ImageView::setProgressIndicatorTimeout(int timeout)
 {
     progress_indicator_timeout = timeout;
     progress_indicator_timer->setInterval(timeout);
 }
 
-bool GstImageView::getUseGl()
+bool ImageView::getUseGl()
 {
     return this->use_gl;
 }
 
-void GstImageView::setUseGl(bool use_gl)
+void ImageView::setUseGl(bool use_gl)
 {
     this->use_gl = use_gl;
 }
 
-void GstImageView::addCircle(QPointF &center, double radius, QColor &color, int width, bool persistent)
+void ImageView::addCircle(QPointF &center, double radius, QColor &color, int width, bool persistent)
 {
     QGraphicsEllipseItem *circlePtr = 
             new QGraphicsEllipseItem(QRectF(center.x() - radius/2.0, center.y() - radius/2.0, radius, radius));
@@ -244,7 +244,7 @@ void GstImageView::addCircle(QPointF &center, double radius, QColor &color, int 
     addDrawItem(imageScene, circlePtr, persistent);
 }
 
-void GstImageView::addLine(QLineF &line, QColor &color, int width, bool persistent)
+void ImageView::addLine(QLineF &line, QColor &color, int width, bool persistent)
 {                     
     QGraphicsLineItem *linePtr = new QGraphicsLineItem(line);
     QPen pen;
@@ -255,7 +255,7 @@ void GstImageView::addLine(QLineF &line, QColor &color, int width, bool persiste
     addDrawItem(imageScene, linePtr, persistent);
 }
 
-void GstImageView::addPoints(const QList<int> points_x,QList<int> points_y, QColor &color, int width, bool persistent)
+void ImageView::addPoints(const QList<int> points_x,QList<int> points_y, QColor &color, int width, bool persistent)
 {   
     QList<QPoint> points;
     QList<int>::const_iterator iter1 = points_x.begin();
@@ -274,7 +274,7 @@ void GstImageView::addPoints(const QList<int> points_x,QList<int> points_y, QCol
     addDrawItem(imageScene, pointsPtr, persistent);
 }
 
-void GstImageView::addPolygon(QPolygonF &polygon, QColor &color, int width, bool persistent)
+void ImageView::addPolygon(QPolygonF &polygon, QColor &color, int width, bool persistent)
 {                     
     QGraphicsPolygonItem *polygonPtr = new QGraphicsPolygonItem(polygon);
     QPen pen;
@@ -285,7 +285,7 @@ void GstImageView::addPolygon(QPolygonF &polygon, QColor &color, int width, bool
     addDrawItem(imageScene, polygonPtr, persistent);
 }
 
-void GstImageView::addText(QString text, /*TextLocation*/ int location, QColor color, bool persistent)
+void ImageView::addText(QString text, /*TextLocation*/ int location, QColor color, bool persistent)
 {   
     /* Positioning */
     int row = 0;
@@ -367,7 +367,7 @@ void GstImageView::addText(QString text, /*TextLocation*/ int location, QColor c
     update();
 }
 
-void GstImageView::clearOverlays(bool clear_persistent_items)
+void ImageView::clearOverlays(bool clear_persistent_items)
 {
     if(clear_persistent_items) {
         Q_FOREACH(QGraphicsItem *item, persistentDrawItems) {
@@ -382,14 +382,14 @@ void GstImageView::clearOverlays(bool clear_persistent_items)
     volatileDrawItems.clear();
 }
 
-void GstImageView::rotate(int deg)
+void ImageView::rotate(int deg)
 {
     imageView->rotate(deg);
     imageView->fitInView(imageItem, Qt::KeepAspectRatio);
     //view->fitInView(view->sceneRect(), Qt::KeepAspectRatio);
 }
 
-void GstImageView::saveImage(QString path, bool overlay)
+void ImageView::saveImage(QString path, bool overlay)
 {
     QImage saveImage(imageScene->sceneRect().size().toSize(), image.format());
     saveImage.fill(0); // Painter cannnot handle null image
@@ -433,7 +433,7 @@ void GstImageView::saveImage(QString path, bool overlay)
 }
 
 
-void GstImageView::setFrame(const base::samples::frame::Frame &frame)
+void ImageView::setFrame(const base::samples::frame::Frame &frame)
 {   
     if(use_progress_indicator) {
         progress_indicator->hide();
@@ -491,7 +491,7 @@ void GstImageView::setFrame(const base::samples::frame::Frame &frame)
 
 /* PROTECTED METHODS ---------------------------------------------------------- */
 
-void GstImageView::resizeEvent(QResizeEvent *event)
+void ImageView::resizeEvent(QResizeEvent *event)
 { 
     QWidget::resizeEvent(event);
     
@@ -515,12 +515,12 @@ void GstImageView::resizeEvent(QResizeEvent *event)
             << "imageScene (w/h): (" << imageScene->width() << "," << imageScene->height() << ")\n";
 }
 
-void GstImageView::contextMenuEvent ( QContextMenuEvent * event )
+void ImageView::contextMenuEvent ( QContextMenuEvent * event )
 {
    contextMenu->exec(event->globalPos());
 }
 
-bool GstImageView::eventFilter(QObject* obj, QEvent* event)
+bool ImageView::eventFilter(QObject* obj, QEvent* event)
 {
     //std::cout << "Got an event: " << event->type() << std::endl;
     
@@ -545,28 +545,28 @@ bool GstImageView::eventFilter(QObject* obj, QEvent* event)
 
 /* PRIVATE SLOTS ------------------------------------------------------------ */
 
-void GstImageView::displayContextMenu(QPoint screenPos)
+void ImageView::displayContextMenu(QPoint screenPos)
 {
     LOG_DEBUG("Got context menu request signal");
     contextMenu->exec(screenPos);
 }
 
-void GstImageView::rotate_clockwise()
+void ImageView::rotate_clockwise()
 {
     rotate(90);
 }
 
-void GstImageView::save_image()
+void ImageView::save_image()
 {
     saveImage(QString(), false);
 }
 
-void GstImageView::save_image_overlay()
+void ImageView::save_image_overlay()
 {
     saveImage(QString(), true);
 }
 
-void GstImageView::startProgressIndicator()
+void ImageView::startProgressIndicator()
 {
     progress_indicator->show();
     progress_indicator->startAnimation();
@@ -575,7 +575,7 @@ void GstImageView::startProgressIndicator()
 
 /* PRIVATE METHODS ---------------------------------------------------------- */
 
-void GstImageView::addDrawItem(QGraphicsScene* scene, QGraphicsItem *item, bool persistent)
+void ImageView::addDrawItem(QGraphicsScene* scene, QGraphicsItem *item, bool persistent)
 {   
     //std::cout << "addDrawItem: adding item: " << item << std::endl;
     
@@ -591,19 +591,19 @@ void GstImageView::addDrawItem(QGraphicsScene* scene, QGraphicsItem *item, bool 
     update();
 }
 
-void GstImageView::update2()
+void ImageView::update2()
 {
     QWidget::update();
 }
 
-void GstImageView::setItemPositions()
+void ImageView::setItemPositions()
 {
     // Align to center of view (scene gets always fit in view)   
     progress_indicator->move(imageView->width()/2 - progress_indicator->width()/2,
                              imageView->height()/2 - progress_indicator->height()/2);
 }
 
-void GstImageView::setupContextMenu()
+void ImageView::setupContextMenu()
 {
     contextMenu = new QMenu(this);
     
