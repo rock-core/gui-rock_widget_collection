@@ -1,11 +1,11 @@
 /* 
- * File:   ImageViewGL.h
+ * File:   ImageViewOldGL.h
  * Author: blueck
  *
  * Created on 17. Juni 2010, 14:14
  */
-#ifndef IMAGEVIEWGL_H
-#define	IMAGEVIEWGL_H
+#ifndef IMAGEVIEWOLDGL_H
+#define	IMAGEVIEWOLDGL_H
 
 #include <QtOpenGL/QGLWidget>   //opengl support
 
@@ -16,9 +16,9 @@
 #include "PolylineItem.h"
 #include "PointItem.h"
 
-class ImageView;
+class ImageViewOld;
 
-class ImageViewGL :public QGLWidget
+class ImageViewOldGL :public QGLWidget
 {
     Q_OBJECT
   private:
@@ -27,15 +27,15 @@ class ImageViewGL :public QGLWidget
     bool aspect_ratio;
 
   public:
-    ImageViewGL(ImageView &parent);
+    ImageViewOldGL(ImageViewOld &parent);
 
-    virtual ~ImageViewGL();
+    virtual ~ImageViewOldGL();
     void setGLViewPoint(int display_width=0,int display_height=0);
     void setAspectRatio(bool value){aspect_ratio = value;};
     
   private:
-    ImageView &image_view;    
+    ImageViewOld &image_view;    
 };
 
-#endif	/* IMAGEVIEWWGL_H */
+#endif	/* IMAGEVIEWOLDGL_H */
 

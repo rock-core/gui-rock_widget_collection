@@ -1,5 +1,5 @@
 /* 
- * File:   ImageView.cc
+ * File:   ImageViewOld.cc
  * Author: blueck
  * 
  * Created on 17. Juni 2010, 14:14
@@ -12,7 +12,7 @@
 using namespace base::samples::frame;
 //Q_EXPORT_PLUGIN2(ImageView, ImageView)
 
-ImageView::ImageView(QWidget *parent,bool use_openGL):
+ImageViewOld::ImageViewOld(QWidget *parent,bool use_openGL):
   MultiWidget(parent),
   contextMenu(this),
   image(0, 0, QImage::Format_RGB888),
@@ -41,29 +41,29 @@ ImageView::ImageView(QWidget *parent,bool use_openGL):
 }
 
 
-ImageView::~ImageView()
+ImageViewOld::~ImageViewOld()
 {
     disconnect(save_image_act, 0, 0, 0);
     delete save_image_act;
 }
 
-void ImageView::emitUserExport()
+void ImageViewOld::emitUserExport()
 {
     emit userExport();
 }
 
 
-void ImageView::setZoomEnabled(bool enabled)
+void ImageViewOld::setZoomEnabled(bool enabled)
 {
   zoomEnabled = enabled;
 }
 
-void ImageView::contextMenuEvent ( QContextMenuEvent * event )
+void ImageViewOld::contextMenuEvent ( QContextMenuEvent * event )
 {
    contextMenu.exec(event->globalPos());
 }
 
-std::pair<QPoint, bool> ImageView::toImage(QPoint const& p)
+std::pair<QPoint, bool> ImageViewOld::toImage(QPoint const& p)
 {
   //calculate pos on image 
   int offset_x = target.x();
@@ -87,14 +87,14 @@ std::pair<QPoint, bool> ImageView::toImage(QPoint const& p)
   return std::make_pair(QPoint(x, y), valid);
 }
 
-void ImageView::mousePressEvent(QMouseEvent *event)
+void ImageViewOld::mousePressEvent(QMouseEvent *event)
 {
   std::pair<QPoint, bool> img = toImage(QPoint(event->x(), event->y()));
   pressPoint = img.first;
   pressValid = img.second;
 }
 
-void ImageView::mouseReleaseEvent(QMouseEvent *event)
+void ImageViewOld::mouseReleaseEvent(QMouseEvent *event)
 {
   if (event->modifiers() & Qt::ControlModifier)
   {
@@ -123,7 +123,7 @@ void ImageView::mouseReleaseEvent(QMouseEvent *event)
     emit clickImage(pressPoint.x(), pressPoint.y());
 }
 
-void ImageView::setDefaultImage()
+void ImageViewOld::setDefaultImage()
 {
    static QColor background(127, 127, 127);
    static QColor textcolor(255,255,255);
@@ -138,7 +138,7 @@ void ImageView::setDefaultImage()
    no_input = true;
 }
 
-void ImageView::openGL(bool flag)
+void ImageViewOld::openGL(bool flag)
 {
   if(flag)
   {
@@ -146,7 +146,7 @@ void ImageView::openGL(bool flag)
     if(image_view_gl)
       return;
 
-    image_view_gl = new ImageViewGL(*this);
+    image_view_gl = new ImageViewOldGL(*this);
     if (!image_view_gl)
       return;
     image_view_gl->resize(width(),height());
@@ -162,7 +162,7 @@ void ImageView::openGL(bool flag)
 	for(QList<DrawItem*>::iterator iter = items.begin();iter != items.end();++iter) (*iter)->openGL(flag);
 }
 
-void ImageView::saveImage(bool overlay)
+void ImageViewOld::saveImage(bool overlay)
 {
     QString path = QFileDialog::getSaveFileName(this, tr("Save File"),
                             save_path,
@@ -170,7 +170,7 @@ void ImageView::saveImage(bool overlay)
     if(path.length() > 0)	
       saveImage2(path,overlay);
 }
-bool ImageView::saveImage2(QString path,bool overlay)
+bool ImageViewOld::saveImage2(QString path,bool overlay)
 {
     if(overlay)
     {
@@ -183,7 +183,7 @@ bool ImageView::saveImage2(QString path,bool overlay)
     return true;
 }
 
-bool ImageView::saveImage3(const QString &mode, int pixel_size,  int width,  int height,const char* pbuffer, QString path, QString format)
+bool ImageViewOld::saveImage3(const QString &mode, int pixel_size,  int width,  int height,const char* pbuffer, QString path, QString format)
 {
     QImage image;
     frame_converter.copyFrameToQImageRGB888(image,mode, pixel_size, width, height,pbuffer);
@@ -191,7 +191,7 @@ bool ImageView::saveImage3(const QString &mode, int pixel_size,  int width,  int
     return true;
 }
 
-void ImageView::setGroupStatus(int groupNr, bool enable)
+void ImageViewOld::setGroupStatus(int groupNr, bool enable)
 {
     if(!enable)
     {
@@ -203,26 +203,26 @@ void ImageView::setGroupStatus(int groupNr, bool enable)
     }
 }
 
-void ImageView::clearGroups()
+void ImageViewOld::clearGroups()
 {
     disabledGroups.clear();
 }
 
-void ImageView::resetCrop()
+void ImageViewOld::resetCrop()
 {
   this->image = this->originalImage;
   currentCrop = QRect(0, 0, image.width(), image.height());
   calculateRects();
 }
 
-void ImageView::crop(int x, int y, int w, int h)
+void ImageViewOld::crop(int x, int y, int w, int h)
 {
   this->image = this->image.copy(x, y, w, h);
   currentCrop = QRect(x, y, w, h);
   calculateRects();
 }
 
-void ImageView::addRawImage(const QString &mode, int pixel_size,  int width,  int height,const char* pbuffer, const int size)
+void ImageViewOld::addRawImage(const QString &mode, int pixel_size,  int width,  int height,const char* pbuffer, const int size)
 {
   //check if image size has been changed
   //zoom factor must be recalculated
@@ -239,7 +239,7 @@ void ImageView::addRawImage(const QString &mode, int pixel_size,  int width,  in
   no_input = false;
 }
 
-void ImageView::addImage(const QImage &image)
+void ImageViewOld::addImage(const QImage &image)
 {
   //check if image size has changed
   //zoom factor must be recalculated
@@ -247,7 +247,7 @@ void ImageView::addImage(const QImage &image)
   no_input = false;
 }
 
-void ImageView::addFrame(const base::samples::frame::Frame &frame)
+void ImageViewOld::addFrame(const base::samples::frame::Frame &frame)
 {
   if(frame_converter.copyFrameToQImageRGB888(originalImage,frame))
   {
@@ -262,7 +262,7 @@ void ImageView::addFrame(const base::samples::frame::Frame &frame)
   no_input = false;
 }
 
-void ImageView::drawDrawItemsToPainter(QPainter &painter,bool all)
+void ImageViewOld::drawDrawItemsToPainter(QPainter &painter,bool all)
 {
     if(!image_view_gl)
       all = true;
@@ -280,7 +280,7 @@ void ImageView::drawDrawItemsToPainter(QPainter &painter,bool all)
     }
 }
 
-void ImageView::drawDrawItemsToImage(QImage &image,bool all)
+void ImageViewOld::drawDrawItemsToImage(QImage &image,bool all)
 {
     QPainter painter(&image);
     drawDrawItemsToPainter(painter,all);
@@ -288,12 +288,12 @@ void ImageView::drawDrawItemsToImage(QImage &image,bool all)
 
 //slots from base classes are shadowed in ruby therefore update2 is to
 //access ImageView::update from ruby
-void ImageView::update2()
+void ImageViewOld::update2()
 {
   update();
 }
 
-void ImageView::update()
+void ImageViewOld::update()
 {
   if(image_view_gl)
   {
@@ -306,7 +306,7 @@ void ImageView::update()
   }
 }
 
-void ImageView::calculateRects()
+void ImageViewOld::calculateRects()
 {
   int x_offset = 0;
   int y_offset = 0;
@@ -328,14 +328,14 @@ void ImageView::calculateRects()
   source.setRect(0.0, 0.0, image.width(), image.height());
 }
 
-void ImageView::paintEvent(QPaintEvent *)
+void ImageViewOld::paintEvent(QPaintEvent *)
 {
   QPainter painter(this);
   painter.drawImage(target, image, source);
   drawDrawItemsToPainter(painter,true);
 }
 
-void ImageView::resizeEvent ( QResizeEvent * event )
+void ImageViewOld::resizeEvent ( QResizeEvent * event )
 {
   QWidget::resizeEvent(event);
 
@@ -347,7 +347,7 @@ void ImageView::resizeEvent ( QResizeEvent * event )
   calculateRects();
 }
 
-void ImageView::mouseDoubleClickEvent( QMouseEvent * event )
+void ImageViewOld::mouseDoubleClickEvent( QMouseEvent * event )
 {
 }
 

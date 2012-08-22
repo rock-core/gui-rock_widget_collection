@@ -19,8 +19,8 @@ const float RangeViewGL::ZOOM_MAX;
 const float RangeViewGL::ZOOM_MIN;
 
 
-RangeViewGL::RangeViewGL(ImageView &parent):
-	ImageViewGL(parent),
+RangeViewGL::RangeViewGL(ImageViewOld &parent):
+	ImageViewOldGL(parent),
 	 zoom( 45.0 )
 
 {

@@ -11,7 +11,7 @@
 #include "SonarViewGL.h"
 
 SonarView::SonarView(QWidget *parent,bool use_openGL):
-ImageView(parent,false),
+ImageViewOld(parent,false),
 img(10, 10, QImage::Format_RGB888)
 {
 	resize(width(),height());	
@@ -170,7 +170,7 @@ void SonarView::setOrientation(const double orientation){
 
 void SonarView::paintEvent(QPaintEvent *event)
 {
-  ImageView::paintEvent(event);  
+  ImageViewOld::paintEvent(event);  
   printf("Paint called in SonarView\n");
   
 }

@@ -19,8 +19,8 @@ const float SonarViewGL::ZOOM_MAX;
 const float SonarViewGL::ZOOM_MIN;
 
 
-SonarViewGL::SonarViewGL(ImageView &parent,unsigned int maximumBearings):
-ImageViewGL(parent),
+SonarViewGL::SonarViewGL(ImageViewOld &parent,unsigned int maximumBearings):
+ImageViewOldGL(parent),
 maximumBearings(maximumBearings)
 {
      colors = new GLubyte[maximumBearings];	

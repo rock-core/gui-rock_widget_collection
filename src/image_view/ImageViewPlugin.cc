@@ -2,64 +2,64 @@
 #include "ImageView.h"
 
 
- ImageViewPlugin::ImageViewPlugin(QObject *parent)
+ ImageViewOldPlugin::ImageViewOldPlugin(QObject *parent)
      : QObject(parent)
  {
      initialized = false;
  }
 
- ImageViewPlugin::~ImageViewPlugin()
+ ImageViewOldPlugin::~ImageViewOldPlugin()
  {
  }
 
- void ImageViewPlugin::initialize(QDesignerFormEditorInterface *formEditor)
+ void ImageViewOldPlugin::initialize(QDesignerFormEditorInterface *formEditor)
  {
      if (initialized)
          return;
      initialized = true;
  }
 
- bool ImageViewPlugin::isInitialized() const
+ bool ImageViewOldPlugin::isInitialized() const
  {
      return initialized;
  }
 
- QWidget *ImageViewPlugin::createWidget(QWidget *parent)
+ QWidget *ImageViewOldPlugin::createWidget(QWidget *parent)
  {
-     return new ImageView(parent);
+     return new ImageViewOld(parent);
  }
 
- QString ImageViewPlugin::name() const
+ QString ImageViewOldPlugin::name() const
  {
-     return "ImageView";
+     return "ImageViewOld";
  }
 
- QString ImageViewPlugin::group() const
+ QString ImageViewOldPlugin::group() const
  {
      return "Rock-Robotics";
  }
 
- QIcon ImageViewPlugin::icon() const
+ QIcon ImageViewOldPlugin::icon() const
  {
      return QIcon(":/image_view/icon.png");
  }
 
- QString ImageViewPlugin::toolTip() const
+ QString ImageViewOldPlugin::toolTip() const
  {
-     return "Widget for displaying images";
+     return "Old widget for displaying images. This one is deprecated, use ImageView instead.";
  }
 
- QString ImageViewPlugin::whatsThis() const
+ QString ImageViewOldPlugin::whatsThis() const
  {
-     return "widgte for displaying images";
+     return "Old widget for displaying images. This one is deprecated, use ImageView instead.";
  }
 
- bool ImageViewPlugin::isContainer() const
+ bool ImageViewOldPlugin::isContainer() const
  {
      return false;
  }
 
- QString ImageViewPlugin::domXml() const
+ QString ImageViewOldPlugin::domXml() const
  {
      return "<widget class=\"ImageView\" name=\"imageview\">\n"
             " <property name=\"geometry\">\n"
@@ -79,7 +79,7 @@
             "</widget>\n";
  }
 
- QString ImageViewPlugin::includeFile() const
+ QString ImageViewOldPlugin::includeFile() const
  {
      return "image_view_widget/ImageView.h";
  }

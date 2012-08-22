@@ -9,7 +9,7 @@
 
 #include "image_view/ImageView.h"
 
-class QDESIGNER_WIDGET_EXPORT SonarView : public ImageView
+class QDESIGNER_WIDGET_EXPORT SonarView : public ImageViewOld
 {
     Q_OBJECT
     Q_CLASSINFO("Author", "Matthias Goldhoorn")

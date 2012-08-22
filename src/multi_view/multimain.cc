@@ -32,7 +32,7 @@ int main(int argc, char** argv)
     PlotWidget* pwidget2 = new PlotWidget(NULL);
     QIcon icon("/usr/share/psi/iconsets/system/default/psiplus/logo_48.png");
     widget->addWidget(QString("Plot2"), pwidget2);
-    ImageView* imageView = new ImageView();
+    ImageViewOld* imageView = new ImageViewOld();
     QImage* image = new QImage();
     image->load("/home/blueck/pics/testimage.jpg");
     imageView->addImage(*image);

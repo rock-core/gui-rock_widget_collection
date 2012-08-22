@@ -1,18 +1,18 @@
 
-#ifndef IMAGEVIEWWIDGETPLUGIN_H
-#define IMAGEVIEWWIDGETPLUGIN_H
+#ifndef IMAGEVIEWOLDPLUGIN_H
+#define IMAGEVIEWOLDPLUGIN_H
 
 #include <QtGui/QtGui>
 #include <QtDesigner/QDesignerCustomWidgetInterface>
 
-class ImageViewPlugin : public QObject , public QDesignerCustomWidgetInterface
+class ImageViewOldPlugin : public QObject , public QDesignerCustomWidgetInterface
 {
   Q_OBJECT
   Q_INTERFACES(QDesignerCustomWidgetInterface)
 
  public:
-   ImageViewPlugin(QObject *parent = 0);
-   virtual ~ImageViewPlugin();
+   ImageViewOldPlugin(QObject *parent = 0);
+   virtual ~ImageViewOldPlugin();
 
    bool isContainer() const;
    bool isInitialized() const;

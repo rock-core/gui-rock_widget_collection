@@ -1,12 +1,12 @@
 /* 
- * File:   ImageView.h
+ * File:   ImageViewOld.h
  * Author: blueck
  *
  * Created on 17. Juni 2010, 14:14
  */
 
-#ifndef IMAGEVIEW_H
-#define	IMAGEVIEW_H
+#ifndef IMAGEVIEWOLD_H
+#define	IMAGEVIEWOLD_H
 
 #include <MultiWidget.h>
 #include <QtGui/QWidget>
@@ -70,7 +70,7 @@
  * @version 0.1
  */
 
-class QDESIGNER_WIDGET_EXPORT ImageView : public MultiWidget 
+class QDESIGNER_WIDGET_EXPORT ImageViewOld : public MultiWidget 
 {
     Q_OBJECT
     Q_CLASSINFO("Author", "Alexander Duda")
@@ -78,19 +78,19 @@ class QDESIGNER_WIDGET_EXPORT ImageView : public MultiWidget
     Q_PROPERTY(bool Aspect_Ratio READ getAspectRatio WRITE setAspectRatio USER false)
 
 public:
-    friend class ImageViewGL;
+    friend class ImageViewOldGL;
     /**
      * Initializing the widget with the given format and dimensions
      * For format parameters @seeQImage
      * @param width the width of images put onto the widget
      * @param height the height of images put onto the widget
      */
-    ImageView(QWidget *parent = NULL,bool use_openGL = false);
+    ImageViewOld(QWidget *parent = NULL,bool use_openGL = false);
 
     /**
      * Destructor cleaning up
      */
-    virtual ~ImageView();
+    virtual ~ImageViewOld();
     void contextMenuEvent ( QContextMenuEvent * event );
     int heightForWidth( int w ) {return w*image.height()/image.width(); };
     void mouseDoubleClickEvent ( QMouseEvent * event );
@@ -191,7 +191,7 @@ protected:
     bool aspect_ratio;
 
     frame_helper::FrameQImageConverter frame_converter;
-    ImageViewGL *image_view_gl;
+    ImageViewOldGL *image_view_gl;
 
     QRectF target;
     QRectF source;
@@ -201,5 +201,5 @@ protected:
     bool pressValid;
 };
 
-#endif	/* IMAGEVIEWWIDGET_H */
+#endif	/* IMAGEVIEWOLD_H */
 

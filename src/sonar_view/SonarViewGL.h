@@ -12,7 +12,7 @@
 #include <QtCore/QMutex>
 #include <stdint.h>
 
-class SonarViewGL : public ImageViewGL
+class SonarViewGL : public ImageViewOldGL
 {
     Q_OBJECT
     Q_CLASSINFO("Author", "Matthias Goldhoorn")
@@ -22,7 +22,7 @@ static const float ZOOM_MIN = -6000.0;
 
 
 public:
-    SonarViewGL(ImageView &parent, unsigned int maximumBearings=6400);
+    SonarViewGL(ImageViewOld &parent, unsigned int maximumBearings=6400);
     virtual ~SonarViewGL();
      QSize minimumSizeHint() const;
      QSize sizeHint() const;

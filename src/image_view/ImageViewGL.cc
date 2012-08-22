@@ -8,17 +8,17 @@
 #include "ImageViewGL.h"
 #include "ImageView.h"
 
-ImageViewGL::ImageViewGL(ImageView &parent):
+ImageViewOldGL::ImageViewOldGL(ImageViewOld &parent):
   QGLWidget(&parent),
   image_view(parent)
 {
 }
 
-ImageViewGL::~ImageViewGL()
+ImageViewOldGL::~ImageViewOldGL()
 {
 }
 
-void ImageViewGL::paintGL()
+void ImageViewOldGL::paintGL()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glDrawPixels(image_view.image.width(), image_view.image.height(), GL_RGB, GL_UNSIGNED_BYTE, image_view.image.bits());
@@ -31,7 +31,7 @@ void ImageViewGL::paintGL()
     }
 }
 
-void ImageViewGL::setGLViewPoint(int display_width,int display_height)
+void ImageViewOldGL::setGLViewPoint(int display_width,int display_height)
 {
   if(!display_width || !display_height)
   {
@@ -76,7 +76,7 @@ void ImageViewGL::setGLViewPoint(int display_width,int display_height)
  // source.setRect(0,0,image->width(),image->height());
 }
 
-void ImageViewGL::resizeGL(int w, int h)
+void ImageViewOldGL::resizeGL(int w, int h)
 {
   setGLViewPoint(w,h);
   paintGL();

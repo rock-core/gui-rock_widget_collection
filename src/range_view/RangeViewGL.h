@@ -12,7 +12,7 @@
 #include <QtCore/QMutex>
 #include <Eigen/Core>
 
-class RangeViewGL : public ImageViewGL
+class RangeViewGL : public ImageViewOldGL
 {
     Q_OBJECT
     Q_CLASSINFO("Author", "Matthias Goldhoorn")
@@ -20,7 +20,7 @@ class RangeViewGL : public ImageViewGL
 
 
 public:
-	RangeViewGL(ImageView &parent);
+	RangeViewGL(ImageViewOld &parent);
 	virtual ~RangeViewGL();
 	QSize minimumSizeHint() const;
 	QSize sizeHint() const;
