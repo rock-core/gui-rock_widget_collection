@@ -2,7 +2,7 @@
  * \file ImageView.cc
  */
 
-#include "GstImageView.h"
+#include "ImageView.h"
 #include "ContextMenuGraphicsWidget.h"
 
 #include <base/logging.h>

@@ -86,9 +86,9 @@ SET(COLLECTION_MOC_HDRS
   timeline/TimelinePlugin.h
   timeline/Slider.h
   timeline/SlideBarItem.h
-  gst_image_view/GstImageView.h
-  gst_image_view/GstImageViewPlugin.h
-  gst_image_view/ContextMenuGraphicsWidget.h
+  image_view/ImageView.h
+  image_view/ImageViewPlugin.h
+  image_view/ContextMenuGraphicsWidget.h
   progress_indicator/ProgressIndicator.h
   progress_indicator/ProgressIndicatorPlugin.h
 )
@@ -138,8 +138,7 @@ SET(COLLECTION_HDRS
   timeline/BoundarySlider.h
   timeline/IndexSlider.h
   timeline/SlideBarItem.h
-  gst_image_view/GstImageView.h
-  gst_image_view/ContextMenuGraphicsWidget.h
+  image_view/ImageView.h
   progress_indicator/ProgressIndicator.h
 )
 
@@ -155,7 +154,7 @@ FILE(GLOB COLLECTION_SOURCES
     plot2d/*.cc
     2dvis/*.cc
     timeline/*.cc
-    gst_image_view/*.cc
+    image_view/*.cc
     progress_indicator/*.cc
     *.cc)
     
@@ -201,7 +200,7 @@ rock_executable(timelineTest timeline/main.cpp
     DEPS rock_widget_collection
     NOINSTALL)
 
-rock_executable(gstimageviewTest gst_image_view/main.cpp
+rock_executable(imageviewTest image_view/main.cpp
     DEPS rock_widget_collection
     NOINSTALL)
 

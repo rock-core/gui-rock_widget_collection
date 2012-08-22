@@ -14,7 +14,7 @@
 #include "plot2d/Plot2dPlugin.h"
 #include "2dvis/WaterwallDisplayPlugin.h"
 #include "timeline/TimelinePlugin.h"
-#include "gst_image_view/GstImageViewPlugin.h"
+#include "image_view/ImageViewPlugin.h"
 #include "progress_indicator/ProgressIndicatorPlugin.h"
 
 #ifdef USE_VTK

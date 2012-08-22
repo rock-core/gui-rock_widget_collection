@@ -1,5 +1,5 @@
-#include "GstImageViewPlugin.h"
-#include "GstImageView.h"
+#include "ImageViewPlugin.h"
+#include "ImageView.h"
 
 ImageViewPlugin::ImageViewPlugin(QObject *parent)
     : QObject(parent)

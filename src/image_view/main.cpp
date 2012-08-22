@@ -17,7 +17,7 @@
     #include <QGst/Ui/GraphicsVideoWidget>
 #endif
 
-#include "GstImageView.h"
+#include "ImageView.h"
 
 int main(int argc, char *argv[])
 {
