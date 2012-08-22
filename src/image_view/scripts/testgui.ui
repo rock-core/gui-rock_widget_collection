@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>GstImageView TestGUI</string>
+   <string>ImageView TestGUI</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
@@ -131,7 +131,7 @@
     </layout>
    </item>
    <item>
-    <widget class="GstImageView" name="gstimageview">
+    <widget class="ImageView" name="imageview">
      <property name="sizePolicy">
       <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
        <horstretch>1</horstretch>
@@ -150,9 +150,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>GstImageView</class>
+   <class>ImageView</class>
    <extends>QWidget</extends>
-   <header>GstImageView/GstImageView.h</header>
+   <header>ImageView/ImageView.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

@@ -53,8 +53,8 @@ end
 @testgui = Vizkit.load(File.join(File.dirname(__FILE__),'testgui.ui'))
 @testgui.show
 
-#@view = Vizkit.default_loader.GstImageView
-@view = @testgui.gstimageview
+#@view = Vizkit.default_loader.ImageView
+@view = @testgui.imageview
 
 @view.progress_indicator_timeout = 2500
 @view.use_smooth_transformation = true
