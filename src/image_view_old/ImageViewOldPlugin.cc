@@ -61,7 +61,7 @@
 
  QString ImageViewOldPlugin::domXml() const
  {
-     return "<widget class=\"ImageView\" name=\"imageview\">\n"
+     return "<widget class=\"ImageViewOld\" name=\"imageviewold\">\n"
             " <property name=\"geometry\">\n"
             "  <rect>\n"
             "   <x>0</x>\n"
