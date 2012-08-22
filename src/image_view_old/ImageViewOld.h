@@ -24,7 +24,7 @@
 #include <iostream>
 #include <frame_helper/FrameQImageConverter.h>
 
-#include "ImageViewGL.h"
+#include "ImageViewOldGL.h"
 
 /**
  * Widget which displays an image. The dimensions and the format needs

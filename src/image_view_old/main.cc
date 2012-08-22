@@ -7,7 +7,7 @@
 
 #include <cstdlib>
 #include "QtGui/qapplication.h"
-#include "ImageViewGL.h"
+#include "ImageViewOldGL.h"
 #include "PolygonItem.h"
 #include "ArrowItem.h"
 #include <QtGui/QImage>

@@ -7,7 +7,7 @@
 #ifndef RANGEVIEWGL_H
 #define	RANGEVIEWGL_H
 
-#include "image_view/ImageViewGL.h"
+#include "image_view_old/ImageViewOldGL.h"
 #include <QtCore/QTimer>
 #include <QtCore/QMutex>
 #include <Eigen/Core>

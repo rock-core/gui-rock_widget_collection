@@ -7,7 +7,7 @@
 #ifndef RANGEVIEW_H
 #define	RANGEVIEW_H
 
-#include "image_view/ImageView.h"
+#include "image_view_old/ImageViewOld.h"
 
 class QDESIGNER_WIDGET_EXPORT RangeView : public ImageViewOld
 {

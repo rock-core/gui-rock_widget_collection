@@ -7,7 +7,7 @@
 #ifndef SONARVIEW_H
 #define	SONARVIEW_H
 
-#include "image_view/ImageView.h"
+#include "image_view_old/ImageViewOld.h"
 
 class QDESIGNER_WIDGET_EXPORT SonarView : public ImageViewOld
 {

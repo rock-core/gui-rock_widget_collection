@@ -1,6 +1,6 @@
 #include "RockWidgetCollection.h"
 #include "multi_view/MultiViewWidget.h"
-#include "image_view/ImageViewPlugin.h"
+#include "image_view_old/ImageViewOldPlugin.h"
 #include "sonar_view/SonarViewPlugin.h"
 #include "range_view/RangeViewPlugin.h"
 #include "plotting/PlotWidgetPlugin.h"

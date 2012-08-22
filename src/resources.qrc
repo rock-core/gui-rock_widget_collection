@@ -6,7 +6,7 @@
     <file alias="stationary.svg">artificial_horizon/resources/stationary.svg</file>
     <file alias="artificial_horizon/icon.png">artificial_horizon/resources/icon.png</file>
     <file alias="sonar_view/icon.png">sonar_view/resources/icon.png</file>
-    <file alias="image_view/icon.png">image_view/resources/icon.png</file>
+    <file alias="image_view_old/icon.png">image_view_old/resources/icon.png</file>
     <file alias="plotting/icon.png">plotting/resources/icon.png</file>
     <file alias="timeline/triangle_slider">timeline/resources/triangle_slider.png</file>
     <file alias="timeline/index_slider">timeline/resources/index_slider.png</file>

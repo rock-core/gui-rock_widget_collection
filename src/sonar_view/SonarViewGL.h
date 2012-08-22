@@ -7,7 +7,7 @@
 #ifndef SONARVIEWGL_H
 #define	SONARVIEWGL_H
 
-#include "image_view/ImageViewGL.h"
+#include "image_view_old/ImageViewOldGL.h"
 #include <QtCore/QTimer>
 #include <QtCore/QMutex>
 #include <stdint.h>

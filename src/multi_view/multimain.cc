@@ -12,7 +12,7 @@
 
 #include "MultiViewWidget.h"
 #include "plotting/PlotWidget.h"
-#include "image_view/ImageView.h"
+#include "image_view_old/ImageViewOld.h"
 
 #include <limits>
 

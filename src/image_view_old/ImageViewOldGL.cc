@@ -5,8 +5,8 @@
  * Created on 17. Juni 2010, 14:14
  */
 #include <iostream>
-#include "ImageViewGL.h"
-#include "ImageView.h"
+#include "ImageViewOldGL.h"
+#include "ImageViewOld.h"
 
 ImageViewOldGL::ImageViewOldGL(ImageViewOld &parent):
   QGLWidget(&parent),

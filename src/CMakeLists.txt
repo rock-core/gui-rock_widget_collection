@@ -15,9 +15,9 @@ include_directories(${QT_QTGUI_INCLUDE_DIR})
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 SET(COLLECTION_MOC_HDRS
-  image_view/ImageView.h
-  image_view/ImageViewGL.h
-  image_view/ImageViewPlugin.h
+  image_view_old/ImageViewOld.h
+  image_view_old/ImageViewOldGL.h
+  image_view_old/ImageViewOldPlugin.h
   generic_widgets/DrawItem.h
   generic_widgets/RectangleItem.h
   generic_widgets/FillItem.h
@@ -79,8 +79,8 @@ SET(COLLECTION_MOC_HDRS
 )
 
 SET(COLLECTION_HDRS
-  image_view/ImageView.h
-  image_view/ImageViewGL.h
+  image_view_old/ImageViewOld.h
+  image_view_old/ImageViewOldGL.h
   generic_widgets/DrawItem.h
   generic_widgets/LineItem.h
   generic_widgets/FillItem.h
@@ -131,7 +131,7 @@ SET(COLLECTION_HDRS
 
 FILE(GLOB COLLECTION_SOURCES 
     range_view/*.cc 
-    image_view/*.cc 
+    image_view_old/*.cc 
     sonar_view/*.cc 
     plotting/*.cc 
     artificial_horizon/*.cc 

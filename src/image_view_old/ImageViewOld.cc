@@ -5,7 +5,7 @@
  * Created on 17. Juni 2010, 14:14
  */
 
-#include "ImageView.h"
+#include "ImageViewOld.h"
 #include <stdexcept>
 #include <QtCore/QtPlugin>
 
