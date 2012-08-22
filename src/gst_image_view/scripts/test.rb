@@ -28,11 +28,15 @@ end
 
 def add_circle
     max_radius = 100
-    @view.addCircle(Qt::PointF.new(rand(@frame_width), rand(@frame_height)), rand(max_radius), true)
+    @view.addCircle(Qt::PointF.new(rand(@frame_width), rand(@frame_height)), rand(max_radius), Qt::Color.new(Qt::black), 1, true)
 end
 
 def add_text
     @view.addTextWrapper(@testgui.text_input.text, :bottomleft, Qt::Color.new(Qt::black), true)
+end
+
+def update_image_coords point
+    @testgui.image_coord_label.set_text "(#{point.x}w,#{point.y}h)"
 end
 
 def clear_overlays
@@ -46,43 +50,34 @@ if ARGV.length != 1
     exit
 end
 
+@testgui = Vizkit.load(File.join(File.dirname(__FILE__),'testgui.ui'))
+@testgui.show
 
-@view = Vizkit.default_loader.GstImageView
-#@oldview = Vizkit.default_loader.ImageView
-#@oldview.Aspect_Ratio=true
-#@oldview.show
-#@property_control = Vizkit.default_loader.property_control
-#@property_control.show
+#@view = Vizkit.default_loader.GstImageView
+@view = @testgui.gstimageview
 
 @view.progress_indicator_timeout = 2500
 @view.use_smooth_transformation = true
 
-#@view.extend Vizkit::QtTypelibExtension
 @view.show
-
-#@view.addCircle(Qt::PointF.new(0,0), 50, true);
-
-#@view.addLine(Qt::LineF.new(200, 0, 200, 300))
-#@view.addLine(Qt::LineF.new(250, 0, 250, 300))
-
-@testgui = Vizkit.load(File.join(File.dirname(__FILE__),'testgui.ui'))
-@testgui.show
 
 @testgui.rotate_button.connect(SIGNAL('clicked()')) {rotate}
 @testgui.line_button.connect(SIGNAL('clicked()')) {add_line}
 @testgui.circle_button.connect(SIGNAL('clicked()')) {add_circle}
 @testgui.clear_overlays_button.connect(SIGNAL('clicked()')) {clear_overlays}
 @testgui.text_button.connect(SIGNAL('clicked()')) {add_text}
+@view.connect(SIGNAL('clickedImage(const QPoint&)')) do |value|
+    update_image_coords(value)
+end
 
-@view.addLine(Qt::LineF.new(10, 10, 300, 200), Qt::Color.new(Qt::yellow), 5.0, true)
+@view.addLine(Qt::LineF.new(0, 0, 300, 200), Qt::Color.new(Qt::yellow), 5.0, true)
 @view.addTextWrapper("ABC", :bottomleft, Qt::Color.new(Qt::black), true)
 @view.addTextWrapper("AVALON im Studiobad", :bottomleft, Qt::Color.new(Qt::black), true)
-@view.addTextWrapper("DEFGHI", :bottomleft, Qt::Color.new(Qt::black), true)
+@view.addTextWrapper("", :bottomleft, Qt::Color.new(Qt::black), true)
 
 log = Orocos::Log::Replay.open(ARGV[0])
 
 log.front_camera.frame.connect_to @view
-#log.front_camera.frame.connect_to @oldview
 
 Vizkit.control log
 
