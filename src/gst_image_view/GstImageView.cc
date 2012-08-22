@@ -1,3 +1,7 @@
+/**
+ * \file GstImageView.cc
+ */
+
 #include "GstImageView.h"
 #include "ContextMenuGraphicsWidget.h"
 

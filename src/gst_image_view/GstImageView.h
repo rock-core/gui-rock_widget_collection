@@ -1,3 +1,7 @@
+/**
+ * \file GstImageView.h
+ */
+
 #ifndef GST_IMAGE_VIEW_H
 #define GST_IMAGE_VIEW_H
 
@@ -10,6 +14,10 @@
 
 #include "GraphicsPointsItem.h"
 
+/**
+ * \brief Image viewer with optional text and geometry overlay functionality.
+ * \author Allan Conquest (allan.conquest[at]dfki.de)
+ */
 class GstImageView : public QWidget
 {
     Q_OBJECT
