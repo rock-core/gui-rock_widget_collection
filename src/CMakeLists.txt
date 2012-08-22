@@ -125,7 +125,6 @@ SET(COLLECTION_HDRS
   timeline/SlideBarItem.h
   gst_image_view/GstImageView.h
   gst_image_view/ContextMenuGraphicsWidget.h
-#   gst_image_view/FrameAppSrc.h
   progress_indicator/ProgressIndicator.h
 )
 
