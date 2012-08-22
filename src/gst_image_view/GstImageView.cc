@@ -30,7 +30,7 @@ GstImageView::GstImageView(QWidget *parent)
         pipelineDescription("videotestsrc ! ximagesink"), //qtglvideosink
         use_gl(false)
 {
-    resize(500,500);
+    resize(500,500); // TODO should be removed
     imageItem = NULL;
     
     /* Configure progress indicator */
@@ -99,8 +99,7 @@ GstImageView::GstImageView(QWidget *parent)
 #else
     imageItem = new QGraphicsPixmapItem;
     
-    if(use_smooth_transformation)
-        imageItem->setTransformationMode(Qt::SmoothTransformation);
+    setSmoothTransformation(use_smooth_transformation);
     
     imageScene->addItem(imageItem);
 #endif
