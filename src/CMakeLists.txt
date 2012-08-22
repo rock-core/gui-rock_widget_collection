@@ -1,10 +1,25 @@
 
 find_package(Qt4 REQUIRED QtCore QtGui QtOpengl QtDesigner )
 
-#include(/usr/local/lib/QtGStreamer/QtGStreamerConfig.cmake)
-find_package(QtGStreamer PATHS /usr/local/lib/QtGStreamer NO_DEFAULT_PATH)
-include_directories(/usr/local/include/QtGStreamer)
-#include_directories(${QTGSTREAMER_INCLUDES})
+option(USE_VTK "Use VTK for additional Widgets" FALSE)
+option(USE_GST "Use GStreamer in GstImageView" OFF)
+
+## If you want to use GStreamer, uncomment the following
+#set(USE_GST ON)
+
+if (USE_GST)
+    # TODO Using GStreamer requires some reconstruction and currently 
+    #      the installation of a self compiled library (QtGStreamer 0.10.2).
+    #      Using this is currently not recommended!
+    
+    #include(/usr/local/lib/QtGStreamer/QtGStreamerConfig.cmake)
+    find_package(QtGStreamer PATHS /usr/local/lib/QtGStreamer NO_DEFAULT_PATH)
+    include_directories(/usr/local/include/QtGStreamer)
+    #include_directories(${QTGSTREAMER_INCLUDES})
+    
+    add_definitions(-DUSE_GST)
+endif()
+
 
 include_directories(multi_view/ generic_widgets/)
 include_directories(${QT_INCLUDE_DIR})
@@ -143,17 +158,7 @@ FILE(GLOB COLLECTION_SOURCES
     gst_image_view/*.cc
     progress_indicator/*.cc
     *.cc)
-
-option(USE_VTK "Use VTK for additional Widgets" FALSE)
-option(USE_GST "Use GStreamer in GstImageView" OFF)
-
-## If you want to use GStreamer, uncomment the following
-#set(USE_GST ON)
-
-if (USE_GST)
-    add_definitions(-DUSE_GST)
-endif()
-
+    
 if (USE_VTK)
     find_package(VTK)
     list(APPEND COLLECTION_MOC_HDRS
