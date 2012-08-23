@@ -4,7 +4,7 @@ Orocos.initialize
 log = Orocos::Log::Replay.open ARGV
 
 camera = log.camera
-widget = Vizkit.default_loader.GstImageView
+widget = Vizkit.default_loader.ImageView
 
 points_x = Array.new
 points_y = Array.new
