@@ -74,27 +74,120 @@ public slots:
     void setUseGl(bool use_gl);
     
     /* Overlays */
+    
+    /*!
+     * \brief Draws circle overlay.
+     * 
+     * Draws a circle overlay with center point \a center and radius \a radius.
+     * The position has to be submitted in image coordinates with origin in the top left corner.
+     * 
+     * \param width pen width
+     * \param persistent If false, the overlay gets deleted with the next frame update. Otherwise not.
+     */
     void addCircle(QPointF &center, double radius, QColor &color, int width, bool persistent = 0);
+    
+    /*!
+     * \brief Draws line overlay.
+     * 
+     * Draws a line overlay. The line is specified in \a line.
+     * The position has to be submitted in image coordinates with origin in the top left corner.
+     * 
+     * \param width pen width
+     * \param persistent If false, the overlay gets deleted with the next frame update. Otherwise not.
+     */
     void addLine(QLineF &line, QColor &color, int width, bool persistent = 0);
+    
+    /*!
+     * \brief Draws polygon overlay.
+     * 
+     * Draws a polygon overlay. The polygon is specified in \a line.
+     * The position has to be submitted in image coordinates with origin in the top left corner.
+     * 
+     * \param width pen width
+     * \param persistent If false, the overlay gets deleted with the next frame update. Otherwise not.
+     */
     void addPolygon(QPolygonF &polygon, QColor &color, int width, bool persistent = 0);
+    
+    /*!
+     * \brief Draws points overlay (2D point cloud).
+     * 
+     * Draws a points overlay.  This is to be understood as a 2D point cloud. 
+     * The position has to be submitted in image coordinates with origin in the top left corner.
+     * Since QtRuby has problems with QList<QPoint> slot signatures, this method 
+     * uses two lists: one for the x-coordinates and one for the y-coordinates.
+     * 
+     * Example:<br>
+     * You want to draw the pointcloud {(3,4),(6,8)}. Therefore you have to submit<br>
+     * \a points_x : {3,6}<br>
+     * \a points_y : {4,8}
+     * 
+     * \param width pen width
+     * \param persistent If false, the overlay gets deleted with the next frame update. Otherwise not.
+     */
     void addPoints(const QList<int> points_x,QList<int> points_y, QColor &color, int width, bool persistent=0);
 
-    /** Writes text on top of the image. The text is immune to image transformation, i.e. rotation or scaling. */
+    /*!
+     * \brief Draws text overlay
+     * 
+     *  Draws a text overlay. The text is immune to image transformation, i.e. rotation or scaling.
+     *  The text is in monospace style.
+     *  You can align the text to the corners.
+     * 
+     * \param location Text alignment to the corners. The location value is analogous to the TextLocation enum. 
+     *                 This is an intermediate solution until we find a way to use the QtRuby binding for enums.
+     *                 For convenience from the ruby side, you can use a wrapper method using symbols. This method 
+     *                 is defined in the Vizkit C++ Extensions in image_view_widget.rb.
+     * \param persistent If false, the overlay gets deleted with the next frame update. Otherwise not.
+     * 
+     * \sa TextLocation
+     */
     void addText(QString text, /*TextLocation*/ int location, QColor color = QColor(Qt::black), bool persistent = 0);
     
+    /*!
+     * \brief Removes overlays.
+     * \param persistent If true, removes also persistent overlays. Otherwise not.
+     */
     void clearOverlays(bool clear_persistent_items = 0);
     
-    /**
-     * Rotates the displayed image about deg degrees while keeping its aspect ratio.
+    /*!
+     * \brief Rotates image display.
+     * Rotates the image display about \a deg degrees. The image gets fit into the widget by keeping its aspect ratio.
      */
     void rotate(int deg);
+    
+    /*!
+     * \brief Saves current image to file.
+     * 
+     * The saved image is either the plain original image or said image with overlays (depending on \a overlay). 
+     * The saved image size is always the size of the original image.
+     * 
+     * \param path Save destination. If not submitted, a file chooser dialog is presented.
+     * \param overlay Saves overlays, too if set to true. Otherwise only the image is being saved.
+     */
     void saveImage(QString path = QString(), bool overlay = 0);
     
     /* Other slots */
+    
+    /*!
+     * \brief Frame input.
+     * 
+     * \param frame The image to be displayed next. The display gets updated immediately.
+     */
     void setFrame(const base::samples::frame::Frame &frame);
+    
+    /*!
+     * \brief Wrapper for QWidget::update(). This is due to some QtRuby limitations.
+     */
     void update2();
     
 signals:
+    
+    /*!
+     * \brief Mouse click coordinates in image.
+     * 
+     * Gets emitted if the image receives a mouse click event. The position is 
+     * in image coordinates where the origin is in the top-left corner.
+     */
     void clickedImage(const QPoint &point);
 
 protected:

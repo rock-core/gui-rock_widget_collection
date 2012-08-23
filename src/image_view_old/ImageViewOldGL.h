@@ -18,6 +18,9 @@
 
 class ImageViewOld;
 
+/*!
+ * @deprecated This class is deprecated and will no longer be maintained. You should use the new ImageView widget.
+ */
 class ImageViewOldGL :public QGLWidget
 {
     Q_OBJECT

@@ -5,6 +5,9 @@
 #include <QtGui/QtGui>
 #include <QtDesigner/QDesignerCustomWidgetInterface>
 
+/*!
+ * @deprecated This class is deprecated and will no longer be maintained. You should use the new ImageView widget.
+ */
 class ImageViewOldPlugin : public QObject , public QDesignerCustomWidgetInterface
 {
   Q_OBJECT

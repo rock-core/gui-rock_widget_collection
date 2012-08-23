@@ -43,7 +43,7 @@
  * large and should be scaled to enhance the viewing. Note though, again, that
  * scaling <b>does</b> cost performance.
  * <p>
- * <h1>Drawing shapes<h1>
+ * <h1>Drawing shapes</h1>
  * One can draw shapes on top of the image. Currently these are:
  * <ul>
  * <li>Texts</li>
@@ -68,6 +68,7 @@
  * 
  * @author Bjoern Lueck, Alexander Duda
  * @version 0.1
+ * @deprecated This class is deprecated and will no longer be maintained. You should use the new ImageView widget.
  */
 
 class QDESIGNER_WIDGET_EXPORT ImageViewOld : public MultiWidget 
