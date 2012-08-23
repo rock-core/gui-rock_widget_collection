@@ -275,7 +275,9 @@ void ImageView::addPoints(const QList<int> points_x,QList<int> points_y, QColor 
 }
 
 void ImageView::addPolygon(QPolygonF &polygon, QColor &color, int width, bool persistent)
-{                     
+{              
+    LOG_DEBUG_S << "Received polygon. Polygon closed: " << polygon.isClosed();
+    LOG_DEBUG_S << "The polygon has a size of " << polygon.size() << ".";
     QGraphicsPolygonItem *polygonPtr = new QGraphicsPolygonItem(polygon);
     QPen pen;
     pen.setColor(color);

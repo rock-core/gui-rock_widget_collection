@@ -45,6 +45,7 @@ def add_points
 
     @view.addPoints(points_x,points_y,Qt::Color.new(255,0,0),1,true)
 end
+
 def update_image_coords point
     @testgui.image_coord_label.set_text "(#{point.x}w,#{point.y}h)"
 end
@@ -86,6 +87,13 @@ end
 @view.addTextWrapper("", :bottomleft, Qt::Color.new(Qt::black), true)
 
 add_points
+
+pointvec = Array.new
+pointvec << Qt::Point.new(1,1) << Qt::Point.new(20,20) << Qt::Point.new(20,100) << Qt::Point.new(1,1)
+poly = Qt::PolygonF.new(pointvec)
+puts "Polygon closed?: #{poly.is_closed}"
+@view.addPolygon(poly, Qt::Color.new(255,0,0), 1, true)
+
 log = Orocos::Log::Replay.open(ARGV[0])
 
 log.front_camera.frame.connect_to @view
