@@ -35,6 +35,16 @@ def add_text
     @view.addTextWrapper(@testgui.text_input.text, :bottomleft, Qt::Color.new(Qt::black), true)
 end
 
+def add_points
+    points_x = Array.new
+    points_y = Array.new
+    0.upto 100 do |i|
+        points_x << 100
+        points_y << i
+    end
+
+    @view.addPoints(points_x,points_y,Qt::Color.new(255,0,0),1,true)
+end
 def update_image_coords point
     @testgui.image_coord_label.set_text "(#{point.x}w,#{point.y}h)"
 end
@@ -75,6 +85,7 @@ end
 @view.addTextWrapper("AVALON im Studiobad", :bottomleft, Qt::Color.new(Qt::black), true)
 @view.addTextWrapper("", :bottomleft, Qt::Color.new(Qt::black), true)
 
+add_points
 log = Orocos::Log::Replay.open(ARGV[0])
 
 log.front_camera.frame.connect_to @view

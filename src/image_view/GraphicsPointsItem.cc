@@ -31,7 +31,7 @@ QRectF GraphicsPointsItem::calcBoundingRect() const
     
     // Adjust rect to pen width
     int penwidth = pen.width();
-    LOG_DEBUG_S << "GraphicsPointsItem: pen width: " << penwidth;
+//     LOG_DEBUG_S << "GraphicsPointsItem: pen width: " << penwidth;
     rect = QRect(left_top.x()-penwidth/2, left_top.y()-penwidth/2,
                  rect.width()+penwidth, rect.height()+penwidth);
     
