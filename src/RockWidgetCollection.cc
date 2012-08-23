@@ -26,25 +26,26 @@ Q_EXPORT_PLUGIN2(RockWidgetCollection, RockWidgetCollection)
 RockWidgetCollection::RockWidgetCollection(QObject *parent)
        : QObject(parent)
 {
-   widgets.append(new ImageViewOldPlugin(this));
-   widgets.append(new SonarViewPlugin(this));
-   widgets.append(new RangeViewPlugin(this));
-   widgets.append(new PlotWidgetPlugin(this));
+// *** Please sort these alphabetically after the displayed name! ***
    widgets.append(new ArtificialHorizonPlugin(this));
+   widgets.append(new CompassPlugin(this));
+   widgets.append(new ImageViewPlugin(this));
+   widgets.append(new ImageViewOldPlugin(this));
    widgets.append(new MultiViewPlugin(this));
    widgets.append(new MultiWidgetPlugin(this));
-   widgets.append(new CompassPlugin(this));
    widgets.append(new OrientationPlugin(this));
-   widgets.append(new VirtualJoystickPlugin(this));
-   widgets.append(new RockSliderPlugin(this));
    widgets.append(new Plot2dPlugin(this));
-   widgets.append(new WaterfallDisplayPlugin(this));
-   widgets.append(new TimelinePlugin(this));
-   widgets.append(new ImageViewPlugin(this));
+   widgets.append(new PlotWidgetPlugin(this));
    widgets.append(new ProgressIndicatorPlugin(this));
+   widgets.append(new RangeViewPlugin(this));
+   widgets.append(new RockSliderPlugin(this));
 #ifdef USE_VTK
    widgets.append(new SonarDisplayPlugin(this));
 #endif
+   widgets.append(new SonarViewPlugin(this));
+   widgets.append(new TimelinePlugin(this));
+   widgets.append(new VirtualJoystickPlugin(this));
+   widgets.append(new WaterfallDisplayPlugin(this));
 }
 
 QList<QDesignerCustomWidgetInterface*> RockWidgetCollection::customWidgets() const

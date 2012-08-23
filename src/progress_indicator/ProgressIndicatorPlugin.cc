@@ -44,6 +44,9 @@ QString ProgressIndicatorPlugin::domXml() const
 //            "  <property name=\"whatsThis\" >\n"
 //            "   <string>ProgressIndicator</string>\n"
 //            "  </property>\n"
+            "  <property name=\"displayedWhenStopped\">\n"
+            "   <bool>true</bool>\n"
+            "  </property>\n"
             " </widget>\n"
             "</ui>\n";
 }

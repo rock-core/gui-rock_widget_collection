@@ -5,6 +5,7 @@
     <file alias="rotate.svg">artificial_horizon/resources/rotate.svg</file>
     <file alias="stationary.svg">artificial_horizon/resources/stationary.svg</file>
     <file alias="artificial_horizon/icon.png">artificial_horizon/resources/icon.png</file>
+    <file alias="artificial_horizon/compass_icon.png">artificial_horizon/resources/compass_icon.png</file>
     <file alias="sonar_view/icon.png">sonar_view/resources/icon.png</file>
     <file alias="image_view_old/icon.png">image_view_old/resources/icon.png</file>
     <file alias="plotting/icon.png">plotting/resources/icon.png</file>
@@ -12,5 +13,6 @@
     <file alias="timeline/index_slider">timeline/resources/index_slider.png</file>
     <file alias="timeline/icon">timeline/resources/icon.png</file>
     <file alias="progress_indicator/icon">progress_indicator/resources/icon.png</file>
+    <file alias="virtual_joystick/icon.png">virtual_joystick/resources/icon.png</file>
  </qresource>
  </RCC>

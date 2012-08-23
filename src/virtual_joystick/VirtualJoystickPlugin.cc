@@ -41,7 +41,7 @@
 
  QIcon VirtualJoystickPlugin::icon() const
  {
-     return QIcon(":/image_view/icon.png");
+     return QIcon(":/virtual_joystick/icon.png");
  }
 
  QString VirtualJoystickPlugin::toolTip() const

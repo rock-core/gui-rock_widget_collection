@@ -40,7 +40,7 @@
 
  QIcon CompassPlugin::icon() const
  {
-     return QIcon(":/artificial_horizon/icon.png");
+     return QIcon(":/artificial_horizon/compass_icon.png");
  }
 
  QString CompassPlugin::toolTip() const
