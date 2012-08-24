@@ -1,4 +1,4 @@
-/**
+/*!
  * \file ImageView.cc
  */
 

@@ -1,4 +1,4 @@
-/**
+/*!
  * \file ImageView.h
  */
 
@@ -14,8 +14,31 @@
 
 #include "GraphicsPointsItem.h"
 
-/**
+/*!
  * \brief Image viewer with optional text and geometry overlay functionality.
+ * 
+ * ImageView is designed to display image frames, do minor transformation on
+ * the image or enhance it with several possible overlays. The image is always
+ * displayed completely while keeping its aspect ratio.
+ * 
+ * Transformation means resizing and rotation by 90 degree steps. The transformation
+ * is only applied to the displayed image and is not kept in saved (exported) images.
+ * 
+ * There are multiple overlay possibilities to choose from like simple geometric forms
+ * or text. Except for text overlays, every overlay is attatched to the image, i.e. any
+ * transformation the image might receive is going to be executed on the overlay as well.
+ * For example: The overlays are immune to image rotation or scaling. They simple get scaled
+ * and rotated as well.
+ * Text overlays, on the other hand, are considered as status information. They are attatched
+ * to the widget and do not care about image transformation. Nevertheless, they react to widget
+ * transformation, e.g. they keep their alignment to the assigned widget corner.
+ * 
+ * Overlays -- image- or widget attatched -- may be set persistent or volatile. Volatile overlays
+ * are being removed with the next frame update while persistent overlays stay until you remove
+ * them. Currently, you can only remove all (persistent) overlays at once.
+ * 
+ * It is planned to extend ImageView to work as GStreamer video sink in a future version.
+ * 
  * \author Allan Conquest (allan.conquest[at]dfki.de)
  */
 class ImageView : public QWidget
@@ -23,16 +46,31 @@ class ImageView : public QWidget
     Q_OBJECT
     Q_CLASSINFO("Author", "Allan Conquest") 
     
+    /*!
+     * \brief The widget's background color.
+     * 
+     * You see the widget's background color in the areas not covered by the image. This is 
+     * likely to happen because of the keeping of the images aspect ratio while fitting it
+     * in the view.
+     */
     Q_PROPERTY(QColor backgroundColor READ getBackgroundColor WRITE setBackgroundColor)
     
+    /*!
+     * \brief Display progress indicator widget if no frames have being received for a defined time.
+     * \sa ProgressIndicator
+     */
     Q_PROPERTY(bool use_progress_indicator READ useProgressIndicator WRITE setUseProgressIndicator)
     
-    /** The time without frame update in ms after which the progress indicator gets started  */
+    /*! \brief The time without frame update in ms after which the progress indicator gets started. */
     Q_PROPERTY(int progress_indicator_timeout READ getProgressIndicatorTimeout WRITE setProgressIndicatorTimeout)
     
-    /** Do antialiased transformation by using costly techniques like bilinear filtering. This is produces
+    /*! 
+     *  \brief Usage of antialiasing techniques during image transformation.
+     *  
+     *  Do antialiased transformation by using costly techniques like bilinear filtering. That produces
      *  higher CPU load but the displayed image is much smoother. This property only applies to the displayed
-     *  image - not to the overlays. */
+     *  image - not to the overlays.
+     */
     Q_PROPERTY(bool use_smooth_transformation READ useSmoothTransformation WRITE setSmoothTransformation)
     
 #ifdef USE_GST
@@ -58,6 +96,11 @@ public:
     ImageView(QWidget *parent = 0);
     virtual ~ImageView();
     
+    /*!
+     * \brief Text overlay alignment specification
+     * 
+     * The alignment is relative to the corners of the widget (not to the image!).
+     */
     enum TextLocation
     {
         TOPLEFT,
@@ -162,6 +205,7 @@ public slots:
     
     /*!
      * \brief Rotates image display.
+     * 
      * Rotates the image display about \a deg degrees. The image gets fit into the widget by keeping its aspect ratio.
      */
     void rotate(int deg);
