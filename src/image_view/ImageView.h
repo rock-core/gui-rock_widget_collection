@@ -229,7 +229,6 @@ private:
     QList<QGraphicsItem*> volatileDrawItems;
 
     QSize imageSize;
-    QString timestamp;
 
     frame_helper::FrameQImageConverter frame_converter;
     

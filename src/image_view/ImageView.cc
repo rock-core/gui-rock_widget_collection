@@ -323,6 +323,12 @@ void ImageView::addText(QString text, /*TextLocation*/ int location, QColor colo
     
     QLabel *label = NULL;
     QGraphicsWidget *textLabel = NULL;
+    int margin = 1;
+    
+    // Avoid displaying empty labels, i.e. labels with margin only and no text
+    if(text.isEmpty()) {
+        margin = 0;
+    }
     
     // Label for text location already exists?
     if(overlayMap.contains(location)) {
@@ -351,10 +357,11 @@ void ImageView::addText(QString text, /*TextLocation*/ int location, QColor colo
     palette.setColor(QPalette::Text, color); // <-- this one seems to be working but WindowText should be correct according to docu
         
     label->setPalette(palette);
+    label->setMargin(margin);
        
-    QFont font;
+    QFont font("Monospace");
     font.setPointSize(12);
-    font.setStyleHint(QFont::Monospace);
+    font.setStyleHint(QFont::TypeWriter);
     label->setFont(font);
     
     label->setMaximumSize(label->sizeHint());
@@ -467,8 +474,6 @@ void ImageView::setFrame(const base::samples::frame::Frame &frame)
     }
     
     //std::cout << "ImageItem BoundingRect: x=" << imageItem->boundingRect().width() <<", y=" << imageItem->boundingRect().height() << std::endl;
-    timestamp = QString::fromStdString(frame.time.toString());
-    addText(timestamp, BOTTOMRIGHT, QColor(Qt::blue), 0); // TODO remove colons from timestamp string. get timeval object?
     
     /* Resize and repositioning if frame size changes (and on start) */
     if(imageSize != oldSize) {
