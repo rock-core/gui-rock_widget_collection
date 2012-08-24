@@ -26,9 +26,12 @@ ImageView::ImageView(QWidget *parent)
         bgColor(QColor(Qt::black)),
         use_progress_indicator(true),
         use_smooth_transformation(true),
-        progress_indicator_timeout(2500),
+        progress_indicator_timeout(2500)
+#ifdef USE_GST
+        ,
         pipelineDescription("videotestsrc ! ximagesink"), //qtglvideosink
         use_gl(false)
+#endif
 {
     resize(500,500); // TODO should be removed
     imageItem = NULL;
@@ -63,19 +66,18 @@ ImageView::ImageView(QWidget *parent)
     imageScene->setBackgroundBrush(getBackgroundColor());
     imageScene->installEventFilter(this); // to get mouse press events to emit clicked image coordinate
     
-    imageView = new QGraphicsView(imageScene);
-    
-    if(use_gl) {
-        // Indicator to use qtglvideosink (hardware rendering!) instead of qtvideosink
-        imageView->setViewport(new QGLWidget); 
-    }
-    
+    imageView = new QGraphicsView(imageScene); 
     imageView->setAlignment(Qt::AlignCenter);
     imageView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     imageView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     imageView->setFocusPolicy(Qt::NoFocus);
 
-#ifdef USE_GST    
+#ifdef USE_GST
+    if(use_gl) {
+        // Indicator to use qtglvideosink (hardware rendering!) instead of qtvideosink
+        imageView->setViewport(new QGLWidget); 
+    }
+    
     QGst::Ui::GraphicsVideoSurface *surface = NULL;
     QGst::Ui::GraphicsVideoWidget *widget = NULL;
     
@@ -200,17 +202,6 @@ void ImageView::setSmoothTransformation(bool smooth)
         imageItem->setTransformationMode(Qt::FastTransformation);
 }
 
-
-const QString ImageView::getPipelineDescription() const
-{
-    return pipelineDescription;
-}
-
-void ImageView::setPipelineDescription(QString descr)
-{
-    this->pipelineDescription = descr;
-}
-
 const int ImageView::getProgressIndicatorTimeout() const
 {
     return progress_indicator_timeout;
@@ -222,15 +213,27 @@ void ImageView::setProgressIndicatorTimeout(int timeout)
     progress_indicator_timer->setInterval(timeout);
 }
 
-bool ImageView::getUseGl()
-{
-    return this->use_gl;
-}
+#ifdef USE_GST
+    const QString ImageView::getPipelineDescription() const
+    {
+        return pipelineDescription;
+    }
 
-void ImageView::setUseGl(bool use_gl)
-{
-    this->use_gl = use_gl;
-}
+    void ImageView::setPipelineDescription(QString descr)
+    {
+        this->pipelineDescription = descr;
+    }
+
+    bool ImageView::getUseGl()
+    {
+        return this->use_gl;
+    }
+
+    void ImageView::setUseGl(bool use_gl)
+    {
+        this->use_gl = use_gl;
+    }
+#endif /* USE_GST */
 
 void ImageView::addCircle(QPointF &center, double radius, QColor &color, int width, bool persistent)
 {

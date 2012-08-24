@@ -35,16 +35,24 @@ class ImageView : public QWidget
      *  image - not to the overlays. */
     Q_PROPERTY(bool use_smooth_transformation READ useSmoothTransformation WRITE setSmoothTransformation)
     
+#ifdef USE_GST
     /* Properties for use with GStreamer. That means in particluar that any of 
      * the following properties is unimportant if useGst is set to false. */
-    
-    /** Text based GStreamer pipeline description */
+
+    /*! 
+     *  \brief Text based GStreamer pipeline description 
+     *  \warning GStreamer is currently not supported.
+     */
     Q_PROPERTY(QString pipelineDescription READ getPipelineDescription WRITE setPipelineDescription)
     
-    /** Use OpenGL. Makes only sense if your graphics hardware supports OpenGL. 
-     * If set to false, software rendering is used instead. */
+    /*! 
+     *  \brief Usage of OpenGl.
+     *  \warning This is currently not supported.
+     *  Makes only sense if your graphics hardware supports OpenGL. 
+     *  If set to false, software rendering is used instead.
+     */
     Q_PROPERTY(bool useGl READ getUseGl WRITE setUseGl)
-    
+#endif
     
 public:
     ImageView(QWidget *parent = 0);
@@ -66,12 +74,15 @@ public slots:
     void setUseProgressIndicator(bool use);
     bool useSmoothTransformation();
     void setSmoothTransformation(bool smooth);
-    const QString getPipelineDescription() const;
-    void setPipelineDescription(QString descr);
     const int getProgressIndicatorTimeout() const;
     void setProgressIndicatorTimeout(int timeout);
+    
+#ifdef USE_GST
+    const QString getPipelineDescription() const;
+    void setPipelineDescription(QString descr);
     bool getUseGl();
     void setUseGl(bool use_gl);
+#endif
     
     /* Overlays */
     
@@ -211,9 +222,11 @@ private:
     bool use_progress_indicator;
     bool use_smooth_transformation;
     int progress_indicator_timeout;
+#ifdef USE_GST
     QString pipelineDescription;
     bool use_gl;
-
+#endif
+    
     QGraphicsView *imageView;
     QGraphicsProxyWidget *imageViewProxy;
     QGraphicsScene *imageScene;
