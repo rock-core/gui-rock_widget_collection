@@ -234,6 +234,16 @@ public slots:
      * \brief Wrapper for QWidget::update(). This is due to some QtRuby limitations.
      */
     void update2();
+
+    /*!
+     * \brief returns the real height of the underlaying widget
+     */
+    int getHeight() const;
+
+    /*!
+     * \brief returns the real width of the underlaying widget
+     */
+    int getWidth() const;
     
 signals:
     

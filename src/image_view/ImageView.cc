@@ -613,6 +613,16 @@ void ImageView::setItemPositions()
                              imageView->height()/2 - progress_indicator->height()/2);
 }
 
+int ImageView::getHeight() const
+{
+    return imageSize.height();
+}
+
+int ImageView::getWidth() const
+{
+    return imageSize.width();
+}
+
 void ImageView::setupContextMenu()
 {
     contextMenu = new QMenu(this);
