@@ -54,8 +54,8 @@ void ArtificialHorizon::paintEvent(QPaintEvent*)
     QPoint point=QPoint(0,0);
     QTransform transform;
     transform.translate(background.width()/2.0,background.height()/2.0);
-    transform.rotate(rollangle*180.0/M_PI);
-    transform.translate(0,pitchangle*180.0/M_PI*3.5);
+    transform.rotate(-rollangle*180.0/M_PI);
+    transform.translate(0,-pitchangle*180.0/M_PI*3.5);
     transform.translate(-background.width()/2.0,-background.height()/2.0);
 
     QPainter painter(this);
@@ -67,7 +67,7 @@ void ArtificialHorizon::paintEvent(QPaintEvent*)
     painter.drawImage(0,0, rotate); // draw the stationary
 
     transform.translate(background.width()/2.0,background.height()/2.0);
-    transform.translate(0,-pitchangle*180.0/M_PI*3.5);
+    transform.translate(0,pitchangle*180.0/M_PI*3.5);
     transform.translate(-background.width()/2.0,-background.height()/2.0);
     painter.setTransform(transform);
 
