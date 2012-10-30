@@ -14,4 +14,20 @@
   <rosdep name="qt4" />
   <rosdep name="qt4-opengl" />
   <versioncontrol type="git" url="" />
+
+  <qtwidget name="PlotWidget">
+    <image>resources/plotWidget1.jpeg</image>
+  </qtwidget>
+  <qtwidget name="ImageView">
+    <image>resources/imageView1.jpeg</image>
+  </qtwidget>
+  <qtwidget name="OrientationView">
+    <image>resources/orientationView1.jpeg</image>
+  </qtwidget>
+  <qtwidget name="RangeView">
+    <image>resources/rangeView1.jpeg</image>
+  </qtwidget>
+  <qtwidget name="VirtualJoystick">
+    <image>resources/virtualJoystick1.jpeg</image>
+  </qtwidget>
 </package>
