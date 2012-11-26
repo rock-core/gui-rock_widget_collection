@@ -91,6 +91,9 @@ SET(COLLECTION_MOC_HDRS
   image_view/ContextMenuGraphicsWidget.h
   progress_indicator/ProgressIndicator.h
   progress_indicator/ProgressIndicatorPlugin.h
+  sonar_widget/SonarPlot.h
+  sonar_widget/SonarWidget.h
+  sonar_widget/SonarWidgetPlugin.h
 )
 
 SET(COLLECTION_HDRS
@@ -140,6 +143,9 @@ SET(COLLECTION_HDRS
   timeline/SlideBarItem.h
   image_view/ImageView.h
   progress_indicator/ProgressIndicator.h
+  sonar_widget/SonarPlot.h
+  sonar_widget/SonarWidget.h
+  sonar_widget/SonarWidgetPlugin.h
 )
 
 FILE(GLOB COLLECTION_SOURCES 
@@ -156,6 +162,7 @@ FILE(GLOB COLLECTION_SOURCES
     timeline/*.cc
     image_view/*.cc
     progress_indicator/*.cc
+    sonar_widget/*.cc
     *.cc)
     
 if (USE_VTK)

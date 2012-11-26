@@ -16,6 +16,7 @@
 #include "timeline/TimelinePlugin.h"
 #include "image_view/ImageViewPlugin.h"
 #include "progress_indicator/ProgressIndicatorPlugin.h"
+#include "sonar_widget/SonarWidgetPlugin.h"
 
 #ifdef USE_VTK
 #include "vtk/sonar_display/SonarDisplayPlugin.h"
@@ -46,6 +47,7 @@ RockWidgetCollection::RockWidgetCollection(QObject *parent)
    widgets.append(new TimelinePlugin(this));
    widgets.append(new VirtualJoystickPlugin(this));
    widgets.append(new WaterfallDisplayPlugin(this));
+   widgets.append(new SonarWidgetPlugin(this));
 }
 
 QList<QDesignerCustomWidgetInterface*> RockWidgetCollection::customWidgets() const
