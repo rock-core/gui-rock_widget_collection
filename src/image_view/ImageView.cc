@@ -409,8 +409,9 @@ void ImageView::saveImage(QString path, bool overlay)
     /* Get destination path if not submitted */
     if(path.isEmpty()) {
         path = QFileDialog::getSaveFileName(this, "Save Image",
-                                path+"rock_image.png",
+                                last_path,
                                 "Images (*.png)");
+        last_path = path;
     }
     
     /* Save original image or also the overlay? */

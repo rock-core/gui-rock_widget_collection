@@ -276,6 +276,7 @@ private:
     bool use_progress_indicator;
     bool use_smooth_transformation;
     int progress_indicator_timeout;
+    QString last_path;
 #ifdef USE_GST
     QString pipelineDescription;
     bool use_gl;
