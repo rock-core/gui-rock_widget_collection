@@ -110,6 +110,8 @@ public:
     };
     Q_ENUMS(TextLocation)
     
+    QSize sizeHint() const;
+    
 public slots:
     const QColor& getBackgroundColor() const;
     void setBackgroundColor(const QColor & color);

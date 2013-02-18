@@ -33,7 +33,8 @@ ImageView::ImageView(QWidget *parent)
         use_gl(false)
 #endif
 {
-    resize(500,500); // TODO should be removed
+    setMinimumSize(220,170);
+    
     imageItem = NULL;
     
     /* Configure progress indicator */
@@ -152,6 +153,11 @@ ImageView::ImageView(QWidget *parent)
 ImageView::~ImageView()
 {
     
+}
+
+QSize ImageView::sizeHint() const
+{
+    return QSize(500,500);
 }
 
 const QColor& ImageView::getBackgroundColor() const
