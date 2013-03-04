@@ -34,6 +34,7 @@ ImageView::ImageView(QWidget *parent)
 #endif
 {
     setMinimumSize(220,170);
+    setContentsMargins(0,0,0,0);
     
     imageItem = NULL;
     
@@ -72,6 +73,8 @@ ImageView::ImageView(QWidget *parent)
     imageView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     imageView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     imageView->setFocusPolicy(Qt::NoFocus);
+    imageView->setFrameStyle(QFrame::NoFrame);
+    imageView->setContentsMargins(0,0,0,0);
 
 #ifdef USE_GST
     if(use_gl) {
@@ -119,6 +122,8 @@ ImageView::ImageView(QWidget *parent)
     fixedOverlayView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     fixedOverlayView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     fixedOverlayView->setFocusPolicy(Qt::NoFocus);
+    fixedOverlayView->setFrameStyle(QFrame::NoFrame);
+    fixedOverlayView->setContentsMargins(0,0,0,0);
     
     /* Layout for outer scene to help positioning text overlay */
     overlay_grid = new QGraphicsGridLayout;
