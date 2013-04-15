@@ -33,6 +33,7 @@ ImageView::ImageView(QWidget *parent)
         use_gl(false)
 #endif
 {
+    setWindowTitle("ImageView");
     setMinimumSize(220,170);
     setContentsMargins(0,0,0,0);
     
