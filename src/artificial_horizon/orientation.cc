@@ -15,6 +15,9 @@ OrientationView::OrientationView(QWidget* parent): MultiWidget(parent)
   layout->addWidget(horizon);
   setMinimumWidth(400);
   setMinimumHeight(100);
+  
+  // minimum size displaying both widgets completely
+  //setMinimumSize(compass->minimumSize().expandedTo(horizon->minimumSize()));
 }
 
 OrientationView* OrientationView::newInstance()

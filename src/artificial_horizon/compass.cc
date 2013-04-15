@@ -11,6 +11,9 @@
 
 Compass::Compass(QWidget* parent): MultiWidget(parent)
 {
+  setMinimumSize(160,160);
+  setWindowTitle("OrientationView");
+  
   // add a layout
   layout = new QVBoxLayout;
   setLayout(layout);

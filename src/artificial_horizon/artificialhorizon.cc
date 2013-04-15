@@ -9,6 +9,8 @@
 ArtificialHorizon::ArtificialHorizon(QWidget* parent):
 QWidget(parent)
 {
+    setWindowTitle("ArtificialHorizon");
+    setMinimumSize(160,160);
     rollangle  = 0;
     pitchangle = 0;
     setDataDir(":/");
