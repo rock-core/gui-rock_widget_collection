@@ -26,7 +26,17 @@ ImageView::ImageView(QWidget *parent)
         bgColor(QColor(Qt::black)),
         use_progress_indicator(true),
         use_smooth_transformation(true),
-        progress_indicator_timeout(2500)
+        progress_indicator_timeout(2500),
+        rgb_swapped(false),
+        invert_color(false),
+        progress_indicator_timer(this),
+        context_menu(this),
+        rotate_image_clockwise_act(this),
+        save_image_act(this),
+        save_image_overlay_act(this),
+        activate_progress_indicator_act(this),
+        rgb_swapped_act(this),
+        invert_color_act(this)
 #ifdef USE_GST
         ,
         pipelineDescription("videotestsrc ! ximagesink"), //qtglvideosink
@@ -40,16 +50,14 @@ ImageView::ImageView(QWidget *parent)
     imageItem = NULL;
     
     /* Configure progress indicator */
-    progress_indicator = new ProgressIndicator;
-    progress_indicator->setAnimationDelay(40);
-    progress_indicator->setDisplayedWhenStopped(false);
-    progress_indicator->resize(30,30);
-    progress_indicator->hide();
+    progress_indicator.setAnimationDelay(40);
+    progress_indicator.setDisplayedWhenStopped(false);
+    progress_indicator.resize(30,30);
+    progress_indicator.hide();
     
     /* Set up timer for progress indicator */
-    progress_indicator_timer = new QTimer(this);
-    progress_indicator_timer->setInterval(getProgressIndicatorTimeout());
-    connect(progress_indicator_timer, SIGNAL(timeout()), this, SLOT(startProgressIndicator()));
+    progress_indicator_timer.setInterval(getProgressIndicatorTimeout());
+    connect(&progress_indicator_timer, SIGNAL(timeout()), this, SLOT(startProgressIndicator()));
     
     setupContextMenu();
     
@@ -150,7 +158,7 @@ ImageView::ImageView(QWidget *parent)
     // Nest inner view in outer scene
     imageViewProxy = fixedOverlayScene->addWidget(imageView);
     
-    progress_indicator->setParent(fixedOverlayView);
+    progress_indicator.setParent(fixedOverlayView);
      
     setItemPositions();
     update();
@@ -158,7 +166,6 @@ ImageView::ImageView(QWidget *parent)
 
 ImageView::~ImageView()
 {
-    
 }
 
 QSize ImageView::sizeHint() const
@@ -186,17 +193,17 @@ bool ImageView::useProgressIndicator()
 void ImageView::setUseProgressIndicator(bool use)
 {
     use_progress_indicator = use;
-    progress_indicator->hide();
+    progress_indicator.hide();
     
     if(use) {
-        progress_indicator_timer->start();
+        progress_indicator_timer.start();
         // TODO Maybe unwanted behavior since the timer starts even if there is not a single frame yet.
         //      But it is nice if you trigger the use of the progress indicator while the replay is stopped.
     }
     else {
         // Disable possibly already running widget
-        progress_indicator_timer->stop();
-        progress_indicator->stopAnimation();
+        progress_indicator_timer.stop();
+        progress_indicator.stopAnimation();
     }
 }
 
@@ -222,7 +229,7 @@ const int ImageView::getProgressIndicatorTimeout() const
 void ImageView::setProgressIndicatorTimeout(int timeout)
 {
     progress_indicator_timeout = timeout;
-    progress_indicator_timer->setInterval(timeout);
+    progress_indicator_timer.setInterval(timeout);
 }
 
 #ifdef USE_GST
@@ -460,20 +467,41 @@ void ImageView::saveImage(QString path, bool overlay)
 
 void ImageView::setFrame(const base::samples::frame::Frame &frame)
 {   
+    if(1 == frame_converter.copyFrameToQImageRGB888(image,frame)) {
+        LOG_WARN("Frame size changed while converting frame to QImage (says converter)");
+    }
+    processImage();
+    refresh();
+}
+
+
+void ImageView::setImage(const QImage &image)
+{   
+    this->image = image.copy();
+    processImage();
+    refresh();
+}
+
+void ImageView::processImage()
+{
+    if(getInvertColor())
+        image.invertPixels();
+    if(getRgbSwapped())
+        image = image.rgbSwapped();
+}
+
+void ImageView::refresh()
+{
     if(use_progress_indicator) {
-        progress_indicator->hide();
-        progress_indicator_timer->start();
-        progress_indicator->stopAnimation();
+        progress_indicator.hide();
+        progress_indicator_timer.start();
+        progress_indicator.stopAnimation();
     }
     
 #ifdef USE_GST
     // TODO
 #else
     clearOverlays();
-
-    if(1 == frame_converter.copyFrameToQImageRGB888(image,frame)) {
-        LOG_WARN("Frame size changed while converting frame to QImage (says converter)");
-    }
 
     // Backup image size for detecting size change
     QSize oldSize = imageSize;
@@ -540,7 +568,7 @@ void ImageView::resizeEvent(QResizeEvent *event)
 
 void ImageView::contextMenuEvent ( QContextMenuEvent * event )
 {
-   contextMenu->exec(event->globalPos());
+   context_menu.exec(event->globalPos());
 }
 
 bool ImageView::eventFilter(QObject* obj, QEvent* event)
@@ -571,7 +599,7 @@ bool ImageView::eventFilter(QObject* obj, QEvent* event)
 void ImageView::displayContextMenu(QPoint screenPos)
 {
     LOG_DEBUG("Got context menu request signal");
-    contextMenu->exec(screenPos);
+    context_menu.exec(screenPos);
 }
 
 void ImageView::rotate_clockwise()
@@ -591,8 +619,8 @@ void ImageView::save_image_overlay()
 
 void ImageView::startProgressIndicator()
 {
-    progress_indicator->show();
-    progress_indicator->startAnimation();
+    progress_indicator.show();
+    progress_indicator.startAnimation();
 }
 
 
@@ -622,8 +650,8 @@ void ImageView::update2()
 void ImageView::setItemPositions()
 {
     // Align to center of view (scene gets always fit in view)   
-    progress_indicator->move(imageView->width()/2 - progress_indicator->width()/2,
-                             imageView->height()/2 - progress_indicator->height()/2);
+    progress_indicator.move(imageView->width()/2 - progress_indicator.width()/2,
+                             imageView->height()/2 - progress_indicator.height()/2);
 }
 
 int ImageView::getHeight() const
@@ -636,32 +664,53 @@ int ImageView::getWidth() const
     return imageSize.width();
 }
 
+void ImageView::setInvertColor(bool invert)
+{
+    if(invert_color == invert)
+        return;
+    invert_color=invert;
+    image.invertPixels();
+    refresh();
+}
+void ImageView::setRgbSwapped(bool swapped)
+{
+    if(rgb_swapped == swapped)
+        return;
+    rgb_swapped=swapped;
+    image = image.rgbSwapped();
+    refresh();
+}
+
 void ImageView::setupContextMenu()
 {
-    contextMenu = new QMenu(this);
+    rgb_swapped_act.setText("RGB Swapped");
+    rgb_swapped_act.setCheckable(true);
+    rgb_swapped_act.setChecked(getRgbSwapped());
+    connect(&rgb_swapped_act,SIGNAL(triggered(bool)),this,SLOT(setRgbSwapped(bool)));
+    context_menu.addAction(&rgb_swapped_act);
+
+    invert_color_act.setText("Invert Color");
+    invert_color_act.setCheckable(true);
+    invert_color_act.setChecked(getInvertColor());
+    connect(&invert_color_act,SIGNAL(triggered(bool)),this,SLOT(setInvertColor(bool)));
+    context_menu.addAction(&invert_color_act);
+
+    rotate_image_clockwise_act.setText("Rotate 90 deg");
+    connect(&rotate_image_clockwise_act,SIGNAL(triggered()),this,SLOT(rotate_clockwise()));
+    context_menu.addAction(&rotate_image_clockwise_act);
     
-    rotate_image_clockwise_act = new QAction("Rotate 90 deg.",this);
-    connect(rotate_image_clockwise_act,SIGNAL(triggered()),this,SLOT(rotate_clockwise()));
-    contextMenu->addAction(rotate_image_clockwise_act);
+    save_image_act.setText("Save");
+    connect(&save_image_act,SIGNAL(triggered()),this,SLOT(save_image()));
+    context_menu.addAction(&save_image_act);
     
-    save_image_act = new QAction("Save image", this);
-    connect(save_image_act,SIGNAL(triggered()),this,SLOT(save_image()));
-    contextMenu->addAction(save_image_act);
+    save_image_overlay_act.setText("Save with Overlay");
+    connect(&save_image_overlay_act,SIGNAL(triggered()),this,SLOT(save_image_overlay()));
+    context_menu.addAction(&save_image_overlay_act);
     
-    save_image_overlay_act = new QAction("Save image with overlay", this);
-    connect(save_image_overlay_act,SIGNAL(triggered()),this,SLOT(save_image_overlay()));
-    contextMenu->addAction(save_image_overlay_act);
-    
-    activate_progress_indicator_act = new QAction("Use progress indicator", this);
-    activate_progress_indicator_act->setCheckable(true);
-    activate_progress_indicator_act->setChecked(use_progress_indicator);
-    connect(activate_progress_indicator_act,SIGNAL(triggered(bool)),this,SLOT(setUseProgressIndicator(bool)));
-    contextMenu->addAction(activate_progress_indicator_act);
-    
-    activate_smooth_transformation_act = new QAction("Use smooth transformation", this);
-    activate_smooth_transformation_act->setCheckable(true);
-    activate_smooth_transformation_act->setChecked(use_smooth_transformation);
-    connect(activate_smooth_transformation_act,SIGNAL(triggered(bool)),this,SLOT(setSmoothTransformation(bool)));
-    contextMenu->addAction(activate_smooth_transformation_act);  
+    activate_progress_indicator_act.setText("Show Progress-Indicator");
+    activate_progress_indicator_act.setCheckable(true);
+    activate_progress_indicator_act.setChecked(use_progress_indicator);
+    connect(&activate_progress_indicator_act,SIGNAL(triggered(bool)),this,SLOT(setUseProgressIndicator(bool)));
+    context_menu.addAction(&activate_progress_indicator_act);
 }
 

@@ -14,6 +14,8 @@
 
 #include "GraphicsPointsItem.h"
 
+//TODO NOT ALL OBJECTS GET DELETED AFTER DECONSTRUCTION
+
 /*!
  * \brief Image viewer with optional text and geometry overlay functionality.
  * 
@@ -72,6 +74,9 @@ class ImageView : public QWidget
      *  image - not to the overlays.
      */
     Q_PROPERTY(bool use_smooth_transformation READ useSmoothTransformation WRITE setSmoothTransformation)
+
+    Q_PROPERTY(bool rgb_swapped READ getRgbSwapped WRITE setRgbSwapped)
+    Q_PROPERTY(bool invert_color READ getInvertColor WRITE setInvertColor)
     
 #ifdef USE_GST
     /* Properties for use with GStreamer. That means in particluar that any of 
@@ -121,6 +126,11 @@ public slots:
     void setSmoothTransformation(bool smooth);
     const int getProgressIndicatorTimeout() const;
     void setProgressIndicatorTimeout(int timeout);
+
+    void setInvertColor(bool invert);
+    bool getInvertColor(){return invert_color;};
+    void setRgbSwapped(bool swapped);
+    bool getRgbSwapped(){return rgb_swapped;};
     
 #ifdef USE_GST
     const QString getPipelineDescription() const;
@@ -231,6 +241,9 @@ public slots:
      * \param frame The image to be displayed next. The display gets updated immediately.
      */
     void setFrame(const base::samples::frame::Frame &frame);
+    void setImage(const QImage &image);
+    void refresh();
+    void processImage();
     
     /*!
      * \brief Wrapper for QWidget::update(). This is due to some QtRuby limitations.
@@ -246,6 +259,8 @@ public slots:
      * \brief returns the real width of the underlaying widget
      */
     int getWidth() const;
+
+
     
 signals:
     
@@ -278,6 +293,8 @@ private:
     bool use_progress_indicator;
     bool use_smooth_transformation;
     int progress_indicator_timeout;
+    bool rgb_swapped;
+    bool invert_color;
     QString last_path;
 #ifdef USE_GST
     QString pipelineDescription;
@@ -302,16 +319,17 @@ private:
 
     frame_helper::FrameQImageConverter frame_converter;
     
-    ProgressIndicator *progress_indicator;
-    QTimer *progress_indicator_timer;
+    ProgressIndicator progress_indicator;
+    QTimer progress_indicator_timer;
     
     /* Menus and actions */
-    QMenu *contextMenu;
-    QAction *rotate_image_clockwise_act;
-    QAction *save_image_act;
-    QAction *save_image_overlay_act;
-    QAction *activate_progress_indicator_act;
-    QAction *activate_smooth_transformation_act;
+    QMenu context_menu;
+    QAction rotate_image_clockwise_act;
+    QAction save_image_act;
+    QAction save_image_overlay_act;
+    QAction activate_progress_indicator_act;
+    QAction rgb_swapped_act;
+    QAction invert_color_act;
 };
 
 #endif /* IMAGE_VIEW_H */
