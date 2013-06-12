@@ -19,12 +19,17 @@ img(10, 10, QImage::Format_RGB888)
 	use_openGL=false;
 	setOpenGL(use_openGL);
 	lastScale=0;
-	
+	lastSize = 0;
+	lastData = 0;
+	lastCurrentLineAngle = 0;
 }
 
 
 SonarView::~SonarView()
 {
+}
+
+void SonarView::testMethod() {
 }
 
 void SonarView::setOpenGL(bool flag)
@@ -85,6 +90,7 @@ void SonarView::setSonarScan(const char *data_, int size, double angle, double t
 			data.push_back(data_[i]);
 		}
 		window->setData(data,bearing);
+		//printf("OpenGL Draw...\n");
 	}else{
 		lastScale =  newScale;
 		if(img.size().width() != size*2.0){
@@ -101,15 +107,38 @@ void SonarView::setSonarScan(const char *data_, int size, double angle, double t
 			begin = bearing;
 			end = bearing-lastBearing;
 		}
+		//printf("Non OpenGL Draw angle=%f\n, begin=%f, end=%f\n", bearing, begin, end);
+		//Undo last current line draw
+		if(lastData != 0)
+		{	
+			memset(lastData, 128, lastSize);
+			paintLine(((double)lastCurrentLineAngle)/6399*2.0*M_PI,(const uint8_t*)lastData,(size_t)lastSize);
+			paintLine(((double)lastCurrentLineAngleEnd)/6399*2.0*M_PI,(const uint8_t*)lastData,(size_t)lastSize);
+		}
 
 		for(int j=0;j<end;j++){
 			int i = ((begin+j));
 			if(i < 0 || i > 6399){
+				printf("Loop abort...\n");
 				break;
 			}
 			paintLine(((double)i)/6399*2.0*M_PI,(const uint8_t*)data_,(size_t)size);
 		}
+		char* currentPosLine = new char[size];
+		memset(currentPosLine, 255, size);
+		paintLine(((double)begin)/6399*2.0*M_PI,(const uint8_t*)currentPosLine,(size_t)size);
+		paintLine(((double)begin+end)/6399*2.0*M_PI,(const uint8_t*)currentPosLine,(size_t)size);
+		lastCurrentLineAngle = begin;
+		lastCurrentLineAngleEnd = begin+end;
 	}
+
+	//Saving last data, to undo the current scan line in the picture
+	if(size != lastSize || lastData == 0) {
+		lastData = (char*) malloc(size);
+		lastSize = size;
+	}
+	memcpy(lastData, data_, size);
+	
 	lastBearing = bearing;
         addImage(img);
 	resize(width(),height());	

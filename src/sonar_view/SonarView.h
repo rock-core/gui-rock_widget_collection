@@ -17,6 +17,7 @@ class QDESIGNER_WIDGET_EXPORT SonarView : public ImageViewOld
 public:
     SonarView(QWidget *parent = NULL,bool use_openGL = true);
     virtual ~SonarView();
+    void testMethod();
 
 public slots:    
 	void setOpenGL(bool flag);
@@ -31,6 +32,10 @@ public slots:
 protected:
 	void paintEvent(QPaintEvent *event);
      double lastScale;
+     char* lastData;
+     int lastSize;
+     double lastCurrentLineAngle;
+     double lastCurrentLineAngleEnd;
      int lastBearing;
      void keyPressEvent(QKeyEvent*);
      QImage img;
