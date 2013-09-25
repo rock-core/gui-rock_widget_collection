@@ -464,6 +464,22 @@ void ImageView::saveImage(QString path, bool overlay)
     saveImage.save(path, "PNG", 80);
 }
 
+void ImageView::setFrame(const base::samples::DistanceImage &frame)
+{  
+
+    base::samples::frame::Frame bframe(frame.width,frame.height,16); 
+    std::vector<uint16_t> v(frame.data.size());
+    for(unsigned int i=0;i<v.size();i++){
+        v[i] = frame.data[i];
+    }
+
+    bframe.setImage((uint8_t*)&v[0],frame.data.size()*2);
+    if(1 == frame_converter.copyFrameToQImageRGB888(image,bframe)) {
+        LOG_WARN("Frame size changed while converting frame to QImage (says converter)");
+    }
+    processImage();
+    refresh();
+}
 
 void ImageView::setFrame(const base::samples::frame::Frame &frame)
 {   

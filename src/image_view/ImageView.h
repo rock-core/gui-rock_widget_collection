@@ -9,6 +9,7 @@
 #include <QtCore>
 
 #include <base/samples/frame.h>
+#include <base/samples/DistanceImage.hpp>
 #include <frame_helper/FrameQImageConverter.h>
 #include "rock_widget_collection/progress_indicator/ProgressIndicator.h"
 
@@ -240,6 +241,7 @@ public slots:
      * 
      * \param frame The image to be displayed next. The display gets updated immediately.
      */
+    void setFrame(const base::samples::DistanceImage &frame);
     void setFrame(const base::samples::frame::Frame &frame);
     void setImage(const QImage &image);
     void refresh();
