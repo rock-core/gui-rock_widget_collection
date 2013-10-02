@@ -170,15 +170,21 @@ if (USE_VTK)
     list(APPEND COLLECTION_MOC_HDRS
         vtk/sonar_display/SonarDisplay.h
         vtk/sonar_display/SonarDisplayPlugin.h
+        vtk/vectorfield3D/vectorfield3D.h
+        vtk/vectorfield3D/vectorfield3DPlugin.h
     )
     list(APPEND COLLECTION_HDRS
         vtk/sonar_display/SonarDisplay.h
+        vtk/vectorfield3D/vectorfield3D.h
     )
     list(APPEND COLLECTION_SOURCES
-      vtk/sonar_display/SonarDisplay.cc vtk/sonar_display/SonarDisplayPlugin.cc
+      vtk/sonar_display/SonarDisplay.cc 
+      vtk/sonar_display/SonarDisplayPlugin.cc
+      vtk/vectorfield3D/vectorfield3D.cc
+      vtk/vectorfield3D/vectorfield3DPlugin.cc
     )
     set(VTK_DEPS VTK)
-    set(VTK_LIBS vtkVolumeRendering vtkRendering vtkCommon vtkFiltering vtkIO vtkGraphics QVTK )
+    set(VTK_LIBS vtkftgl vtkVolumeRendering vtkRendering vtkCommon vtkFiltering vtkIO vtkGraphics QVTK )
     add_definitions(-DUSE_VTK)
 endif()
 

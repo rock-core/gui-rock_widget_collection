@@ -20,6 +20,7 @@
 
 #ifdef USE_VTK
 #include "vtk/sonar_display/SonarDisplayPlugin.h"
+#include "vtk/vectorfield3D/vectorfield3DPlugin.h"
 #endif
 
 Q_EXPORT_PLUGIN2(RockWidgetCollection, RockWidgetCollection)
@@ -45,6 +46,9 @@ RockWidgetCollection::RockWidgetCollection(QObject *parent)
 #endif
    widgets.append(new SonarViewPlugin(this));
    widgets.append(new TimelinePlugin(this));
+#ifdef USE_VTK
+   widgets.append(new Vectorfield3DPlugin(this));
+#endif
    widgets.append(new VirtualJoystickPlugin(this));
    widgets.append(new WaterfallDisplayPlugin(this));
    widgets.append(new SonarWidgetPlugin(this));
