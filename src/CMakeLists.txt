@@ -49,16 +49,6 @@ SET(COLLECTION_MOC_HDRS
   range_view/RangeViewGL.h
   range_view/RangeViewPlugin.h
   RockWidgetCollection.h
-  plotting/PlottingWidget.h 
-  plotting/PlotWidget.h 
-  plotting/OptionsDialog.h 
-  plotting/ColorPickerButton.h 
-  plotting/GeneralOptionsWidget.h
-  plotting/BorderLineOptionDialog.h 
-  plotting/CurveOptionWidget.h
-  plotting/CurveSelectionDialog.h 
-  plotting/PlotWidgetPlugin.h 
-  plotting/AxisOptionsWidget.h
   artificial_horizon/artificialhorizon.h
   artificial_horizon/artificialhorizonplugin.h
   multi_view/MultiViewWidget.h
@@ -113,15 +103,6 @@ SET(COLLECTION_HDRS
   range_view/RangeView.h
   range_view/RangeViewGL.h
   RockWidgetCollection.h
-  plotting/PlottingWidget.h 
-  plotting/PlotWidget.h 
-  plotting/OptionsDialog.h 
-  plotting/ColorPickerButton.h 
-  plotting/GeneralOptionsWidget.h
-  plotting/BorderLineOptionDialog.h 
-  plotting/CurveOptionWidget.h
-  plotting/CurveSelectionDialog.h 
-  plotting/AxisOptionsWidget.h
   artificial_horizon/artificialhorizon.h
   multi_view/MultiViewWidget.h
   multi_view/WidgetButton.h
@@ -152,7 +133,6 @@ FILE(GLOB COLLECTION_SOURCES
     range_view/*.cc 
     image_view_old/*.cc 
     sonar_view/*.cc 
-    plotting/*.cc 
     artificial_horizon/*.cc 
     multi_view/*.cc 
     generic_widgets/*.cc
@@ -191,12 +171,12 @@ endif()
 SET(QtApp_RCCS resources.qrc)
 QT4_ADD_RESOURCES(QtApp_RCC_SRCS ${QtApp_RCCS})
 
-rock_vizkit_widget(rock_widget_collection
+rock_vizkit_widget(rock_widget_collection SHARED
     SOURCES ${COLLECTION_SOURCES} ${QtApp_RCC_SRCS} 
     HEADERS ${COLLECTION_HDRS}
     MOC ${COLLECTION_MOC_HDRS}
-    DEPS_PKGCONFIG base-types base-lib frame_helper QtCore QtGui
-    DEPS_CMAKE LIBXML2 QWT GLU ${VTK_DEPS}
+    DEPS_PKGCONFIG base-types base-lib frame_helper
+    DEPS_CMAKE QWT OpenGL ${VTK_DEPS}
     LIBS ${QT_QTCORE_LIBRARY} ${VTK_LIBS} ${QT_QTGUI_LIBRARY} ${QT_QTOPENGL_LIBRARY} ${QT_QTDESIGNER_LIBRARY} ${QTGSTREAMER_LIBRARIES} ${QTGSTREAMER_UI_LIBRARIES} 
     )
 
@@ -209,16 +189,15 @@ if (USE_VTK)
         NOINSTALL)
 endif()
 
-rock_executable(timelineTest timeline/main.cpp
-    DEPS rock_widget_collection
-    NOINSTALL)
-
-rock_executable(imageviewTest image_view/main.cpp
-    DEPS rock_widget_collection
-    NOINSTALL)
-
-rock_executable(virtualJoystickTest 
-    virtual_joystick/main.cpp
-    DEPS rock_widget_collection
-    NOINSTALL)
-
+#rock_executable(timelineTest timeline/main.cpp
+#    DEPS rock_widget_collection
+#    NOINSTALL)
+#
+#rock_executable(imageviewTest image_view/main.cpp
+#    DEPS rock_widget_collection
+#    NOINSTALL)
+#
+#rock_executable(virtualJoystickTest 
+#    virtual_joystick/main.cpp
+#    DEPS rock_widget_collection
+#    NOINSTALL)

@@ -16,7 +16,6 @@
 
 #include "MultiViewWidget.h"
 #include "MultiViewPlugin.h"
-#include "plotting/PlotWidget.h"
 
 
 #include <typeinfo>

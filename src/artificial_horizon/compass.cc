@@ -25,7 +25,8 @@ Compass::Compass(QWidget* parent): MultiWidget(parent)
   // compass 
   compass = new QwtCompass();
   layout->addWidget(compass);
-  compass->setScaleOptions(QwtDial::ScaleTicks | QwtDial::ScaleLabel);
+  // not suppored by qwt 6
+  // compass->setScaleOptions(QwtDial::ScaleTicks | QwtDial::ScaleLabel);
   needle = new QwtCompassMagnetNeedle(QwtCompassMagnetNeedle::TriangleStyle, Qt::white, Qt::red);
   compass->setNeedle(needle);
 }

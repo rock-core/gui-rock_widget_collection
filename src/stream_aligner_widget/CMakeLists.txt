@@ -1,8 +1,10 @@
-rock_vizkit_widget(stream_aligner_widget
+find_package(Qt4 REQUIRED QtCore QtGui)
+rock_vizkit_widget(stream_aligner_widget SHARED
     SOURCES StreamAlignerWidget.cpp StreamAlignerWidgetPlugin.cpp
     HEADERS StreamAlignerWidget.h StreamAlignerWidgetPlugin.h
     MOC StreamAlignerWidget.h StreamAlignerWidgetPlugin.h
-    DEPS_PKGCONFIG base-types QtCore QtGui
+    DEPS_PKGCONFIG base-types 
+    LIBS ${QT_QTCORE_LIBRARY} ${QT_QTGUI_LIBRARY}
     )
 
 rock_executable(testWidget 

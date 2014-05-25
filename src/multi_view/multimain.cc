@@ -11,7 +11,6 @@
 #include <QtGui/qwidget.h>
 
 #include "MultiViewWidget.h"
-#include "plotting/PlotWidget.h"
 #include "image_view_old/ImageViewOld.h"
 
 #include <limits>
@@ -27,11 +26,6 @@ int main(int argc, char** argv)
     MultiViewWidget* widget = new MultiViewWidget(NULL);
 //    widget->setThumbnailPosition(0);
     widget->setThumbnailSize(100, 100);
-    PlotWidget* pwidget = new PlotWidget(NULL);
-    widget->addWidget(QString("Plot"), pwidget);
-    PlotWidget* pwidget2 = new PlotWidget(NULL);
-    QIcon icon("/usr/share/psi/iconsets/system/default/psiplus/logo_48.png");
-    widget->addWidget(QString("Plot2"), pwidget2);
     ImageViewOld* imageView = new ImageViewOld();
     QImage* image = new QImage();
     image->load("/home/blueck/pics/testimage.jpg");

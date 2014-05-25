@@ -10,10 +10,15 @@
 #include <QtOpenGL/QtOpenGL>
 #include <math.h>
 #include <stdio.h>
+#include <iostream>
 
+#ifdef __APPLE__
+#include <OpenGL/gl.h>
+#include <GLUT/glut.h>
+#else
 #include <GL/gl.h>
 #include <GL/glut.h>
-#include <iostream>
+#endif
 
 const float RangeViewGL::ZOOM_MAX;
 const float RangeViewGL::ZOOM_MIN;

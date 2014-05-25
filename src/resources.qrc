@@ -8,7 +8,6 @@
     <file alias="artificial_horizon/compass_icon.png">artificial_horizon/resources/compass_icon.png</file>
     <file alias="sonar_view/icon.png">sonar_view/resources/icon.png</file>
     <file alias="image_view_old/icon.png">image_view_old/resources/icon.png</file>
-    <file alias="plotting/icon.png">plotting/resources/icon.png</file>
     <file alias="timeline/triangle_slider">timeline/resources/triangle_slider.png</file>
     <file alias="timeline/index_slider">timeline/resources/index_slider.png</file>
     <file alias="timeline/icon">timeline/resources/icon.png</file>

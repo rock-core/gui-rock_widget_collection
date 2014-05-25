@@ -3,7 +3,6 @@
 #include "image_view_old/ImageViewOldPlugin.h"
 #include "sonar_view/SonarViewPlugin.h"
 #include "range_view/RangeViewPlugin.h"
-#include "plotting/PlotWidgetPlugin.h"
 #include "artificial_horizon/artificialhorizonplugin.h"
 #include "artificial_horizon/compassplugin.h"
 #include "artificial_horizon/orientationplugin.h"
@@ -37,7 +36,6 @@ RockWidgetCollection::RockWidgetCollection(QObject *parent)
    widgets.append(new MultiWidgetPlugin(this));
    widgets.append(new OrientationPlugin(this));
    widgets.append(new Plot2dPlugin(this));
-   widgets.append(new PlotWidgetPlugin(this));
    widgets.append(new ProgressIndicatorPlugin(this));
    widgets.append(new RangeViewPlugin(this));
    widgets.append(new RockSliderPlugin(this));
