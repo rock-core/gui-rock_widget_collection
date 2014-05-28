@@ -244,6 +244,7 @@ public slots:
     void setFrame(const base::samples::DistanceImage &frame);
     void setFrame(const base::samples::frame::Frame &frame);
     void setImage(const QImage &image);
+    void setRawImage(const QString &mode, int pixel_size, int width, int height,const char* pbuffer, const int size);
     void refresh();
     void processImage();
     

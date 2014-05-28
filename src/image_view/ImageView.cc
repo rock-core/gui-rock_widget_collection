@@ -490,6 +490,12 @@ void ImageView::setFrame(const base::samples::frame::Frame &frame)
     refresh();
 }
 
+void ImageView::setRawImage(const QString &mode, int pixel_size, int width, int height,const char* pbuffer, const int size)
+{
+    frame_converter.copyFrameToQImageRGB888(image,mode, pixel_size, width, height,pbuffer,size);
+    processImage();
+    refresh();
+}
 
 void ImageView::setImage(const QImage &image)
 {   
