@@ -1,11 +1,14 @@
 #!/usr/bin/ruby
+##############################################
+# Small script for the virtual joystick plugin
+# Author: leif.christensen@dfki.de
+# Date:   09/19/2014 
+##############################################
 
 require 'vizkit'
 require 'optparse'
 include Orocos
 
-maxSpeed = 0.4 #SeekurJr=1.5 m/s
-maxJoyRotSpeed = 20 # degree/s
 options = {}
 
 optparse = OptionParser.new do |opts|
@@ -21,6 +24,16 @@ optparse = OptionParser.new do |opts|
   options[:host] = 'localhost'
   opts.on("--host [HOST]","Host, where the corba nameserver is running") do |host|
     options[:host] = host
+  end
+
+  options[:maxspeed] = 1.0 # m/s
+  opts.on("--maxspeed [MAXSPEED]", "Maximum speed (m/s)") do |speed|
+    options[:maxspeed] = speed
+  end
+  
+  options[:maxrotspeed] = 0.5 #rad/s 
+  opts.on("--maxrotspeed [MAXROTSPEED]", "Maximum rotational velocity (rad/s)") do |rot|
+    options[:maxrotspeed] = rot
   end
 
   opts.on("-h","--help","Display this help screen") do
@@ -47,8 +60,8 @@ joystickGui.show
 
 joystickGui.connect_to_task options[:task] do |task|
   c = lambda{|msg| puts msg}
-  g = lambda{|a,b| sample.translation = a * maxSpeed
-                   sample.rotation = -b * maxJoyRotSpeed * Math::PI/180
+  g = lambda{|a,b| sample.translation = a * options[:maxspeed]
+                   sample.rotation = -b * options[:maxrotspeed] 
                    sample}
   connect SIGNAL("axisChanged(double,double)"), PORT(options[:port]), :getter => g, :callback => c 
 
