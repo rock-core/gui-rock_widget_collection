@@ -27,12 +27,12 @@ optparse = OptionParser.new do |opts|
   end
 
   options[:maxspeed] = 1.0 # m/s
-  opts.on("--maxspeed [MAXSPEED]", "Maximum speed (m/s)") do |speed|
+  opts.on("--maxspeed [MAXSPEED]", Float, "Maximum speed (m/s)") do |speed|
     options[:maxspeed] = speed
   end
   
   options[:maxrotspeed] = 0.5 #rad/s 
-  opts.on("--maxrotspeed [MAXROTSPEED]", "Maximum rotational velocity (rad/s)") do |rot|
+  opts.on("--maxrotspeed [MAXROTSPEED]", Float, "Maximum rotational velocity (rad/s)") do |rot|
     options[:maxrotspeed] = rot
   end
 
@@ -59,11 +59,10 @@ joystickGui = Vizkit.default_loader.VirtualJoystick
 joystickGui.show
 
 joystickGui.connect_to_task options[:task] do |task|
-  c = lambda{|msg| puts msg}
   g = lambda{|a,b| sample.translation = a * options[:maxspeed]
                    sample.rotation = -b * options[:maxrotspeed] 
                    sample}
-  connect SIGNAL("axisChanged(double,double)"), PORT(options[:port]), :getter => g, :callback => c 
+  connect SIGNAL("axisChanged(double,double)"), PORT(options[:port]), :getter => g 
 
   task.on_reachable {joystickGui.setEnabled(true)}
   task.on_unreachable {joystickGui.setEnabled(false)}
