@@ -20,10 +20,6 @@
 #include <GL/glut.h>
 #endif
 
-const float RangeViewGL::ZOOM_MAX;
-const float RangeViewGL::ZOOM_MIN;
-
-
 RangeViewGL::RangeViewGL(ImageViewOld &parent):
 	ImageViewOldGL(parent),
 	 zoom( 45.0 )
@@ -35,6 +31,8 @@ RangeViewGL::RangeViewGL(ImageViewOld &parent):
      xShift = 0;
      yShift = 0;
      zShift = 0;
+     zoom_min = -6000.0;
+     zoom_max = 6000.0;
 //	repaintTimer.setSingleShot(false);
 //	repaintTimer.setInterval(100);
 //	connect(&repaintTimer,SIGNAL(timeout()),this,SLOT(repaintFunc()));
@@ -110,6 +108,17 @@ void RangeViewGL::setZRotation(int angle)
 		emit zRotationChanged(angle);
 	}
 }
+
+void RangeViewGL::setZoomMin(float value)
+{
+	zoom_min = value;
+}
+
+void RangeViewGL::setZoomMax(float value)
+{
+	zoom_max = value;
+}
+
 
 void RangeViewGL::setxPosition(int value)
 {
@@ -236,7 +245,7 @@ void RangeViewGL::mouseMoveEvent(QMouseEvent *event)
 		setyPosition(yShift - dyt);
 	}else if (event->buttons() & Qt::RightButton) {
 		zoom += (dyt+dxt)/10.0;
-		zoom = std::max<float>( std::min<float>( zoom, ZOOM_MAX ), ZOOM_MIN );
+		zoom = std::max<float>( std::min<float>( zoom, zoom_max), zoom_min );
 	}
 
 	lastPos = event->pos();
@@ -264,7 +273,7 @@ void RangeViewGL::setPosition(int xRot,int yRot, int zRot, int xMove, int yMove,
 void RangeViewGL::wheelEvent(QWheelEvent *event)
 {
 	zoom -= (2.0*(float)event->delta()/120.0)*5;
-	zoom = std::max<float>( std::min<float>( zoom, ZOOM_MAX ), ZOOM_MIN );
+	zoom = std::max<float>( std::min<float>( zoom, zoom_max ), zoom_min);
 	event->accept();
 	updateGL();
 }
