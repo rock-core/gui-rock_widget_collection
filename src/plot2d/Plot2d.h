@@ -31,8 +31,28 @@ public slots:
     QObject *getYAxis()const{return yAxis;}
     QObject *getYAxis2()const{return yAxis2;}
 
-    void setZoomAble(bool enabled){if(enabled)setRangeDrag(Qt::Horizontal | Qt::Vertical); else setRangeDrag(0);}
-    void setRangeAble(bool enabled){if(enabled)setRangeZoom(Qt::Horizontal | Qt::Vertical); else setRangeZoom(0);}
+    void setZoomAble(bool enabled, int yAxisIndex = 0)
+    {
+        if(yAxisIndex == 0)
+            setRangeDragAxes(xAxis, yAxis);
+        else
+            setRangeDragAxes(xAxis, yAxis2);
+
+        if(enabled)
+            setRangeDrag(Qt::Horizontal | Qt::Vertical);
+        else setRangeDrag(0);
+    }
+    void setRangeAble(bool enabled, int yAxisIndex = 0)
+    {
+        if(yAxisIndex == 0)
+            setRangeZoomAxes(xAxis, yAxis);
+        else
+            setRangeZoomAxes(xAxis, yAxis2);
+
+        if(enabled)
+            setRangeZoom(Qt::Horizontal | Qt::Vertical);
+        else setRangeZoom(0);
+    }
     
 private:
     bool auto_scroll;
