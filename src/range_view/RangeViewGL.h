@@ -36,6 +36,8 @@ public slots:
 	void setxPosition(int value);
 	void setyPosition(int value);
 	void setzPosition(int value);
+	void setZoomMin(float value);
+	void setZoomMax(float value);
 	
 	void initializeGL();
 	void paintGL();
@@ -51,9 +53,7 @@ private:
 	std::vector<Eigen::Vector3d> data;
 	GLuint groundPlane;
 	void normalizeAngle(int *angle);
-	float zoom;
-	static const float ZOOM_MAX = 6000.0;
-	static const float ZOOM_MIN = -6000.0;
+        float zoom, zoom_min, zoom_max;
 
 
 	inline double max(double a,double b){

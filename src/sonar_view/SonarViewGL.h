@@ -17,10 +17,6 @@ class SonarViewGL : public ImageViewOldGL
     Q_OBJECT
     Q_CLASSINFO("Author", "Matthias Goldhoorn")
 
-static const float ZOOM_MAX = 6000.0;
-static const float ZOOM_MIN = -6000.0;
-
-
 public:
     SonarViewGL(ImageViewOld &parent, unsigned int maximumBearings=6400);
     virtual ~SonarViewGL();
@@ -44,6 +40,8 @@ public slots:
      void keyPressEvent ( QKeyEvent * event );
      void setPosition(const double posX, const double posY, const double sigmaX=0, const double sigmaY=0);
      void setOrientation(const double orientation);
+     void setZoomMin(float value);
+     void setZoomMax(float value);
 
 protected:
      void initializeGL();
@@ -65,7 +63,7 @@ protected:
      GLuint groundPlane;
      void normalizeAngle(int *angle);
      void createAvalon(); 
-     float zoom;
+     float zoom, zoom_min, zoom_max;
      int lastBearing;
      int lastWallBearing;
      double orientation;
