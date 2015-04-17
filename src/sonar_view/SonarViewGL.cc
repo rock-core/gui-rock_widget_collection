@@ -748,3 +748,12 @@ void SonarViewGL::setPosition(const double posX, const double posY, const double
 }
 
 
+void SonarViewGL::setZoomMin(float value)
+{
+	zoom_min = value;
+}
+
+void SonarViewGL::setZoomMax(float value)
+{
+	zoom_max = value;
+}
