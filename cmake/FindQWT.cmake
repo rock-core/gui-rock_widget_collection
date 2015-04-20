@@ -14,7 +14,7 @@ if(QWT_INCLUDE_DIR)
 endif(QWT_INCLUDE_DIR)
 
 SET(QWT_NAMES qwt-qt4 qwt)
-FIND_LIBRARY(QWT_LIBRARY NAMES ${QWT_NAMES})
+FIND_LIBRARY(QWT_LIBRARY NAMES ${QWT_NAMES} PATHS /usr/lib /usr/lib/qwt)
 find_path(QWT_INCLUDE_DIR NAMES qwt.h
     PATH_SUFFIXES qwt-qt4 qwt5 qwt
     HINTS /usr/local/Frameworks
