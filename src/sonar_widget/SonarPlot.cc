@@ -3,7 +3,7 @@
 
 
 SonarPlot::SonarPlot(QWidget *parent)
-    : QFrame(parent), mChangedSize(true),scaleX(1),scaleY(1),range(5)
+    : QFrame(parent), mChangedSize(true),scaleX(1),scaleY(1),number_of_bins(866),range(5)
 {
   int alpha = 255;
   for(int i=0;i<64;i++){
@@ -35,6 +35,15 @@ void SonarPlot::setData(const base::samples::SonarScan scan)
   if(!mSonarScan.number_of_bins || !mSonarScan.number_of_beams){
     return;
   }
+  
+  //The beams need to be stored by column
+  // If not -> toggle the memory-layout
+  if(!mSonarScan.memory_layout_column)
+  {
+    mSonarScan.toggleMemoryLayout();
+  }
+  
+  number_of_bins = mSonarScan.number_of_bins;
   if(mChangedSize){
     mRawPoints.clear();
     for(uint i=0;i<mSonarScan.data.size();i++){
@@ -69,13 +78,14 @@ void SonarPlot::paintEvent(QPaintEvent *)
 
 void SonarPlot::resizeEvent ( QResizeEvent * event )
 {
+  //Calculate the image/bin-scalling based on the number of bins
   scaleX = 0.2;
   if(width()>400){
-    scaleX = double((width()-134))/866;
+    scaleX = double((width()-134))/ (number_of_bins*4.0);
   }
   scaleY = 0.2;
   if(height()>200){
-    scaleY = double((height()-100))/500;
+    scaleY = double((height()-100))/ (number_of_bins*2.0);
   } 
   fillPoints();
   QWidget::resizeEvent (event);

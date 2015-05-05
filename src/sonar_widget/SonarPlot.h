@@ -25,6 +25,7 @@ protected:
     QList<QPoint> mPoints;
     double scaleX;
     double scaleY;
+    int number_of_bins; //Number of bins in a single beam
     int range;
     QVector<QColor> colorMap;
     
