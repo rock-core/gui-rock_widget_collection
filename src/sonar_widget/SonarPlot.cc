@@ -1,9 +1,8 @@
 #include "./SonarPlot.h"
 #include <iostream>
 
-
 SonarPlot::SonarPlot(QWidget *parent)
-    : QFrame(parent), mChangedSize(true),scaleX(1),scaleY(1),range(5)
+    : QFrame(parent), changedSize(true),scaleX(1),scaleY(1),range(5)
 {
   int alpha = 255;
   for(int i=0;i<64;i++){
@@ -30,22 +29,41 @@ SonarPlot::~SonarPlot()
 
 void SonarPlot::setData(const base::samples::SonarScan scan)
 {
-  std::cout << "setData, number of beams " <<mSonarScan.number_of_beams <<" number of bins " << mSonarScan.number_of_bins <<std::endl;
-  mSonarScan = scan;
-  if(!mSonarScan.number_of_bins || !mSonarScan.number_of_beams){
+  lastSonarScan = sonarScan;
+  lastSonarScan.data.clear();
+  sonarScan = scan;
+  if(!sonarScan.number_of_bins || !sonarScan.number_of_beams){
     return;
   }
-  if(mChangedSize){
-    mRawPoints.clear();
-    for(uint i=0;i<mSonarScan.data.size();i++){
-      base::Angle ang = int(i/mSonarScan.number_of_bins)*mSonarScan.angular_resolution-mSonarScan.start_bearing;
-      int radius = i % mSonarScan.number_of_bins;
-      uint x = radius*sin(ang.getRad());
-      uint y = radius*cos(ang.getRad());
-      mRawPoints.append(QPoint(x,y));
+  if(changedSize
+    || !(sonarScan.start_bearing == lastSonarScan.start_bearing)
+    || !(sonarScan.angular_resolution == lastSonarScan.angular_resolution)
+    || !(sonarScan.number_of_beams == lastSonarScan.number_of_beams)
+    || !(sonarScan.number_of_bins == lastSonarScan.number_of_bins)){
+    pixelList.clear();
+    for (int i = 0; i< width();i++){
+        for (int j = 0; j< origin.y();j++){
+            QPoint point(i,j);
+            point -= origin;
+            point.rx()/=scaleX;
+            point.ry()/=scaleY;
+            int radius = sqrt(point.x()*point.x() + point.y()*point.y());
+            base::Angle angle = base::Angle::fromDeg(0);
+            if(radius){
+                angle = base::Angle::fromRad(asin(double(point.x())/radius));
+            }
+            if(radius <= sonarScan.number_of_bins && fabs(angle.getDeg()) <= fabs(sonarScan.start_bearing.getDeg())){
+                uint index = int((angle-sonarScan.start_bearing).getDeg()/sonarScan.angular_resolution.getDeg())*sonarScan.number_of_bins + radius;
+                if(index<=sonarScan.data.size()){
+                    SonarPlotPixel sonarPlotPixel;
+                    sonarPlotPixel.point = QPoint(i,j);
+                    sonarPlotPixel.index = index;
+                    pixelList.append(sonarPlotPixel);
+                }
+            }
+        }
     }
-    fillPoints();
-    mChangedSize=false;
+    changedSize=false;
  }
  update();
 }
@@ -53,16 +71,12 @@ void SonarPlot::setData(const base::samples::SonarScan scan)
 
 void SonarPlot::paintEvent(QPaintEvent *)
 {
-    if(mPoints.size()!=mSonarScan.data.size()){
-      std::cout <<"mPoints.size()!=mSonarScan.data.size() mPoints.size(): " <<mPoints.size() <<" mSonarScan.data.size(): " <<mSonarScan.data.size() <<endl;
-      return;
-    }
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing, true);
-    for(uint i=0;i<mSonarScan.data.size();i++){
-      painter.setPen(QPen(colorMap[ mSonarScan.data[i] ]));
-      painter.drawPoint(mPoints[i]);
-    }    
+    for(int i=0;i<pixelList.size();i++){
+        painter.setPen(QPen(colorMap[sonarScan.data[pixelList[i].index]]));
+        painter.drawPoint(pixelList[i].point);
+    }
     drawOverlay();
     
 }
@@ -71,13 +85,15 @@ void SonarPlot::resizeEvent ( QResizeEvent * event )
 {
   scaleX = 0.2;
   if(width()>400){
-    scaleX = double((width()-134))/866;
+    scaleX = double(width()-134)/(BASE_WIDTH-134);
   }
   scaleY = 0.2;
   if(height()>200){
-    scaleY = double((height()-100))/500;
+    scaleY = double(height()-100)/(BASE_HEIGHT-100);
   } 
-  fillPoints();
+  origin.setX(width()/2);
+  origin.setY(height()-30);
+  changedSize=true;
   QWidget::resizeEvent (event);
 }
 
@@ -86,9 +102,6 @@ void SonarPlot::drawOverlay()
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing, true);
     painter.setPen(QPen(Qt::white));
-    QPoint origin;
-    origin.setX(width()/2);
-    origin.setY(height()-30);
     for(int i=1;i<=5;i++){
       int angle = 120;
       painter.drawArc(width()/2-i*scaleX*100,height()-30-i*scaleY*100,i*200*scaleX,i*200*scaleY,(90-angle/2)*16,angle*16);
@@ -98,11 +111,11 @@ void SonarPlot::drawOverlay()
       int y = height()-i*100*scaleY*cos(angle*3.1416/360);
       painter.drawText(x,y-5,str);
       
-      base::Angle sectorSize = mSonarScan.angular_resolution*mSonarScan.number_of_beams;
+      base::Angle sectorSize = sonarScan.angular_resolution*(sonarScan.number_of_beams-1);
       base::Angle ang = sectorSize*(-0.5+(i-1)*0.25);
       QPoint p2;
-      x = width()/2+mSonarScan.number_of_bins*sin(ang.getRad())*scaleX;
-      y = height()-30-mSonarScan.number_of_bins*cos(ang.getRad())*scaleY;
+      x = width()/2+sonarScan.number_of_bins*sin(ang.getRad())*scaleX;
+      y = height()-30-sonarScan.number_of_bins*cos(ang.getRad())*scaleY;
       p2.setX(x);
       p2.setY(y);
       painter.drawLine(origin,p2);     
@@ -122,16 +135,6 @@ void SonarPlot::drawOverlay()
       painter.setBrush(QBrush(colorMap[i]));
       painter.drawRect(width()-30,height()-10-i*2,20,2);
     }
-}
-
-void SonarPlot::fillPoints()
-{
-  mPoints.clear();
-  uint w = width()/2;
-  uint h = height()-30; 
-  for(uint i=0;i<mRawPoints.size();i++){
-      mPoints.append(QPoint(w+mRawPoints[i].x()*scaleX,h-mRawPoints[i].y()*scaleY));
-  }
 }
 
 void SonarPlot::rangeChanged(int value)

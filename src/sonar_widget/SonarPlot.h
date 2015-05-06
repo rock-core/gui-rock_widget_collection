@@ -5,6 +5,15 @@
 #include <QFrame>
 #include "base/samples/sonar_scan.h"
 
+
+#define BASE_WIDTH      1000
+#define BASE_HEIGHT      600
+
+struct SonarPlotPixel{
+    QPoint point;
+    uint index;
+};
+
 class SonarPlot : public QFrame
 {
     Q_OBJECT
@@ -18,15 +27,15 @@ protected:
     void paintEvent(QPaintEvent *event);
     void resizeEvent ( QResizeEvent * event );
     void drawOverlay();
-    void fillPoints();
-    base::samples::SonarScan mSonarScan;
-    bool mChangedSize;
-    QList<QPoint> mRawPoints;
-    QList<QPoint> mPoints;
+    base::samples::SonarScan sonarScan;
+    base::samples::SonarScan lastSonarScan;
+    bool changedSize;
     double scaleX;
     double scaleY;
     int range;
     QVector<QColor> colorMap;
+    QList<SonarPlotPixel> pixelList;
+    QPoint origin;
     
 protected slots:
     void rangeChanged(int);
