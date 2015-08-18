@@ -11,7 +11,7 @@ SonarWidget::SonarWidget(QWidget *parent)
     resize(1020,670);
     
     plot = new SonarPlot(this);
-    plot->setGeometry (10,10,1000,600);
+    plot->setGeometry (10,10,BASE_WIDTH,BASE_HEIGHT);
     connect(this,SIGNAL(rangeChanged(int)),plot,SLOT(rangeChanged(int)));
     
     QPalette Pal(palette());
