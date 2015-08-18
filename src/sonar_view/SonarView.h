@@ -33,7 +33,6 @@ protected:
      double lastScale;
      int lastBearing;
      void keyPressEvent(QKeyEvent*);
-     QImage img;
+     QImage img, output;
 };
 #endif	
-

@@ -111,7 +111,7 @@ void SonarView::setSonarScan(const char *data_, int size, double angle, double t
 		}
 	}
 	lastBearing = bearing;
-        addImage(img);
+	addImage(output);
 	resize(width(),height());	
 	//ImageView::update();
 }
@@ -123,6 +123,7 @@ void SonarView::paintReference(double bearing, int distance){
 	QPainter painter(&img);
 	double s = sin(bearing);
 	double c = cos(bearing);
+
 	int x = (img.size().width()/2.0)+(c*distance);
 	int y = (img.size().width()/2.0)+(s*distance);	
 
@@ -143,11 +144,25 @@ void SonarView::paintLine(double bearing, const uint8_t *data, size_t len){
 	QPainter painter(&img);
 	double s = sin(bearing);
 	double c = cos(bearing);
+
+	// plot sonar data on display
 	for(size_t i=0;i<len;i++){
 		painter.setPen(QColor(data[i],data[i],data[i]));
 		//painter.drawPoint((len)+(s*i),(len)+(c*i));
 		painter.drawPoint((len)+(c*i),(len)+(s*i));
 	}
+
+	painter.end();
+
+	// plot display with scan reader
+	output = img.copy();
+
+	QPainter painter2(&output);
+
+	QLine line(len, len, (len)+(c*img.width()/2), (len)+(s*img.height()/2));
+	painter2.setPen(QColor(0,224,0));
+	painter2.drawLine(line);
+	painter2.end();
 }
 
 
@@ -173,6 +188,7 @@ void SonarView::paintEvent(QPaintEvent *event)
   ImageViewOld::paintEvent(event);  
   printf("Paint called in SonarView\n");
   
+
 }
 
 /*
