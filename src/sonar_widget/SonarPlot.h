@@ -10,36 +10,43 @@
 #define BASE_HEIGHT      600
 #define BINS_REF_SIZE    500
 
-struct SonarPlotPixel{
-    QPoint point;
-    uint index;
-};
-
 class SonarPlot : public QFrame
 {
     Q_OBJECT
+
 
 public:
     SonarPlot(QWidget *parent = 0);
     virtual ~SonarPlot();
     void setData(const base::samples::SonarScan scan);
+
+    enum Colormap {
+        COLORMAP_JET,
+        COLORMAP_HOT,
+        COLORMAP_GRAY
+    };
     
 protected:
     void paintEvent(QPaintEvent *event);
     void resizeEvent ( QResizeEvent * event );
     void drawOverlay();
-    base::samples::SonarScan sonarScan;
+    void generateBearingTable(base::samples::SonarScan scan);
+    void generateColormaps();
     base::samples::SonarScan lastSonarScan;
     bool changedSize;
     double scaleX;
     double scaleY;
     int range;
-    QVector<QColor> colorMap;
-    QList<SonarPlotPixel> pixelList;
     QPoint origin;
+    std::vector<base::Angle> bearingTable;
+    std::vector<int> transfer;
+    std::vector<std::vector<QColor> > colorMap;
+    Colormap colorMapID;
     
+
 protected slots:
     void rangeChanged(int);
+    void sonarPaletteChanged(int);
     
 };
 
