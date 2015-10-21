@@ -4,11 +4,13 @@
 #include <QtGui>
 #include <QFrame>
 #include "base/samples/sonar_scan.h"
+#include "ColorGradient.h"
 
 
 #define BASE_WIDTH      1300
 #define BASE_HEIGHT      600
 #define BINS_REF_SIZE    500
+
 
 class SonarPlot : public QFrame
 {
@@ -20,18 +22,12 @@ public:
     virtual ~SonarPlot();
     void setData(const base::samples::SonarScan scan);
 
-    enum Colormap {
-        COLORMAP_JET,
-        COLORMAP_HOT,
-        COLORMAP_GRAY
-    };
-    
 protected:
     void paintEvent(QPaintEvent *event);
     void resizeEvent ( QResizeEvent * event );
     void drawOverlay();
     void generateBearingTable(base::samples::SonarScan scan);
-    void generateColormaps();
+    void colormapSelector(int index);
     base::samples::SonarScan lastSonarScan;
     bool changedSize;
     double scaleX;
@@ -40,8 +36,8 @@ protected:
     QPoint origin;
     std::vector<base::Angle> bearingTable;
     std::vector<int> transfer;
-    std::vector<std::vector<QColor> > colorMap;
-    Colormap colorMapID;
+    std::vector<QColor> colorMap;
+    ColorGradient heatMapGradient;
     
 
 protected slots:

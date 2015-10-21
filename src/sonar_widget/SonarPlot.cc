@@ -6,12 +6,11 @@ using namespace std;
 SonarPlot::SonarPlot(QWidget *parent)
     : QFrame(parent), changedSize(true),scaleX(1),scaleY(1),range(5)
 {
-
-    // generate colormaps
-    generateColormaps();
+    // apply default colormap
+    colormapSelector(0);
 
       QPalette Pal(palette());
-      Pal.setColor(QPalette::Background, colorMap[colorMapID][0]);
+      Pal.setColor(QPalette::Background, QColor(0,0,255));
       setAutoFillBackground(true);
       setPalette(Pal);
 }
@@ -79,7 +78,7 @@ void SonarPlot::paintEvent(QPaintEvent *)
     // draw sonar image
     for (int i = 0; i < transfer.size() && !changedSize; ++i) {
         if (transfer[i] != -1) {
-            painter.setPen(colorMap[colorMapID][lastSonarScan.data[transfer[i]]]);
+            painter.setPen(colorMap[lastSonarScan.data[transfer[i]]]);
             painter.drawPoint(i / origin.y(), i % origin.y());
         }
     }
@@ -137,8 +136,8 @@ void SonarPlot::drawOverlay()
       painter.drawText(x,y,str);
     } 
     for(int i=0;i<255;i++){
-      painter.setPen(QPen(colorMap[colorMapID][i]));
-      painter.setBrush(QBrush(colorMap[colorMapID][i]));
+      painter.setPen(QPen(colorMap[i]));
+      painter.setBrush(QBrush(colorMap[i]));
       painter.drawRect(width()-30,height()-10-i*2,20,2);
     }
 }
@@ -150,9 +149,44 @@ void SonarPlot::rangeChanged(int value)
 }
 
 void SonarPlot::sonarPaletteChanged(int index){
-    colorMapID = (Colormap) index;
+
+    colormapSelector(index);
+
 }
 
+// set the current colormap
+void SonarPlot::colormapSelector(int index) {
+    float red, green, blue;
+    heatMapGradient.clearGradient();
+
+    switch (index) {
+        case 0:     // jet
+            heatMapGradient.createDefaultHeatMapGradient();
+            break;
+
+        case 1:     // hot
+            heatMapGradient.addColorPoint(0, 0, 0, 0.0f);       // black
+            heatMapGradient.addColorPoint(1, 0, 0, 0.125f);     // red
+            heatMapGradient.addColorPoint(1, 1, 0, 0.55f);      // yellow
+            heatMapGradient.addColorPoint(1, 1, 1, 1.0f);       // white
+            break;
+
+        case 2:     // grayscale
+            heatMapGradient.addColorPoint(0, 0, 0, 0.0f);       // black
+            heatMapGradient.addColorPoint(1, 1, 1, 1.0f);       // white
+            break;
+        default:
+            break;
+    }
+
+    colorMap.clear();
+    for (int i = 0; i < 256; ++i) {
+        heatMapGradient.getColorAtValue((1.0 / 255) * i, red, green, blue);
+        colorMap.push_back(QColor(red * 255, green * 255, blue * 255));
+    }
+}
+
+// generate the bearing table to correct wall curvatures
 void SonarPlot::generateBearingTable(base::samples::SonarScan scan) {
     bearingTable.clear();
 
@@ -176,44 +210,3 @@ void SonarPlot::generateBearingTable(base::samples::SonarScan scan) {
 
 }
 
-void SonarPlot::generateColormaps() {
-    // JET COLORMAP
-    std::vector<QColor> jet;
-    for (int i = 0; i < 64; i++)
-        jet.push_back(QColor(0, 4 * i, 255));
-
-    for (int i = 64; i < 128; i++)
-        jet.push_back(QColor(0, 255, 255 + 4 * (64 - i)));
-
-    for (int i = 128; i < 192; i++)
-        jet.push_back(QColor(4 * (i - 128), 255, 0));
-
-    for (int i = 192; i < 256; i++)
-        jet.push_back(QColor(255, 255 + 4 * (192 - i), 0));
-
-
-    // HOT COLORMAP
-    std::vector<QColor> hot;
-    for (int i = 0; i < 37; ++i)
-        hot.push_back(QColor(7 * i, 0, 0));
-
-    for (int i = 37; i < 123; ++i)
-        hot.push_back(QColor(255, (i - 37) * 3, 0));
-
-    for (int i = 123; i < 209; ++i)
-        hot.push_back(QColor(255, 255, (i - 123) * 3));
-
-    for (int i = 209; i < 256; i++)
-        hot.push_back(QColor(255, 255, 255));
-
-    // GRAY COLORMAP
-    std::vector<QColor> gray;
-    for (int i = 0; i < 256; ++i)
-        gray.push_back(QColor(i, i, i));
-
-    colorMap.push_back(jet);
-    colorMap.push_back(hot);
-    colorMap.push_back(gray);
-
-    colorMapID = COLORMAP_JET;
-}
