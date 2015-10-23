@@ -2,12 +2,13 @@
 #include <iostream>
 
 using namespace std;
+using namespace colorgradient;
 
 SonarPlot::SonarPlot(QWidget *parent)
     : QFrame(parent), changedSize(true),scaleX(1),scaleY(1),range(5)
 {
     // apply default colormap
-    colormapSelector(0);
+    colormapSelector(COLORMAP_JET);
 
       QPalette Pal(palette());
       Pal.setColor(QPalette::Background, QColor(0,0,255));
@@ -54,7 +55,9 @@ void SonarPlot::setData(const base::samples::SonarScan scan)
 
             // pixels inside the sonar image
             else {
-                for (int i = 0; i < scan.number_of_beams; i++) {
+                int start_beam;
+                theta.rad <= 0 ? start_beam = 0 : start_beam = scan.number_of_beams / 2;
+                for (int i = start_beam; i < scan.number_of_beams; i++) {
                     if (theta.rad >= bearingTable[i].rad && theta.rad < bearingTable[i + 1].rad) {
                         transfer.push_back(i * scan.number_of_bins + radius);
                         break;
@@ -76,7 +79,7 @@ void SonarPlot::paintEvent(QPaintEvent *)
     painter.setRenderHint(QPainter::Antialiasing, true);
 
     // draw sonar image
-    for (int i = 0; i < transfer.size() && !changedSize; ++i) {
+    for (uint i = 0; i < transfer.size() && !changedSize; ++i) {
         if (transfer[i] != -1) {
             painter.setPen(colorMap[lastSonarScan.data[transfer[i]]]);
             painter.drawPoint(i / origin.y(), i % origin.y());
@@ -149,40 +152,38 @@ void SonarPlot::rangeChanged(int value)
 }
 
 void SonarPlot::sonarPaletteChanged(int index){
-
-    colormapSelector(index);
-
+    colormapSelector((ColormapType) index);
 }
 
 // set the current colormap
-void SonarPlot::colormapSelector(int index) {
-    float red, green, blue;
+void SonarPlot::colormapSelector(ColormapType type) {
     heatMapGradient.clearGradient();
 
-    switch (index) {
-        case 0:     // jet
-            heatMapGradient.createDefaultHeatMapGradient();
+    switch (type) {
+        case COLORMAP_JET:
+            heatMapGradient.createJetMapGradient();
             break;
 
-        case 1:     // hot
-            heatMapGradient.addColorPoint(0, 0, 0, 0.0f);       // black
-            heatMapGradient.addColorPoint(1, 0, 0, 0.125f);     // red
-            heatMapGradient.addColorPoint(1, 1, 0, 0.55f);      // yellow
-            heatMapGradient.addColorPoint(1, 1, 1, 1.0f);       // white
+        case COLORMAP_HOT:
+            heatMapGradient.createHotMapGradient();
             break;
 
-        case 2:     // grayscale
-            heatMapGradient.addColorPoint(0, 0, 0, 0.0f);       // black
-            heatMapGradient.addColorPoint(1, 1, 1, 1.0f);       // white
+        case COLORMAP_GRAYSCALE:
+            heatMapGradient.createGrayscaleMapGradient();
             break;
         default:
             break;
     }
 
     colorMap.clear();
-    for (int i = 0; i < 256; ++i) {
-        heatMapGradient.getColorAtValue((1.0 / 255) * i, red, green, blue);
-        colorMap.push_back(QColor(red * 255, green * 255, blue * 255));
+    try {
+        float red, green, blue;
+        for (int i = 0; i < 256; ++i) {
+            heatMapGradient.getColorAtValue((1.0 / 255) * i, red, green, blue);
+            colorMap.push_back(QColor(red * 255, green * 255, blue * 255));
+        }
+    } catch (const std::out_of_range& e) {
+        std::cout << e.what() << std::endl;
     }
 }
 

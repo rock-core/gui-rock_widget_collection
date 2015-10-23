@@ -11,6 +11,8 @@
 #define BASE_HEIGHT      600
 #define BINS_REF_SIZE    500
 
+using namespace colorgradient;
+
 
 class SonarPlot : public QFrame
 {
@@ -27,7 +29,7 @@ protected:
     void resizeEvent ( QResizeEvent * event );
     void drawOverlay();
     void generateBearingTable(base::samples::SonarScan scan);
-    void colormapSelector(int index);
+    void colormapSelector(ColormapType type);
     base::samples::SonarScan lastSonarScan;
     bool changedSize;
     double scaleX;

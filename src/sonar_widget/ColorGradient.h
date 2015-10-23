@@ -1,11 +1,11 @@
-/*
- * ColorGradient.hpp
- *
- *  Created on: Oct 21, 2015
- *      Author: romulo
- */
+#ifndef COLORGRADIENT_H
+#define COLORGRADIENT_H
 
 #include <vector>
+#include <stdexcept>
+#include "ColorGradientTypes.h"
+
+namespace colorgradient {
 
 class ColorGradient {
 
@@ -21,9 +21,15 @@ private:
     std::vector<ColorPoint> color;      // An array of color points in ascending value.
 
 public:
-    ColorGradient()  { }
-    void addColorPoint(float red, float green, float blue, float value);
+    ColorGradient() { }
+    void addColorPoint(const float red, const float green, const float blue, const float value);
     void clearGradient();
-    void createDefaultHeatMapGradient();
-    void getColorAtValue(const float value, float &red, float &green, float &blue);
+    void createJetMapGradient();
+    void createHotMapGradient();
+    void createGrayscaleMapGradient();
+    void getColorAtValue(const float value, float &red, float &green, float &blue) const;
 };
+
+}
+
+#endif
