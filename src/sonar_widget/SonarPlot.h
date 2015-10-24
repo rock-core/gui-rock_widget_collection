@@ -4,14 +4,13 @@
 #include <QtGui>
 #include <QFrame>
 #include "base/samples/sonar_scan.h"
-#include "ColorGradient.h"
-
+#include <frame_helper/ColorGradient.h>
 
 #define BASE_WIDTH      1300
 #define BASE_HEIGHT      600
 #define BINS_REF_SIZE    500
 
-using namespace colorgradient;
+using namespace frame_helper;
 
 
 class SonarPlot : public QFrame
@@ -29,7 +28,7 @@ protected:
     void resizeEvent ( QResizeEvent * event );
     void drawOverlay();
     void generateBearingTable(base::samples::SonarScan scan);
-    void colormapSelector(ColormapType type);
+    void applyColormap(ColorGradientType type);
     base::samples::SonarScan lastSonarScan;
     bool changedSize;
     double scaleX;

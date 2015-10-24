@@ -2,13 +2,13 @@
 #include <iostream>
 
 using namespace std;
-using namespace colorgradient;
+using namespace frame_helper;
 
 SonarPlot::SonarPlot(QWidget *parent)
     : QFrame(parent), changedSize(true),scaleX(1),scaleY(1),range(5)
 {
     // apply default colormap
-    colormapSelector(COLORMAP_JET);
+    applyColormap(COLORGRADIENT_JET);
 
       QPalette Pal(palette());
       Pal.setColor(QPalette::Background, QColor(0,0,255));
@@ -79,16 +79,19 @@ void SonarPlot::paintEvent(QPaintEvent *)
     painter.setRenderHint(QPainter::Antialiasing, true);
 
     // draw sonar image
+    QImage img(width(), height(), QImage::Format_RGB888);
+    img.fill(QColor(0, 0, 255));
+
     for (uint i = 0; i < transfer.size() && !changedSize; ++i) {
         if (transfer[i] != -1) {
-            painter.setPen(colorMap[lastSonarScan.data[transfer[i]]]);
-            painter.drawPoint(i / origin.y(), i % origin.y());
+            QColor c = colorMap[lastSonarScan.data[transfer[i]]];
+            img.setPixel(i / origin.y(), i % origin.y(), qRgb(c.red(), c.green(), c.blue()));
         }
     }
+    painter.drawImage(0, 0, img);
 
     // draw overlay
     drawOverlay();
-    
 }
 
 void SonarPlot::resizeEvent ( QResizeEvent * event )
@@ -152,28 +155,13 @@ void SonarPlot::rangeChanged(int value)
 }
 
 void SonarPlot::sonarPaletteChanged(int index){
-    colormapSelector((ColormapType) index);
+    applyColormap((ColorGradientType) index);
 }
 
-// set the current colormap
-void SonarPlot::colormapSelector(ColormapType type) {
-    heatMapGradient.clearGradient();
+// applies a color gradient
+void SonarPlot::applyColormap(ColorGradientType type){
 
-    switch (type) {
-        case COLORMAP_JET:
-            heatMapGradient.createJetMapGradient();
-            break;
-
-        case COLORMAP_HOT:
-            heatMapGradient.createHotMapGradient();
-            break;
-
-        case COLORMAP_GRAYSCALE:
-            heatMapGradient.createGrayscaleMapGradient();
-            break;
-        default:
-            break;
-    }
+    heatMapGradient.colormapSelector(type);
 
     colorMap.clear();
     try {
