@@ -16,26 +16,35 @@ protected:
     void resizeEvent ( QResizeEvent * event );
     QLabel *lbGain;
     QLabel *lbRange;
-    QComboBox* comboRange;
+    QLabel *lbPalette;
     QLineEdit *edGain;
+    QLineEdit *edRange;
       
 public:
     SonarWidget(QWidget *parent = 0);
     virtual ~SonarWidget();
+    void createGainComponent();
+    void createRangeComponent();
+    void createPaletteComponent();
     QSlider *slGain;
+    QSlider *slRange;
+    QComboBox *comboPalette;
 
 public slots:
     void setData(const base::samples::SonarScan scan);
     void setGain(int);
     void setRange(int);
+    void setSonarPalette(int);
 
 protected slots:
     void onSlGainChanged(int);
-    void onComboRangeChanged(QString);
+    void onSlRangeChanged(int);
+    void onComboPaletteChanged(int);
 
 signals:
     void gainChanged(int);
     void rangeChanged(int);
+    void sonarPaletteChanged(int);
     
 };
 

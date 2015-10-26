@@ -2,27 +2,18 @@
 #include <iostream>
 
 using namespace std;
+using namespace frame_helper;
 
 SonarPlot::SonarPlot(QWidget *parent)
     : QFrame(parent), changedSize(true),scaleX(1),scaleY(1),range(5)
 {
-  int alpha = 255;
-  for(int i=0;i<64;i++){
-    colorMap.push_back(QColor(0,4*i,255,alpha));
-  }
-  for(int i=64;i<128;i++){
-    colorMap.push_back(QColor(0,255,255+4*(64-i),alpha));
-  }
-  for(int i=128;i<192;i++){
-    colorMap.push_back(QColor(4*(i-128),255,0,alpha));
-  }
-  for(int i=192;i<256;i++){
-    colorMap.push_back(QColor(255,255+4*(192-i),0,alpha));
-  }
-  QPalette Pal(palette());
-  Pal.setColor(QPalette::Background, colorMap[0]);
-  setAutoFillBackground(true);
-  setPalette(Pal);  
+    // apply default colormap
+    applyColormap(COLORGRADIENT_JET);
+
+      QPalette Pal(palette());
+      Pal.setColor(QPalette::Background, QColor(0,0,255));
+      setAutoFillBackground(true);
+      setPalette(Pal);
 }
 
 SonarPlot::~SonarPlot()
@@ -31,42 +22,53 @@ SonarPlot::~SonarPlot()
 
 void SonarPlot::setData(const base::samples::SonarScan scan)
 {
-  lastSonarScan = sonarScan;
-  lastSonarScan.data.clear();
-  sonarScan = scan;
-  if(!sonarScan.number_of_bins || !sonarScan.number_of_beams){
+  if(!scan.number_of_bins || !scan.number_of_beams){
     return;
   }
   if(changedSize
-    || !(sonarScan.start_bearing == lastSonarScan.start_bearing)
-    || !(sonarScan.angular_resolution == lastSonarScan.angular_resolution)
-    || !(sonarScan.number_of_beams == lastSonarScan.number_of_beams)
-    || !(sonarScan.number_of_bins == lastSonarScan.number_of_bins)){
-    pixelList.clear();
+    || !(scan.start_bearing == lastSonarScan.start_bearing)
+    || !(scan.angular_resolution == lastSonarScan.angular_resolution)
+    || !(scan.number_of_beams == lastSonarScan.number_of_beams)
+    || !(scan.number_of_bins == lastSonarScan.number_of_bins)){
+
+    // set bearing correction look-up table
+    generateBearingTable(scan);
+
+    // set the transfer vector between image pixels and sonar data
+    transfer.clear();
+
+    // check pixels
     for (int i = 0; i< width();i++){
         for (int j = 0; j< origin.y();j++){
-            QPoint point(i,j);
-            point -= origin;
-            point.rx()/=scaleX*BINS_REF_SIZE/sonarScan.number_of_bins;
-            point.ry()/=scaleY*BINS_REF_SIZE/sonarScan.number_of_bins;
-            int radius = sqrt(point.x()*point.x() + point.y()*point.y());
-            base::Angle angle = base::Angle::fromDeg(0);
-            if(radius){
-                angle = base::Angle::fromRad(asin(double(point.x())/radius));
-            }
-            if(radius <= sonarScan.number_of_bins && fabs(angle.getDeg()) <= fabs(sonarScan.start_bearing.getDeg())){
-                uint index = abs(int((angle-sonarScan.start_bearing).getDeg()/sonarScan.angular_resolution.getDeg()))*sonarScan.number_of_bins + radius;
-                if(index<=sonarScan.data.size()){
-                    SonarPlotPixel sonarPlotPixel;
-                    sonarPlotPixel.point = QPoint(i,j);
-                    sonarPlotPixel.index = index;
-                    pixelList.append(sonarPlotPixel);
+
+            QPoint point(i - origin.x(), j - origin.y());
+            point.rx() /= scaleX * BINS_REF_SIZE / scan.number_of_bins;
+            point.ry() /= scaleY * BINS_REF_SIZE / scan.number_of_bins;
+
+            double radius = sqrt(point.x() * point.x() + point.y() * point.y());
+            double angle = asin(point.x() * 1.0 / radius);
+            base::Angle theta = base::Angle::fromRad(angle);
+
+            // pixels out of sonar image
+            if (theta.rad < bearingTable[0].rad || theta.rad > bearingTable[scan.number_of_beams - 1].rad || radius > scan.number_of_bins)
+                transfer.push_back(-1);
+
+            // pixels inside the sonar image
+            else {
+                int start_beam;
+                theta.rad <= 0 ? start_beam = 0 : start_beam = scan.number_of_beams / 2;
+                for (int i = start_beam; i < scan.number_of_beams; i++) {
+                    if (theta.rad >= bearingTable[i].rad && theta.rad < bearingTable[i + 1].rad) {
+                        transfer.push_back(i * scan.number_of_bins + radius);
+                        break;
+                    }
                 }
             }
         }
     }
     changedSize=false;
  }
+ lastSonarScan = scan;
  update();
 }
 
@@ -75,12 +77,21 @@ void SonarPlot::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing, true);
-    for(int i=0;i<pixelList.size();i++){
-        painter.setPen(QPen(colorMap[sonarScan.data[pixelList[i].index]]));
-        painter.drawPoint(pixelList[i].point);
+
+    // draw sonar image
+    QImage img(width(), height(), QImage::Format_RGB888);
+    img.fill(QColor(0, 0, 255));
+
+    for (uint i = 0; i < transfer.size() && !changedSize; ++i) {
+        if (transfer[i] != -1) {
+            QColor c = colorMap[lastSonarScan.data[transfer[i]]];
+            img.setPixel(i / origin.y(), i % origin.y(), qRgb(c.red(), c.green(), c.blue()));
+        }
     }
+    painter.drawImage(0, 0, img);
+
+    // draw overlay
     drawOverlay();
-    
 }
 
 void SonarPlot::resizeEvent ( QResizeEvent * event )
@@ -105,13 +116,13 @@ void SonarPlot::drawOverlay()
     painter.setRenderHint(QPainter::Antialiasing, true);
     painter.setPen(QPen(Qt::white));
     for(int i=1;i<=5;i++){
-      base::Angle sectorSize = sonarScan.angular_resolution*(sonarScan.number_of_beams-1);
+      base::Angle sectorSize = lastSonarScan.angular_resolution*(lastSonarScan.number_of_beams-1);
       painter.drawArc(width()/2-i*scaleX*100,height()-30-i*scaleY*100,i*200*scaleX,i*200*scaleY,(90-sectorSize.getDeg()/2)*16,sectorSize.getDeg()*16);
       QString str;
-      str.setNum(i*range/5);
+      str.setNum(i*range*1.0/5);
       int x = width()/2+i*100*scaleX*sin(sectorSize.getDeg()*3.1416/360);
       int y = height()-i*100*scaleY*cos(sectorSize.getDeg()*3.1416/360);
-      painter.drawText(x,y-5,str);      
+      painter.drawText(x,y-5,str);
       base::Angle ang = sectorSize*(-0.5+(i-1)*0.25);
       QPoint p2;
       x = width()/2+BINS_REF_SIZE*sin(ang.getRad())*scaleX;
@@ -142,3 +153,49 @@ void SonarPlot::rangeChanged(int value)
     range = value;
     drawOverlay();
 }
+
+void SonarPlot::sonarPaletteChanged(int index){
+    applyColormap((ColorGradientType) index);
+}
+
+// applies a color gradient
+void SonarPlot::applyColormap(ColorGradientType type){
+
+    heatMapGradient.colormapSelector(type);
+
+    colorMap.clear();
+    try {
+        float red, green, blue;
+        for (int i = 0; i < 256; ++i) {
+            heatMapGradient.getColorAtValue((1.0 / 255) * i, red, green, blue);
+            colorMap.push_back(QColor(red * 255, green * 255, blue * 255));
+        }
+    } catch (const std::out_of_range& e) {
+        std::cout << e.what() << std::endl;
+    }
+}
+
+// generate the bearing table to correct wall curvatures
+void SonarPlot::generateBearingTable(base::samples::SonarScan scan) {
+    bearingTable.clear();
+
+    // the wall curvature correction is only applied for Tritech Gemini
+    if (scan.beamwidth_horizontal.getDeg() == 120.0 && scan.beamwidth_vertical.getDeg() == 20.0 && scan.number_of_beams == 256) {
+        for (int i = 0; i < scan.number_of_beams; i++) {
+            double rad = asin(((2 * i - scan.number_of_beams) * 1.0 / scan.number_of_beams) * 0.86602540);
+            const base::Angle new_angle = base::Angle::fromRad(rad);
+            bearingTable.push_back(new_angle);
+        }
+    }
+
+    else {
+        double interval = scan.beamwidth_horizontal.rad / scan.number_of_beams;
+        for (int i = 0; i < scan.number_of_beams; i++) {
+            double rad = interval * i + scan.start_bearing.rad;
+            const base::Angle new_angle = base::Angle::fromRad(rad);
+            bearingTable.push_back(new_angle);
+        }
+    }
+
+}
+
