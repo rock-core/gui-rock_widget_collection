@@ -50,16 +50,14 @@ void SonarPlot::setData(const base::samples::SonarScan scan)
             base::Angle theta = base::Angle::fromRad(angle);
 
             // pixels out of sonar image
-            if (theta.rad < bearingTable[0].rad || theta.rad > bearingTable[scan.number_of_beams - 1].rad || radius > scan.number_of_bins)
+            if (theta.rad < bearingTable[0].rad || theta.rad > bearingTable[scan.number_of_beams - 1].rad || radius > scan.number_of_bins || !radius)
                 transfer.push_back(-1);
 
-            // pixels inside the sonar image
+            // pixels in the sonar image
             else {
-                int start_beam;
-                theta.rad <= 0 ? start_beam = 0 : start_beam = scan.number_of_beams / 2;
-                for (int i = start_beam; i < scan.number_of_beams; i++) {
-                    if (theta.rad >= bearingTable[i].rad && theta.rad < bearingTable[i + 1].rad) {
-                        transfer.push_back(i * scan.number_of_bins + radius);
+                for (int k = 0; k < scan.number_of_beams - 1; k++) {
+                    if (theta.rad >= bearingTable[k].rad && theta.rad < bearingTable[k + 1].rad) {
+                        transfer.push_back(k * scan.number_of_bins + radius);
                         break;
                     }
                 }
@@ -181,7 +179,7 @@ void SonarPlot::generateBearingTable(base::samples::SonarScan scan) {
 
     // the wall curvature correction is only applied for Tritech Gemini
     if (scan.beamwidth_horizontal.getDeg() == 120.0 && scan.beamwidth_vertical.getDeg() == 20.0 && scan.number_of_beams == 256) {
-        for (int i = 0; i < scan.number_of_beams; i++) {
+        for (double i = 0.5; i <= scan.number_of_beams; i++) {
             double rad = asin(((2 * i - scan.number_of_beams) * 1.0 / scan.number_of_beams) * 0.86602540);
             const base::Angle new_angle = base::Angle::fromRad(rad);
             bearingTable.push_back(new_angle);
