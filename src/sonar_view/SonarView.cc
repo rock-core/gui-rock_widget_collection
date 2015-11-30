@@ -140,14 +140,10 @@ void SonarView::paintPos(int posX, int posY, int sizeX, int sizeY){
 }
 
 void SonarView::paintLine(double bearing, const uint8_t *data, size_t len){
-	QPainter painter(&img);
 	double s = sin(bearing);
 	double c = cos(bearing);
-	for(size_t i=0;i<len;i++){
-		painter.setPen(QColor(data[i],data[i],data[i]));
-		//painter.drawPoint((len)+(s*i),(len)+(c*i));
-		painter.drawPoint((len)+(c*i),(len)+(s*i));
-	}
+    for (size_t i = 0; i < len; i++)
+        img.setPixel((len) + (c * i), (len) + (s * i), qRgb(data[i], data[i], data[i]));
 }
 
 
@@ -170,9 +166,8 @@ void SonarView::setOrientation(const double orientation){
 
 void SonarView::paintEvent(QPaintEvent *event)
 {
-  ImageViewOld::paintEvent(event);  
-  printf("Paint called in SonarView\n");
-  
+    QPainter painter(this);
+    painter.drawImage(0, 0, img);
 }
 
 /*
