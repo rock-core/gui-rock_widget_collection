@@ -3,7 +3,8 @@
 
 #include <QtGui>
 #include <QFrame>
-#include "base/samples/sonar_scan.h"
+#include <base/samples/SonarScan.hpp>
+#include <base/samples/Sonar.hpp>
 #include <frame_helper/ColorGradient.h>
 
 #define BASE_WIDTH      1300
@@ -22,14 +23,17 @@ public:
     SonarPlot(QWidget *parent = 0);
     virtual ~SonarPlot();
     void setData(const base::samples::SonarScan scan);
+    void setData(const base::samples::Sonar scan);
 
 protected:
     void paintEvent(QPaintEvent *event);
     void resizeEvent ( QResizeEvent * event );
     void drawOverlay();
     void generateBearingTable(base::samples::SonarScan scan);
+    void generateTransferTable(int nbeams, int nbins);
     void applyColormap(ColorGradientType type);
     base::samples::SonarScan lastSonarScan;
+    base::samples::Sonar lastSonar;
     bool changedSize;
     double scaleX;
     double scaleY;

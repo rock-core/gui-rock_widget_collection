@@ -53,6 +53,11 @@ void SonarWidget::setData(const base::samples::SonarScan scan)
   plot->setData(scan);
 }
 
+void SonarWidget::setData(const base::samples::Sonar sonar)
+{
+  plot->setData(sonar);
+}
+
 void SonarWidget::setGain(int value)
 {
   slGain->setValue(value);

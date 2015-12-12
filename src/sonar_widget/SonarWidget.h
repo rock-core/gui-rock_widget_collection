@@ -2,7 +2,8 @@
 #define SONARWIDGET_H
 
 #include <QtGui>
-#include "base/samples/sonar_scan.h"
+#include <base/samples/SonarScan.hpp>
+#include <base/samples/Sonar.hpp>
 
 class SonarPlot;
 
@@ -32,6 +33,7 @@ public:
 
 public slots:
     void setData(const base::samples::SonarScan scan);
+    void setData(const base::samples::Sonar sonar);
     void setGain(int);
     void setRange(int);
     void setSonarPalette(int);
