@@ -50,7 +50,13 @@ SonarWidget::~SonarWidget()
 
 void SonarWidget::setData(const base::samples::SonarScan scan)
 {
-  plot->setData(scan);
+    base::samples::Sonar sonar(scan);
+    plot->setData(sonar);
+}
+
+void SonarWidget::setData(const base::samples::Sonar sonar)
+{
+    plot->setData(sonar);
 }
 
 void SonarWidget::setGain(int value)

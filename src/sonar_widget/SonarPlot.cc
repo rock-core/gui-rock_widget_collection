@@ -20,56 +20,25 @@ SonarPlot::~SonarPlot()
 {
 }
 
-void SonarPlot::setData(const base::samples::SonarScan scan)
+void SonarPlot::setData(const base::samples::Sonar sonar)
 {
-  if(!scan.number_of_bins || !scan.number_of_beams){
-    return;
-  }
-  if(changedSize
-    || !(scan.start_bearing == lastSonarScan.start_bearing)
-    || !(scan.angular_resolution == lastSonarScan.angular_resolution)
-    || !(scan.number_of_beams == lastSonarScan.number_of_beams)
-    || !(scan.number_of_bins == lastSonarScan.number_of_bins)){
+    if (!sonar.bin_count)
+        return;
 
-    // set bearing correction look-up table
-    generateBearingTable(scan);
+    if(changedSize
+        || !(sonar.bin_count == lastSonar.bin_count)
+        || !(sonar.beam_count  == lastSonar.beam_count)
+        || !(sonar.bearings[0]  == lastSonar.bearings[0])
+        || !((sonar.bearings[1] - sonar.bearings[0]) == (lastSonar.bearings[1] - lastSonar.bearings[0]))) {
 
-    // set the transfer vector between image pixels and sonar data
-    transfer.clear();
+        // set the transfer vector between image pixels and sonar data
+        generateTransferTable(sonar);
 
-    // check pixels
-    for (int i = 0; i< width();i++){
-        for (int j = 0; j< origin.y();j++){
-
-            QPoint point(i - origin.x(), j - origin.y());
-            point.rx() /= scaleX * BINS_REF_SIZE / scan.number_of_bins;
-            point.ry() /= scaleY * BINS_REF_SIZE / scan.number_of_bins;
-
-            double radius = sqrt(point.x() * point.x() + point.y() * point.y());
-            double angle = asin(point.x() * 1.0 / radius);
-            base::Angle theta = base::Angle::fromRad(angle);
-
-            // pixels out of sonar image
-            if (theta.rad < bearingTable[0].rad || theta.rad > bearingTable[scan.number_of_beams - 1].rad || radius > scan.number_of_bins || !radius)
-                transfer.push_back(-1);
-
-            // pixels in the sonar image
-            else {
-                for (int k = 0; k < scan.number_of_beams - 1; k++) {
-                    if (theta.rad >= bearingTable[k].rad && theta.rad < bearingTable[k + 1].rad) {
-                        transfer.push_back(k * scan.number_of_bins + radius);
-                        break;
-                    }
-                }
-            }
-        }
+        changedSize = false;
     }
-    changedSize=false;
- }
- lastSonarScan = scan;
- update();
+    lastSonar = sonar;
+    update();
 }
-
 
 void SonarPlot::paintEvent(QPaintEvent *)
 {
@@ -80,12 +49,13 @@ void SonarPlot::paintEvent(QPaintEvent *)
     QImage img(width(), height(), QImage::Format_RGB888);
     img.fill(QColor(0, 0, 255));
 
-    for (uint i = 0; i < transfer.size() && !changedSize; ++i) {
+    for (unsigned int i = 0; i < transfer.size() && !changedSize; ++i) {
         if (transfer[i] != -1) {
-            QColor c = colorMap[lastSonarScan.data[transfer[i]]];
+            QColor c = colorMap[round(lastSonar.bins[transfer[i]] * 255)];
             img.setPixel(i / origin.y(), i % origin.y(), qRgb(c.red(), c.green(), c.blue()));
         }
     }
+
     painter.drawImage(0, 0, img);
 
     // draw overlay
@@ -113,32 +83,38 @@ void SonarPlot::drawOverlay()
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing, true);
     painter.setPen(QPen(Qt::white));
-    for(int i=1;i<=5;i++){
-      base::Angle sectorSize = lastSonarScan.angular_resolution*(lastSonarScan.number_of_beams-1);
-      painter.drawArc(width()/2-i*scaleX*100,height()-30-i*scaleY*100,i*200*scaleX,i*200*scaleY,(90-sectorSize.getDeg()/2)*16,sectorSize.getDeg()*16);
-      QString str;
-      str.setNum(i*range*1.0/5);
-      int x = width()/2+i*100*scaleX*sin(sectorSize.getDeg()*3.1416/360);
-      int y = height()-i*100*scaleY*cos(sectorSize.getDeg()*3.1416/360);
-      painter.drawText(x,y-5,str);
-      base::Angle ang = sectorSize*(-0.5+(i-1)*0.25);
-      QPoint p2;
-      x = width()/2+BINS_REF_SIZE*sin(ang.getRad())*scaleX;
-      y = height()-30-BINS_REF_SIZE*cos(ang.getRad())*scaleY;
-      p2.setX(x);
-      p2.setY(y);
-      painter.drawLine(origin,p2);     
-      str.setNum(ang.getDeg());
-      x = p2.x();
-      if(x<width()/2){
-	x-=15;
-      }
-      if(x==width()/2){
-	x-=5;
-      }
-      y = p2.y()-10;
-      painter.drawText(x,y,str);
-    } 
+
+    // multibeam sonar
+    if (lastSonar.beam_count) {
+
+        // draw grid
+        base::Angle sectorSize = base::Angle::fromRad((lastSonar.beam_width.rad / lastSonar.beam_count) * (lastSonar.beam_count - 1));
+
+        for(int i=1;i<=5;i++){
+            painter.drawArc(origin.rx() - i * scaleX * 100, origin.ry() - i * scaleY * 100, i * 200 * scaleX, i * 200 * scaleY, (90 - sectorSize.getDeg() / 2) * 16, sectorSize.getDeg() * 16);
+            QString str;
+            str.setNum(i*range*1.0/5);
+            int x = width()/2+i*100*scaleX*sin(sectorSize.getDeg()*3.1416/360);
+            int y = height()-i*100*scaleY*cos(sectorSize.getDeg()*3.1416/360);
+            painter.drawText(x,y-5,str);
+
+            base::Angle ang = lastSonar.bearings[((lastSonar.beam_count - 1) * 1.0 / 4) * (i-1)];
+            QPoint point;
+            point.rx() = origin.rx() + BINS_REF_SIZE * sin(ang.getRad()) * scaleX;
+            point.ry() = origin.ry() - BINS_REF_SIZE * cos(ang.getRad()) * scaleY;
+            painter.drawLine(origin, point);
+            str.setNum(ang.getDeg());
+            x = point.x();
+            if (x < width() / 2)
+                x -= 15;
+            if (x == width() / 2)
+                x -= 5;
+            y = point.y()-10;
+            painter.drawText(x,y,str);
+        }
+    }
+
+    // draw color pallete
     for(int i=0;i<255;i++){
       painter.setPen(QPen(colorMap[i]));
       painter.setBrush(QBrush(colorMap[i]));
@@ -173,27 +149,36 @@ void SonarPlot::applyColormap(ColorGradientType type){
     }
 }
 
-// generate the bearing table to correct wall curvatures
-void SonarPlot::generateBearingTable(base::samples::SonarScan scan) {
-    bearingTable.clear();
+// set the transfer vector between image pixels and sonar data
+void SonarPlot::generateTransferTable(const base::samples::Sonar& sonar) {
 
-    // the wall curvature correction is only applied for Tritech Gemini
-    if (scan.beamwidth_horizontal.getDeg() == 120.0 && scan.beamwidth_vertical.getDeg() == 20.0 && scan.number_of_beams == 256) {
-        for (double i = 0.5; i <= scan.number_of_beams; i++) {
-            double rad = asin(((2 * i - scan.number_of_beams) * 1.0 / scan.number_of_beams) * 0.86602540);
-            const base::Angle new_angle = base::Angle::fromRad(rad);
-            bearingTable.push_back(new_angle);
+    transfer.clear();
+
+    // check pixels
+    for (int i = 0; i< width();i++){
+        for (int j = 0; j< origin.y();j++){
+
+            QPoint point(i - origin.x(), j - origin.y());
+            point.rx() /= scaleX * BINS_REF_SIZE / sonar.bin_count;
+            point.ry() /= scaleY * BINS_REF_SIZE / sonar.bin_count;
+
+            double radius = sqrt(point.x() * point.x() + point.y() * point.y());
+            double angle = asin(point.x() * 1.0 / radius);
+            base::Angle theta = base::Angle::fromRad(angle);
+
+            // pixels out of sonar image
+            if (theta.rad < sonar.bearings[0].rad || theta.rad > sonar.bearings[sonar.beam_count - 1].rad || radius > sonar.bin_count || !radius)
+                transfer.push_back(-1);
+
+            // pixels in the sonar image
+            else {
+                for (unsigned int k = 0; k < sonar.beam_count - 1; k++) {
+                    if (theta.rad >= sonar.bearings[k].rad && theta.rad < sonar.bearings[k + 1].rad) {
+                        transfer.push_back(k * sonar.bin_count + radius);
+                        break;
+                    }
+                }
+            }
         }
     }
-
-    else {
-        double interval = scan.beamwidth_horizontal.rad / scan.number_of_beams;
-        for (int i = 0; i < scan.number_of_beams; i++) {
-            double rad = interval * i + scan.start_bearing.rad;
-            const base::Angle new_angle = base::Angle::fromRad(rad);
-            bearingTable.push_back(new_angle);
-        }
-    }
-
 }
-
