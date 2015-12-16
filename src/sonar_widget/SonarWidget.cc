@@ -69,6 +69,16 @@ void SonarWidget::setRange(int value)
   slRange->setValue(value);
 }
 
+void SonarWidget::setMinRange(int value)
+{
+  slRange->setMinimum(value);
+}
+
+void SonarWidget::setMaxRange(int value)
+{
+  slRange->setMaximum(value);
+}
+
 void SonarWidget::setSonarPalette(int value)
 {
   comboPalette->setCurrentIndex(value);

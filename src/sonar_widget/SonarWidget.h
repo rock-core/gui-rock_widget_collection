@@ -36,6 +36,8 @@ public slots:
     void setData(const base::samples::Sonar sonar);
     void setGain(int);
     void setRange(int);
+    void setMaxRange(int);
+    void setMinRange(int);
     void setSonarPalette(int);
 
 protected slots:
