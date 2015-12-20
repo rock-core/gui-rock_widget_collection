@@ -26,6 +26,7 @@ SonarPlot::~SonarPlot()
 
 void SonarPlot::setMultibeamData(const base::samples::Sonar& sonar)
 {
+
     if(changedSize
            || !(sonar.bin_count == lastSonar.bin_count)
            || !(sonar.beam_count  == lastSonar.beam_count)
@@ -138,6 +139,9 @@ void SonarPlot::resizeEvent ( QResizeEvent * event )
 
 void SonarPlot::drawOverlay()
 {
+    if (!lastSonar.beam_count)
+        return;
+
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing, true);
     painter.setPen(QPen(Qt::white));
