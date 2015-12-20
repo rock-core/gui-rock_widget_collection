@@ -21,13 +21,15 @@ class SonarPlot : public QFrame
 public:
     SonarPlot(QWidget *parent = 0);
     virtual ~SonarPlot();
-    void setData(const base::samples::Sonar sonar);
+    void setMultibeamData(const base::samples::Sonar& sonar);
+    void setScanningData(const base::samples::Sonar& sonar);
 
 protected:
     void paintEvent(QPaintEvent *event);
     void resizeEvent ( QResizeEvent * event );
     void drawOverlay();
-    void generateTransferTable(const base::samples::Sonar& sonar);
+    void generateMultibeamTransferTable(const base::samples::Sonar& sonar);
+    void generateScanningTransferTable(const base::samples::Sonar& sonar);
     void applyColormap(ColorGradientType type);
     base::samples::Sonar lastSonar;
     bool changedSize;
@@ -38,7 +40,10 @@ protected:
     std::vector<int> transfer;
     std::vector<QColor> colorMap;
     ColorGradient heatMapGradient;
-    
+    QImage img;
+    int numDiv;
+    base::Angle motorStep;
+    std::vector<float> scanData;
 
 protected slots:
     void rangeChanged(int);

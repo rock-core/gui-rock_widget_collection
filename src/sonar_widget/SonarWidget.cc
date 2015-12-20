@@ -51,12 +51,18 @@ SonarWidget::~SonarWidget()
 void SonarWidget::setData(const base::samples::SonarScan scan)
 {
     base::samples::Sonar sonar(scan);
-    plot->setData(sonar);
+    setData(sonar);
 }
 
 void SonarWidget::setData(const base::samples::Sonar sonar)
 {
-    plot->setData(sonar);
+    if (!sonar.bin_count || !sonar.beam_count)
+        return;
+
+    if (sonar.beam_count == 1)
+        plot->setScanningData(sonar);
+    else
+        plot->setMultibeamData(sonar);
 }
 
 void SonarWidget::setGain(int value)
