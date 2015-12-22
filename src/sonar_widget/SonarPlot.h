@@ -31,6 +31,7 @@ protected:
     void generateMultibeamTransferTable(const base::samples::Sonar& sonar);
     void generateScanningTransferTable(const base::samples::Sonar& sonar);
     void applyColormap(ColorGradientType type);
+    bool isMotorStepChanged(const base::Angle& bearing);
     base::samples::Sonar lastSonar;
     bool changedSize;
     double scaleX;
@@ -40,9 +41,8 @@ protected:
     std::vector<int> transfer;
     std::vector<QColor> colorMap;
     ColorGradient heatMapGradient;
-    QImage img;
-    int numDiv;
     base::Angle motorStep;
+    int numSteps;
     std::vector<float> scanData;
 
 protected slots:
