@@ -50,7 +50,13 @@ SonarWidget::~SonarWidget()
 
 void SonarWidget::setData(const base::samples::SonarScan scan)
 {
-  plot->setData(scan);
+    base::samples::Sonar sonar(scan);
+    setData(sonar);
+}
+
+void SonarWidget::setData(const base::samples::Sonar sonar)
+{
+    plot->setData(sonar);
 }
 
 void SonarWidget::setGain(int value)
@@ -61,6 +67,16 @@ void SonarWidget::setGain(int value)
 void SonarWidget::setRange(int value)
 {
   slRange->setValue(value);
+}
+
+void SonarWidget::setMinRange(int value)
+{
+  slRange->setMinimum(value);
+}
+
+void SonarWidget::setMaxRange(int value)
+{
+  slRange->setMaximum(value);
 }
 
 void SonarWidget::setSonarPalette(int value)

@@ -3,7 +3,7 @@
 
 #include <QtGui>
 #include <QFrame>
-#include "base/samples/sonar_scan.h"
+#include <base/samples/Sonar.hpp>
 #include <frame_helper/ColorGradient.h>
 
 #define BASE_WIDTH      1300
@@ -21,25 +21,30 @@ class SonarPlot : public QFrame
 public:
     SonarPlot(QWidget *parent = 0);
     virtual ~SonarPlot();
-    void setData(const base::samples::SonarScan scan);
+    void setData(const base::samples::Sonar& sonar);
 
 protected:
     void paintEvent(QPaintEvent *event);
     void resizeEvent ( QResizeEvent * event );
     void drawOverlay();
-    void generateBearingTable(base::samples::SonarScan scan);
+    void generateMultibeamTransferTable(const base::samples::Sonar& sonar);
+    void generateScanningTransferTable(const base::samples::Sonar& sonar);
     void applyColormap(ColorGradientType type);
-    base::samples::SonarScan lastSonarScan;
+    bool isMotorStepChanged(const base::Angle& bearing);
+    void addScanningData(const base::samples::Sonar& sonar);
+    base::samples::Sonar lastSonar;
     bool changedSize;
+    bool isMultibeamSonar;
     double scaleX;
     double scaleY;
     int range;
     QPoint origin;
-    std::vector<base::Angle> bearingTable;
     std::vector<int> transfer;
     std::vector<QColor> colorMap;
     ColorGradient heatMapGradient;
-    
+    base::Angle motorStep;
+    int numSteps;
+    std::vector<float> sonarData;
 
 protected slots:
     void rangeChanged(int);
