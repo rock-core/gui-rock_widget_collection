@@ -56,13 +56,7 @@ void SonarWidget::setData(const base::samples::SonarScan scan)
 
 void SonarWidget::setData(const base::samples::Sonar sonar)
 {
-    if (!sonar.bin_count || !sonar.beam_count)
-        return;
-
-    if (sonar.beam_count == 1)
-        plot->setScanningData(sonar);
-    else
-        plot->setMultibeamData(sonar);
+    plot->setData(sonar);
 }
 
 void SonarWidget::setGain(int value)

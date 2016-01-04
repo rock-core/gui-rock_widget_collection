@@ -5,12 +5,12 @@ using namespace std;
 using namespace frame_helper;
 
 SonarPlot::SonarPlot(QWidget *parent)
-    : QFrame(parent), changedSize(true),scaleX(1),scaleY(1),range(5)
+    : QFrame(parent), changedSize(true), scaleX(1), scaleY(1), range(5), isMultibeamSonar(true)
 {
+    motorStep.rad = 0;
+
     // apply default colormap
     applyColormap(COLORGRADIENT_JET);
-
-    motorStep.rad = 0;
 
       QPalette Pal(palette());
       Pal.setColor(QPalette::Background, QColor(0,0,255));
@@ -22,44 +22,49 @@ SonarPlot::~SonarPlot()
 {
 }
 
-// process multibeam sonar data
-void SonarPlot::setMultibeamData(const base::samples::Sonar& sonar)
+// process sonar data
+void SonarPlot::setData(const base::samples::Sonar& sonar)
 {
-    if(changedSize
-           || !(sonar.bin_count == lastSonar.bin_count)
-           || !(sonar.beam_count  == lastSonar.beam_count)
-           || !(sonar.bearings[0]  == lastSonar.bearings[0])
-           || !((sonar.bearings[1] - sonar.bearings[0]) == (lastSonar.bearings[1] - lastSonar.bearings[0]))) {
+    if (!sonar.beam_count || !sonar.bin_count)
+        return;
 
-        // set the transfer vector between image pixels and sonar data
-        generateMultibeamTransferTable(sonar);
+    sonar.beam_count > 1 ? isMultibeamSonar = true : isMultibeamSonar = false;
 
-        changedSize = false;
+    // process multibeam sonar data
+    if (isMultibeamSonar) {
+        if(changedSize
+               || !(sonar.bin_count == lastSonar.bin_count)
+               || !(sonar.beam_count  == lastSonar.beam_count)
+               || !(sonar.bearings[0]  == lastSonar.bearings[0])
+               || !((sonar.bearings[1] - sonar.bearings[0]) == (lastSonar.bearings[1] - lastSonar.bearings[0]))) {
+
+            // set the transfer vector between image pixels and sonar data
+            generateMultibeamTransferTable(sonar);
+
+            changedSize = false;
+        }
     }
 
-    lastSonar = sonar;
-    update();
-}
+    // process scanning sonar data
+    else {
+        if ((changedSize || !(sonar.bin_count == lastSonar.bin_count)) && lastSonar.beam_count) {
 
-// process scanning sonar data
-void SonarPlot::setScanningData(const base::samples::Sonar& sonar)
-{
-    if((changedSize
-           || !(sonar.bin_count == lastSonar.bin_count)
-           || !(sonar.beam_count  == lastSonar.beam_count))
-           && lastSonar.beam_count) {
+            // check if the motor step angle size is changed
+            bool changedMotorStep = isMotorStepChanged(sonar.bearings[0]);
 
-        // check if the motor step angle size is changed
-        bool changedMotorStep = isMotorStepChanged(sonar.bearings[0]);
+            // set the transfer vector between image pixels and sonar data
+            generateScanningTransferTable(sonar);
 
-        // set the transfer vector between image pixels and sonar data
-        generateScanningTransferTable(sonar);
+            // if number of bins or the motor step changes, then the accumulated sonar data will be reseted
+            if (!(sonar.bin_count == lastSonar.bin_count) || changedMotorStep)
+                sonarData.assign(numSteps * sonar.bin_count, 0.0);
 
-        // if number of bins or the motor step changes, then the accumulated sonar data will be reseted
-        if (!(sonar.bin_count == lastSonar.bin_count) || changedMotorStep)
-            scanData.assign(numSteps * sonar.bin_count, 0.0);
+            changedSize = false;
+        }
 
-        changedSize = false;
+        // add current beam to accumulated scanning sonar data
+        if (sonarData.size())
+            addScanningData(sonar);
     }
 
     lastSonar = sonar;
@@ -80,9 +85,19 @@ bool SonarPlot::isMotorStepChanged(const base::Angle& bearing) {
     return false;
 }
 
+// add current beam to accumulated scanning sonar data
+void SonarPlot::addScanningData(const base::samples::Sonar& sonar) {
+    int id_beam = lastSonar.bearings[0].rad / motorStep.rad;
+    if (id_beam < 0)
+        id_beam = (numSteps - 1) + id_beam;
+
+    for (unsigned int i = 0; i < lastSonar.bin_count; ++i)
+        sonarData[id_beam * lastSonar.bin_count + i] = lastSonar.bins[i];
+}
+
 void SonarPlot::paintEvent(QPaintEvent *)
 {
-    if (!lastSonar.beam_count)
+    if (!transfer.size())
         return;
 
     QPainter painter(this);
@@ -92,34 +107,13 @@ void SonarPlot::paintEvent(QPaintEvent *)
     QImage img(width(), height(), QImage::Format_RGB888);
     img.fill(QColor(0, 0, 255));
 
-    //  -- multibeam sonar
-    if (lastSonar.beam_count > 1) {
-        for (unsigned int i = 0; i < transfer.size() && !changedSize; ++i) {
-            if (transfer[i] != -1) {
-                QColor c = colorMap[round(lastSonar.bins[transfer[i]] * 255)];
-                img.setPixel(i / origin.y(), i % origin.y(), qRgb(c.red(), c.green(), c.blue()));
-            }
-        }
-    }
+    if (isMultibeamSonar)
+        sonarData = lastSonar.bins;
 
-    // -- scanning sonar
-    else {
-
-        if (!motorStep.rad)
-            return;
-
-        int id_beam = lastSonar.bearings[0].rad / motorStep.rad;
-        if (id_beam < 0)
-            id_beam = (numSteps - 1) + id_beam;
-
-        for (int i = 0; i < lastSonar.bin_count; ++i)
-            scanData[id_beam * lastSonar.bin_count + i] = lastSonar.bins[i];
-
-        for (unsigned int i = 0; i < transfer.size() && !changedSize; ++i) {
-            if (transfer[i] != -1) {
-                QColor c = colorMap[round(scanData[transfer[i]] * 255)];
-                img.setPixel(i / height(), i % height(), qRgb(c.red(), c.green(), c.blue()));
-            }
+    for (unsigned int i = 0; i < transfer.size() && !changedSize; ++i) {
+        if (transfer[i] != -1) {
+            QColor c = colorMap[round(sonarData[transfer[i]] * 255)];
+            img.setPixel(i / height(), i % height(), qRgb(c.red(), c.green(), c.blue()));
         }
     }
 
@@ -141,39 +135,31 @@ void SonarPlot::resizeEvent ( QResizeEvent * event )
         scaleY = double(height()-100)/(BASE_HEIGHT-100);
     }
     origin.setX(width()/2);
-    if (lastSonar.beam_count > 1)
-        origin.setY(height() - 30);
-    else
-        origin.setY(height() / 2);
+    isMultibeamSonar ? origin.setY(height() - 30) : origin.setY(height() / 2);
     changedSize=true;
     QWidget::resizeEvent (event);
 }
 
 void SonarPlot::drawOverlay()
 {
-    if (!lastSonar.beam_count)
-        return;
-
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing, true);
     painter.setPen(QPen(Qt::white));
 
     // multibeam sonar
-    if (lastSonar.beam_count > 1) {
+    if (isMultibeamSonar) {
 
         base::Angle sectorSize = base::Angle::fromRad((lastSonar.beam_width.rad / lastSonar.beam_count) * (lastSonar.beam_count - 1));
 
         for(int i=1;i<=5;i++){
             painter.drawArc(origin.x() - i * scaleX * 100, origin.y() - i * scaleY * 100, i * 200 * scaleX, i * 200 * scaleY, (90 - sectorSize.getDeg() / 2) * 16, sectorSize.getDeg() * 16);
             QString str = QString::number(i * range * 1.0 / 5);
-            int x = origin.x() + i * 100 * scaleX * sin(sectorSize.getDeg() * 3.1416 / 360);
-            int y = height()-i*100*scaleY*cos(sectorSize.getDeg()*3.1416/360);
+            int x = origin.x() + i * 100 * scaleX * sin(sectorSize.rad / 2);
+            int y = height() - i * 100 * scaleY * cos(sectorSize.rad / 2);
             painter.drawText(x,y-5,str);
 
             base::Angle ang = lastSonar.bearings[((lastSonar.beam_count - 1) * 1.0 / 4) * (i-1)];
-            QPoint point;
-            point.rx() = origin.rx() + BINS_REF_SIZE * sin(ang.rad) * scaleX;
-            point.ry() = origin.ry() - BINS_REF_SIZE * cos(ang.rad) * scaleY;
+            QPoint point(origin.rx() + BINS_REF_SIZE * sin(ang.rad) * scaleX, origin.ry() - BINS_REF_SIZE * cos(ang.rad) * scaleY);
             painter.drawLine(origin, point);
             str.setNum(ang.getDeg());
             painter.drawText(point.x() - 10, point.y() - 10, str);
@@ -182,13 +168,8 @@ void SonarPlot::drawOverlay()
 
     // scanning sonar
     else {
-        base::Angle ang = lastSonar.bearings[0];
         double offsetX = BINS_REF_SIZE * 0.67 * scaleX;
         double offsetY = BINS_REF_SIZE * 0.55 * scaleY;
-        QPoint point;
-        point.rx() = origin.rx() + offsetX * sin(ang.getRad());
-        point.ry() = origin.ry() - offsetY * cos(ang.getRad());
-        painter.drawLine(origin, point);
         painter.drawLine(QPoint(origin.rx(), origin.ry() - offsetY), QPoint(origin.rx(), origin.ry() + offsetY));
         painter.drawLine(QPoint(origin.rx() - offsetX, origin.ry()), QPoint(origin.rx() + offsetX, origin.ry()));
 
@@ -200,7 +181,9 @@ void SonarPlot::drawOverlay()
             painter.drawText(origin.rx() + x + 2, origin.ry() - 5, str_radius);
         }
 
-        QString str_deg = QString::number(ang.getDeg());
+        QString str_deg = QString::number(lastSonar.bearings[0].getDeg());
+        QPoint point(origin.rx() + offsetX * sin(lastSonar.bearings[0].rad), origin.ry() - offsetY * cos(lastSonar.bearings[0].rad));
+        painter.drawLine(origin, point);
         painter.drawText(point.x() - 10, point.y() - 10, str_deg);
     }
 
@@ -251,7 +234,7 @@ void SonarPlot::generateMultibeamTransferTable(const base::samples::Sonar& sonar
 
     // check pixels
     for (int i = 0; i< width();i++){
-        for (int j = 0; j< origin.y();j++){
+        for (int j = 0; j < height(); j++) {
 
             QPoint point(i - origin.x(), j - origin.y());
             point.rx() /= scaleX * BINS_REF_SIZE / sonar.bin_count;
@@ -262,7 +245,7 @@ void SonarPlot::generateMultibeamTransferTable(const base::samples::Sonar& sonar
             base::Angle theta = base::Angle::fromRad(angle);
 
             // pixels out of sonar image
-            if (theta.rad < sonar.bearings[0].rad || theta.rad > sonar.bearings[sonar.beam_count - 1].rad || radius > sonar.bin_count || !radius)
+            if (theta.rad < sonar.bearings[0].rad || theta.rad > sonar.bearings[sonar.beam_count - 1].rad || radius > sonar.bin_count || !radius || j > origin.y())
                 transfer.push_back(-1);
 
             // pixels in the sonar image
@@ -282,6 +265,9 @@ void SonarPlot::generateMultibeamTransferTable(const base::samples::Sonar& sonar
 void SonarPlot::generateScanningTransferTable(const base::samples::Sonar& sonar) {
 
     transfer.clear();
+
+    // set the origin
+    origin.setY(height() / 2);
 
     // check pixels
     for (int i = 0; i < width(); i++) {
