@@ -84,6 +84,10 @@ void SonarWidget::setSonarPalette(int value)
   comboPalette->setCurrentIndex(value);
 }
 
+void SonarWidget::enableAutoRanging(bool value)
+{
+  slRange->setEnabled(!value);
+}
 
 void SonarWidget::onSlGainChanged(int value)
 {
