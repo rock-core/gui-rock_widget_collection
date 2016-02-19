@@ -47,7 +47,7 @@ void SonarPlot::setData(const base::samples::Sonar& sonar)
 
     // process scanning sonar data
     else {
-        if ((changedSize || !(sonar.bin_count == lastSonar.bin_count)) && lastSonar.beam_count) {
+        if ((changedSize || !motorStep.rad || !(sonar.bin_count == lastSonar.bin_count)) && lastSonar.beam_count) {
 
             // check if the motor step angle size is changed
             bool changedMotorStep = isMotorStepChanged(sonar.bearings[0]);
@@ -199,7 +199,6 @@ void SonarPlot::drawOverlay()
 void SonarPlot::rangeChanged(int value)
 {
     range = value;
-    drawOverlay();
 }
 
 // update the current palette
@@ -265,6 +264,10 @@ void SonarPlot::generateMultibeamTransferTable(const base::samples::Sonar& sonar
 void SonarPlot::generateScanningTransferTable(const base::samples::Sonar& sonar) {
 
     transfer.clear();
+
+    // check motor step value
+    if (!motorStep.rad)
+        return;
 
     // set the origin
     origin.setY(height() / 2);

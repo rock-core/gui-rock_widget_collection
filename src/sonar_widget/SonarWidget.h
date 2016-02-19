@@ -39,6 +39,7 @@ public slots:
     void setMaxRange(int);
     void setMinRange(int);
     void setSonarPalette(int);
+    void enableAutoRanging(bool);
 
 protected slots:
     void onSlGainChanged(int);
