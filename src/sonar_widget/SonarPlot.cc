@@ -181,12 +181,12 @@ void SonarPlot::drawOverlay()
             painter.drawText(origin.rx() + x + 2, origin.ry() - 5, str_radius);
         }
 
-        QString str_deg = QString::number(lastSonar.bearings[0].getDeg());
         QPoint point(origin.rx() + offsetX * sin(lastSonar.bearings[0].rad), origin.ry() - offsetY * cos(lastSonar.bearings[0].rad));
+        painter.setPen(QPen(Qt::green));
         painter.drawLine(origin, point);
-        painter.drawText(point.x() - 10, point.y() - 10, str_deg);
     }
 
+    painter.setPen(QPen(Qt::white));
     // draw color pallete
     for(int i=0;i<255;i++){
       painter.setPen(QPen(colorMap[i]));
