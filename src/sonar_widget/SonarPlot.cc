@@ -5,7 +5,7 @@ using namespace std;
 using namespace frame_helper;
 
 SonarPlot::SonarPlot(QWidget *parent)
-    : QFrame(parent), changedSize(true), scaleX(1), scaleY(1), range(5), isMultibeamSonar(true)
+    : QFrame(parent), changedSize(true), scaleX(1), scaleY(1), range(5), isMultibeamSonar(true), refreshScreen(false)
 {
     motorStep.rad = 0;
 
@@ -63,8 +63,15 @@ void SonarPlot::setData(const base::samples::Sonar& sonar)
         }
 
         // add current beam to accumulated scanning sonar data
-        if (sonarData.size())
+        else if (sonarData.size())
             addScanningData(sonar);
+
+        // clean the screen if the sector scan changes
+        if (refreshScreen) {
+            generateScanningTransferTable(sonar);
+            sonarData.assign(numSteps * sonar.bin_count, 0.0);
+            refreshScreen = false;
+        }
     }
 
     lastSonar = sonar;
@@ -184,6 +191,13 @@ void SonarPlot::drawOverlay()
         QPoint point(origin.rx() + offsetX * sin(lastSonar.bearings[0].rad), origin.ry() - offsetY * cos(lastSonar.bearings[0].rad));
         painter.setPen(QPen(Qt::green));
         painter.drawLine(origin, point);
+
+        if (!continuous) {
+            QPoint point1(origin.rx() + offsetX * sin(leftLimit.rad), origin.ry() - offsetY * cos(leftLimit.rad));
+            QPoint point2(origin.rx() + offsetX * sin(rightLimit.rad), origin.ry() - offsetY * cos(rightLimit.rad));
+            painter.drawLine(origin, point1);
+            painter.drawLine(origin, point2);
+        }
     }
 
     painter.setPen(QPen(Qt::white));
@@ -204,6 +218,16 @@ void SonarPlot::rangeChanged(int value)
 // update the current palette
 void SonarPlot::sonarPaletteChanged(int index){
     applyColormap((ColorGradientType) index);
+}
+
+// update the sector scan (for scanning sonars)
+void SonarPlot::setSectorScan(bool continuous, base::Angle left, base::Angle right){
+    this->continuous = continuous;
+    this->leftLimit = left;
+    this->rightLimit = right;
+
+    if (!continuous)
+        refreshScreen = true;
 }
 
 // applies a color gradient

@@ -22,6 +22,7 @@ public:
     SonarPlot(QWidget *parent = 0);
     virtual ~SonarPlot();
     void setData(const base::samples::Sonar& sonar);
+    void setSectorScan(bool continuous, base::Angle left, base::Angle right);
 
 protected:
     void paintEvent(QPaintEvent *event);
@@ -35,6 +36,9 @@ protected:
     base::samples::Sonar lastSonar;
     bool changedSize;
     bool isMultibeamSonar;
+    bool continuous;
+    bool refreshScreen;
+    base::Angle leftLimit, rightLimit;
     double scaleX;
     double scaleY;
     int range;
