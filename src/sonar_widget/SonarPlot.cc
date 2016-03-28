@@ -50,7 +50,7 @@ void SonarPlot::setData(const base::samples::Sonar& sonar)
         if ((changedSize || !motorStep.rad || !(sonar.bin_count == lastSonar.bin_count)) && lastSonar.beam_count) {
 
             // check if the motor step angle size is changed
-            bool changedMotorStep = isMotorStepChanged(sonar.bearings[0]);
+            bool changedMotorStep = !changedSize && isMotorStepChanged(sonar.bearings[0]);
 
             // set the transfer vector between image pixels and sonar data
             generateScanningTransferTable(sonar);
