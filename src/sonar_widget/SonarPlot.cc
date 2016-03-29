@@ -5,7 +5,7 @@ using namespace std;
 using namespace frame_helper;
 
 SonarPlot::SonarPlot(QWidget *parent)
-    : QFrame(parent), changedSize(true), scaleX(1), scaleY(1), range(5), isMultibeamSonar(true), refreshScreen(false)
+    : QFrame(parent), changedSize(true), scaleX(1), scaleY(1), range(5), isMultibeamSonar(true), refreshScreen(false), continuous(true)
 {
     motorStep.rad = 0;
 
