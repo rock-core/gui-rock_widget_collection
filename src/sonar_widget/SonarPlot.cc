@@ -189,7 +189,7 @@ void SonarPlot::drawOverlay()
         }
 
         QString str_deg = QString::number(roundf(lastSonar.bearings[0].getDeg() * 10) / 10);
-        QPoint point(origin.rx() + offsetX * sin(lastSonar.bearings[0].rad), origin.ry() - offsetY * cos(lastSonar.bearings[0].rad));
+        QPoint point(origin.rx() + offsetX * sin(lastSonar.bearings[0].rad + M_PI), origin.ry() - offsetY * cos(lastSonar.bearings[0].rad + M_PI));
         painter.setPen(QPen(Qt::green));
         painter.drawLine(origin, point);
         painter.drawText(point.x() - 10, point.y() - 10, str_deg);
@@ -225,8 +225,8 @@ void SonarPlot::sonarPaletteChanged(int index){
 // update the sector scan (for scanning sonars)
 void SonarPlot::setSectorScan(bool continuous, base::Angle left, base::Angle right){
     this->continuous = continuous;
-    this->leftLimit = left;
-    this->rightLimit = right;
+    this->leftLimit = base::Angle::fromRad(left.rad + M_PI);
+    this->rightLimit = base::Angle::fromRad(right.rad + M_PI);
 
     if (!continuous)
         refreshScreen = true;
@@ -308,7 +308,7 @@ void SonarPlot::generateScanningTransferTable(const base::samples::Sonar& sonar)
 
             double radius = sqrt(point.x() * point.x() + point.y() * point.y());
             double angle = asin(point.x() * 1.0 / radius);
-            base::Angle theta = base::Angle::fromRad(angle);
+            base::Angle theta = base::Angle::fromRad(angle + M_PI);
 
             // pixels out of sonar image
             if (radius > sonar.bin_count || !radius)
