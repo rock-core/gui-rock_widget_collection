@@ -33,21 +33,21 @@ protected:
     void applyColormap(ColorGradientType type);
     bool isMotorStepChanged(const base::Angle& bearing);
     void addScanningData(const base::samples::Sonar& sonar);
-    base::samples::Sonar lastSonar;
-    bool changedSize;
-    bool isMultibeamSonar;
-    bool continuous;
-    bool refreshScreen;
-    base::Angle leftLimit, rightLimit;
+    base::samples::Sonar lastSonar, beforeLastSonar;
     double scaleX;
     double scaleY;
     int range;
+    int numSteps;
+    bool changedSize;
+    bool changedSectorScan;
+    bool isMultibeamSonar;
+    bool continuous;
     QPoint origin;
     std::vector<int> transfer;
     std::vector<QColor> colorMap;
     ColorGradient heatMapGradient;
-    base::Angle motorStep;
-    int numSteps;
+    base::Angle motorStep, lastDiffStep;
+    base::Angle leftLimit, rightLimit;
     std::vector<float> sonarData;
 
 protected slots:
