@@ -239,12 +239,14 @@ void StreamAlignerModel::updateData(const aggregator::StreamAlignerStatus& statu
 	TaskRepresentation *tp = new TaskRepresentation( name );
 	taskRepMap[name] = tp;
 	taskRep.push_back(tp);
+        emit layoutChanged();
     }
 
     taskRepMap[name]->updateData(status);
     
     //inform rest of the world that we got new data
-    emit dataChanged(createIndex(0,0,0), createIndex(taskRep.size(), 5, 0));
+    if(!taskRep.empty())
+        emit dataChanged(createIndex(0,0,0), createIndex(taskRep.size()-1, 5, 0));
 }
 
 StreamAlignerModel::StreamAlignerModel(QObject* parent): QAbstractItemModel(parent)
