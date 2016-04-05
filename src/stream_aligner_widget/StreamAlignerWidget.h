@@ -14,6 +14,7 @@ class StreamAlignerWidget : public QTreeView
     public:
 	StreamAlignerWidget(QWidget *parent);
 	virtual ~StreamAlignerWidget();
+    QSize sizeHint() const;
     public slots:
 	void updateData(const aggregator::StreamAlignerStatus &data);
     private:
