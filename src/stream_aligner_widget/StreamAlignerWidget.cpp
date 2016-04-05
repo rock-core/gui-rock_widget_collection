@@ -371,9 +371,10 @@ StreamAlignerWidget::StreamAlignerWidget(QWidget* parent): QTreeView(parent)
     update();
 }
 
-
-
-
+QSize StreamAlignerWidget::sizeHint() const
+{
+    return QSize(650,250);
+}
 
 void StreamAlignerWidget::updateData(const aggregator::StreamAlignerStatus& status)
 {
