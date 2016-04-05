@@ -87,7 +87,7 @@ bool SonarPlot::isMotorStepChanged(const base::Angle& bearing) {
 
     if (!motorStep.isApprox(diffStep) && lastDiffStep.isApprox(diffStep) && !bearing.isApprox(beforeLastSonar.bearings[0])) {
         motorStep = diffStep;
-        numSteps = round(M_PI * 2 / motorStep.rad);
+        numSteps = M_PI * 2 / motorStep.rad;
         lastDiffStep = diffStep;
         return true;
     }
