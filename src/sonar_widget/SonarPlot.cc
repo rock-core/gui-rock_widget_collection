@@ -171,7 +171,7 @@ void SonarPlot::drawOverlay()
             base::Angle ang = lastSonar.bearings[((lastSonar.beam_count - 1) * 1.0 / 4) * (i-1)];
             QPoint point(origin.rx() + BINS_REF_SIZE * sin(ang.rad) * scaleX, origin.ry() - BINS_REF_SIZE * cos(ang.rad) * scaleY);
             painter.drawLine(origin, point);
-            str.setNum(roundf(ang.getDeg() * 10) / 10);
+            str = QString::number(ang.getDeg(), 'f', 1);
             painter.drawText(point.x() - 10, point.y() - 10, str);
         }
     }
@@ -191,11 +191,11 @@ void SonarPlot::drawOverlay()
             painter.drawText(origin.rx() + x + 2, origin.ry() - 5, str_radius);
         }
 
-        QString str_deg = QString::number(roundf(lastSonar.bearings[0].getDeg() * 10) / 10);
+        QString str = QString::number(lastSonar.bearings[0].getDeg(), 'f', 1);
         QPoint point(origin.rx() - offsetX * sin(lastSonar.bearings[0].rad), origin.ry() - offsetY * cos(lastSonar.bearings[0].rad));
         painter.setPen(QPen(Qt::green));
         painter.drawLine(origin, point);
-        painter.drawText(point.x() - 10, point.y() - 10, str_deg);
+        painter.drawText(point.x() - 10, point.y() - 10, str);
 
         if (!continuous) {
             QPoint point1(origin.rx() - offsetX * sin(leftLimit.rad), origin.ry() - offsetY * cos(leftLimit.rad));
