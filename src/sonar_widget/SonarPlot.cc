@@ -36,8 +36,8 @@ void SonarPlot::setData(const base::samples::Sonar& sonar)
     // process multibeam sonar data
     if (isMultibeamSonar) {
         if(changedSize
-               || !(sonar.bin_count == lastSonar.bin_count)
-               || !(sonar.beam_count  == lastSonar.beam_count)
+               || sonar.bin_count != lastSonar.bin_count
+               || sonar.beam_count  != lastSonar.beam_count
                || !(sonar.bearings[0]  == lastSonar.bearings[0])
                || !((sonar.bearings[1] - sonar.bearings[0]) == (lastSonar.bearings[1] - lastSonar.bearings[0]))) {
 
@@ -57,13 +57,13 @@ void SonarPlot::setData(const base::samples::Sonar& sonar)
         if ((changedSize
                 || changedMotorStep
                 || changedSectorScan
-                || !(sonar.bin_count == lastSonar.bin_count)) && lastSonar.beam_count && motorStep.rad) {
+                || sonar.bin_count != lastSonar.bin_count) && lastSonar.beam_count && motorStep.rad) {
 
             // set the transfer vector between image pixels and sonar data
             generateScanningTransferTable(sonar);
 
             // if the number of bins, the motor step or the sector scan changes, the accumulated sonar data will be reseted
-            if (!(sonar.bin_count == lastSonar.bin_count) || changedMotorStep || changedSectorScan)
+            if (sonar.bin_count != lastSonar.bin_count || changedMotorStep || changedSectorScan)
                 sonarData.assign(numSteps * sonar.bin_count, 0.0);
 
             changedSize = false;
