@@ -226,13 +226,16 @@ void SonarPlot::sonarPaletteChanged(int index){
 }
 
 // update the sector scan (for scanning sonars)
-void SonarPlot::setSectorScan(bool continuous, base::Angle left, base::Angle right){
-    this->continuous = continuous;
-    this->leftLimit = left;
-    this->rightLimit = right;
+void SonarPlot::setSectorScan(bool continuous, base::Angle leftLimit, base::Angle rightLimit){
 
-    if (!continuous)
+    // if the parameters changes, the screen will be clean
+    if (this->continuous != continuous
+            || ((this->leftLimit.rad != leftLimit.rad || this->rightLimit.rad != rightLimit.rad) && !continuous))
         changedSectorScan = true;
+
+    this->continuous = continuous;
+    this->leftLimit = leftLimit;
+    this->rightLimit = rightLimit;
 }
 
 // applies a color gradient
