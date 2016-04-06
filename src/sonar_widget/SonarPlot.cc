@@ -75,7 +75,6 @@ void SonarPlot::setData(const base::samples::Sonar& sonar)
             addScanningData(sonar);
     }
 
-    beforeLastSonar = lastSonar;
     lastSonar = sonar;
     update();
 }
@@ -85,7 +84,13 @@ bool SonarPlot::isMotorStepChanged(const base::Angle& bearing) {
     base::Angle diffStep = bearing - lastSonar.bearings[0];
     diffStep.rad = fabs(diffStep.rad);
 
-    if (!motorStep.isApprox(diffStep) && lastDiffStep.isApprox(diffStep) && !bearing.isApprox(beforeLastSonar.bearings[0])) {
+    // if the sector scanning is enabled, the diffStep could be lower than motorStep when the bearing is closer to one of the corners
+    if (!continuous && (fabs((leftLimit - bearing).rad) < motorStep.rad || fabs((rightLimit - bearing).rad) < motorStep.rad)) {
+        lastDiffStep = diffStep;
+        return false;
+    }
+
+    if (!motorStep.isApprox(diffStep) && lastDiffStep.isApprox(diffStep)) {
         motorStep = diffStep;
         numSteps = M_PI * 2 / motorStep.rad;
         lastDiffStep = diffStep;
