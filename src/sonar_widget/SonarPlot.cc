@@ -98,8 +98,7 @@ bool SonarPlot::isMotorStepChanged(const base::Angle& bearing) {
 
 // add current beam to accumulated scanning sonar data
 void SonarPlot::addScanningData(const base::samples::Sonar& sonar) {
-    int id_beam = (numSteps / 2) + sonar.bearings[0].rad / motorStep.rad;
-    if (id_beam == numSteps) id_beam--;
+    int id_beam = round((numSteps - 1) * (sonar.bearings[0].rad + M_PI) / (2 * M_PI));
 
     for (unsigned int i = 0; i < sonar.bin_count; ++i)
         sonarData[id_beam * sonar.bin_count + i] = sonar.bins[i];
@@ -320,8 +319,7 @@ void SonarPlot::generateScanningTransferTable(const base::samples::Sonar& sonar)
             // pixels in the sonar image
             else {
                 double angle = atan2(-point.x(), -point.y());
-                int idBeam = (numSteps / 2) + angle / motorStep.rad;
-                if (idBeam == numSteps) idBeam--;
+                int idBeam = round((numSteps - 1) * (angle + M_PI) / (2 * M_PI));
                 transfer.push_back(idBeam * sonar.bin_count + radius);
             }
         }
