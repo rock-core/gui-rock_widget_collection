@@ -41,6 +41,9 @@ public slots:
     void setSonarPalette(int);
     void enableAutoRanging(bool);
 
+    // only for scanning sonars
+    void setSectorScan(bool continuous, base::Angle left, base::Angle right);
+
 protected slots:
     void onSlGainChanged(int);
     void onSlRangeChanged(int);

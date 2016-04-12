@@ -69,6 +69,11 @@ void SonarWidget::setRange(int value)
   slRange->setValue(value);
 }
 
+void SonarWidget::setSectorScan(bool continuous, base::Angle left, base::Angle right)
+{
+    plot->setSectorScan(continuous, left, right);
+}
+
 void SonarWidget::setMinRange(int value)
 {
   slRange->setMinimum(value);

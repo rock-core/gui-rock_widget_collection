@@ -22,6 +22,7 @@ public:
     SonarPlot(QWidget *parent = 0);
     virtual ~SonarPlot();
     void setData(const base::samples::Sonar& sonar);
+    void setSectorScan(bool continuous, base::Angle leftLimit, base::Angle rightLimit);
 
 protected:
     void paintEvent(QPaintEvent *event);
@@ -33,17 +34,20 @@ protected:
     bool isMotorStepChanged(const base::Angle& bearing);
     void addScanningData(const base::samples::Sonar& sonar);
     base::samples::Sonar lastSonar;
-    bool changedSize;
-    bool isMultibeamSonar;
     double scaleX;
     double scaleY;
     int range;
+    int numSteps;
+    bool changedSize;
+    bool changedSectorScan;
+    bool isMultibeamSonar;
+    bool continuous;
     QPoint origin;
     std::vector<int> transfer;
     std::vector<QColor> colorMap;
     ColorGradient heatMapGradient;
-    base::Angle motorStep;
-    int numSteps;
+    base::Angle motorStep, lastDiffStep;
+    base::Angle leftLimit, rightLimit;
     std::vector<float> sonarData;
 
 protected slots:
