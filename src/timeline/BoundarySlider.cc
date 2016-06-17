@@ -3,7 +3,7 @@
 
 #include <iostream>
 
-#include <base/logging.h>
+#include <base/Logging.hpp>
 
 BoundarySlider::BoundarySlider() : Slider() {
 

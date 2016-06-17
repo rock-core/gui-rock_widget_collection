@@ -4,7 +4,7 @@
 
 #include <iostream>
 
-#include <base/logging.h>
+#include <base/Logging.hpp>
 
 SlideBarItem::SlideBarItem(unsigned startIndex, unsigned steps, unsigned stepSize, QGraphicsItem *parent) :
     QGraphicsItem(parent),height(10),width(100), color(QColor(Qt::gray)) 

@@ -5,7 +5,7 @@
 #include "ImageView.h"
 #include "ContextMenuGraphicsWidget.h"
 
-#include <base/logging.h>
+#include <base/Logging.hpp>
 #include <iostream>
 
 #include <QtOpenGL/QGLWidget>

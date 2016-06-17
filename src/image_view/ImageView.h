@@ -8,7 +8,7 @@
 #include <QtGui>
 #include <QtCore>
 
-#include <base/samples/frame.h>
+#include <base/samples/Frame.hpp>
 #include <base/samples/DistanceImage.hpp>
 #include <frame_helper/FrameQImageConverter.h>
 #include "rock_widget_collection/progress_indicator/ProgressIndicator.h"

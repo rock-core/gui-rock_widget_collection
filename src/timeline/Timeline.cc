@@ -3,7 +3,7 @@
 #include <algorithm>
 #include <QPixmap>
 
-#include <base/logging.h>
+#include <base/Logging.hpp>
 
 
 Timeline::Timeline(QWidget *parent) {
