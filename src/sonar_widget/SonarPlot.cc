@@ -180,7 +180,7 @@ void SonarPlot::drawOverlay()
 
     // scanning sonar
     else {
-        double offsetX = BINS_REF_SIZE * 0.67 * scaleX;
+        double offsetX = BINS_REF_SIZE * 0.75 * scaleX;
         double offsetY = BINS_REF_SIZE * 0.55 * scaleY;
         painter.drawLine(QPoint(origin.rx(), origin.ry() - offsetY), QPoint(origin.rx(), origin.ry() + offsetY));
         painter.drawLine(QPoint(origin.rx() - offsetX, origin.ry()), QPoint(origin.rx() + offsetX, origin.ry()));
@@ -308,7 +308,7 @@ void SonarPlot::generateScanningTransferTable(const base::samples::Sonar& sonar)
         for (int i = 0; i < width(); i++) {
 
             QPoint point(i - origin.x(), j - origin.y());
-            point.rx() /= scaleX * BINS_REF_SIZE * 0.67 / sonar.bin_count;
+            point.rx() /= scaleX * BINS_REF_SIZE * 0.75 / sonar.bin_count;
             point.ry() /= scaleY * BINS_REF_SIZE * 0.55 / sonar.bin_count;
 
             double radius = sqrt(point.x() * point.x() + point.y() * point.y());
