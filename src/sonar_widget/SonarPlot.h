@@ -53,7 +53,7 @@ protected:
 protected slots:
     void rangeChanged(int);
     void sonarPaletteChanged(int);
-    
+
 };
 
 
