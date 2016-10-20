@@ -31,7 +31,7 @@ void SonarPlot::setData(const base::samples::Sonar& sonar)
     if (!sonar.beam_count || !sonar.bin_count)
         return;
 
-    sonar.beam_count > 1 ? isMultibeamSonar = true : isMultibeamSonar = false;
+    isMultibeamSonar = (sonar.beam_count > 1);
 
     // process multibeam sonar data
     if (isMultibeamSonar) {
@@ -104,9 +104,7 @@ bool SonarPlot::isMotorStepChanged(const base::Angle& bearing) {
 // add current beam to accumulated scanning sonar data
 void SonarPlot::addScanningData(const base::samples::Sonar& sonar) {
     int id_beam = round((numSteps - 1) * (sonar.bearings[0].rad + M_PI) / (2 * M_PI));
-
-    for (unsigned int i = 0; i < sonar.bin_count; ++i)
-        sonarData[id_beam * sonar.bin_count + i] = sonar.bins[i];
+    memcpy(&sonarData[id_beam * sonar.bin_count], &sonar.bins[0], sonar.bin_count * sizeof(float));
 }
 
 void SonarPlot::paintEvent(QPaintEvent *)
