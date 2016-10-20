@@ -267,6 +267,7 @@ void SonarPlot::generateMultibeamTransferTable(const base::samples::Sonar& sonar
 
     // check pixels
     for (int j = 0; j < height(); j++) {
+        int beam_idx = 0;
         for (int i = 0; i < width(); i++) {
 
             QPoint point(i - origin.x(), j - origin.y());
@@ -282,12 +283,9 @@ void SonarPlot::generateMultibeamTransferTable(const base::samples::Sonar& sonar
 
             // pixels in the sonar image
             else {
-                for (unsigned int k = 0; k < sonar.beam_count - 1; k++) {
-                    if (angle >= sonar.bearings[k].rad && angle < sonar.bearings[k + 1].rad) {
-                        transfer.push_back(k * sonar.bin_count + radius);
-                        break;
-                    }
-                }
+                while (angle < sonar.bearings[beam_idx].rad || angle >= sonar.bearings[beam_idx + 1].rad)
+                    beam_idx++;
+                transfer.push_back(beam_idx * sonar.bin_count + radius);
             }
         }
     }
