@@ -1,7 +1,7 @@
 #include "GraphicsPointsItem.h"
 #include <limits>
 
-#include <base/Logging.hpp>
+#include <base-logging/Logging.hpp>
 
 GraphicsPointsItem::GraphicsPointsItem(const QList<QPoint> &points):points(points)
 {
