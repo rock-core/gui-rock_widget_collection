@@ -49,23 +49,19 @@ SET(COLLECTION_MOC_HDRS
   range_view/RangeViewGL.h
   range_view/RangeViewPlugin.h
   RockWidgetCollection.h
-  artificial_horizon/artificialhorizon.h
-  artificial_horizon/artificialhorizonplugin.h
   multi_view/MultiViewWidget.h
   multi_view/WidgetButton.h
   multi_view/MultiViewPlugin.h
   multi_view/MultiWidget.h
   multi_view/MultiWidgetPlugin.h
   multi_view/WidgetButtonPlugin.h
-  artificial_horizon/compass.h
-  artificial_horizon/compassplugin.h
-  artificial_horizon/orientation.h
-  artificial_horizon/orientationplugin.h
   virtual_joystick/VirtualJoystick.h  
   virtual_joystick/VirtualJoystickPlugin.h
   generic_widgets/PaintWidget.h
   generic_widgets/RockSlider.h
   generic_widgets/RockSliderPlugin.h
+  artificial_horizon/artificialhorizon.h
+  artificial_horizon/artificialhorizonplugin.h
   plot2d/Plot2d.h
   plot2d/qcustomplot.h
   plot2d/Plot2dPlugin.h
@@ -103,17 +99,15 @@ SET(COLLECTION_HDRS
   range_view/RangeView.h
   range_view/RangeViewGL.h
   RockWidgetCollection.h
-  artificial_horizon/artificialhorizon.h
   multi_view/MultiViewWidget.h
   multi_view/WidgetButton.h
   multi_view/MultiWidget.h
-  artificial_horizon/compass.h
-  artificial_horizon/orientation.h
   virtual_joystick/VirtualJoystick.h  
   generic_widgets/PaintWidget.h
   generic_widgets/RockSlider.h
   plot2d/Plot2d.h
   plot2d/qcustomplot.h
+  artificial_horizon/artificialhorizon.h
   2dvis/qwaterfalldisplay.h
   generic_widgets/RockSliderPlugin.h
   timeline/Timeline.h
@@ -133,7 +127,6 @@ FILE(GLOB COLLECTION_SOURCES
     range_view/*.cc 
     image_view_old/*.cc 
     sonar_view/*.cc 
-    artificial_horizon/*.cc 
     multi_view/*.cc 
     generic_widgets/*.cc
     virtual_joystick/*.cc
@@ -144,6 +137,10 @@ FILE(GLOB COLLECTION_SOURCES
     progress_indicator/*.cc
     sonar_widget/*.cc
     *.cc)
+
+list(APPEND COLLECTION_SOURCES
+    artificial_horizon/artificialhorizon.cc
+    artificial_horizon/artificialhorizonplugin.cc)
     
 if (USE_VTK)
     find_package(VTK)
@@ -171,15 +168,33 @@ endif()
 SET(QtApp_RCCS resources.qrc)
 QT4_ADD_RESOURCES(QtApp_RCC_SRCS ${QtApp_RCCS})
 
+find_package(QWT)
+
+if (QWT_FOUND)
+    add_definitions(-DUSE_QWT)
+    list(APPEND EXTRA_DEPS QWT)
+    list(APPEND COLLECTION_SOURCES
+        artificial_horizon/compass.cc
+        artificial_horizon/compassplugin.cc
+        artificial_horizon/orientation.cc
+        artificial_horizon/orientationplugin.cc)
+    list(APPEND COLLECTION_MOC_HDRS
+        artificial_horizon/compass.h
+        artificial_horizon/compassplugin.h
+        artificial_horizon/orientation.h
+        artificial_horizon/orientationplugin.h)
+    list(APPEND COLLECTION_HDRS
+        artificial_horizon/orientation.h
+        artificial_horizon/compass.h)
+endif()
+
 rock_vizkit_widget(rock_widget_collection SHARED
     SOURCES ${COLLECTION_SOURCES} ${QtApp_RCC_SRCS} 
     HEADERS ${COLLECTION_HDRS}
     MOC ${COLLECTION_MOC_HDRS}
     DEPS_PKGCONFIG base-types base-lib frame_helper
-    DEPS_CMAKE QWT OpenGL ${VTK_DEPS}
-    LIBS ${QT_QTCORE_LIBRARY} ${VTK_LIBS} ${QT_QTGUI_LIBRARY} ${QT_QTOPENGL_LIBRARY} ${QT_QTDESIGNER_LIBRARY} ${QTGSTREAMER_LIBRARIES} ${QTGSTREAMER_UI_LIBRARIES} 
-    )
-
+    DEPS_CMAKE OpenGL ${VTK_DEPS} ${EXTRA_DEPS}
+    LIBS ${QT_QTCORE_LIBRARY} ${VTK_LIBS} ${QT_QTGUI_LIBRARY} ${QT_QTOPENGL_LIBRARY} ${QT_QTDESIGNER_LIBRARY} ${QTGSTREAMER_LIBRARIES} ${QTGSTREAMER_UI_LIBRARIES})
 
 add_subdirectory(stream_aligner_widget)
 

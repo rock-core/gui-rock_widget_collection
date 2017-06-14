@@ -9,7 +9,7 @@
   <depend package="image_processing/frame_helper" />
   <depend package="drivers/aggregator" />
   <depend package="freeglut3" />
-  <depend package="qwt5" />
+  <depend_optional package="qwt5" />
   <depend package="vtk-qt4" optional="1"/>
   <rosdep name="qt4" />
   <rosdep name="qt4-opengl" />

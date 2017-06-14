@@ -8,7 +8,6 @@
 #include <QLabel>
 #include <math.h>
 
-
 Compass::Compass(QWidget* parent): MultiWidget(parent)
 {
   // add a layout
