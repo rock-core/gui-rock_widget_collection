@@ -18,18 +18,21 @@ protected:
     QLabel *lbGain;
     QLabel *lbRange;
     QLabel *lbPalette;
+    QLabel *lbGrid;
     QLineEdit *edGain;
     QLineEdit *edRange;
-      
+
 public:
     SonarWidget(QWidget *parent = 0);
     virtual ~SonarWidget();
     void createGainComponent();
     void createRangeComponent();
     void createPaletteComponent();
+    void createGridComponent();
     QSlider *slGain;
     QSlider *slRange;
     QComboBox *comboPalette;
+    QCheckBox *boxGrid;
 
 public slots:
     void setData(const base::samples::SonarScan scan);
@@ -48,12 +51,13 @@ protected slots:
     void onSlGainChanged(int);
     void onSlRangeChanged(int);
     void onComboPaletteChanged(int);
+    void onCheckboxGridChanged(bool);
 
 signals:
     void gainChanged(int);
     void rangeChanged(int);
     void sonarPaletteChanged(int);
-    
+    void gridChanged(bool);
 };
 
 #endif /* SONAR_WIDGET_H */
