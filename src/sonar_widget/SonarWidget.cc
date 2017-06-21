@@ -182,6 +182,7 @@ void SonarWidget::createPaletteComponent() {
     comboPalette->insertItem(comboPalette->count()+1,"Jet");
     comboPalette->insertItem(comboPalette->count()+1,"Hot");
     comboPalette->insertItem(comboPalette->count()+1,"Gray");
+    comboPalette->insertItem(comboPalette->count()+1,"Bronze");
     connect(comboPalette,SIGNAL(currentIndexChanged(int)),this,SLOT(onComboPaletteChanged(int)));
 }
 
