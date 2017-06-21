@@ -9,22 +9,25 @@ SonarWidget::SonarWidget(QWidget *parent)
     : QWidget(parent)
 {
     resize(1020,670);
-    
+
     plot = new SonarPlot(this);
-    plot->setGeometry (10,10,BASE_WIDTH,BASE_HEIGHT);
+    plot->setGeometry (10,10,600,1300);
     connect(this,SIGNAL(rangeChanged(int)),plot,SLOT(rangeChanged(int)));
     connect(this,SIGNAL(sonarPaletteChanged(int)),plot,SLOT(sonarPaletteChanged(int)));
     connect(this,SIGNAL(gridChanged(bool)),plot,SLOT(gridChanged(bool)));
+    connect(this,SIGNAL(interpolationChanged(bool)),plot,SLOT(interpolationChanged(bool)));
 
     QPalette Pal(palette());
     Pal.setColor(QPalette::Background, plot->palette().color(QPalette::Background));
     setAutoFillBackground(true);
     setPalette(Pal);
-    
+
+    // initialize qt components
     createGainComponent();
     createRangeComponent();
     createPaletteComponent();
     createGridComponent();
+    createInterpolationComponent();
 
     show();
 }
@@ -32,16 +35,18 @@ SonarWidget::SonarWidget(QWidget *parent)
 void SonarWidget::resizeEvent ( QResizeEvent * event )
 {
   plot->setGeometry (10,10,width()-20,height()-70);
-  lbGain->setGeometry(10,height()-70,50,20);
-  slGain->setGeometry(70,height()-70,150,20);
-  edGain->setGeometry(230,height()-70,50,20);
-  lbRange->setGeometry(10,height()-40,50,20);
-  slRange->setGeometry(70,height()-40,150,20);
-  edRange->setGeometry(230,height()-40,50,20);
+  lbGain->setGeometry(10,height()-70,80,20);
+  slGain->setGeometry(100,height()-70,150,20);
+  edGain->setGeometry(250,height()-70,50,20);
+  lbRange->setGeometry(10,height()-40,80,20);
+  slRange->setGeometry(100,height()-40,150,20);
+  edRange->setGeometry(250,height()-40,50,20);
   lbPalette->setGeometry(width()-160,height()-40,50,20);
   comboPalette->setGeometry(width()-100,height()-40,80,20);
   lbGrid->setGeometry(width()-160,height()-70,50,20);
   boxGrid->setGeometry(width()-100,height()-70,80,20);
+  lbInterpolation->setGeometry(10, height() - 100, 80, 20);
+  boxInterpolation->setGeometry(100, height() - 100, 20, 20);
   QWidget::resizeEvent (event);
 }
 
@@ -124,20 +129,28 @@ void SonarWidget::onCheckboxGridChanged(bool value)
     gridChanged(value);
 }
 
+void SonarWidget::onCheckboxInterpolationChanged(bool value)
+{
+    interpolationChanged(value);
+}
+
 void SonarWidget::createGainComponent() {
     lbGain = new QLabel(this);
-    lbGain->setGeometry(10, height() - 70, 50, 20);
+    lbGain->setGeometry(10, height() - 70, 80, 20);
     QPalette Pal = lbGain->palette();
     Pal.setColor(QPalette::Foreground, Qt::white);
     lbGain->setPalette(Pal);
     lbGain->setText("Gain:");
+    lbGain->setAlignment(Qt::AlignRight);
+
     slGain = new QSlider(Qt::Horizontal, this);
-    slGain->setGeometry(70, height() - 70, 150, 20);
+    slGain->setGeometry(100, height() - 70, 150, 20);
     slGain->setMinimum(0);
     slGain->setMaximum(100);
     slGain->setValue(50);
+
     edGain = new QLineEdit(this);
-    edGain->setGeometry(230, height() - 70, 50, 20);
+    edGain->setGeometry(250, height() - 70, 50, 20);
     edGain->setAlignment(Qt::AlignRight);
     Pal = edGain->palette();
     Pal.setColor(QPalette::Base, plot->palette().color(QPalette::Background));
@@ -151,18 +164,21 @@ void SonarWidget::createGainComponent() {
 
 void SonarWidget::createRangeComponent() {
     lbRange = new QLabel(this);
-    lbRange->setGeometry(10,height()-40,50,20);
+    lbRange->setGeometry(10,height()-40,80,20);
     QPalette Pal=lbRange->palette();
     Pal.setColor(QPalette::Foreground,Qt::white);
     lbRange->setPalette(Pal);
     lbRange->setText("Range:");
+    lbRange->setAlignment(Qt::AlignRight);
+
     slRange = new QSlider(Qt::Horizontal, this);
-    slRange->setGeometry(70,height()-40,150,20);
+    slRange->setGeometry(100,height()-40,150,20);
     slRange->setMinimum(1);
     slRange->setMaximum(150);
     slRange->setValue(5);
+
     edRange = new QLineEdit(this);
-    edRange->setGeometry(230,height()-40,50,20);
+    edRange->setGeometry(250,height()-40,50,20);
     edRange->setAlignment(Qt::AlignRight);
     Pal=edRange->palette();
     Pal.setColor(QPalette::Base, plot->palette().color(QPalette::Background));
@@ -208,4 +224,18 @@ void SonarWidget::createGridComponent() {
     boxGrid->setStyleSheet("background-color: blue;");
     boxGrid->setChecked(true);
     connect(boxGrid,SIGNAL(clicked(bool)), this, SLOT(onCheckboxGridChanged(bool)));
+}
+
+void SonarWidget::createInterpolationComponent() {
+    lbInterpolation = new QLabel(this);
+    lbInterpolation->setGeometry(10, height() - 100, 80, 20);
+    lbInterpolation->setText("Interpolation:");
+    lbInterpolation->setAlignment(Qt::AlignRight);
+    lbInterpolation->setStyleSheet("background-color: blue; color: white;");
+
+    boxInterpolation = new QCheckBox(this);
+    boxInterpolation->setGeometry(100, height() - 100, 20, 20);
+    boxInterpolation->setStyleSheet("background-color: blue;");
+    boxInterpolation->setChecked(true);
+    connect(boxInterpolation,SIGNAL(clicked(bool)), this, SLOT(onCheckboxInterpolationChanged(bool)));
 }

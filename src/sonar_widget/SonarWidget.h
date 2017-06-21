@@ -19,6 +19,7 @@ protected:
     QLabel *lbRange;
     QLabel *lbPalette;
     QLabel *lbGrid;
+    QLabel *lbInterpolation;
     QLineEdit *edGain;
     QLineEdit *edRange;
 
@@ -29,10 +30,12 @@ public:
     void createRangeComponent();
     void createPaletteComponent();
     void createGridComponent();
+    void createInterpolationComponent();
     QSlider *slGain;
     QSlider *slRange;
     QComboBox *comboPalette;
     QCheckBox *boxGrid;
+    QCheckBox *boxInterpolation;
 
 public slots:
     void setData(const base::samples::SonarScan scan);
@@ -43,7 +46,6 @@ public slots:
     void setMinRange(int);
     void setSonarPalette(int);
     void enableAutoRanging(bool);
-
     // only for scanning sonars
     void setSectorScan(bool continuous, base::Angle left, base::Angle right);
 
@@ -52,12 +54,14 @@ protected slots:
     void onSlRangeChanged(int);
     void onComboPaletteChanged(int);
     void onCheckboxGridChanged(bool);
+    void onCheckboxInterpolationChanged(bool);
 
 signals:
     void gainChanged(int);
     void rangeChanged(int);
     void sonarPaletteChanged(int);
     void gridChanged(bool);
+    void interpolationChanged(bool);
 };
 
 #endif /* SONAR_WIDGET_H */

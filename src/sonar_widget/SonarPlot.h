@@ -6,12 +6,7 @@
 #include <base/samples/Sonar.hpp>
 #include <frame_helper/ColorGradient.h>
 
-#define BASE_WIDTH      1300
-#define BASE_HEIGHT      600
-#define BINS_REF_SIZE    500
-
 using namespace frame_helper;
-
 
 class SonarPlot : public QFrame
 {
@@ -33,9 +28,10 @@ protected:
     void applyColormap(ColorGradientType type);
     bool isMotorStepChanged(const base::Angle& bearing);
     void addScanningData(const base::samples::Sonar& sonar);
+    void cartesianImage(QImage &img);
     base::samples::Sonar lastSonar;
-    double scaleX;
-    double scaleY;
+    double drawX;
+    double drawY;
     int range;
     int numSteps;
     bool changedSize;
@@ -43,6 +39,7 @@ protected:
     bool isMultibeamSonar;
     bool continuous;
     bool enabledGrid;
+    bool enabledInterpolation;
     QPoint origin;
     std::vector<int> transfer;
     std::vector<QColor> colorMap;
@@ -55,6 +52,7 @@ protected slots:
     void rangeChanged(int);
     void sonarPaletteChanged(int);
     void gridChanged(bool);
+    void interpolationChanged(bool);
 };
 
 
