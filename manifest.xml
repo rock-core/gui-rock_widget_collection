@@ -24,6 +24,9 @@
   <qtwidget name="OrientationView">
     <image>resources/orientationView1.jpeg</image>
   </qtwidget>
+  <qtwidget name="NavBallView">
+    <image>resources/orientationView1.jpeg</image>
+  </qtwidget>
   <qtwidget name="RangeView">
     <image>resources/rangeView1.jpeg</image>
   </qtwidget>

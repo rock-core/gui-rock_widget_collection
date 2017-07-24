@@ -17,6 +17,8 @@
 #include "progress_indicator/ProgressIndicatorPlugin.h"
 #include "sonar_widget/SonarWidgetPlugin.h"
 
+#include "nav_ball/navballplugin.h"
+
 #ifdef USE_VTK
 #include "vtk/sonar_display/SonarDisplayPlugin.h"
 #include "vtk/vectorfield3D/vectorfield3DPlugin.h"
@@ -35,6 +37,7 @@ RockWidgetCollection::RockWidgetCollection(QObject *parent)
    widgets.append(new MultiViewPlugin(this));
    widgets.append(new MultiWidgetPlugin(this));
    widgets.append(new OrientationPlugin(this));
+   widgets.append(new NavBallPlugin(this));
    widgets.append(new Plot2dPlugin(this));
    widgets.append(new ProgressIndicatorPlugin(this));
    widgets.append(new RangeViewPlugin(this));
