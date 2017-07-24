@@ -13,5 +13,6 @@
     <file alias="timeline/icon">timeline/resources/icon.png</file>
     <file alias="progress_indicator/icon">progress_indicator/resources/icon.png</file>
     <file alias="virtual_joystick/icon.png">virtual_joystick/resources/icon.png</file>
+    <file alias="nav_ball/navball.png">nav_ball/resources/navball.png</file>
  </qresource>
  </RCC>

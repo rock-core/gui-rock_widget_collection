@@ -84,6 +84,8 @@ SET(COLLECTION_MOC_HDRS
   sonar_widget/SonarPlot.h
   sonar_widget/SonarWidget.h
   sonar_widget/SonarWidgetPlugin.h
+  nav_ball/navball.h
+  nav_ball/navballplugin.h
 )
 
 SET(COLLECTION_HDRS
@@ -127,6 +129,8 @@ SET(COLLECTION_HDRS
   sonar_widget/SonarPlot.h
   sonar_widget/SonarWidget.h
   sonar_widget/SonarWidgetPlugin.h
+  nav_ball/navball.h
+  nav_ball/navballplugin.h
 )
 
 FILE(GLOB COLLECTION_SOURCES 
@@ -143,6 +147,7 @@ FILE(GLOB COLLECTION_SOURCES
     image_view/*.cc
     progress_indicator/*.cc
     sonar_widget/*.cc
+    nav_ball/*.cc
     *.cc)
     
 if (USE_VTK)
@@ -176,6 +181,7 @@ rock_vizkit_widget(rock_widget_collection SHARED
     HEADERS ${COLLECTION_HDRS}
     MOC ${COLLECTION_MOC_HDRS}
     DEPS_PKGCONFIG base-types base-lib frame_helper
+                   QtOpenGL
     DEPS_CMAKE QWT OpenGL ${VTK_DEPS}
     LIBS ${QT_QTCORE_LIBRARY} ${VTK_LIBS} ${QT_QTGUI_LIBRARY} ${QT_QTOPENGL_LIBRARY} ${QT_QTDESIGNER_LIBRARY} ${QTGSTREAMER_LIBRARIES} ${QTGSTREAMER_UI_LIBRARIES} 
     )
