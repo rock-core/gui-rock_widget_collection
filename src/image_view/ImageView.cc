@@ -464,6 +464,25 @@ void ImageView::saveImage(QString path, bool overlay)
     saveImage.save(path, "PNG", 80);
 }
 
+void ImageView::setFrame(const base::samples::DepthMap &frame)
+{
+    // This just copies/converts remission values from the DepthMap to a Frame
+    // TODO For better visualization, the vertical and horizontal resolution of the DepthMap should be considered
+
+    base::samples::frame::Frame bframe(frame.horizontal_size, frame.vertical_size, 8);
+    uint8_t* ptr = bframe.getImagePtr();
+
+    for(std::vector<float>::const_iterator r=frame.remissions.begin(); r!=frame.remissions.end(); ++r)
+    {
+        *ptr++ = *r * 255;
+    }
+    if(1 == frame_converter.copyFrameToQImageRGB888(image,bframe)) {
+        LOG_WARN("Frame size changed while converting frame to QImage (says converter)");
+    }
+    processImage();
+    refresh();
+}
+
 void ImageView::setFrame(const base::samples::DistanceImage &frame)
 {  
 
