@@ -5,18 +5,25 @@ using namespace std;
 using namespace frame_helper;
 
 SonarPlot::SonarPlot(QWidget *parent)
-    : QFrame(parent), scaleX(1), scaleY(1), range(5), changedSize(true), changedSectorScan(false), isMultibeamSonar(true), continuous(true)
+    : QFrame(parent)
+    , range(5)
+    , changedSize(true)
+    , changedSectorScan(false)
+    , isMultibeamSonar(true)
+    , continuous(true)
+    , enabledGrid(true)
+    , enabledInterpolation(true)
 {
-    motorStep.rad = 0;
-    lastDiffStep.rad = 0;
-    leftLimit.rad = 0;
-    rightLimit.rad = 0;
+    motorStep    = base::Angle::fromRad(0);
+    lastDiffStep = base::Angle::fromRad(0);
+    leftLimit    = base::Angle::fromRad(0);
+    rightLimit   = base::Angle::fromRad(0);
 
     // apply default colormap
     applyColormap(COLORGRADIENT_JET);
 
       QPalette Pal(palette());
-      Pal.setColor(QPalette::Background, QColor(0,0,255));
+      Pal.setColor(QPalette::Background, Qt::blue);
       setAutoFillBackground(true);
       setPalette(Pal);
 }
@@ -48,7 +55,7 @@ void SonarPlot::setData(const base::samples::Sonar& sonar)
         }
     }
 
-    // process scanning sonar data
+    // process singlebeam sonar data
     else {
 
         // check if the motor step size is changed
@@ -79,12 +86,12 @@ void SonarPlot::setData(const base::samples::Sonar& sonar)
     update();
 }
 
-// check is the motor step angle size is changed
+// check if the motor step angle size is changed
 bool SonarPlot::isMotorStepChanged(const base::Angle& bearing) {
     base::Angle diffStep = bearing - lastSonar.bearings[0];
     diffStep.rad = fabs(diffStep.rad);
 
-    // if the sector scanning is enabled, the diffStep could be lower than motorStep when the bearing is closer to one of the corners
+    // if the sector scanning is enabled, the diffStep could be lower than motorStep when the bearing is closer to both borders
     if (!continuous && (fabs((leftLimit - bearing).rad) < motorStep.rad || fabs((rightLimit - bearing).rad) < motorStep.rad)) {
         lastDiffStep = diffStep;
         return false;
@@ -112,42 +119,68 @@ void SonarPlot::paintEvent(QPaintEvent *)
     if (!transfer.size())
         return;
 
-    QPainter painter(this);
-    painter.setRenderHint(QPainter::Antialiasing, true);
-
-    // draw sonar image
-    QImage img(width(), height(), QImage::Format_RGB888);
-    img.fill(QColor(0, 0, 255));
-
     if (isMultibeamSonar)
         sonarData = lastSonar.bins;
 
-    for (unsigned int i = 0; i < transfer.size() && !changedSize; ++i) {
-        if (transfer[i] != -1) {
-            QColor c = colorMap[round(sonarData[transfer[i]] * 255)];
-            img.setPixel(i % width(), i / width(), qRgb(c.red(), c.green(), c.blue()));
-        }
-    }
+    // generate acoustic representation
+    QImage img(width(), height(), QImage::Format_RGB888);
+    img.fill(Qt::blue);
+    cartesianImage(img);
 
+    // draw sonar image
+    QPainter painter(this);
+    painter.setRenderHint(QPainter::Antialiasing, true);
     painter.drawImage(0, 0, img);
 
     // draw overlay
     drawOverlay();
+}
 
+// generate the acoustic data representation in cartesian coordinates
+void SonarPlot::cartesianImage(QImage& img) {
+    // draw acoustic image without interpolation
+    if (!enabledInterpolation) {
+        for (size_t i = 0; i < transfer.size() && !changedSize; i++) {
+            if (transfer[i] != -1) {
+                QColor c = colorMap[round(sonarData[transfer[i]] * 255)];
+                img.setPixel(i % width(), i / width(), qRgb(c.red(), c.green(), c.blue()));
+            }
+        }
+    }
+    // draw acoustic image using mean interpolation
+    else {
+        for (size_t i = 0; i < transfer.size() && !changedSize; i++) {
+            if (transfer[i] != -1) {
+                uint beamIdx = transfer[i] / lastSonar.bin_count;
+                uint binIdx  = transfer[i] % lastSonar.bin_count;
+
+                QColor c;
+                if (((beamIdx < (lastSonar.beam_count - 1) || beamIdx < (numSteps - 1)) && (binIdx < (lastSonar.bin_count - 1)))) {
+                    float s0 = sonarData[beamIdx * lastSonar.bin_count + binIdx];
+                    float s1 = sonarData[beamIdx * lastSonar.bin_count + binIdx + 1];
+                    float s2 = sonarData[(beamIdx + 1) * lastSonar.bin_count + binIdx];
+                    float s3 = sonarData[(beamIdx + 1) * lastSonar.bin_count + binIdx + 1];
+                    float v = (s0 + s1 + s2 + s3) / 4;
+                    c = colorMap[v * 255];
+                } else {
+                    c = colorMap[round(sonarData[transfer[i]] * 255)];
+                }
+                img.setPixel(i % width(), i / width(), qRgb(c.red(), c.green(), c.blue()));
+            }
+        }
+    }
 }
 
 void SonarPlot::resizeEvent ( QResizeEvent * event )
 {
-    scaleX = 0.2;
-    if(width()>400){
-        scaleX = double(width())/(BASE_WIDTH-134);
-    }
-    scaleY = 0.2;
-    if(height()>200){
-        scaleY = double(height()-100)/(BASE_HEIGHT-100);
-    }
-    origin.setX(width()/2);
-    isMultibeamSonar ? origin.setY(height() - 30) : origin.setY(height() / 2);
+    // define sonar image center
+    origin.rx() = width() * 0.5;
+    origin.ry() = isMultibeamSonar ? (height() - 30) : (height() * 0.5);
+
+    // define sonar drawing limits
+    drawX = isMultibeamSonar ? (width()  * 0.45) : (width()  * 0.30);
+    drawY = isMultibeamSonar ? (height() * 0.85) : (height() * 0.45);
+
     changedSize=true;
     QWidget::resizeEvent (event);
 }
@@ -156,63 +189,67 @@ void SonarPlot::drawOverlay()
 {
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing, true);
+
+    // draw color pallete
+    for(size_t i = 0; i < 256; i++) {
+        painter.setPen(QPen(colorMap[i]));
+        painter.setBrush(QBrush(colorMap[i]));
+        painter.drawRect(width() - 30,height() - 10 -i * 2, 20, 2);
+    }
+
+    if(!enabledGrid)
+        return;
+
+    // draw sonar grid
+    painter.setBrush(QBrush());
     painter.setPen(QPen(Qt::white));
 
     // multibeam sonar
     if (isMultibeamSonar) {
+        for(int i = 1; i <= 5; i++) {
+            // arcs
+            QRect rect(origin.x() - i * drawX / 5, origin.y() - i * drawY / 5, i * width() * 0.9 / 5, i * height() * 1.70 / 5);
+            painter.drawArc(rect, (90 + lastSonar.bearings[0].getDeg()) * 16, (lastSonar.bearings[lastSonar.beam_count - 1] - lastSonar.bearings[0]).getDeg() * 16);
+            QPoint point1(origin.x() + i * drawX * sin(lastSonar.bearings[lastSonar.beam_count - 1].getRad()) / 5, origin.y() - i * drawY * cos(lastSonar.bearings[lastSonar.beam_count - 1].getRad()) / 5);
+            QString distance = QString::number(i * range * 1.0 / 5);
+            painter.drawText(point1.x(), point1.y() + 20, distance);
 
-        base::Angle sectorSize = base::Angle::fromRad((lastSonar.beam_width.rad / lastSonar.beam_count) * (lastSonar.beam_count - 1));
-
-        for(int i=1;i<=5;i++){
-            painter.drawArc(origin.x() - i * scaleX * 100, origin.y() - i * scaleY * 100, i * 200 * scaleX, i * 200 * scaleY, (90 - sectorSize.getDeg() / 2) * 16, sectorSize.getDeg() * 16);
-            QString str = QString::number(i * range * 1.0 / 5);
-            int x = origin.x() + i * 100 * scaleX * sin(sectorSize.rad / 2);
-            int y = height() - i * 100 * scaleY * cos(sectorSize.rad / 2);
-            painter.drawText(x,y-5,str);
-
-            base::Angle ang = lastSonar.bearings[((lastSonar.beam_count - 1) * 1.0 / 4) * (i-1)];
-            QPoint point(origin.rx() + BINS_REF_SIZE * sin(ang.rad) * scaleX, origin.ry() - BINS_REF_SIZE * cos(ang.rad) * scaleY);
-            painter.drawLine(origin, point);
-            str = QString::number(ang.getDeg(), 'f', 1);
-            painter.drawText(point.x() - 10, point.y() - 10, str);
+            // bearings
+            int beamIdx = (lastSonar.beam_count - 1) * (i - 1) / 4;
+            base::Angle bearing = lastSonar.bearings[beamIdx];
+            QPoint point2(origin.x() + drawX * sin(bearing.rad), origin.y() - drawY * cos(bearing.rad));
+            painter.drawLine(origin, point2);
+            painter.drawText(point2.x() - 10, point2.y() - 10, QString::number(bearing.getDeg(), 'f', 1));
         }
     }
 
     // scanning sonar
     else {
-        double offsetX = BINS_REF_SIZE * 0.75 * scaleX;
-        double offsetY = BINS_REF_SIZE * 0.55 * scaleY;
-        painter.drawLine(QPoint(origin.rx(), origin.ry() - offsetY), QPoint(origin.rx(), origin.ry() + offsetY));
-        painter.drawLine(QPoint(origin.rx() - offsetX, origin.ry()), QPoint(origin.rx() + offsetX, origin.ry()));
+        painter.drawLine(QPoint(origin.rx(), origin.ry() - drawY), QPoint(origin.rx(), origin.ry() + drawY));
+        painter.drawLine(QPoint(origin.rx() - drawX, origin.ry()), QPoint(origin.rx() + drawX, origin.ry()));
 
+        // distances
         for (int i = 1; i <= 5; ++i) {
-            int x = i * offsetX / 5;
-            int y = i * offsetY / 5;
-            painter.drawEllipse(origin, x, y);
-            QString str_radius = QString::number(i * range * 1.0 / 5);
-            painter.drawText(origin.rx() + x + 2, origin.ry() - 5, str_radius);
+            QPoint point(i * drawX / 5, i * drawY / 5);
+            painter.drawEllipse(origin, point.x(), point.y());
+            QString distance = QString::number(i * range * 1.0 / 5);
+            painter.drawText(origin.x() + point.x() + 2, origin.y() - 5, distance);
         }
 
+        // scanning reader
         QString str = QString::number(lastSonar.bearings[0].getDeg(), 'f', 1);
-        QPoint point(origin.rx() - offsetX * sin(lastSonar.bearings[0].rad), origin.ry() - offsetY * cos(lastSonar.bearings[0].rad));
+        QPoint point(origin.x() - drawX * sin(lastSonar.bearings[0].rad), origin.y() - drawY * cos(lastSonar.bearings[0].rad));
         painter.setPen(QPen(Qt::green));
         painter.drawLine(origin, point);
         painter.drawText(point.x() - 10, point.y() - 10, str);
 
+        // scanning angle
         if (!continuous) {
-            QPoint point1(origin.rx() - offsetX * sin(leftLimit.rad), origin.ry() - offsetY * cos(leftLimit.rad));
-            QPoint point2(origin.rx() - offsetX * sin(rightLimit.rad), origin.ry() - offsetY * cos(rightLimit.rad));
+            QPoint point1(origin.x() - drawX * sin(leftLimit.rad), origin.y() - drawY * cos(leftLimit.rad));
+            QPoint point2(origin.x() - drawX * sin(rightLimit.rad), origin.y() - drawY * cos(rightLimit.rad));
             painter.drawLine(origin, point1);
             painter.drawLine(origin, point2);
         }
-    }
-
-    painter.setPen(QPen(Qt::white));
-    // draw color pallete
-    for(int i=0;i<255;i++){
-      painter.setPen(QPen(colorMap[i]));
-      painter.setBrush(QBrush(colorMap[i]));
-      painter.drawRect(width()-30,height()-10-i*2,20,2);
     }
 }
 
@@ -225,6 +262,16 @@ void SonarPlot::rangeChanged(int value)
 // update the current palette
 void SonarPlot::sonarPaletteChanged(int index){
     applyColormap((ColorGradientType) index);
+}
+
+// enable/disable the sonar grid
+void SonarPlot::gridChanged(bool value){
+    enabledGrid = value;
+}
+
+// enable/disable the interpolation
+void SonarPlot::interpolationChanged(bool value){
+    enabledInterpolation = value;
 }
 
 // update the sector scan (for scanning sonars)
@@ -259,33 +306,36 @@ void SonarPlot::applyColormap(ColorGradientType type){
 
 // set the transfer vector between image pixels and sonar data (for multibeam sonars)
 void SonarPlot::generateMultibeamTransferTable(const base::samples::Sonar& sonar) {
-
-    transfer.clear();
+    // initialize transfer table
+    transfer.assign(width() * height(), -1);
 
     // set the origin
     origin.setY(height() - 30);
 
+    // define drawing limits
+    drawX = width() * 0.45;
+    drawY = height() * 0.85;
+
     // check pixels
     for (int j = 0; j < height(); j++) {
-        int beam_idx = 0;
+        int beamIdx = 0;
         for (int i = 0; i < width(); i++) {
-
             QPoint point(i - origin.x(), j - origin.y());
-            point.rx() /= scaleX * BINS_REF_SIZE / sonar.bin_count;
-            point.ry() /= scaleY * BINS_REF_SIZE / sonar.bin_count;
+            point.rx() *= (float) sonar.bin_count / drawX;
+            point.ry() *= (float) sonar.bin_count / drawY;
 
             double radius = sqrt(point.x() * point.x() + point.y() * point.y());
-            double angle = atan2(point.x(), -point.y());
+            double theta = atan2(point.x(), -point.y());
 
             // pixels out of sonar image
-            if (angle < sonar.bearings[0].rad || angle > sonar.bearings[sonar.beam_count - 1].rad || radius > sonar.bin_count || !radius || j > origin.y())
-                transfer.push_back(-1);
+            if (theta < sonar.bearings[0].rad || theta > sonar.bearings[sonar.beam_count - 1].rad || radius > sonar.bin_count || !radius || j > origin.y())
+                continue;
 
             // pixels in the sonar image
             else {
-                while (angle < sonar.bearings[beam_idx].rad || angle >= sonar.bearings[beam_idx + 1].rad)
-                    beam_idx++;
-                transfer.push_back(beam_idx * sonar.bin_count + radius);
+                while (theta < sonar.bearings[beamIdx].rad || theta >= sonar.bearings[beamIdx + 1].rad)
+                    beamIdx++;
+                transfer[j * width() + i] = beamIdx * sonar.bin_count + radius;
             }
         }
     }
@@ -293,35 +343,38 @@ void SonarPlot::generateMultibeamTransferTable(const base::samples::Sonar& sonar
 
 // set the transfer vector between image pixels and sonar data (for scanning sonars)
 void SonarPlot::generateScanningTransferTable(const base::samples::Sonar& sonar) {
-
-    transfer.clear();
-
     // check motor step value
     if (!motorStep.rad)
         return;
 
+    // initialize transfer table
+    transfer.assign(width() * height(), -1);
+
     // set the origin
     origin.setY(height() / 2);
+
+    // define drawing limits
+    drawX = width()  * 0.30;
+    drawY = height() * 0.45;
 
     // check pixels
     for (int j = 0; j < height(); j++) {
         for (int i = 0; i < width(); i++) {
-
             QPoint point(i - origin.x(), j - origin.y());
-            point.rx() /= scaleX * BINS_REF_SIZE * 0.75 / sonar.bin_count;
-            point.ry() /= scaleY * BINS_REF_SIZE * 0.55 / sonar.bin_count;
+            point.rx() *= sonar.bin_count / drawX;
+            point.ry() *= (float) sonar.bin_count / drawY;
 
             double radius = sqrt(point.x() * point.x() + point.y() * point.y());
 
             // pixels out of sonar image
             if (radius > sonar.bin_count || !radius)
-                transfer.push_back(-1);
+                continue;
 
             // pixels in the sonar image
             else {
-                double angle = atan2(-point.x(), -point.y());
-                int idBeam = round((numSteps - 1) * (angle + M_PI) / (2 * M_PI));
-                transfer.push_back(idBeam * sonar.bin_count + radius);
+                double theta = atan2(-point.x(), -point.y());
+                int beamIdx = round((numSteps - 1) * (theta + M_PI) / (2 * M_PI));
+                transfer[j * width() + i] = beamIdx * sonar.bin_count + radius;
             }
         }
     }
