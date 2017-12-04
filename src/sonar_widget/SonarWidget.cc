@@ -14,7 +14,8 @@ SonarWidget::SonarWidget(QWidget *parent)
     plot->setGeometry (10,10,BASE_WIDTH,BASE_HEIGHT);
     connect(this,SIGNAL(rangeChanged(int)),plot,SLOT(rangeChanged(int)));
     connect(this,SIGNAL(sonarPaletteChanged(int)),plot,SLOT(sonarPaletteChanged(int)));
-    
+    connect(this,SIGNAL(gridChanged(bool)),plot,SLOT(gridChanged(bool)));
+
     QPalette Pal(palette());
     Pal.setColor(QPalette::Background, plot->palette().color(QPalette::Background));
     setAutoFillBackground(true);
@@ -23,6 +24,7 @@ SonarWidget::SonarWidget(QWidget *parent)
     createGainComponent();
     createRangeComponent();
     createPaletteComponent();
+    createGridComponent();
 
     show();
 }
@@ -38,6 +40,8 @@ void SonarWidget::resizeEvent ( QResizeEvent * event )
   edRange->setGeometry(230,height()-40,50,20);
   lbPalette->setGeometry(width()-160,height()-40,50,20);
   comboPalette->setGeometry(width()-100,height()-40,80,20);
+  lbGrid->setGeometry(width()-160,height()-70,50,20);
+  boxGrid->setGeometry(width()-100,height()-70,80,20);
   QWidget::resizeEvent (event);
 }
 
@@ -115,6 +119,11 @@ void SonarWidget::onComboPaletteChanged(int value)
     sonarPaletteChanged(value);
 }
 
+void SonarWidget::onCheckboxGridChanged(bool value)
+{
+    gridChanged(value);
+}
+
 void SonarWidget::createGainComponent() {
     lbGain = new QLabel(this);
     lbGain->setGeometry(10, height() - 70, 50, 20);
@@ -168,13 +177,14 @@ void SonarWidget::createRangeComponent() {
 void SonarWidget::createPaletteComponent() {
     lbPalette = new QLabel(this);
     lbPalette->setGeometry(width()-160, height() - 40, 50, 20);
-    QPalette Pal=lbPalette->palette();
-    Pal.setColor(QPalette::Foreground,Qt::white);
-    lbPalette->setPalette(Pal);
+    lbPalette->setGeometry(width()-160, height() - 40, 50, 20);
     lbPalette->setText("Palette:");
+    lbPalette->setStyleSheet("background-color: blue; color: white;");
+    lbPalette->setAlignment(Qt::AlignRight);
+
     comboPalette = new QComboBox(this);
     comboPalette->setGeometry(width()-100,height()-40,80,20);
-    Pal=comboPalette->palette();
+    QPalette Pal = comboPalette->palette();
     Pal.setColor(comboPalette->backgroundRole(), plot->palette().color(QPalette::Background));
     Pal.setColor(comboPalette->foregroundRole(),Qt::white);
     setAutoFillBackground(true);
@@ -182,7 +192,20 @@ void SonarWidget::createPaletteComponent() {
     comboPalette->insertItem(comboPalette->count()+1,"Jet");
     comboPalette->insertItem(comboPalette->count()+1,"Hot");
     comboPalette->insertItem(comboPalette->count()+1,"Gray");
+    comboPalette->insertItem(comboPalette->count()+1,"Bronze");
     connect(comboPalette,SIGNAL(currentIndexChanged(int)),this,SLOT(onComboPaletteChanged(int)));
 }
 
+void SonarWidget::createGridComponent() {
+    lbGrid = new QLabel(this);
+    lbGrid->setGeometry(width() - 160, height() - 70, 50, 20);
+    lbGrid->setText("Grid:");
+    lbGrid->setAlignment(Qt::AlignRight);
+    lbGrid->setStyleSheet("background-color: blue; color: white;");
 
+    boxGrid = new QCheckBox(this);
+    boxGrid->setGeometry(width() - 100, height() - 70, 20, 20);
+    boxGrid->setStyleSheet("background-color: blue;");
+    boxGrid->setChecked(true);
+    connect(boxGrid,SIGNAL(clicked(bool)), this, SLOT(onCheckboxGridChanged(bool)));
+}

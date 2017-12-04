@@ -5,7 +5,7 @@ using namespace std;
 using namespace frame_helper;
 
 SonarPlot::SonarPlot(QWidget *parent)
-    : QFrame(parent), scaleX(1), scaleY(1), range(5), changedSize(true), changedSectorScan(false), isMultibeamSonar(true), continuous(true)
+    : QFrame(parent), scaleX(1), scaleY(1), range(5), changedSize(true), changedSectorScan(false), isMultibeamSonar(true), continuous(true), enabledGrid(true)
 {
     motorStep.rad = 0;
     lastDiffStep.rad = 0;
@@ -156,6 +156,18 @@ void SonarPlot::drawOverlay()
 {
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing, true);
+
+    // draw color pallete
+    for(size_t i = 0; i < 256; i++) {
+        painter.setPen(QPen(colorMap[i]));
+        painter.setBrush(QBrush(colorMap[i]));
+        painter.drawRect(width() - 30,height() - 10 -i * 2, 20, 2);
+    }
+
+    if(!enabledGrid)
+        return;
+
+    // draw sonar grid
     painter.setPen(QPen(Qt::white));
 
     // multibeam sonar
@@ -206,14 +218,6 @@ void SonarPlot::drawOverlay()
             painter.drawLine(origin, point2);
         }
     }
-
-    painter.setPen(QPen(Qt::white));
-    // draw color pallete
-    for(int i=0;i<255;i++){
-      painter.setPen(QPen(colorMap[i]));
-      painter.setBrush(QBrush(colorMap[i]));
-      painter.drawRect(width()-30,height()-10-i*2,20,2);
-    }
 }
 
 
@@ -225,6 +229,11 @@ void SonarPlot::rangeChanged(int value)
 // update the current palette
 void SonarPlot::sonarPaletteChanged(int index){
     applyColormap((ColorGradientType) index);
+}
+
+// enable/disable the sonar grid
+void SonarPlot::gridChanged(bool value){
+    enabledGrid = value;
 }
 
 // update the sector scan (for scanning sonars)

@@ -42,6 +42,7 @@ protected:
     bool changedSectorScan;
     bool isMultibeamSonar;
     bool continuous;
+    bool enabledGrid;
     QPoint origin;
     std::vector<int> transfer;
     std::vector<QColor> colorMap;
@@ -53,7 +54,7 @@ protected:
 protected slots:
     void rangeChanged(int);
     void sonarPaletteChanged(int);
-
+    void gridChanged(bool);
 };
 
 
