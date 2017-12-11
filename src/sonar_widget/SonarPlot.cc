@@ -160,7 +160,6 @@ void SonarPlot::drawOverlay()
     // draw color pallete
     for(size_t i = 0; i < 256; i++) {
         painter.setPen(QPen(colorMap[i]));
-        painter.setBrush(QBrush(colorMap[i]));
         painter.drawRect(width() - 30,height() - 10 -i * 2, 20, 2);
     }
 
