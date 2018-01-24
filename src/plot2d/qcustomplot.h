@@ -596,7 +596,8 @@ public slots:
   QSize iconSize() const { return mIconSize; }
   int iconTextPadding() const { return mIconTextPadding; }
   QPen iconBorderPen() const { return mIconBorderPen; }
-
+  int getItemIndex(const QPoint *point);
+  
   // setters:
   void setBorderPen(const QPen &pen);
   void setBrush(const QBrush &brush);
@@ -1046,6 +1047,8 @@ protected:
 signals:
   void mouseDoubleClick(QMouseEvent *event);
   void mousePress(QMouseEvent *event);
+  void mousePressOnLegendItem(QMouseEvent *event, QVariant itemIdx);
+  void mousePressOnPlotArea(QMouseEvent *event);
   void mouseMove(QMouseEvent *event);
   void mouseRelease(QMouseEvent *event);
   void mouseWheel(QWheelEvent *event);

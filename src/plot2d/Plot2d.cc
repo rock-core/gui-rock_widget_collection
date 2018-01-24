@@ -13,5 +13,11 @@ Plot2d::Plot2d(QWidget *parent):
 
 Plot2d::~Plot2d(){} 
 
+// wrapper function for ruby bindings
+void Plot2d::removeGraph(int index)
+{
+   QCustomPlot::removePlottable(index);
+}
+
 
 

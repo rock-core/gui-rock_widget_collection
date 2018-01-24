@@ -2956,6 +2956,30 @@ void QCPLegend::draw(QPainter *painter)
   painter->restore();
 }
 
+int QCPLegend::getItemIndex(const QPoint *point)
+{
+  if (!mVisible) return -1;
+    
+  int currentTop = mPosition.y() + mPaddingTop;
+  
+  for (int i=0; i<mItems.size(); ++i)
+  {
+    QSize itemSize = mItems.at(i)->size(QSize(mSize.width(), 0));
+    QPoint itemPosTopLeft = QPoint(mPosition.x()+mPaddingLeft, currentTop);
+    
+    if (point->x() >= itemPosTopLeft.x() &&
+        point->x() <= itemPosTopLeft.x()+itemSize.width() &&
+        point->y() >= itemPosTopLeft.y() &&
+        point->y() <= itemPosTopLeft.y()+itemSize.height()) 
+    {
+      return i;
+    }
+    
+    currentTop += itemSize.height()+mItemSpacing;
+  }
+  
+  return -1;
+}
 /*! \internal 
   
   Goes through similar steps as \ref draw and calculates the width and height needed to
@@ -5731,8 +5755,22 @@ void QCustomPlot::mousePressEvent(QMouseEvent *event)
     mDragStart = event->pos();
     mDragStartHorzRange = mRangeDragHorzAxis->range();
     mDragStartVertRange = mRangeDragVertAxis->range();
-  } else
+  } else 
+  {
     mDragging = false;
+  }
+  
+  // check if mouse press was on a legend item
+  int itemIdx = legend->getItemIndex(&event->pos());
+  
+  if (itemIdx >= 0) 
+  {
+    emit mousePressOnLegendItem(event, QVariant(itemIdx));
+  } else 
+  {  
+    emit mousePressOnPlotArea(event);
+  }
+  
   emit mousePress(event);
 }
 

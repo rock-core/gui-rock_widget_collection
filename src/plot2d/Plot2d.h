@@ -25,7 +25,7 @@ public slots:
     QObject *getLegend()const{return legend;}
     QObject *addGraph(QObject *key_axis,QObject* value_axis)
         {return QCustomPlot::addGraph(dynamic_cast<QCPAxis*>(key_axis),dynamic_cast<QCPAxis*>(value_axis));}
-    void removeGraph(QObject *graph){removeGraph(dynamic_cast<QCPGraph*>(graph));} 
+    void removeGraph(int index);
     QObject *getXAxis()const{return xAxis;}
     QObject *getXAxis2()const{return xAxis2;}
     QObject *getYAxis()const{return yAxis;}
