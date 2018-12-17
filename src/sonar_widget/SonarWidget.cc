@@ -2,9 +2,6 @@
 #include "./SonarPlot.h"
 #include <iostream>
 
-
-
-
 SonarWidget::SonarWidget(QWidget *parent)
     : QWidget(parent)
 {
@@ -63,14 +60,19 @@ void SonarWidget::setData(const base::samples::Sonar sonar)
     plot->setData(sonar);
 }
 
+void SonarWidget::setMotorStep(const base::Angle step)
+{
+    plot->setMotorStep(step);
+}
+
 void SonarWidget::setGain(int value)
 {
-  slGain->setValue(value);
+    slGain->setValue(value);
 }
 
 void SonarWidget::setRange(int value)
 {
-  slRange->setValue(value);
+    slRange->setValue(value);
 }
 
 void SonarWidget::setSectorScan(bool continuous, base::Angle left, base::Angle right)
@@ -80,12 +82,12 @@ void SonarWidget::setSectorScan(bool continuous, base::Angle left, base::Angle r
 
 void SonarWidget::setMinRange(int value)
 {
-  slRange->setMinimum(value);
+    slRange->setMinimum(value);
 }
 
 void SonarWidget::setMaxRange(int value)
 {
-  slRange->setMaximum(value);
+    slRange->setMaximum(value);
 }
 
 void SonarWidget::setSonarPalette(int value)

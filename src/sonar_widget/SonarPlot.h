@@ -23,6 +23,7 @@ public:
     virtual ~SonarPlot();
     void setData(const base::samples::Sonar& sonar);
     void setSectorScan(bool continuous, base::Angle leftLimit, base::Angle rightLimit);
+    void setMotorStep(const base::Angle& step);
 
 protected:
     void paintEvent(QPaintEvent *event);
@@ -40,6 +41,8 @@ protected:
     int numSteps;
     bool changedSize;
     bool changedSectorScan;
+    bool changedMotorStep;
+    bool autoDetectMotorStep;
     bool isMultibeamSonar;
     bool continuous;
     bool enabledGrid;

@@ -5,9 +5,17 @@ using namespace std;
 using namespace frame_helper;
 
 SonarPlot::SonarPlot(QWidget *parent)
-    : QFrame(parent), scaleX(1), scaleY(1), range(5), changedSize(true), changedSectorScan(false), isMultibeamSonar(true), continuous(true), enabledGrid(true)
+    : QFrame(parent), 
+      scaleX(1), scaleY(1), 
+      range(5), changedSize(true), 
+      changedSectorScan(false), 
+      changedMotorStep(false),
+      autoDetectMotorStep(true), 
+      isMultibeamSonar(true), 
+      continuous(true), 
+      enabledGrid(true)
 {
-    motorStep.rad = 0;
+    motorStep.rad = 0.0;
     lastDiffStep.rad = 0;
     leftLimit.rad = 0;
     rightLimit.rad = 0;
@@ -15,10 +23,10 @@ SonarPlot::SonarPlot(QWidget *parent)
     // apply default colormap
     applyColormap(COLORGRADIENT_JET);
 
-      QPalette Pal(palette());
-      Pal.setColor(QPalette::Background, QColor(0,0,255));
-      setAutoFillBackground(true);
-      setPalette(Pal);
+    QPalette Pal(palette());
+    Pal.setColor(QPalette::Background, QColor(0,0,255));
+    setAutoFillBackground(true);
+    setPalette(Pal);
 }
 
 SonarPlot::~SonarPlot()
@@ -51,8 +59,8 @@ void SonarPlot::setData(const base::samples::Sonar& sonar)
     // process scanning sonar data
     else {
 
-        // check if the motor step size is changed
-        bool changedMotorStep = lastSonar.beam_count && isMotorStepChanged(sonar.bearings[0]);
+        if(autoDetectMotorStep)
+            changedMotorStep = lastSonar.beam_count && isMotorStepChanged(sonar.bearings[0]);
 
         if ((changedSize
                 || changedMotorStep
@@ -68,6 +76,7 @@ void SonarPlot::setData(const base::samples::Sonar& sonar)
 
             changedSize = false;
             changedSectorScan = false;
+            changedMotorStep = false;
         }
 
         // add current beam to accumulated scanning sonar data
@@ -99,6 +108,13 @@ bool SonarPlot::isMotorStepChanged(const base::Angle& bearing) {
 
     lastDiffStep = diffStep;
     return false;
+}
+
+void SonarPlot::setMotorStep(const base::Angle& step) {
+    motorStep = step;
+    numSteps = M_PI * 2 / motorStep.rad;
+    changedMotorStep = true;
+    autoDetectMotorStep = false;
 }
 
 // add current beam to accumulated scanning sonar data
