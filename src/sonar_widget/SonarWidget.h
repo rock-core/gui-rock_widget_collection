@@ -37,6 +37,7 @@ public:
 public slots:
     void setData(const base::samples::SonarScan scan);
     void setData(const base::samples::Sonar sonar);
+    void setMotorStep(const base::Angle step);
     void setGain(int);
     void setRange(int);
     void setMaxRange(int);
