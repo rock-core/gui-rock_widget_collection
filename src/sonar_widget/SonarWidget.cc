@@ -70,9 +70,19 @@ void SonarWidget::setGain(int value)
     slGain->setValue(value);
 }
 
+int SonarWidget::getGain() const
+{
+  return slGain->value();
+}
+
 void SonarWidget::setRange(int value)
 {
     slRange->setValue(value);
+}
+
+int SonarWidget::getRange() const
+{
+  return slRange->value();
 }
 
 void SonarWidget::setSectorScan(bool continuous, base::Angle left, base::Angle right)

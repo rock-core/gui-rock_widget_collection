@@ -44,6 +44,8 @@ public slots:
     void setMinRange(int);
     void setSonarPalette(int);
     void enableAutoRanging(bool);
+    int getRange() const;
+    int getGain() const;
 
     // only for scanning sonars
     void setSectorScan(bool continuous, base::Angle left, base::Angle right);
