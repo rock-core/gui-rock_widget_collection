@@ -31,6 +31,12 @@ public slots:
     QObject *getYAxis()const{return yAxis;}
     QObject *getYAxis2()const{return yAxis2;}
 
+    void clearData()
+    {
+        for (int i = 0; i < graphCount(); ++i)
+            graph(i)->clearData();
+    }
+
     void setZoomAble(bool enabled, int yAxisIndex = 0)
     {
         if(yAxisIndex == 0)
