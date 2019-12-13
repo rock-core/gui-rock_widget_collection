@@ -2,7 +2,7 @@
 #define PROGRESSINDICATORPLUGIN_H
 
 #include <QtGui>
-#include <QtDesigner/QDesignerCustomWidgetInterface>
+#include <QtUiPlugin/QDesignerCustomWidgetInterface>
 
 class ProgressIndicatorPlugin : public QObject, public QDesignerCustomWidgetInterface
 {

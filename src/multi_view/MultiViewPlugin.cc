@@ -1,9 +1,9 @@
 
-#include <QtGui/qwidget.h>
-#include <QtDesigner/abstractformeditor.h>
-#include <QtDesigner/abstractformwindowmanager.h>
-#include <QtDesigner/abstractformwindowcursor.h>
-#include <QtGui/qabstractbutton.h>
+#include <QWidget>
+#include <abstractformeditor.h>
+#include <abstractformwindowmanager.h>
+#include <abstractformwindowcursor.h>
+#include <QAbstractButton>
 
 #include "MultiViewPlugin.h"
 //#include <QtPlugin>

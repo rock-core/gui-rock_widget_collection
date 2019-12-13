@@ -2,7 +2,7 @@
 #define SONARWIDGETPLUGIN_H
 
 #include <QtGui>
-#include <QtDesigner/QDesignerCustomWidgetInterface>
+#include <QtUiPlugin/QDesignerCustomWidgetInterface>
 
 class SonarWidgetPlugin : public QObject, public QDesignerCustomWidgetInterface
 {

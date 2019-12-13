@@ -3,7 +3,7 @@
 #define WIDGETBUTTONPLUGIN_H 
 
 #include <QtGui/QtGui>
-#include <QtDesigner/QDesignerCustomWidgetInterface>
+#include <QtUiPlugin/QDesignerCustomWidgetInterface>
 
 class WidgetButtonPlugin : public QObject , public QDesignerCustomWidgetInterface
 {

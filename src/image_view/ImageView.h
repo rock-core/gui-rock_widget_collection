@@ -7,6 +7,7 @@
 
 #include <QtGui>
 #include <QtCore>
+#include <QMenu>
 
 #include <base/samples/Frame.hpp>
 #include <base/samples/DistanceImage.hpp>
@@ -14,6 +15,14 @@
 #include "rock_widget_collection/progress_indicator/ProgressIndicator.h"
 
 #include "GraphicsPointsItem.h"
+
+QT_BEGIN_NAMESPACE
+
+class QGraphicsView;
+class QGraphicsGridLayout;
+class QLabel;
+
+QT_END_NAMESPACE
 
 //TODO NOT ALL OBJECTS GET DELETED AFTER DECONSTRUCTION
 

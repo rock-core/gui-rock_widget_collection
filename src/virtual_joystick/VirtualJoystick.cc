@@ -1,6 +1,7 @@
 #include "VirtualJoystick.h"
 #include <cmath>
 #include <iostream>
+#include <QLabel>
 
 VirtualJoystick::VirtualJoystick(QWidget* parent, const std::string& name) : QWidget(parent)
 {
@@ -160,7 +161,7 @@ QPointF VirtualJoystick::calculateAxis(bool active)
 
 void VirtualJoystick::mouseMoveEvent(QMouseEvent* event)
 {
-    mousePosition = event->posF();
+    mousePosition = event->pos();
     axisValues = calculateAxis(followMouse);
     
     update();

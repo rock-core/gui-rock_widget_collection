@@ -34,6 +34,7 @@ class AggregatorCollection: public QObject, public QDesignerCustomWidgetCollecti
 {
    Q_OBJECT
    Q_INTERFACES(QDesignerCustomWidgetCollectionInterface)
+   Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QDesignerCustomWidgetCollectionInterface")
 
 public:
    AggregatorCollection(QObject *parent = 0);

@@ -1,14 +1,14 @@
 #ifndef QWATERFALLDISPLAY_H
 #define QWATERFALLDISPLAY_H
 
-#include <QtGui/QFrame>
-#include <QtGui/QColor>
-#include <QtGui/QImage>
-#include <QtCore/QSize>
-#include <QtCore/QList>
-#include <QtGui/QPainter>
+#include <QFrame>
+#include <QColor>
+#include <QImage>
+#include <QSize>
+#include <QList>
+#include <QPainter>
 
-#include <QtDesigner/QDesignerExportWidget>
+#include <QtUiPlugin/QDesignerExportWidget>
 
 #include <list>
 #include <vector>

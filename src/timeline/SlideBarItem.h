@@ -14,7 +14,7 @@ public:
 
     static const int HEIGHT = 3;
 
-    SlideBarItem(unsigned startIndex, unsigned steps, unsigned stepSize, QGraphicsItem *parent = 0);
+    SlideBarItem(unsigned startIndex = 0, unsigned steps = 0, unsigned stepSize = 1, QGraphicsItem *parent = 0);
     void reconfigure(unsigned startIndex, unsigned steps, unsigned stepSize);
     
     QRectF boundingRect() const;

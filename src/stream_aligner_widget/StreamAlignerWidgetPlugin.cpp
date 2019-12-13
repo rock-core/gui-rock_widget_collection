@@ -2,8 +2,6 @@
 #include "StreamAlignerWidget.h"
 #include <QtCore/qplugin.h>
 
-Q_EXPORT_PLUGIN2(AggregatorCollection, AggregatorCollection)
-
 AggregatorCollection::AggregatorCollection(QObject *parent)
        : QObject(parent)
 {

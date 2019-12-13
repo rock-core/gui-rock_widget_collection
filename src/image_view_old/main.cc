@@ -6,16 +6,16 @@
  */
 
 #include <cstdlib>
-#include "QtGui/qapplication.h"
+#include "QApplication"
 #include "ImageViewOldGL.h"
 #include "PolygonItem.h"
 #include "ArrowItem.h"
-#include <QtGui/QImage>
-#include <QtGui/QMainWindow>
+#include <QImage>
+#include <QMainWindow>
 #include <iostream>
-#include <QtGui/QScrollArea>
-#include <QtGui/QColor>
-#include <QtCore/QPoint>
+#include <QScrollArea>
+#include <QColor>
+#include <QPoint>
 
 using namespace std;
 

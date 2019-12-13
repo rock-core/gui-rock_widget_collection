@@ -3,7 +3,7 @@
 #define _ORIENTATIONPLUGIN_H
 
 #include <QtGui>
-#include <QtDesigner/QDesignerCustomWidgetInterface>
+#include <QtUiPlugin/QDesignerCustomWidgetInterface>
 
 class OrientationPlugin : public QObject , public QDesignerCustomWidgetInterface
 {

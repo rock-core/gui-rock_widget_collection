@@ -5,11 +5,11 @@
  * Created on 11. Februar 2011, 12:01
  */
 
-#include <QtGui/qwidget.h>
-#include <QtGui/qlayout.h>
-#include <QtGui/qabstractbutton.h>
-#include <QtCore/qtimer.h>
-#include <QtGui/qlabel.h>
+#include <QWidget>
+#include <QLayout>
+#include <QAbstractButton>
+#include <QTimer>
+#include <QLabel>
 
 #include "WidgetButton.h"
 #include "MultiWidget.h"

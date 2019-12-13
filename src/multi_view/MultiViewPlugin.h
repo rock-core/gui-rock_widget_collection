@@ -11,7 +11,7 @@
 #include "MultiViewWidget.h"
 
 #include <QtGui>
-#include <QtDesigner/QDesignerCustomWidgetInterface>
+#include <QtUiPlugin/QDesignerCustomWidgetInterface>
 #include <QtDesigner/QDesignerFormWindowInterface>
 
 #include <vector>
@@ -33,7 +33,7 @@ public:
      * Simple constructor
      * @param parent parent widget
      */
-    MultiViewPlugin(QObject* parent);
+    MultiViewPlugin(QObject* parent = nullptr);
 
     /**
      * Standard Destructor

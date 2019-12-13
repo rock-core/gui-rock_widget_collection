@@ -1,5 +1,5 @@
 
-find_package(Qt4 REQUIRED QtCore QtGui QtOpengl QtDesigner )
+find_package(Qt5 REQUIRED Core Gui OpenGL Designer Widgets PrintSupport )
 
 option(USE_VTK "Use VTK for additional Widgets" FALSE)
 option(USE_GST "Use GStreamer in GstImageView" OFF)
@@ -13,7 +13,7 @@ if (USE_GST)
     #      Using this is currently not recommended!
     
     #include(/usr/local/lib/QtGStreamer/QtGStreamerConfig.cmake)
-    find_package(QtGStreamer PATHS /usr/local/lib/QtGStreamer NO_DEFAULT_PATH)
+    find_package(QtGStreamer REQUIRED PATHS /usr/local/lib/QtGStreamer)
     include_directories(/usr/local/include/QtGStreamer)
     #include_directories(${QTGSTREAMER_INCLUDES})
     
@@ -22,9 +22,10 @@ endif()
 
 
 include_directories(multi_view/ generic_widgets/)
-include_directories(${QT_INCLUDE_DIR})
-include_directories(${QT_QTCORE_INCLUDE_DIR})
-include_directories(${QT_QTGUI_INCLUDE_DIR})
+include_directories(${Qt5INCLUDE_DIRS})
+include_directories(${Qt5Core_INCLUDE_DIRS})
+include_directories(${Qt5Gui_INCLUDE_DIRS})
+include_directories(${Qt5Widgets_INCLUDE_DIRS})
 
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
@@ -166,7 +167,7 @@ if (USE_VTK)
 endif()
 
 SET(QtApp_RCCS resources.qrc)
-QT4_ADD_RESOURCES(QtApp_RCC_SRCS ${QtApp_RCCS})
+QT5_ADD_RESOURCES(QtApp_RCC_SRCS ${QtApp_RCCS})
 
 find_package(QWT)
 
@@ -194,8 +195,8 @@ rock_vizkit_widget(rock_widget_collection SHARED
     MOC ${COLLECTION_MOC_HDRS}
     DEPS_PKGCONFIG base-types base-lib frame_helper
     DEPS_CMAKE OpenGL ${VTK_DEPS} ${EXTRA_DEPS}
-    LIBS ${QT_QTCORE_LIBRARY} ${VTK_LIBS} ${QT_QTGUI_LIBRARY} ${QT_QTOPENGL_LIBRARY} ${QT_QTDESIGNER_LIBRARY} ${QTGSTREAMER_LIBRARIES} ${QTGSTREAMER_UI_LIBRARIES})
-
+    LIBS ${Qt5Core_LIBRARIES} ${VTK_LIBS} ${Qt5Gui_LIBRARIES} ${Qt5Widgets_LIBRARIES} ${Qt5OpenGL_LIBRARIES} ${Qt5Designer_LIBRARIES} ${QTGSTREAMER_LIBRARY} ${QTGSTREAMER_UI_LIBRARY} ${Qt5PrintSupport_LIBRARIES})
+  
 add_subdirectory(stream_aligner_widget)
 
 if (USE_VTK)

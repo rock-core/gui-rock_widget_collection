@@ -8,7 +8,15 @@
 #include <base-logging/Logging.hpp>
 #include <iostream>
 
-#include <QtOpenGL/QGLWidget>
+#include <QGLWidget>
+#include <QGraphicsScene>
+#include <QGraphicsView>
+#include <QGraphicsGridLayout>
+#include <QLabel>
+#include <QGraphicsProxyWidget>
+#include <QFileDialog>
+#include <QEvent>
+#include <QGraphicsSceneMouseEvent>
 #include "GraphicsPointsItem.h"
 
 #ifdef USE_GST
