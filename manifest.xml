@@ -11,8 +11,8 @@
   <depend package="freeglut3" />
   <depend_optional package="qwt5" />
   <depend package="vtk-qt4" optional="1"/>
-  <rosdep name="qt4" />
-  <rosdep name="qt4-opengl" />
+  <rosdep name="qt5" />
+  <rosdep name="qt5-opengl" />
   <versioncontrol type="git" url="" />
 
   <qtwidget name="PlotWidget">
