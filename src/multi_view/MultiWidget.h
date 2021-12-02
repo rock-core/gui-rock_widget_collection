@@ -15,40 +15,14 @@ class QDESIGNER_WIDGET_EXPORT MultiWidget : public PaintWidget
 signals:
 	void activityChanged(bool);
 public:
-	MultiWidget(QWidget *parent=0):
-		PaintWidget(parent),
-		isActive(false),
-		hideWhenMinimized(false),
-		wasHidden(false)
-	{};
+	MultiWidget(QWidget *parent=0);
+        virtual ~MultiWidget();
 
 public slots:
 
-	void setActive(bool b){
-		isActive=b;
-		emit activityChanged(b);
-
-		for(QObjectList::const_iterator it = children().begin(); it != children().end(); it++){
-			MultiWidget *child = dynamic_cast<MultiWidget*>(*it);
-			if(child > 0){
-				child->setActive(isActive);
-			}
-		}
-
-		if(!isActive){
-			if(hideWhenMinimized){
-				wasHidden=isHidden();
-				hide();
-			}
-		}else{
-			//if(!wasHidden){
-				show();
-			//}
-		}
-	}
-
-	QString getMinimizedLabel(){return minimizedLabel;}
-	void setMinimizedLabel(QString label){minimizedLabel = label;}
+	void setActive(bool b);
+	QString getMinimizedLabel();
+	void setMinimizedLabel(QString label);
 
 
     /**
@@ -56,26 +30,19 @@ public slots:
      * @return will always return true
      */
     
-		void childEvent(QChildEvent* event){
-			QWidget::childEvent(event);
-		}
+    void childEvent(QChildEvent* event);
 
-    bool event(QEvent* event){
-			return QWidget::event(event);
-		}
+    bool event(QEvent* event);
 
-		bool isHiddenWhenMinimized() const{
-			return hideWhenMinimized;
-		}
+    bool isHiddenWhenMinimized() const;
 
-		void hideWhenMin(bool b){
-			hideWhenMinimized = b;
-		}
+    void hideWhenMin(bool b);
+	
 
 protected:
 	/** True if this Widget is not Minimized */
 	bool isActive;
-  bool hideWhenMinimized;
+        bool hideWhenMinimized;
 	bool wasHidden;
 	QString minimizedLabel;
 };

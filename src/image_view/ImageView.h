@@ -5,8 +5,7 @@
 #ifndef IMAGE_VIEW_H
 #define IMAGE_VIEW_H
 
-#include <QtGui>
-#include <QtCore>
+#include <QtWidgets>
 
 #include <base/samples/Frame.hpp>
 #include <base/samples/DistanceImage.hpp>

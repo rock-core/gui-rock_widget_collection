@@ -160,7 +160,7 @@ QPointF VirtualJoystick::calculateAxis(bool active)
 
 void VirtualJoystick::mouseMoveEvent(QMouseEvent* event)
 {
-    mousePosition = event->posF();
+    mousePosition = event->pos();
     axisValues = calculateAxis(followMouse);
     
     update();

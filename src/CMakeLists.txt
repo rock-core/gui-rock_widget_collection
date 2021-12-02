@@ -1,5 +1,6 @@
 
-find_package(Qt4 REQUIRED QtCore QtGui QtOpengl QtDesigner )
+#find_package(Qt4 REQUIRED QtCore QtGui QtOpengl QtDesigner )
+rock_find_qt5(Widgets PrintSupport OpenGL Gui Designer REQUIRED)
 
 option(USE_VTK "Use VTK for additional Widgets" FALSE)
 option(USE_GST "Use GStreamer in GstImageView" OFF)
@@ -22,9 +23,9 @@ endif()
 
 
 include_directories(multi_view/ generic_widgets/)
-include_directories(${QT_INCLUDE_DIR})
-include_directories(${QT_QTCORE_INCLUDE_DIR})
-include_directories(${QT_QTGUI_INCLUDE_DIR})
+#include_directories(${QT_INCLUDE_DIR})
+#include_directories(${QT_QTCORE_INCLUDE_DIR})
+#include_directories(${QT_QTGUI_INCLUDE_DIR})
 
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
@@ -166,7 +167,7 @@ if (USE_VTK)
 endif()
 
 SET(QtApp_RCCS resources.qrc)
-QT4_ADD_RESOURCES(QtApp_RCC_SRCS ${QtApp_RCCS})
+#QT4_ADD_RESOURCES(QtApp_RCC_SRCS ${QtApp_RCCS})
 
 find_package(QWT)
 
@@ -189,12 +190,12 @@ if (QWT_FOUND)
 endif()
 
 rock_vizkit_widget(rock_widget_collection SHARED
-    SOURCES ${COLLECTION_SOURCES} ${QtApp_RCC_SRCS} 
-    HEADERS ${COLLECTION_HDRS}
-    MOC ${COLLECTION_MOC_HDRS}
+    SOURCES ${COLLECTION_SOURCES} ${QtApp_RCCS} 
+    HEADERS ${COLLECTION_HDRS} ${COLLECTION_MOC_HDRS}
     DEPS_PKGCONFIG base-types base-lib frame_helper
-    DEPS_CMAKE OpenGL ${VTK_DEPS} ${EXTRA_DEPS}
-    LIBS ${QT_QTCORE_LIBRARY} ${VTK_LIBS} ${QT_QTGUI_LIBRARY} ${QT_QTOPENGL_LIBRARY} ${QT_QTDESIGNER_LIBRARY} ${QTGSTREAMER_LIBRARIES} ${QTGSTREAMER_UI_LIBRARIES})
+    DEPS_CMAKE ${VTK_DEPS} ${EXTRA_DEPS}
+    DEPS Qt5::Widgets Qt5::PrintSupport Qt5::OpenGL Qt5::Designer Qt5::Gui
+    LIBS ${VTK_LIBS} GLU)
 
 add_subdirectory(stream_aligner_widget)
 
@@ -208,10 +209,10 @@ endif()
 #    DEPS rock_widget_collection
 #    NOINSTALL)
 #
-#rock_executable(imageviewTest image_view/main.cpp
-#    DEPS rock_widget_collection
-#    NOINSTALL)
-#
+rock_executable(imageviewTest image_view/main.cpp
+    DEPS rock_widget_collection
+    NOINSTALL)
+
 #rock_executable(virtualJoystickTest 
 #    virtual_joystick/main.cpp
 #    DEPS rock_widget_collection

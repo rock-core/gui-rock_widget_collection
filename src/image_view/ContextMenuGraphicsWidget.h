@@ -1,7 +1,7 @@
 #ifndef CONTEXTMENUGRAPHICSWIDGET_H
 #define CONTEXTMENUGRAPHICSWIDGET_H
 
-#include <QtGui>
+#include <QtWidgets>
 
 class ContextMenuGraphicsWidget : public QGraphicsWidget
 {

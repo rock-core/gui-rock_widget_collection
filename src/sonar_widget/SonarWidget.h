@@ -1,7 +1,7 @@
 #ifndef SONARWIDGET_H
 #define SONARWIDGET_H
 
-#include <QtGui>
+#include <QtWidgets>
 #include <base/samples/SonarScan.hpp>
 #include <base/samples/Sonar.hpp>
 

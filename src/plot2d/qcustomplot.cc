@@ -132,6 +132,7 @@
   frequency.
 */
 
+#include <QPrinter>
 #include "qcustomplot.h"
 
 // ================================================================================
@@ -3543,7 +3544,7 @@ void QCPAxis::setNumberFormat(const QString &formatCode)
   QString allowedFormatChars = "eEfgG";
   if (allowedFormatChars.contains(formatCode.at(0)))
   {
-    mNumberFormatChar = formatCode.at(0).toAscii();
+    mNumberFormatChar = formatCode.at(0).toLatin1();
   } else
   {
     qDebug() << FUNCNAME << "Invalid number format code (first char not in 'eEfgG'):" << formatCode;
@@ -5761,7 +5762,8 @@ void QCustomPlot::mousePressEvent(QMouseEvent *event)
   }
   
   // check if mouse press was on a legend item
-  int itemIdx = legend->getItemIndex(&event->pos());
+  auto clickPos = event->pos();
+  int itemIdx = legend->getItemIndex(&clickPos);
   
   if (itemIdx >= 0) 
   {

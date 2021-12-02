@@ -1,6 +1,6 @@
 #ifndef STREAMALIGNERWIDGET_H
 #define STREAMALIGNERWIDGET_H
-#include <QTreeView>
+#include <QtWidgets>
 
 class QStandardItemModel;
 class TaskRepresentation;

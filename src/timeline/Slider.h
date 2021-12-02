@@ -1,7 +1,7 @@
 #ifndef SLIDER_H
 #define	SLIDER_H
 
-#include <QtGui>
+#include <QtWidgets>
 #include <QGraphicsItem>
 
 class Slider : public QObject, public QGraphicsPixmapItem

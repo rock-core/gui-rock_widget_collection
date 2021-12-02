@@ -28,17 +28,7 @@
 #define QCUSTOMPLOT_H
 
 #include <QObject>
-#include <QWidget>
-#include <QPainter>
-#include <QPaintEvent>
-#include <QPixmap>
-#include <QVector>
-#include <QString>
-#include <QPrinter>
-#include <QDateTime>
-#include <QMultiMap>
-#include <QFlags>
-#include <QDebug>
+#include <QtWidgets>
 #include <cmath>
 
 // define FUNCNAME macro to mean the function name for debug output on different compilers:

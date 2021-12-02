@@ -187,7 +187,7 @@ bool ImageViewOld::saveImage3(const QString &mode, int pixel_size,  int width,  
 {
     QImage image;
     frame_converter.copyFrameToQImageRGB888(image,mode, pixel_size, width, height,pbuffer);
-    image.save(path,format.toAscii().data(),80);
+    image.save(path,format.toLatin1().data(),80);
     return true;
 }
 

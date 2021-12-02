@@ -5,14 +5,7 @@
  * Created on 10. Februar 2011, 14:14
  */
 
-#include <QtCore/qhash.h>
-#include <QtGui/qmenubar.h>
-#include <QtGui/qbuttongroup.h>
-#include <QtGui/qboxlayout.h>
-#include <QtGui/qstackedwidget.h>
-#include <QtCore/qmetaobject.h>
-#include <QtCore/qcoreevent.h>
-#include <QtGui/qtooltip.h>
+#include <QtWidgets>
 
 #include "MultiViewWidget.h"
 #include "MultiViewPlugin.h"
