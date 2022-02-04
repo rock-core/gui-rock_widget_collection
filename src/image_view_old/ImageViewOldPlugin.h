@@ -2,8 +2,8 @@
 #ifndef IMAGEVIEWOLDPLUGIN_H
 #define IMAGEVIEWOLDPLUGIN_H
 
-#include <QtWidgets>
-#include <QDesignerCustomWidgetInterface>
+#include <QtGui/QtGui>
+#include <QtUiPlugin/QDesignerCustomWidgetInterface>
 
 /*!
  * @deprecated This class is deprecated and will no longer be maintained. You should use the new ImageView widget.

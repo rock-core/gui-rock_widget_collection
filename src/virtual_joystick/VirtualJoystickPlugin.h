@@ -2,7 +2,7 @@
 #define VIRTUALJOYSTICKPLUGIN_H
 
 #include <QtGui/QtGui>
-#include <QtDesigner/QDesignerCustomWidgetInterface>
+#include <QtUiPlugin/QDesignerCustomWidgetInterface>
 
 class VirtualJoystickPlugin : public QObject , public QDesignerCustomWidgetInterface
 {

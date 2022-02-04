@@ -14,7 +14,7 @@
 #include <QHBoxLayout>
 #include <QGridLayout>
 #include <QTimer>
-#include <QtDesigner/QDesignerExportWidget>
+#include <QtUiPlugin/QDesignerExportWidget>
 
 #include <iostream>
 

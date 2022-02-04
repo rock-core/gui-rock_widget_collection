@@ -19,7 +19,7 @@
 #include <QtGui/qfiledialog.h>
 #include <QtGui/QMenu>
 #include <QtCore/QString>
-#include <QtDesigner/QDesignerExportWidget>
+#include <QtUiPlugin/QDesignerExportWidget>
 
 #include <QVTKWidget.h>
 #include <vtkSmartPointer.h>

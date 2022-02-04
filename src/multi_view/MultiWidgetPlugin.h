@@ -3,7 +3,7 @@
 #define MULTIWIDGETPLUGIN_H 
 
 #include <QtGui/QtGui>
-#include <QtDesigner/QDesignerCustomWidgetInterface>
+#include <QtUiPlugin/QDesignerCustomWidgetInterface>
 
 class MultiWidgetPlugin : public QObject , public QDesignerCustomWidgetInterface
 {

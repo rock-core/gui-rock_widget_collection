@@ -3,7 +3,7 @@
 #define RANGEVIEWPLUGIN_H 
 
 #include <QtGui/QtGui>
-#include <QtDesigner/QDesignerCustomWidgetInterface>
+#include <QtUiPlugin/QDesignerCustomWidgetInterface>
 
 class RangeViewPlugin : public QObject , public QDesignerCustomWidgetInterface
 {

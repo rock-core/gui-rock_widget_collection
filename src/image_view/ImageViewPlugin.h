@@ -2,7 +2,7 @@
 #define GSTIMAGEVIEWPLUGIN_H
 
 #include <QtGui>
-#include <QtDesigner/QDesignerCustomWidgetInterface>
+#include <QtUiPlugin/QDesignerCustomWidgetInterface>
 
 class ImageViewPlugin : public QObject, public QDesignerCustomWidgetInterface
 {

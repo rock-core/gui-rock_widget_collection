@@ -3,7 +3,7 @@
 #define WATERFALLDISPLAYPLUGIN_H
 
 #include <QtGui/QtGui>
-#include <QtDesigner/QDesignerCustomWidgetInterface>
+#include <QtUiPlugin/QDesignerCustomWidgetInterface>
 
 class WaterfallDisplayPlugin : public QObject , public QDesignerCustomWidgetInterface
 {

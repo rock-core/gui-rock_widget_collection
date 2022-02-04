@@ -2,7 +2,7 @@
 #define _MULTI_VIEW_WIDGET_H
 
 #include <PaintWidget.h>
-#include <QtDesigner/QDesignerExportWidget>
+#include <QtUiPlugin/QDesignerExportWidget>
 
 
 class QDESIGNER_WIDGET_EXPORT MultiWidget : public PaintWidget 

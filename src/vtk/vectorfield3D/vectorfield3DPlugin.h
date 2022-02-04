@@ -2,7 +2,7 @@
 #define VECTORFIELD3DPLUGIN_H
 
 #include <QtGui>
-#include <QtDesigner/QDesignerCustomWidgetInterface>
+#include <QtUiPlugin/QDesignerCustomWidgetInterface>
 
 class Vectorfield3DPlugin : public QObject, public QDesignerCustomWidgetInterface
 {
