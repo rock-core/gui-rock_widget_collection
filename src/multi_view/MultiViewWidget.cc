@@ -337,7 +337,7 @@ void MultiViewWidget::widgetClicked()
     clicking = true;
 
     WidgetButton *sender = dynamic_cast<WidgetButton*>(QObject::sender());
-    if(sender <= 0){
+    if(sender == 0){
         fprintf(stderr,"FATAL: Cannot Handle unknown Widget %s:%i\n",__FILE__,__LINE__);
         return;
     }

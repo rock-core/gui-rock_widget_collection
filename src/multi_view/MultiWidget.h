@@ -30,7 +30,7 @@ public slots:
 
 		for(QObjectList::const_iterator it = children().begin(); it != children().end(); it++){
 			MultiWidget *child = dynamic_cast<MultiWidget*>(*it);
-			if(child > 0){
+			if(child != 0){
 				child->setActive(isActive);
 			}
 		}
