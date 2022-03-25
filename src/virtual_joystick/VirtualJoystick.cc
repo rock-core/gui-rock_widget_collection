@@ -1,6 +1,7 @@
 #include "VirtualJoystick.h"
 #include <cmath>
 #include <iostream>
+#include <QLabel>
 
 VirtualJoystick::VirtualJoystick(QWidget* parent, const std::string& name) : QWidget(parent)
 {

@@ -1,6 +1,7 @@
 #include "Slider.h"
 #include "SlideBarItem.h"
 #include <iostream>
+#include <QGraphicsSceneMouseEvent>
 
 Slider::Slider() {
 

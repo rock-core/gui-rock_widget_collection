@@ -2,8 +2,10 @@
 #ifndef PLOT2D_H
 #define	PLOT2D_H
 
-#include <QtDesigner/QDesignerExportWidget>
-#include <QtWidgets>
+#include <QString>
+#include <QList>
+#include <QDesignerExportWidget>
+#include <QWidget>
 
 #include <iostream>
 #include <vector>

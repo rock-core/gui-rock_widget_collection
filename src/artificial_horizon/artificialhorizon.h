@@ -2,7 +2,8 @@
 #define ARTIFICIALHORIZON_H
 
 
-#include <QtWidgets>
+#include <QWidget>
+#include <QPixmap>
 
 class ArtificialHorizon:public QWidget
 {

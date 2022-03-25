@@ -28,7 +28,17 @@
 #define QCUSTOMPLOT_H
 
 #include <QObject>
-#include <QtWidgets>
+#include <QWidget>
+#include <QPainter>
+#include <QPaintEvent>
+#include <QPixmap>
+#include <QVector>
+#include <QString>
+#include <QPrinter>
+#include <QDateTime>
+#include <QMultiMap>
+#include <QFlags>
+#include <QDebug>
 #include <cmath>
 
 // define FUNCNAME macro to mean the function name for debug output on different compilers:
@@ -586,7 +596,7 @@ public slots:
   QSize iconSize() const { return mIconSize; }
   int iconTextPadding() const { return mIconTextPadding; }
   QPen iconBorderPen() const { return mIconBorderPen; }
-  int getItemIndex(const QPoint *point);
+  int getItemIndex(const QPoint &point);
   
   // setters:
   void setBorderPen(const QPen &pen);

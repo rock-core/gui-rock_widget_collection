@@ -5,7 +5,13 @@
  * Created on 10. Februar 2011, 14:14
  */
 
-#include <QtWidgets>
+#include <QHash>
+#include <QMenuBar>
+#include <QButtonGroup>
+#include <QBoxLayout>
+#include <QStackedWidget>
+#include <QMetaObject>
+#include <QToolTip>
 
 #include "MultiViewWidget.h"
 #include "MultiViewPlugin.h"

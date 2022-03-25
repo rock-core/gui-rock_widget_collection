@@ -246,7 +246,7 @@ void StreamAlignerModel::updateData(const aggregator::StreamAlignerStatus& statu
     
     //inform rest of the world that we got new data
     if(!taskRep.empty())
-        emit dataChanged(createIndex(0,0), createIndex(taskRep.size()-1, 5));
+        emit dataChanged(createIndex(0,0,(quintptr)0), createIndex(taskRep.size()-1, 5, (quintptr)0));
 }
 
 StreamAlignerModel::StreamAlignerModel(QObject* parent): QAbstractItemModel(parent)

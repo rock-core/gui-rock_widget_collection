@@ -10,6 +10,7 @@
 #define TIMELINE_H
 
 #include <QtGui>
+#include <QGraphicsView>
 #include "BoundarySlider.h"
 #include "SlideBarItem.h"
 

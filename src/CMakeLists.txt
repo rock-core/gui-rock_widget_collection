@@ -167,7 +167,7 @@ if (USE_VTK)
 endif()
 
 SET(QtApp_RCCS resources.qrc)
-#QT4_ADD_RESOURCES(QtApp_RCC_SRCS ${QtApp_RCCS})
+QT5_ADD_RESOURCES(QtApp_RCC_SRCS ${QtApp_RCCS})
 
 find_package(QWT)
 
@@ -191,11 +191,12 @@ endif()
 
 rock_vizkit_widget(rock_widget_collection SHARED
     SOURCES ${COLLECTION_SOURCES} ${QtApp_RCCS} 
-    HEADERS ${COLLECTION_HDRS} ${COLLECTION_MOC_HDRS}
+    HEADERS ${COLLECTION_HDRS}
+    MOC ${COLLECTION_MOC_HDRS}
     DEPS_PKGCONFIG base-types base-lib frame_helper
     DEPS_CMAKE ${VTK_DEPS} ${EXTRA_DEPS}
-    DEPS Qt5::Widgets Qt5::PrintSupport Qt5::OpenGL Qt5::Designer Qt5::Gui
-    LIBS ${VTK_LIBS} GLU)
+    LIBS ${VTK_LIBS} GLU Qt5::Widgets Qt5::PrintSupport Qt5::OpenGL Qt5::Designer Qt5::Gui
+    )
 
 add_subdirectory(stream_aligner_widget)
 

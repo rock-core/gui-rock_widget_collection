@@ -1,6 +1,11 @@
 #include "SonarWidget.h"
 #include "./SonarPlot.h"
 #include <iostream>
+#include <QLabel>
+#include <QSlider>
+#include <QLineEdit>
+#include <QComboBox>
+#include <QCheckBox>
 
 SonarWidget::SonarWidget(QWidget *parent)
     : QWidget(parent)

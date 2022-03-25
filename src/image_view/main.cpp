@@ -6,6 +6,7 @@
 #include <QtCore>
 #include <QtGui>
 #include <QtOpenGL/QGLWidget>
+#include <QApplication>
 
 #ifdef USE_GST
     #include <QGst/Init>

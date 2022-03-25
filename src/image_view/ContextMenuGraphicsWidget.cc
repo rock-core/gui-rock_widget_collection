@@ -1,4 +1,5 @@
 #include "ContextMenuGraphicsWidget.h"
+#include <QGraphicsSceneContextMenuEvent>
 
 ContextMenuGraphicsWidget::ContextMenuGraphicsWidget(QGraphicsItem * parent)
     : QGraphicsWidget(parent, 0)
