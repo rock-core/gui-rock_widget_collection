@@ -3,7 +3,7 @@
 #define _ROCKSLIDERPLUGIN_H
 
 #include <QtGui>
-#include <QtDesigner/QDesignerCustomWidgetInterface>
+#include <QtUiPlugin/QDesignerCustomWidgetInterface>
 
 class RockSliderPlugin : public QObject , public QDesignerCustomWidgetInterface
 {

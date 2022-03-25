@@ -2,13 +2,12 @@
 #define	TIMELINEPLUGIN_H
 
 #include <QtGui/QtGui>
-#include <QtDesigner/QDesignerCustomWidgetInterface>
+#include <QtUiPlugin/QDesignerCustomWidgetInterface>
 #include "Timeline.h"
 
 class TimelinePlugin : public QObject , public QDesignerCustomWidgetInterface
 {
   Q_OBJECT
-  Q_INTERFACES(QDesignerCustomWidgetInterface)
 
  public:
    TimelinePlugin(QObject *parent = 0);

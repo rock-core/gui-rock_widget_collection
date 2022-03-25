@@ -25,8 +25,6 @@
 #include "vtk/vectorfield3D/vectorfield3DPlugin.h"
 #endif
 
-Q_PLUGIN_METADATA(IID "RockWidgetCollection")
-
 RockWidgetCollection::RockWidgetCollection(QObject *parent)
        : QObject(parent)
 {

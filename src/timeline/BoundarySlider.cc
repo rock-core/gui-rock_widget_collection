@@ -2,6 +2,7 @@
 #include "SlideBarItem.h"
 
 #include <iostream>
+#include <QGraphicsSceneMouseEvent>
 
 #include <base-logging/Logging.hpp>
 

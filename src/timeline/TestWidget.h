@@ -4,6 +4,11 @@
 #include <QtGui>
 #include "Timeline.h"
 #include <iostream>
+#include <QLabel>
+#include <QLineEdit>
+#include <QPushButton>
+#include <QVBoxLayout>
+#include <QFormLayout>
 
 class TestWidget : public QWidget {
     Q_OBJECT

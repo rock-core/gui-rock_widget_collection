@@ -3,7 +3,7 @@
 #define ARTIFICIALHORIZONGETPLUGIN_H
 
 #include <QtGui>
-#include <QtDesigner/QDesignerCustomWidgetInterface>
+#include <QtUiPlugin/QDesignerCustomWidgetInterface>
 
 class ArtificialHorizonPlugin : public QObject , public QDesignerCustomWidgetInterface
 {

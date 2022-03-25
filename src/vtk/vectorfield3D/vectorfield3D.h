@@ -14,7 +14,7 @@
 #include <QtCore>
 #include <QString>
 #include <QVTKWidget.h>
-#include <QtDesigner/QDesignerExportWidget>
+#include <QtUiPlugin/QDesignerExportWidget>
 #include <vtkPolyData.h>
 #include <vtkPoints.h>
 #include <vtkFloatArray.h>

@@ -4,7 +4,7 @@
 
 #include <QtCore/QString>
 #include <QtCore/QList>
-#include <QtDesigner/QDesignerExportWidget>
+#include <QtUiPlugin/QDesignerExportWidget>
 
 #include <QVTKWidget.h>
 #include <vtkSmartPointer.h>

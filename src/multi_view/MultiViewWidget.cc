@@ -5,7 +5,13 @@
  * Created on 10. Februar 2011, 14:14
  */
 
-#include <QtWidgets>
+#include <QHash>
+#include <QMenuBar>
+#include <QButtonGroup>
+#include <QBoxLayout>
+#include <QStackedWidget>
+#include <QMetaObject>
+#include <QToolTip>
 
 #include "MultiViewWidget.h"
 #include "MultiViewPlugin.h"
@@ -331,7 +337,7 @@ void MultiViewWidget::widgetClicked()
     clicking = true;
 
     WidgetButton *sender = dynamic_cast<WidgetButton*>(QObject::sender());
-    if(sender <= 0){
+    if(sender == 0){
         fprintf(stderr,"FATAL: Cannot Handle unknown Widget %s:%i\n",__FILE__,__LINE__);
         return;
     }

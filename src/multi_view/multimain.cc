@@ -7,7 +7,8 @@
 
 #include <cstdlib>
 #include <iostream>
-#include <QtWidgets>
+#include <QApplication>
+#include <QWidget>
 
 #include "MultiViewWidget.h"
 #include "image_view_old/ImageViewOld.h"

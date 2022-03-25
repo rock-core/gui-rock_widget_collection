@@ -5,7 +5,11 @@
  * Created on 11. Februar 2011, 12:01
  */
 
-#include <QtWidgets>
+#include <QWidget>
+#include <QLayout>
+#include <QAbstractButton>
+#include <QTimer>
+#include <QLabel>
 
 #include "WidgetButton.h"
 #include "MultiWidget.h"
@@ -60,7 +64,7 @@ void WidgetButton::printStatus()
 void WidgetButton::setActive(bool active){
 	isActive=false;
 	MultiWidget *widget = dynamic_cast<MultiWidget*>(mainWidget);
-	if(widget > 0){
+	if(widget != 0){
 		widget->setActive(active);
 	}else{
 		//printf("Not updateing from class: %s %i\n",typeid(mainWidget).name(),widget);
@@ -72,7 +76,7 @@ void WidgetButton::setActive(bool active){
 void WidgetButton::corrcetName(){
     //The next lines will fail if the objects was constructed by rubqt ui loder because all objects are recognized as qwidget
     MultiWidget *w = dynamic_cast<MultiWidget*>(mainWidget);
-    if(w > 0){
+    if(w != 0){
         name = w->getMinimizedLabel();
     }
 
@@ -129,7 +133,7 @@ void WidgetButton::setWidget(const QString &name_, QWidget* widget, bool shown)
 		//The next lines will fail if the objects was constructed by rubqt ui loder because all objects are recognized as qwidget
 		QString name = name_;
 		MultiWidget *w = dynamic_cast<MultiWidget*>(widget);
-		if(w > 0){
+		if(w != 0){
 			name = w->getMinimizedLabel();
 	  }
 

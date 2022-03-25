@@ -132,7 +132,6 @@
   frequency.
 */
 
-#include <QPrinter>
 #include "qcustomplot.h"
 
 // ================================================================================
@@ -2957,7 +2956,7 @@ void QCPLegend::draw(QPainter *painter)
   painter->restore();
 }
 
-int QCPLegend::getItemIndex(const QPoint *point)
+int QCPLegend::getItemIndex(const QPoint &point)
 {
   if (!mVisible) return -1;
     
@@ -2968,10 +2967,10 @@ int QCPLegend::getItemIndex(const QPoint *point)
     QSize itemSize = mItems.at(i)->size(QSize(mSize.width(), 0));
     QPoint itemPosTopLeft = QPoint(mPosition.x()+mPaddingLeft, currentTop);
     
-    if (point->x() >= itemPosTopLeft.x() &&
-        point->x() <= itemPosTopLeft.x()+itemSize.width() &&
-        point->y() >= itemPosTopLeft.y() &&
-        point->y() <= itemPosTopLeft.y()+itemSize.height()) 
+    if (point.x() >= itemPosTopLeft.x() &&
+        point.x() <= itemPosTopLeft.x()+itemSize.width() &&
+        point.y() >= itemPosTopLeft.y() &&
+        point.y() <= itemPosTopLeft.y()+itemSize.height()) 
     {
       return i;
     }
@@ -3544,7 +3543,7 @@ void QCPAxis::setNumberFormat(const QString &formatCode)
   QString allowedFormatChars = "eEfgG";
   if (allowedFormatChars.contains(formatCode.at(0)))
   {
-    mNumberFormatChar = formatCode.at(0).toLatin1();
+    mNumberFormatChar = formatCode.toLocal8Bit().at(0);
   } else
   {
     qDebug() << FUNCNAME << "Invalid number format code (first char not in 'eEfgG'):" << formatCode;
@@ -5762,8 +5761,7 @@ void QCustomPlot::mousePressEvent(QMouseEvent *event)
   }
   
   // check if mouse press was on a legend item
-  auto clickPos = event->pos();
-  int itemIdx = legend->getItemIndex(&clickPos);
+  int itemIdx = legend->getItemIndex(event->pos());
   
   if (itemIdx >= 0) 
   {

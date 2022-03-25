@@ -3,7 +3,7 @@
 #define _COMPASSPLUGIN_H
 
 #include <QtGui>
-#include <QtDesigner/QDesignerCustomWidgetInterface>
+#include <QtUiPlugin/QDesignerCustomWidgetInterface>
 
 class CompassPlugin : public QObject , public QDesignerCustomWidgetInterface
 {

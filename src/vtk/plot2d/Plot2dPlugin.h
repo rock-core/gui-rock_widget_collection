@@ -3,12 +3,11 @@
 #define PLOT2DPLUGIN_H 
 
 #include <QtGui/QtGui>
-#include <QtDesigner/QDesignerCustomWidgetInterface>
+#include <QtUiPlugin/QDesignerCustomWidgetInterface>
 
 class Plot2dPlugin : public QObject , public QDesignerCustomWidgetInterface
 {
   Q_OBJECT
-  Q_INTERFACES(QDesignerCustomWidgetInterface)
 
  public:
    Plot2dPlugin(QObject *parent = 0);

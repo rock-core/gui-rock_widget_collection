@@ -1,8 +1,15 @@
 #ifndef _VIRTUAL_JOYSTICK_WIDGET_H
 #define _VIRTUAL_JOYSTICK_WIDGET_H
 
-#include <QtWidgets>
+#include <QtGui>
+#include <QWidget>
 #include <cstring>
+
+QT_BEGIN_NAMESPACE
+
+class QLabel;
+
+QT_END_NAMESPACE
 
 class VirtualJoystick : public QWidget {
 

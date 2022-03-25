@@ -3,12 +3,11 @@
 #define SONARDISPLAYPLUGIN_H
 
 #include <QtGui/QtGui>
-#include <QtDesigner/QDesignerCustomWidgetInterface>
+#include <QtUiPlugin/QDesignerCustomWidgetInterface>
 
 class SonarDisplayPlugin : public QObject , public QDesignerCustomWidgetInterface
 {
   Q_OBJECT
-  Q_INTERFACES(QDesignerCustomWidgetInterface)
 
  public:
    SonarDisplayPlugin(QObject *parent = 0);

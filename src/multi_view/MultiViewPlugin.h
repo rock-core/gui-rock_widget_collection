@@ -11,7 +11,7 @@
 #include "MultiViewWidget.h"
 
 #include <QtGui>
-#include <QtDesigner/QDesignerCustomWidgetInterface>
+#include <QtUiPlugin/QDesignerCustomWidgetInterface>
 #include <QtDesigner/QDesignerFormWindowInterface>
 
 #include <vector>
@@ -26,7 +26,6 @@ class MultiViewPlugin : public QObject, public QDesignerCustomWidgetInterface
 {
 
     Q_OBJECT
-    Q_INTERFACES(QDesignerCustomWidgetInterface)
 
 public:
     /**
