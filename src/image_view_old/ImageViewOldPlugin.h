@@ -2,7 +2,7 @@
 #ifndef IMAGEVIEWOLDPLUGIN_H
 #define IMAGEVIEWOLDPLUGIN_H
 
-#include <QtGui/QtGui>
+#include <QtWidgets>
 #include <QtUiPlugin/QDesignerCustomWidgetInterface>
 
 /*!
@@ -11,6 +11,7 @@
 class ImageViewOldPlugin : public QObject , public QDesignerCustomWidgetInterface
 {
   Q_OBJECT
+  Q_INTERFACES(QDesignerCustomWidgetInterface)
 
  public:
    ImageViewOldPlugin(QObject *parent = 0);
