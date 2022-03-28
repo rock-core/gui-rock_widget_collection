@@ -9,15 +9,15 @@
 #define	SONARDISPLAY_H
 
 #include <MultiWidget.h>
-#include <QtGui/QWidget>
-#include <QtGui/QPaintEvent>
-#include <QtGui/QPainter>
-#include <QtGui/QImage>
-#include <QtGui/QPen>
+#include <QtWidgets/QWidget>
+#include <QtWidgets/QPaintEvent>
+#include <QtWidgets/QPainter>
+#include <QtWidgets/QImage>
+#include <QtWidgets/QPen>
 #include <QtCore/QByteArray>
 #include <QtCore/QList>
-#include <QtGui/qfiledialog.h>
-#include <QtGui/QMenu>
+#include <QtWidgets/qfiledialog.h>
+#include <QtWidgets/QMenu>
 #include <QtCore/QString>
 #include <QtUiPlugin/QDesignerExportWidget>
 

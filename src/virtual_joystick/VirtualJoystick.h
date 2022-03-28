@@ -1,7 +1,7 @@
 #ifndef _VIRTUAL_JOYSTICK_WIDGET_H
 #define _VIRTUAL_JOYSTICK_WIDGET_H
 
-#include <QtGui>
+#include <QtWidgets>
 #include <QWidget>
 #include <cstring>
 

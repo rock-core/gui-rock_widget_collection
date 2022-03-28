@@ -19,7 +19,7 @@
 #include <QFileDialog>
 #include <QMenu>
 #include <QString>
-#include <QDesignerExportWidget>
+#include <QtUiPlugin/QDesignerExportWidget>
 
 #include <iostream>
 #include <frame_helper/FrameQImageConverter.h>

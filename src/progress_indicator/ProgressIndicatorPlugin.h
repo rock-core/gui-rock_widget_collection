@@ -1,13 +1,13 @@
 #ifndef PROGRESSINDICATORPLUGIN_H
 #define PROGRESSINDICATORPLUGIN_H
 
-#include <QtGui>
+#include <QtWidgets>
 #include <QtUiPlugin/QDesignerCustomWidgetInterface>
 
 class ProgressIndicatorPlugin : public QObject, public QDesignerCustomWidgetInterface
 {
     Q_OBJECT
-
+    Q_INTERFACES(QDesignerCustomWidgetInterface)
 public:
     ProgressIndicatorPlugin(QObject *parent = 0);
     virtual ~ProgressIndicatorPlugin();
