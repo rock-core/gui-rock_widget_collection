@@ -1,13 +1,13 @@
 #ifndef VIRTUALJOYSTICKPLUGIN_H
 #define VIRTUALJOYSTICKPLUGIN_H
 
-#include <QtGui/QtGui>
+#include <QtWidgets>
 #include <QtUiPlugin/QDesignerCustomWidgetInterface>
 
 class VirtualJoystickPlugin : public QObject , public QDesignerCustomWidgetInterface
 {
 	Q_OBJECT
-
+	Q_INTERFACES(QDesignerCustomWidgetInterface)
     public:
 	VirtualJoystickPlugin(QObject *parent = 0);
 	virtual ~VirtualJoystickPlugin();

@@ -2,13 +2,14 @@
 #ifndef WIDGETBUTTONPLUGIN_H
 #define WIDGETBUTTONPLUGIN_H 
 
-#include <QtGui/QtGui>
+#include <QtWidgets>
 #include <QtUiPlugin/QDesignerCustomWidgetInterface>
 
 class WidgetButtonPlugin : public QObject , public QDesignerCustomWidgetInterface
 {
   Q_OBJECT
-
+  Q_INTERFACES(QDesignerCustomWidgetInterface)
+  
  public:
    WidgetButtonPlugin(QObject *parent = 0);
    virtual ~WidgetButtonPlugin();

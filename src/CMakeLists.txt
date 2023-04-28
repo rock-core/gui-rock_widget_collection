@@ -1,6 +1,6 @@
 
 #find_package(Qt4 REQUIRED QtCore QtGui QtOpengl QtDesigner )
-rock_find_qt5(Widgets PrintSupport OpenGL Gui Designer REQUIRED)
+rock_find_qt5(Core Gui Widgets UiPlugin PrintSupport OpenGL Designer REQUIRED)
 
 option(USE_VTK "Use VTK for additional Widgets" FALSE)
 option(USE_GST "Use GStreamer in GstImageView" OFF)
@@ -23,10 +23,9 @@ endif()
 
 
 include_directories(multi_view/ generic_widgets/)
-#include_directories(${QT_INCLUDE_DIR})
-#include_directories(${QT_QTCORE_INCLUDE_DIR})
-#include_directories(${QT_QTGUI_INCLUDE_DIR})
-
+INCLUDE_DIRECTORIES(${Qt5Core_INCLUDE_DIRS})
+INCLUDE_DIRECTORIES(${Qt5Gui_INCLUDE_DIRS})
+INCLUDE_DIRECTORIES(${Qt5Widgets_INCLUDE_DIRS})
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 

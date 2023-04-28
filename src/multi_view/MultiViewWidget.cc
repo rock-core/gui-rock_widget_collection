@@ -192,6 +192,8 @@ void MultiViewWidget::addWidget(const QString &name, QWidget* widget_, const QIc
 	    case WidgetButton::Bottom:
                 bottom->addWidget(widgetButton);
                 break;
+        default:
+                break;
         }
     }else{
         switch(currentWidget->getPosition())
@@ -207,6 +209,8 @@ void MultiViewWidget::addWidget(const QString &name, QWidget* widget_, const QIc
                 break;
             case WidgetButton::Top:
                 top->addWidget(widgetButton);
+                break;
+            default:
                 break;
         }
     }

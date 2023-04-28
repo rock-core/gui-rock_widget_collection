@@ -1,7 +1,7 @@
 #ifndef SONARPLOT_H
 #define SONARPLOT_H
 
-#include <QtGui>
+#include <QtWidgets>
 #include <QFrame>
 #include <base/samples/Sonar.hpp>
 #include <frame_helper/ColorGradient.h>

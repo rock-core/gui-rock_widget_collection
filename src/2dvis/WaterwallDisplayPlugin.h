@@ -2,7 +2,7 @@
 #ifndef WATERFALLDISPLAYPLUGIN_H
 #define WATERFALLDISPLAYPLUGIN_H
 
-#include <QtGui/QtGui>
+#include <QtWidgets>
 #include <QtUiPlugin/QDesignerCustomWidgetInterface>
 
 class WaterfallDisplayPlugin : public QObject , public QDesignerCustomWidgetInterface

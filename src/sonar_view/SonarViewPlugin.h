@@ -2,13 +2,13 @@
 #ifndef SONARVIEWPLUGIN_H
 #define SONARVIEWPLUGIN_H 
 
-#include <QtGui/QtGui>
+#include <QtWidgets>
 #include <QtUiPlugin/QDesignerCustomWidgetInterface>
 
 class SonarViewPlugin : public QObject , public QDesignerCustomWidgetInterface
 {
   Q_OBJECT
-
+  Q_INTERFACES(QDesignerCustomWidgetInterface)
  public:
    SonarViewPlugin(QObject *parent = 0);
    virtual ~SonarViewPlugin();

@@ -10,7 +10,7 @@
 #ifndef VECTORFIELD3D_H
 #define VECTORFIELD3D_H
 
-#include <QtGui>
+#include <QtWidgets>
 #include <QtCore>
 #include <QString>
 #include <QVTKWidget.h>

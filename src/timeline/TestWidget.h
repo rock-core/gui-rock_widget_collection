@@ -1,7 +1,7 @@
 #ifndef TESTWIDGET_H
 #define	TESTWIDGET_H
 
-#include <QtGui>
+#include <QtWidgets>
 #include "Timeline.h"
 #include <iostream>
 #include <QLabel>

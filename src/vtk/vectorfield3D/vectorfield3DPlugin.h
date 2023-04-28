@@ -1,13 +1,13 @@
 #ifndef VECTORFIELD3DPLUGIN_H
 #define VECTORFIELD3DPLUGIN_H
 
-#include <QtGui>
+#include <QtWidgets>
 #include <QtUiPlugin/QDesignerCustomWidgetInterface>
 
 class Vectorfield3DPlugin : public QObject, public QDesignerCustomWidgetInterface
 {
     Q_OBJECT
-
+    Q_INTERFACES(QDesignerCustomWidgetInterface)
 public:
     Vectorfield3DPlugin(QObject *parent = 0);
     virtual ~Vectorfield3DPlugin();

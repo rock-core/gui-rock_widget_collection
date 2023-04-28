@@ -204,7 +204,7 @@ void RangeViewGL::paintGL(){
 	glVertex3f(0,0,0);	
 	glPointSize(1);
 	qglColor(color);
-	for(int i=0;i<data.size();i++){
+	for(unsigned int i=0;i<data.size();i++){
 		glVertex3f(data[i][0],data[i][1],data[i][2]);
 	}
 	glEnd();
