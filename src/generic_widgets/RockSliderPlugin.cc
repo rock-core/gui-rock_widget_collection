@@ -4,6 +4,7 @@
 
  RockSliderPlugin::RockSliderPlugin(QObject *parent) : QObject(parent)
  {
+     Q_INIT_RESOURCE(resources);
      initialized = false;
  }
 

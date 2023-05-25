@@ -7,7 +7,7 @@
 #include <base-logging/Logging.hpp>
 
 BoundarySlider::BoundarySlider() : Slider() {
-
+    Q_INIT_RESOURCE(resources);
 }
 
 BoundarySlider::BoundarySlider(QGraphicsItem* parent, unsigned initIdx) : Slider(parent, initIdx) {
