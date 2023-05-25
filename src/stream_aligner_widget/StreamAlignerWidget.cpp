@@ -245,8 +245,13 @@ void StreamAlignerModel::updateData(const aggregator::StreamAlignerStatus& statu
     taskRepMap[name]->updateData(status);
     
     //inform rest of the world that we got new data
-    if(!taskRep.empty())
+    if(!taskRep.empty()) {
+#if QT_VERSION >= 0x050000
         emit dataChanged(createIndex(0,0,(quintptr)0), createIndex(taskRep.size()-1, 5, (quintptr)0));
+#else
+        emit dataChanged(createIndex(0,0,0), createIndex(taskRep.size()-1, 5, 0));
+#endif
+    }
 }
 
 StreamAlignerModel::StreamAlignerModel(QObject* parent): QAbstractItemModel(parent)
