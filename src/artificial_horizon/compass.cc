@@ -39,7 +39,10 @@ void Compass::setHeading(double v)
 { 
   QString heading_text = QString("%1 / %2").arg(v).arg(v/M_PI*180.0);
 
-  compass->setValue(-v/M_PI*180.0);
+  if(-v/M_PI*180.0 < 0.0)
+    compass->setValue(-v/M_PI*180.0+360.0);
+  else
+    compass->setValue(-v/M_PI*180.0);
   number->setText(heading_text); 
 }
 
