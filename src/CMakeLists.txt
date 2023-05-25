@@ -192,7 +192,7 @@ endif()
 rock_vizkit_widget(rock_widget_collection SHARED
     SOURCES ${COLLECTION_SOURCES} ${QtApp_RCC_SRCS}
     HEADERS ${COLLECTION_HDRS}
-    MOC ${COLLECTION_MOC_HDRS}
+    MOC5 ${COLLECTION_MOC_HDRS}
     DEPS_PKGCONFIG base-types base-lib frame_helper
     DEPS_CMAKE ${VTK_DEPS} ${EXTRA_DEPS}
     LIBS ${VTK_LIBS} GLU Qt5::Widgets Qt5::PrintSupport Qt5::OpenGL Qt5::Designer Qt5::Gui
