@@ -8,6 +8,7 @@
 class WidgetButtonPlugin : public QObject , public QDesignerCustomWidgetInterface
 {
   Q_OBJECT
+  Q_INTERFACES(QDesignerCustomWidgetInterface)
 
  public:
    WidgetButtonPlugin(QObject *parent = 0);

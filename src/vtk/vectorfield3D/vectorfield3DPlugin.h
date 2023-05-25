@@ -7,6 +7,7 @@
 class Vectorfield3DPlugin : public QObject, public QDesignerCustomWidgetInterface
 {
     Q_OBJECT
+    Q_INTERFACES(QDesignerCustomWidgetInterface)
 
 public:
     Vectorfield3DPlugin(QObject *parent = 0);

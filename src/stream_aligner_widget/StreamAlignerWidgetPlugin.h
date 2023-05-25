@@ -7,6 +7,7 @@
 class StreamAlignerWidgetPlugin : public QObject , public QDesignerCustomWidgetInterface
 {
 	Q_OBJECT
+	Q_INTERFACES(QDesignerCustomWidgetInterface)
 
     public:
 	StreamAlignerWidgetPlugin(QObject *parent = 0);
@@ -33,6 +34,7 @@ class AggregatorCollection: public QObject, public QDesignerCustomWidgetCollecti
 {
    Q_OBJECT
    Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QDesignerCustomWidgetCollectionInterface")
+   Q_INTERFACES(QDesignerCustomWidgetCollectionInterface)
 
 public:
    AggregatorCollection(QObject *parent = 0);

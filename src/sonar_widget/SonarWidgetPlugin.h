@@ -7,6 +7,7 @@
 class SonarWidgetPlugin : public QObject, public QDesignerCustomWidgetInterface
 {
     Q_OBJECT
+    Q_INTERFACES(QDesignerCustomWidgetInterface)
 
 public:
     SonarWidgetPlugin(QObject *parent = 0);

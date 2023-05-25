@@ -8,6 +8,7 @@ class RockWidgetCollection: public QObject, public QDesignerCustomWidgetCollecti
 {
    Q_OBJECT
    Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QDesignerCustomWidgetCollectionInterface")
+   Q_INTERFACES(QDesignerCustomWidgetCollectionInterface)
 
 public:
    RockWidgetCollection(QObject *parent = 0);

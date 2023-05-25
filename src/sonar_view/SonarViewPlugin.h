@@ -8,6 +8,7 @@
 class SonarViewPlugin : public QObject , public QDesignerCustomWidgetInterface
 {
   Q_OBJECT
+  Q_INTERFACES(QDesignerCustomWidgetInterface)
 
  public:
    SonarViewPlugin(QObject *parent = 0);
