@@ -596,7 +596,7 @@ public slots:
   QSize iconSize() const { return mIconSize; }
   int iconTextPadding() const { return mIconTextPadding; }
   QPen iconBorderPen() const { return mIconBorderPen; }
-  int getItemIndex(const QPoint *point);
+  int getItemIndex(const QPoint &point);
   
   // setters:
   void setBorderPen(const QPen &pen);

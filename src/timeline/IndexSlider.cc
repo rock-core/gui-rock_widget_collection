@@ -3,7 +3,7 @@
 #include <iostream>
 
 IndexSlider::IndexSlider() {
-    
+    Q_INIT_RESOURCE(resources);
 }
 
 IndexSlider::IndexSlider(QGraphicsItem* parent, unsigned initIdx) : Slider(parent, initIdx) {

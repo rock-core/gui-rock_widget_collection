@@ -9,17 +9,17 @@
 #define	IMAGEVIEWOLD_H
 
 #include <MultiWidget.h>
-#include <QtGui/QWidget>
-#include <QtGui/QPaintEvent>
-#include <QtGui/QPainter>
-#include <QtGui/QImage>
-#include <QtGui/QPen>
-#include <QtCore/QByteArray>
-#include <QtCore/QList>
-#include <QtGui/qfiledialog.h>
-#include <QtGui/QMenu>
-#include <QtCore/QString>
-#include <QtDesigner/QDesignerExportWidget>
+#include <QWidget>
+#include <QPaintEvent>
+#include <QPainter>
+#include <QImage>
+#include <QPen>
+#include <QByteArray>
+#include <QList>
+#include <QFileDialog>
+#include <QMenu>
+#include <QString>
+#include <QDesignerExportWidget>
 
 #include <iostream>
 #include <frame_helper/FrameQImageConverter.h>

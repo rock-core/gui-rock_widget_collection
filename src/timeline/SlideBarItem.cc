@@ -1,6 +1,8 @@
 #include "SlideBarItem.h"
 
 #include <QtGui>
+#include <QGraphicsSceneMouseEvent>
+#include <QStyle>
 
 #include <iostream>
 

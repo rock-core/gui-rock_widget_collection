@@ -2,8 +2,19 @@
 #define SONARWIDGET_H
 
 #include <QtGui>
+#include <QWidget>
 #include <base/samples/SonarScan.hpp>
 #include <base/samples/Sonar.hpp>
+
+QT_BEGIN_NAMESPACE
+
+class QLabel;
+class QLineEdit;
+class QSlider;
+class QCheckBox;
+class QComboBox;
+
+QT_END_NAMESPACE
 
 class SonarPlot;
 

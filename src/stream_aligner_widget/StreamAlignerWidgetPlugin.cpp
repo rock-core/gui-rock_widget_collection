@@ -2,7 +2,9 @@
 #include "StreamAlignerWidget.h"
 #include <QtCore/qplugin.h>
 
+#if QT_VERSION < 0x050000
 Q_EXPORT_PLUGIN2(AggregatorCollection, AggregatorCollection)
+#endif
 
 AggregatorCollection::AggregatorCollection(QObject *parent)
        : QObject(parent)

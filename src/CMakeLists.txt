@@ -1,5 +1,6 @@
 
-find_package(Qt4 REQUIRED QtCore QtGui QtOpengl QtDesigner )
+rock_find_qt5(OPTIONAL Widgets PrintSupport OpenGL Gui Designer)
+rock_find_qt4(OPTIONAL QtCore QtGui QtOpengl QtDesigner)
 
 option(USE_VTK "Use VTK for additional Widgets" FALSE)
 option(USE_GST "Use GStreamer in GstImageView" OFF)
@@ -22,9 +23,9 @@ endif()
 
 
 include_directories(multi_view/ generic_widgets/)
-include_directories(${QT_INCLUDE_DIR})
-include_directories(${QT_QTCORE_INCLUDE_DIR})
-include_directories(${QT_QTGUI_INCLUDE_DIR})
+#include_directories(${QT_INCLUDE_DIR})
+#include_directories(${QT_QTCORE_INCLUDE_DIR})
+#include_directories(${QT_QTGUI_INCLUDE_DIR})
 
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
@@ -142,6 +143,8 @@ list(APPEND COLLECTION_SOURCES
     artificial_horizon/artificialhorizon.cc
     artificial_horizon/artificialhorizonplugin.cc)
     
+
+#TODO this looks like it must be tested separately for qt4 and qt5
 if (USE_VTK)
     find_package(VTK)
     list(APPEND COLLECTION_MOC_HDRS
@@ -166,35 +169,88 @@ if (USE_VTK)
 endif()
 
 SET(QtApp_RCCS resources.qrc)
-QT4_ADD_RESOURCES(QtApp_RCC_SRCS ${QtApp_RCCS})
+if(ROCK_QT_VERSION_5)
+    QT5_ADD_RESOURCES(Qt5App_RCC_SRCS ${QtApp_RCCS})
 
-find_package(QWT)
+    find_package(QWT)
 
-if (QWT_FOUND)
-    add_definitions(-DUSE_QWT)
-    list(APPEND EXTRA_DEPS QWT)
-    list(APPEND COLLECTION_SOURCES
-        artificial_horizon/compass.cc
-        artificial_horizon/compassplugin.cc
-        artificial_horizon/orientation.cc
-        artificial_horizon/orientationplugin.cc)
-    list(APPEND COLLECTION_MOC_HDRS
-        artificial_horizon/compass.h
-        artificial_horizon/compassplugin.h
-        artificial_horizon/orientation.h
-        artificial_horizon/orientationplugin.h)
-    list(APPEND COLLECTION_HDRS
-        artificial_horizon/orientation.h
-        artificial_horizon/compass.h)
+    set(QT5_EXTRA_DEPS ${EXTRA_DEPS})
+    set(QT5_COLLECTION_SOURCES ${COLLECTION_SOURCES})
+    set(QT5_COLLECTION_MOC_HDRS ${COLLECTION_MOC_HDRS})
+    set(QT5_COLLECTION_HDRS ${COLLECTION_HDRS})
+
+    if (QWT_FOUND)
+        list(APPEND QT5_EXTRA_DEPS QWT)
+        list(APPEND QT5_COLLECTION_SOURCES
+            artificial_horizon/compass.cc
+            artificial_horizon/compassplugin.cc
+            artificial_horizon/orientation.cc
+            artificial_horizon/orientationplugin.cc)
+        list(APPEND QT5_COLLECTION_MOC_HDRS
+            artificial_horizon/compass.h
+            artificial_horizon/compassplugin.h
+            artificial_horizon/orientation.h
+            artificial_horizon/orientationplugin.h)
+        list(APPEND QT5_COLLECTION_HDRS
+            artificial_horizon/orientation.h
+            artificial_horizon/compass.h)
+    endif()
+
+    rock_vizkit_widget(rock_widget_collection-qt5 SHARED
+        SOURCES ${QT5_COLLECTION_SOURCES} ${Qt5App_RCC_SRCS}
+        HEADERS ${QT5_COLLECTION_HDRS}
+        MOC5 ${QT5_COLLECTION_MOC_HDRS}
+        DEPS_PKGCONFIG base-types base-lib frame_helper
+        DEPS_CMAKE ${VTK_DEPS} ${QT5_EXTRA_DEPS}
+        LIBS ${VTK_LIBS} GLU Qt5::Widgets Qt5::PrintSupport Qt5::OpenGL Qt5::Designer Qt5::Gui
+        )
+
+    if (QWT_FOUND)
+        target_compile_definitions(rock_widget_collection-qt5 PRIVATE -DUSE_QWT)
+    endif()
 endif()
 
-rock_vizkit_widget(rock_widget_collection SHARED
-    SOURCES ${COLLECTION_SOURCES} ${QtApp_RCC_SRCS} 
-    HEADERS ${COLLECTION_HDRS}
-    MOC ${COLLECTION_MOC_HDRS}
-    DEPS_PKGCONFIG base-types base-lib frame_helper
-    DEPS_CMAKE OpenGL ${VTK_DEPS} ${EXTRA_DEPS}
-    LIBS ${QT_QTCORE_LIBRARY} ${VTK_LIBS} ${QT_QTGUI_LIBRARY} ${QT_QTOPENGL_LIBRARY} ${QT_QTDESIGNER_LIBRARY} ${QTGSTREAMER_LIBRARIES} ${QTGSTREAMER_UI_LIBRARIES})
+if(ROCK_QT_VERSION_4)
+    QT4_ADD_RESOURCES(Qt4App_RCC_SRCS ${QtApp_RCCS})
+
+    find_package(QWT_QT4)
+
+    set(QT4_EXTRA_DEPS ${EXTRA_DEPS})
+    set(QT4_COLLECTION_SOURCES ${COLLECTION_SOURCES})
+    set(QT4_COLLECTION_MOC_HDRS ${COLLECTION_MOC_HDRS})
+    set(QT4_COLLECTION_HDRS ${COLLECTION_HDRS})
+
+    if (QWT_QT4_FOUND)
+        list(APPEND QT4_EXTRA_DEPS QWT_QT4)
+        list(APPEND QT4_COLLECTION_SOURCES
+            artificial_horizon/compass.cc
+            artificial_horizon/compassplugin.cc
+            artificial_horizon/orientation.cc
+            artificial_horizon/orientationplugin.cc)
+        list(APPEND QT4_COLLECTION_MOC_HDRS
+            artificial_horizon/compass.h
+            artificial_horizon/compassplugin.h
+            artificial_horizon/orientation.h
+            artificial_horizon/orientationplugin.h)
+        list(APPEND QT4_COLLECTION_HDRS
+            artificial_horizon/orientation.h
+            artificial_horizon/compass.h)
+    endif()
+
+    rock_vizkit_widget(rock_widget_collection SHARED
+        SOURCES ${QT4_COLLECTION_SOURCES} ${Qt4App_RCC_SRCS}
+        HEADERS ${QT4_COLLECTION_HDRS}
+        MOC ${QT4_COLLECTION_MOC_HDRS}
+        DEPS_PKGCONFIG base-types base-lib frame_helper
+        DEPS_CMAKE ${VTK_DEPS} ${QT4_EXTRA_DEPS}
+        LIBS ${VTK_LIBS} GLU ${QT_QTCORE_LIBRARY} ${QT_QTGUI_LIBRARY} ${QT_QTOPENGL_LIBRARY} ${QT_QTDESIGNER_LIBRARY} ${QTGSTREAMER_LIBRARIES} ${QTGSTREAMER_UI_LIBRARIES}
+        )
+
+    if (QWT_QT4_FOUND)
+        target_compile_definitions(rock_widget_collection PRIVATE -DUSE_QWT)
+    endif()
+endif()
+
 
 add_subdirectory(stream_aligner_widget)
 
@@ -207,11 +263,16 @@ endif()
 #rock_executable(timelineTest timeline/main.cpp
 #    DEPS rock_widget_collection
 #    NOINSTALL)
-#
+
+rock_executable(imageviewTest-qt5 image_view/main.cpp
+    DEPS rock_widget_collection-qt5
+    NOINSTALL)
+
 #rock_executable(imageviewTest image_view/main.cpp
 #    DEPS rock_widget_collection
 #    NOINSTALL)
 #
+
 #rock_executable(virtualJoystickTest 
 #    virtual_joystick/main.cpp
 #    DEPS rock_widget_collection

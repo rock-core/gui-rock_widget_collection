@@ -2,7 +2,11 @@
 #define GSTIMAGEVIEWPLUGIN_H
 
 #include <QtGui>
+#if QT_VERSION >= 0x050000
+#include <QtUiPlugin/QDesignerCustomWidgetInterface>
+#else
 #include <QtDesigner/QDesignerCustomWidgetInterface>
+#endif
 
 class ImageViewPlugin : public QObject, public QDesignerCustomWidgetInterface
 {

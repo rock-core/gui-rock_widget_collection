@@ -3,7 +3,11 @@
 #define MULTIWIDGETPLUGIN_H 
 
 #include <QtGui/QtGui>
+#if QT_VERSION >= 0x050000
+#include <QtUiPlugin/QDesignerCustomWidgetInterface>
+#else
 #include <QtDesigner/QDesignerCustomWidgetInterface>
+#endif
 
 class MultiWidgetPlugin : public QObject , public QDesignerCustomWidgetInterface
 {
