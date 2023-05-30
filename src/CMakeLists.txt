@@ -1,5 +1,5 @@
 
-rock_find_qt5(OPTIONAL Widgets PrintSupport OpenGL Gui Designer)
+rock_find_qt5(OPTIONAL Widgets PrintSupport OpenGL Gui Designer UiPlugin)
 rock_find_qt4(OPTIONAL QtCore QtGui QtOpengl QtDesigner)
 
 option(USE_VTK "Use VTK for additional Widgets" FALSE)
@@ -202,7 +202,7 @@ if(ROCK_QT_VERSION_5)
         MOC5 ${QT5_COLLECTION_MOC_HDRS}
         DEPS_PKGCONFIG base-types base-lib frame_helper
         DEPS_CMAKE ${VTK_DEPS} ${QT5_EXTRA_DEPS}
-        LIBS ${VTK_LIBS} GLU Qt5::Widgets Qt5::PrintSupport Qt5::OpenGL Qt5::Designer Qt5::Gui
+        LIBS ${VTK_LIBS} GLU Qt5::Widgets Qt5::PrintSupport Qt5::OpenGL Qt5::Designer Qt5::UiPlugin Qt5::Gui
         )
 
     if (QWT_FOUND)
@@ -243,7 +243,7 @@ if(ROCK_QT_VERSION_4)
         MOC ${QT4_COLLECTION_MOC_HDRS}
         DEPS_PKGCONFIG base-types base-lib frame_helper
         DEPS_CMAKE ${VTK_DEPS} ${QT4_EXTRA_DEPS}
-        LIBS ${VTK_LIBS} GLU ${QT_QTCORE_LIBRARY} ${QT_QTGUI_LIBRARY} ${QT_QTOPENGL_LIBRARY} ${QT_QTDESIGNER_LIBRARY} ${QTGSTREAMER_LIBRARIES} ${QTGSTREAMER_UI_LIBRARIES}
+        LIBS ${VTK_LIBS} GLU Qt4::QtCore Qt4::QtGui Qt4::QtOpenGL Qt4::QtDesigner
         )
 
     if (QWT_QT4_FOUND)
