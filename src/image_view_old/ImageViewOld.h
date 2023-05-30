@@ -19,7 +19,11 @@
 #include <QFileDialog>
 #include <QMenu>
 #include <QString>
-#include <QDesignerExportWidget>
+#if QT_VERSION >= 0x050000
+#include <QtUiPlugin/QDesignerExportWidget>
+#else
+#include <QtDesigner/QDesignerExportWidget>
+#endif
 
 #include <iostream>
 #include <frame_helper/FrameQImageConverter.h>
