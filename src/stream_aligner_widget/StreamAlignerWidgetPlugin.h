@@ -2,7 +2,11 @@
 #define STREAMALIGNERWIDGETPLUGIN_H
 
 #include <QObject>
+#if QT_VERSION >= 0x050000
+#include <QtUiPlugin/QDesignerCustomWidgetInterface>
+#else
 #include <QtDesigner/QDesignerCustomWidgetInterface>
+#endif
 
 class StreamAlignerWidgetPlugin : public QObject , public QDesignerCustomWidgetInterface
 {

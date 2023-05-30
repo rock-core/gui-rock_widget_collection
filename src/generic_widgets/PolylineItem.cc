@@ -13,7 +13,7 @@
 #include "PolylineItem.h"
 
 PolylineItem::PolylineItem(const QColor &color, int groupNr, const QList<QPoint> &points)
-    : points(points),FillItem(0, 0, groupNr, color)
+    : FillItem(0, 0, groupNr, color),points(points)
 {
 }
 

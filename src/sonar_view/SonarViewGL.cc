@@ -51,7 +51,7 @@ maximumBearings(maximumBearings)
 	//connect(&repaintTimer,SIGNAL(timeout()),this,SLOT(repaintFunc()));
 	//repaintTimer.start();
 	
-	for(int i=0;i<maximumBearings;i++){
+	for(unsigned int i=0;i<maximumBearings;i++){
 		glDeleteLists(bearingList[i], 1);
 		glDeleteLists(wallDist[i], 1);
 		bearingList[i] = glGenLists( 1 );
@@ -75,7 +75,7 @@ void SonarViewGL::reset(double currentScale){
 	this->currentScale = currentScale;
 	createAvalon();
 //	mutex.lock();
-	for(int i=0;i<maximumBearings;i++){
+	for(unsigned int i=0;i<maximumBearings;i++){
 		glDeleteLists(bearingList[i], 1);
 		bearingList[i] = glGenLists( 1 );
 		glNewList( bearingList[i], GL_COMPILE );
@@ -85,7 +85,7 @@ void SonarViewGL::reset(double currentScale){
 //	listValid[i]=false;
 //
 //
-	for(int i=0;i<maximumBearings;i++){
+	for(unsigned int i=0;i<maximumBearings;i++){
 		glDeleteLists(wallDist[i], 1);
 		wallDist[i] = glGenLists( 1 );
 		glNewList( wallDist[i], GL_COMPILE );
@@ -107,7 +107,7 @@ void SonarViewGL::setData(const std::vector<uint8_t> data,int bearing){
           //}
         //}
           
-	if(bearing < 0 || bearing > maximumBearings){
+	if(bearing < 0 || (unsigned)bearing > maximumBearings){
 		fprintf(stderr,"Cannot Set bearing is out of range\n");
 	} 
 
@@ -482,12 +482,12 @@ void SonarViewGL::paintGL(){
      //	glCallList(colorList[i].first);
      //}
 //	 if(paintWall)
-     for(int i=0;i<maximumBearings;i++){
+     for(unsigned int i=0;i<maximumBearings;i++){
      	if(glIsList(wallDist[i])){
 			glCallList(wallDist[i]);
 	 	}
      }
-     for(int i=0;i<maximumBearings;i++){
+     for(unsigned int i=0;i<maximumBearings;i++){
      	if(glIsList(bearingList[i])){
 		 glCallList(bearingList[i]);
 		}

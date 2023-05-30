@@ -260,14 +260,14 @@ void QWaterfallDisplay::pushDataUint8(const char *new_data, int length)
     uint i=0;
     vector<float> temp(length);
 
-    if (length > m_cols) {
+    if ((unsigned)length > m_cols) {
         temp.resize(m_cols);
         for(i=0;i<m_cols;i++)
             temp[i] = (float)(new_data[i]);
     }
     else {
         //temp.resize(length);
-        for(i=0;i<length;i++)
+        for(i=0;i<(unsigned)length;i++)
             temp[i] = (float)(new_data[i]);
     }
 

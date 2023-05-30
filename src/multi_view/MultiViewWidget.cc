@@ -206,6 +206,7 @@ void MultiViewWidget::addWidget(const QString &name, QWidget* widget_, const QIc
                 bottom->addWidget(widgetButton);
                 break;
             case WidgetButton::Top:
+            case WidgetButton::Default:
                 top->addWidget(widgetButton);
                 break;
         }
