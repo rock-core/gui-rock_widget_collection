@@ -4,7 +4,6 @@
 #include "sonar_view/SonarViewPlugin.h"
 #include "range_view/RangeViewPlugin.h"
 #include "artificial_horizon/artificialhorizonplugin.h"
-#include "artificial_horizon/orientationplugin.h"
 #include "multi_view/MultiViewPlugin.h"
 #include "multi_view/MultiWidgetPlugin.h"
 #include "virtual_joystick/VirtualJoystickPlugin.h"
@@ -18,6 +17,7 @@
 
 #ifdef USE_QWT
 #include "artificial_horizon/compassplugin.h"
+#include "artificial_horizon/orientationplugin.h"
 #endif
 
 #ifdef USE_VTK
