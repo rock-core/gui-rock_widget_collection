@@ -190,7 +190,7 @@ if (QWT_FOUND)
 endif()
 
 rock_vizkit_widget(rock_widget_collection SHARED
-    SOURCES ${COLLECTION_SOURCES} ${QtApp_RCCS} 
+    SOURCES ${COLLECTION_SOURCES} ${QtApp_RCC_SRCS}
     HEADERS ${COLLECTION_HDRS}
     MOC ${COLLECTION_MOC_HDRS}
     DEPS_PKGCONFIG base-types base-lib frame_helper
