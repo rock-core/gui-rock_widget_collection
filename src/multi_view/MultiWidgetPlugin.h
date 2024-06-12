@@ -2,13 +2,14 @@
 #ifndef MULTIWIDGETPLUGIN_H
 #define MULTIWIDGETPLUGIN_H 
 
-#include <QtGui/QtGui>
+#include <QtWidgets>
 #include <QtUiPlugin/QDesignerCustomWidgetInterface>
 
 class MultiWidgetPlugin : public QObject , public QDesignerCustomWidgetInterface
 {
   Q_OBJECT
-
+  Q_INTERFACES(QDesignerCustomWidgetInterface)
+  
  public:
    MultiWidgetPlugin(QObject *parent = 0);
    virtual ~MultiWidgetPlugin();

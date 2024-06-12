@@ -4,7 +4,7 @@
 #include <stdlib.h>
 
 #include <QtCore>
-#include <QtGui>
+#include <QtWidgets>
 #include <QtOpenGL/QGLWidget>
 #include <QApplication>
 

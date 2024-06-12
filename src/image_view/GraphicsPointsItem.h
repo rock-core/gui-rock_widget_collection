@@ -1,7 +1,7 @@
 #ifndef GRAPHICSPOINTSITEM_H__
 #define GRAPHICSPOINTSITEM_H__
 
-#include <QtGui>
+#include <QtWidgets>
 #include <QtCore>
 #include <QGraphicsItem>
 

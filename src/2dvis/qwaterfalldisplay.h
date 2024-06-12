@@ -3,7 +3,7 @@
 
 #include <QtWidgets>
 
-#include <QDesignerExportWidget>
+#include <QtUiPlugin/QDesignerExportWidget>
 
 #include <list>
 #include <vector>

@@ -2,7 +2,7 @@
 #ifndef _COMPASSPLUGIN_H
 #define _COMPASSPLUGIN_H
 
-#include <QtGui>
+#include <QtWidgets>
 #include <QtUiPlugin/QDesignerCustomWidgetInterface>
 
 class CompassPlugin : public QObject , public QDesignerCustomWidgetInterface

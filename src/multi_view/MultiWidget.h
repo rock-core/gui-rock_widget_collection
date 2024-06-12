@@ -8,7 +8,7 @@
 class QDESIGNER_WIDGET_EXPORT MultiWidget : public PaintWidget 
 {
 	Q_OBJECT
-  Q_CLASSINFO("Author", "Matthias Goldhoorn")
+    Q_CLASSINFO("Author", "Matthias Goldhoorn")
 	Q_PROPERTY(bool hideWhenMinimized READ isHiddenWhenMinimized WRITE hideWhenMin USER false)
 	Q_PROPERTY(QString minimizedLabel READ getMinimizedLabel WRITE setMinimizedLabel)
 

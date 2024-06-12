@@ -4,7 +4,7 @@
 
 #include <QString>
 #include <QList>
-#include <QDesignerExportWidget>
+#include <QtUiPlugin/QDesignerExportWidget>
 #include <QWidget>
 
 #include <iostream>

@@ -2,13 +2,13 @@
 #ifndef RANGEVIEWPLUGIN_H
 #define RANGEVIEWPLUGIN_H 
 
-#include <QtGui/QtGui>
+#include <QtWidgets>
 #include <QtUiPlugin/QDesignerCustomWidgetInterface>
 
 class RangeViewPlugin : public QObject , public QDesignerCustomWidgetInterface
 {
   Q_OBJECT
-
+  Q_INTERFACES(QDesignerCustomWidgetInterface)
  public:
    RangeViewPlugin(QObject *parent = 0);
    virtual ~RangeViewPlugin();
