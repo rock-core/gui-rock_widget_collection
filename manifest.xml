@@ -13,6 +13,9 @@
   <depend package="vtk-qt4" optional="1"/>
   <depend package="qt5" optional="1" />
   <depend package="qt5-opengl" optional="1" />
+  <depend package="qt5-designer" optional="1" />
+  <!-- including qt5-designer for the designer library;
+       for qt4, the designer library is already part of qt4 -->
   <depend package="qt4" optional="1" />
   <depend package="qt4-opengl" optional="1" />
   <versioncontrol type="git" url="" />
