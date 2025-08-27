@@ -17,6 +17,7 @@ rock_qt_vizkit_widget(
 rock_qt_executable(
 		TARGETPREFIX testWidget
 		QT4_SUFFIX ""
+		MISSINGQTDEPS_NOBUILD
 		SOURCES test.cpp
 		DEPS_QT stream_aligner_widget
 		MOC test.hpp)
