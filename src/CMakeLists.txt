@@ -2,6 +2,8 @@
 rock_find_qt5(OPTIONAL Widgets PrintSupport OpenGL Gui Designer UiPlugin)
 rock_find_qt4(OPTIONAL QtCore QtGui QtOpengl QtDesigner)
 
+include(RockQt)
+
 option(USE_VTK "Use VTK for additional Widgets" FALSE)
 option(USE_GST "Use GStreamer in GstImageView" OFF)
 
@@ -149,16 +151,23 @@ if (USE_VTK)
 endif()
 
 SET(QtApp_RCCS resources.qrc)
+set(QT5_EXTRA_DEPS)
+set(QT5_EXTRA_LIBS)
+set(QT5_COLLECTION_SOURCES)
+set(QT5_COLLECTION_MOC_HDRS)
+set(QT5_COLLECTION_HDRS)
+set(Qt5App_RCC_SRCS)
+set(QT4_EXTRA_DEPS)
+set(QT4_EXTRA_LIBS)
+set(QT4_COLLECTION_SOURCES)
+set(QT4_COLLECTION_MOC_HDRS)
+set(QT4_COLLECTION_HDRS)
+set(Qt4App_RCC_SRCS)
+
 if(ROCK_QT_VERSION_5)
     QT5_ADD_RESOURCES(Qt5App_RCC_SRCS ${QtApp_RCCS})
 
     find_package(QWT)
-
-    set(QT5_EXTRA_DEPS ${EXTRA_DEPS})
-    set(QT5_EXTRA_LIBS)
-    set(QT5_COLLECTION_SOURCES ${COLLECTION_SOURCES})
-    set(QT5_COLLECTION_MOC_HDRS ${COLLECTION_MOC_HDRS})
-    set(QT5_COLLECTION_HDRS ${COLLECTION_HDRS})
 
     if (QWT_FOUND)
         list(APPEND QT5_EXTRA_DEPS QWT)
@@ -178,8 +187,8 @@ if(ROCK_QT_VERSION_5)
     endif()
 
     if (VTK_FOUND AND VTK_QT_VERSION EQUAL 5)
-        list(APPEND QT5_EXTRA_DEPS VTK)
-        list(APPEND QT5_EXTRA_LIBS)
+        list(APPEND QT5_EXTRA_DEPS VTK ${VTK_DEPS})
+        list(APPEND QT5_EXTRA_LIBS ${VTK_LIBS})
         list(APPEND QT5_COLLECTION_MOC_HDRS
             vtk/sonar_display/SonarDisplay.h
             vtk/sonar_display/SonarDisplayPlugin.h
@@ -197,34 +206,11 @@ if(ROCK_QT_VERSION_5)
             vtk/vectorfield3D/vectorfield3DPlugin.cc
         )
     endif()
-
-    rock_vizkit_widget(rock_widget_collection-qt5 SHARED
-        SOURCES ${QT5_COLLECTION_SOURCES} ${Qt5App_RCC_SRCS}
-        HEADERS ${QT5_COLLECTION_HDRS}
-        MOC5 ${QT5_COLLECTION_MOC_HDRS}
-        DEPS_PKGCONFIG base-types base-lib frame_helper
-        DEPS_CMAKE ${VTK_DEPS} ${QT5_EXTRA_DEPS}
-        LIBS ${QT5_EXTRA_LIBS} ${VTK_LIBS} GLU Qt5::Widgets Qt5::PrintSupport Qt5::OpenGL Qt5::Designer Qt5::UiPlugin Qt5::Gui
-        )
-
-    if (QWT_FOUND)
-        target_compile_definitions(rock_widget_collection-qt5 PRIVATE -DUSE_QWT)
-    endif()
-    if (VTK_FOUND AND VTK_QT_VERSION EQUAL 5)
-        target_compile_definitions(rock_widget_collection-qt5 PRIVATE -DUSE_VTK)
-    endif()
 endif()
-
 if(ROCK_QT_VERSION_4)
     QT4_ADD_RESOURCES(Qt4App_RCC_SRCS ${QtApp_RCCS})
 
     find_package(QWT_QT4)
-
-    set(QT4_EXTRA_DEPS ${EXTRA_DEPS})
-    set(QT4_EXTRA_LIBS)
-    set(QT4_COLLECTION_SOURCES ${COLLECTION_SOURCES})
-    set(QT4_COLLECTION_MOC_HDRS ${COLLECTION_MOC_HDRS})
-    set(QT4_COLLECTION_HDRS ${COLLECTION_HDRS})
 
     if (QWT_QT4_FOUND)
         list(APPEND QT4_EXTRA_DEPS QWT_QT4)
@@ -244,8 +230,8 @@ if(ROCK_QT_VERSION_4)
     endif()
 
     if (VTK_FOUND AND VTK_QT_VERSION EQUAL 4)
-        list(APPEND QT4_EXTRA_DEPS VTK)
-        list(APPEND QT4_EXTRA_LIBS vtkftgl vtkVolumeRendering vtkRendering vtkCommon vtkFiltering vtkIO vtkGraphics QVTK)
+        list(APPEND QT4_EXTRA_DEPS VTK ${VTK_DEPS})
+        list(APPEND QT4_EXTRA_LIBS vtkftgl vtkVolumeRendering vtkRendering vtkCommon vtkFiltering vtkIO vtkGraphics QVTK ${VTK_LIBS})
         list(APPEND QT4_COLLECTION_MOC_HDRS
             vtk/sonar_display/SonarDisplay.h
             vtk/sonar_display/SonarDisplayPlugin.h
@@ -263,16 +249,39 @@ if(ROCK_QT_VERSION_4)
             vtk/vectorfield3D/vectorfield3DPlugin.cc
         )
     endif()
+endif()
 
-    rock_vizkit_widget(rock_widget_collection SHARED
-        SOURCES ${QT4_COLLECTION_SOURCES} ${Qt4App_RCC_SRCS}
-        HEADERS ${QT4_COLLECTION_HDRS}
-        MOC ${QT4_COLLECTION_MOC_HDRS}
-        DEPS_PKGCONFIG base-types base-lib frame_helper
-        DEPS_CMAKE ${VTK_DEPS} ${QT4_EXTRA_DEPS}
-        LIBS ${QT4_EXTRA_LIBS} ${VTK_LIBS} GLU Qt4::QtCore Qt4::QtGui Qt4::QtOpenGL Qt4::QtDesigner
-        )
+rock_qt_vizkit_widget(
+    TARGETPREFIX rock_widget_collection
+    QT4_SUFFIX ""
+    MISSINGQTDEPS_NOBUILD
+    SOURCES ${COLLECTION_SOURCES}
+    SOURCES_QT5 ${QT5_COLLECTION_SOURCES} ${Qt5App_RCC_SRCS}
+    SOURCES_QT4 ${QT4_COLLECTION_SOURCES} ${Qt4App_RCC_SRCS}
+    HEADERS ${COLLECTION_HDRS}
+    HEADERS_QT5 ${QT5_COLLECTION_HDRS}
+    HEADERS_QT4 ${QT4_COLLECTION_HDRS}
+    MOC ${COLLECTION_MOC_HDRS}
+    MOC_QT5 ${QT5_COLLECTION_MOC_HDRS}
+    MOC_QT4 ${QT4_COLLECTION_MOC_HDRS}
+    DEPS_PKGCONFIG base-types base-lib frame_helper
+    DEPS_CMAKE ${EXTRA_DEPS}
+    DEPS_CMAKE_QT5 ${QT5_EXTRA_DEPS}
+    DEPS_CMAKE_QT4 ${QT4_EXTRA_DEPS}
+    LIBS GLU
+    LIBS_QT5 ${QT5_EXTRA_LIBS} Qt5::Widgets Qt5::PrintSupport Qt5::OpenGL Qt5::Designer Qt5::UiPlugin Qt5::Gui
+    LIBS_QT4 ${QT4_EXTRA_LIBS} Qt4::QtCore Qt4::QtGui Qt4::QtOpenGL Qt4::QtDesigner
+    )
 
+if(TARGET rock_widget_collection-qt5)
+    if (QWT_FOUND)
+        target_compile_definitions(rock_widget_collection-qt5 PRIVATE -DUSE_QWT)
+    endif()
+    if (VTK_FOUND AND VTK_QT_VERSION EQUAL 5)
+        target_compile_definitions(rock_widget_collection-qt5 PRIVATE -DUSE_VTK)
+    endif()
+endif()
+if(TARGET rock_widget_collection)
     if (QWT_QT4_FOUND)
         target_compile_definitions(rock_widget_collection PRIVATE -DUSE_QWT)
     endif()
