@@ -49,7 +49,6 @@ Vectorfield3D::Vectorfield3D(QWidget *parent)
 #if VTK_MAJOR_VERSION < 6
   glyph->SetInput(vectorfield);
   glyph->SetSource(arrow->GetOutput());
-  glyph->SetSource(arrow->GetOutput());
 #else
   glyph->SetInputData(vectorfield);
   glyph->SetSourceData(arrow->GetOutput());
