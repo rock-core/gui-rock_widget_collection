@@ -98,11 +98,7 @@ endif ()
 
 # handle the QUIETLY and REQUIRED arguments
 include ( FindPackageHandleStandardArgs )
-if ( CMAKE_VERSION LESS 2.8.3 )
-  find_package_handle_standard_args( QWT DEFAULT_MSG QWT_LIBRARY QWT_INCLUDE_DIR _QWT_VERSION_MATCH )
-else ()
-  find_package_handle_standard_args( QWT REQUIRED_VARS QWT_LIBRARY QWT_INCLUDE_DIR _QWT_VERSION_MATCH VERSION_VAR QWT_VERSION_STRING )
-endif ()
+find_package_handle_standard_args( QWT REQUIRED_VARS QWT_LIBRARY QWT_INCLUDE_DIR _QWT_VERSION_MATCH VERSION_VAR QWT_VERSION_STRING )
 
 
 mark_as_advanced (
