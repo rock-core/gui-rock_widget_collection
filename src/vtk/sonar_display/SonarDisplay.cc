@@ -14,7 +14,6 @@
 #include <vtkPolyData.h>
 #include <vtkXYPlotActor.h>
 #include <vtkStructuredGrid.h>
-#include <vtkStructuredGridToPolyDataFilter.h>
 #include <vtkStructuredGridGeometryFilter.h>
 #include <vtkDataSetMapper.h>
 #include <vtkStructuredPoints.h>
@@ -153,7 +152,11 @@ void SonarDisplay::setPlotData(int id)
     vtkSmartPointer<vtkDataObject> data = vtkSmartPointer<vtkDataObject>::New();
     field->AddArray(sonar_data[id]);
     data->SetFieldData(field);
+#if VTK_MAJOR_VERSION < 6
     plot_actor->RemoveAllInputs();
+#else
+    plot_actor->RemoveAllDataSetInputConnections();
+#endif
     plot_actor->AddDataObjectInput(data);
 }
 bool SonarDisplay::isPlotVisible()
@@ -257,7 +260,11 @@ void SonarDisplay::setUpSonar(int number_of_beams, int number_of_bins,
     for(;iter != sonar_grid.end(); ++iter)
     {
         vtkSmartPointer<vtkStructuredGridGeometryFilter> filter = vtkSmartPointer<vtkStructuredGridGeometryFilter>::New();
+#if VTK_MAJOR_VERSION < 6
         filter->SetInputConnection((*iter)->GetProducerPort());
+#else
+        filter->SetInputData(*iter);
+#endif
         vtkSmartPointer<vtkPolyDataMapper> mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
         mapper->SetInputConnection(filter->GetOutputPort());
         mapper->SetLookupTable(lut);
@@ -279,7 +286,11 @@ void SonarDisplay::setUpSonar(int number_of_beams, int number_of_bins,
 
     //wireframe
     vtkDataSetMapper *set_mapper = vtkDataSetMapper::New();
+#if VTK_MAJOR_VERSION < 6
     set_mapper->SetInputConnection(sonar_wireframe->GetProducerPort());
+#else
+    set_mapper->SetInputData(sonar_wireframe);
+#endif
     set_mapper->ScalarVisibilityOff();
 
     vtkSmartPointer<vtkActor> wireframe_actor = vtkSmartPointer<vtkActor>::New();
@@ -432,7 +443,7 @@ void SonarDisplay::addSonarBeam(float bearing,int number_of_bins,const char* pbu
         sonar_data[start_index]->Modified();
     }while(start_index != end_index && ++start_index);
 
-    if(last_index%3 && last_index != index && abs((*oldest)->GetMTime() - sonar_data[end_index]->GetMTime()) > 10e4)
+    if(last_index%3 && last_index != index && abs((long long)(*oldest)->GetMTime() - (long long)sonar_data[end_index]->GetMTime()) > 10e4)
     {
         void* p  = (*oldest)->WriteVoidPointer(0,number_of_bins);
         memset(p,0,number_of_bins);

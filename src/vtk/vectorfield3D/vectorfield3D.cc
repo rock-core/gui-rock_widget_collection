@@ -46,8 +46,13 @@ Vectorfield3D::Vectorfield3D(QWidget *parent)
 
   // the actual glyph to vizualize a vector
   vtkSmartPointer<vtkGlyph3D> glyph = vtkSmartPointer<vtkGlyph3D>::New();
+#if VTK_MAJOR_VERSION < 6
   glyph->SetInput(vectorfield);
-  glyph->SetSource(arrow->GetOutput()); 
+  glyph->SetSource(arrow->GetOutput());
+#else
+  glyph->SetInputData(vectorfield);
+  glyph->SetSourceData(arrow->GetOutput());
+#endif
   glyph->SetVectorModeToUseVector();
   glyph->SetColorModeToColorByVector();
   glyph->SetScaleModeToDataScalingOff();

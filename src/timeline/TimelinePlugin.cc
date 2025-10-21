@@ -3,7 +3,9 @@
 TimelinePlugin::TimelinePlugin(QObject *parent) 
     : QObject(parent)
 {
-    initialized = false;
+     Q_INIT_RESOURCE(resources);
+
+     initialized = false;
 }
 
 TimelinePlugin::~TimelinePlugin()

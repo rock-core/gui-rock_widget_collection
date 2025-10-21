@@ -48,7 +48,7 @@ void RockSlider::paint_p(QPainter *painter)
     QRect gr = style()->subControlRect(QStyle::CC_Slider, &opt, QStyle::SC_SliderGroove, this);
 //    QRect sr = style()->subControlRect(QStyle::CC_Slider, &opt, QStyle::SC_SliderHandle, this);
     
-    for(int i=0;i<markers.size();i++){
+    for(unsigned int i=0;i<markers.size();i++){
         int pos = rangeValueToPixelPos(markers[i].position);
         if(orientation() == Qt::Horizontal){
             painter->drawLine(pos,gr.top(),pos,gr.bottom());

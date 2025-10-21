@@ -2,10 +2,14 @@
 #ifndef PLOT2D_H
 #define	PLOT2D_H
 
-#include <QtCore/QString>
-#include <QtCore/QList>
+#include <QString>
+#include <QList>
+#if QT_VERSION >= 0x050000
+#include <QtUiPlugin/QDesignerExportWidget>
+#else
 #include <QtDesigner/QDesignerExportWidget>
-#include <QtGui/QWidget>
+#endif
+#include <QWidget>
 
 #include <iostream>
 #include <vector>

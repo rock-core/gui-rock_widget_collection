@@ -2,7 +2,11 @@
 #define SONARWIDGETPLUGIN_H
 
 #include <QtGui>
+#if QT_VERSION >= 0x050000
+#include <QtUiPlugin/QDesignerCustomWidgetInterface>
+#else
 #include <QtDesigner/QDesignerCustomWidgetInterface>
+#endif
 
 class SonarWidgetPlugin : public QObject, public QDesignerCustomWidgetInterface
 {

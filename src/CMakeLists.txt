@@ -1,5 +1,8 @@
 
-find_package(Qt4 REQUIRED QtCore QtGui QtOpengl QtDesigner )
+rock_find_qt5(OPTIONAL Widgets PrintSupport OpenGL Gui Designer UiPlugin)
+rock_find_qt4(OPTIONAL QtCore QtGui QtOpengl QtDesigner)
+
+include(RockQt)
 
 option(USE_VTK "Use VTK for additional Widgets" FALSE)
 option(USE_GST "Use GStreamer in GstImageView" OFF)
@@ -22,9 +25,9 @@ endif()
 
 
 include_directories(multi_view/ generic_widgets/)
-include_directories(${QT_INCLUDE_DIR})
-include_directories(${QT_QTCORE_INCLUDE_DIR})
-include_directories(${QT_QTGUI_INCLUDE_DIR})
+#include_directories(${QT_INCLUDE_DIR})
+#include_directories(${QT_QTCORE_INCLUDE_DIR})
+#include_directories(${QT_QTGUI_INCLUDE_DIR})
 
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
@@ -142,76 +145,180 @@ list(APPEND COLLECTION_SOURCES
     artificial_horizon/artificialhorizon.cc
     artificial_horizon/artificialhorizonplugin.cc)
     
+
 if (USE_VTK)
     find_package(VTK)
-    list(APPEND COLLECTION_MOC_HDRS
-        vtk/sonar_display/SonarDisplay.h
-        vtk/sonar_display/SonarDisplayPlugin.h
-        vtk/vectorfield3D/vectorfield3D.h
-        vtk/vectorfield3D/vectorfield3DPlugin.h
-    )
-    list(APPEND COLLECTION_HDRS
-        vtk/sonar_display/SonarDisplay.h
-        vtk/vectorfield3D/vectorfield3D.h
-    )
-    list(APPEND COLLECTION_SOURCES
-      vtk/sonar_display/SonarDisplay.cc 
-      vtk/sonar_display/SonarDisplayPlugin.cc
-      vtk/vectorfield3D/vectorfield3D.cc
-      vtk/vectorfield3D/vectorfield3DPlugin.cc
-    )
-    set(VTK_DEPS VTK)
-    set(VTK_LIBS vtkftgl vtkVolumeRendering vtkRendering vtkCommon vtkFiltering vtkIO vtkGraphics QVTK )
-    add_definitions(-DUSE_VTK)
 endif()
 
 SET(QtApp_RCCS resources.qrc)
-QT4_ADD_RESOURCES(QtApp_RCC_SRCS ${QtApp_RCCS})
+set(QT5_EXTRA_DEPS)
+set(QT5_EXTRA_LIBS)
+set(QT5_COLLECTION_SOURCES)
+set(QT5_COLLECTION_MOC_HDRS)
+set(QT5_COLLECTION_HDRS)
+set(Qt5App_RCC_SRCS)
+set(QT4_EXTRA_DEPS)
+set(QT4_EXTRA_LIBS)
+set(QT4_COLLECTION_SOURCES)
+set(QT4_COLLECTION_MOC_HDRS)
+set(QT4_COLLECTION_HDRS)
+set(Qt4App_RCC_SRCS)
 
-find_package(QWT)
+if(ROCK_QT_VERSION_5)
+    QT5_ADD_RESOURCES(Qt5App_RCC_SRCS ${QtApp_RCCS})
 
-if (QWT_FOUND)
-    add_definitions(-DUSE_QWT)
-    list(APPEND EXTRA_DEPS QWT)
-    list(APPEND COLLECTION_SOURCES
-        artificial_horizon/compass.cc
-        artificial_horizon/compassplugin.cc
-        artificial_horizon/orientation.cc
-        artificial_horizon/orientationplugin.cc)
-    list(APPEND COLLECTION_MOC_HDRS
-        artificial_horizon/compass.h
-        artificial_horizon/compassplugin.h
-        artificial_horizon/orientation.h
-        artificial_horizon/orientationplugin.h)
-    list(APPEND COLLECTION_HDRS
-        artificial_horizon/orientation.h
-        artificial_horizon/compass.h)
+    find_package(QWT)
+
+    if (QWT_FOUND)
+        list(APPEND QT5_EXTRA_DEPS QWT)
+        list(APPEND QT5_COLLECTION_SOURCES
+            artificial_horizon/compass.cc
+            artificial_horizon/compassplugin.cc
+            artificial_horizon/orientation.cc
+            artificial_horizon/orientationplugin.cc)
+        list(APPEND QT5_COLLECTION_MOC_HDRS
+            artificial_horizon/compass.h
+            artificial_horizon/compassplugin.h
+            artificial_horizon/orientation.h
+            artificial_horizon/orientationplugin.h)
+        list(APPEND QT5_COLLECTION_HDRS
+            artificial_horizon/orientation.h
+            artificial_horizon/compass.h)
+    endif()
+
+    if (VTK_FOUND AND VTK_QT_VERSION EQUAL 5)
+        list(APPEND QT5_EXTRA_DEPS VTK ${VTK_DEPS})
+        list(APPEND QT5_EXTRA_LIBS ${VTK_LIBS})
+        list(APPEND QT5_COLLECTION_MOC_HDRS
+            vtk/sonar_display/SonarDisplay.h
+            vtk/sonar_display/SonarDisplayPlugin.h
+            vtk/vectorfield3D/vectorfield3D.h
+            vtk/vectorfield3D/vectorfield3DPlugin.h
+        )
+        list(APPEND QT5_COLLECTION_HDRS
+            vtk/sonar_display/SonarDisplay.h
+            vtk/vectorfield3D/vectorfield3D.h
+        )
+        list(APPEND QT5_COLLECTION_SOURCES
+            vtk/sonar_display/SonarDisplay.cc
+            vtk/sonar_display/SonarDisplayPlugin.cc
+            vtk/vectorfield3D/vectorfield3D.cc
+            vtk/vectorfield3D/vectorfield3DPlugin.cc
+        )
+    endif()
+endif()
+if(ROCK_QT_VERSION_4)
+    QT4_ADD_RESOURCES(Qt4App_RCC_SRCS ${QtApp_RCCS})
+
+    find_package(QWT_QT4)
+
+    if (QWT_QT4_FOUND)
+        list(APPEND QT4_EXTRA_DEPS QWT_QT4)
+        list(APPEND QT4_COLLECTION_SOURCES
+            artificial_horizon/compass.cc
+            artificial_horizon/compassplugin.cc
+            artificial_horizon/orientation.cc
+            artificial_horizon/orientationplugin.cc)
+        list(APPEND QT4_COLLECTION_MOC_HDRS
+            artificial_horizon/compass.h
+            artificial_horizon/compassplugin.h
+            artificial_horizon/orientation.h
+            artificial_horizon/orientationplugin.h)
+        list(APPEND QT4_COLLECTION_HDRS
+            artificial_horizon/orientation.h
+            artificial_horizon/compass.h)
+    endif()
+
+    if (VTK_FOUND AND VTK_QT_VERSION EQUAL 4)
+        list(APPEND QT4_EXTRA_DEPS VTK ${VTK_DEPS})
+        list(APPEND QT4_EXTRA_LIBS vtkftgl vtkVolumeRendering vtkRendering vtkCommon vtkFiltering vtkIO vtkGraphics QVTK ${VTK_LIBS})
+        list(APPEND QT4_COLLECTION_MOC_HDRS
+            vtk/sonar_display/SonarDisplay.h
+            vtk/sonar_display/SonarDisplayPlugin.h
+            vtk/vectorfield3D/vectorfield3D.h
+            vtk/vectorfield3D/vectorfield3DPlugin.h
+        )
+        list(APPEND QT4_COLLECTION_HDRS
+            vtk/sonar_display/SonarDisplay.h
+            vtk/vectorfield3D/vectorfield3D.h
+        )
+        list(APPEND QT4_COLLECTION_SOURCES
+            vtk/sonar_display/SonarDisplay.cc
+            vtk/sonar_display/SonarDisplayPlugin.cc
+            vtk/vectorfield3D/vectorfield3D.cc
+            vtk/vectorfield3D/vectorfield3DPlugin.cc
+        )
+    endif()
 endif()
 
-rock_vizkit_widget(rock_widget_collection SHARED
-    SOURCES ${COLLECTION_SOURCES} ${QtApp_RCC_SRCS} 
+rock_qt_vizkit_widget(
+    TARGETPREFIX rock_widget_collection
+    QT4_SUFFIX ""
+    MISSINGQTDEPS_NOBUILD
+    SOURCES ${COLLECTION_SOURCES}
+    SOURCES_QT5 ${QT5_COLLECTION_SOURCES} ${Qt5App_RCC_SRCS}
+    SOURCES_QT4 ${QT4_COLLECTION_SOURCES} ${Qt4App_RCC_SRCS}
     HEADERS ${COLLECTION_HDRS}
+    HEADERS_QT5 ${QT5_COLLECTION_HDRS}
+    HEADERS_QT4 ${QT4_COLLECTION_HDRS}
     MOC ${COLLECTION_MOC_HDRS}
+    MOC_QT5 ${QT5_COLLECTION_MOC_HDRS}
+    MOC_QT4 ${QT4_COLLECTION_MOC_HDRS}
     DEPS_PKGCONFIG base-types base-lib frame_helper
-    DEPS_CMAKE OpenGL ${VTK_DEPS} ${EXTRA_DEPS}
-    LIBS ${QT_QTCORE_LIBRARY} ${VTK_LIBS} ${QT_QTGUI_LIBRARY} ${QT_QTOPENGL_LIBRARY} ${QT_QTDESIGNER_LIBRARY} ${QTGSTREAMER_LIBRARIES} ${QTGSTREAMER_UI_LIBRARIES})
+    DEPS_CMAKE ${EXTRA_DEPS}
+    DEPS_CMAKE_QT5 ${QT5_EXTRA_DEPS}
+    DEPS_CMAKE_QT4 ${QT4_EXTRA_DEPS}
+    LIBS GLU
+    LIBS_QT5 ${QT5_EXTRA_LIBS} Qt5::Widgets Qt5::PrintSupport Qt5::OpenGL Qt5::Designer Qt5::UiPlugin Qt5::Gui
+    LIBS_QT4 ${QT4_EXTRA_LIBS} Qt4::QtCore Qt4::QtGui Qt4::QtOpenGL Qt4::QtDesigner
+    )
+
+if(TARGET rock_widget_collection-qt5)
+    if (QWT_FOUND)
+        target_compile_definitions(rock_widget_collection-qt5 PRIVATE -DUSE_QWT)
+    endif()
+    if (VTK_FOUND AND VTK_QT_VERSION EQUAL 5)
+        target_compile_definitions(rock_widget_collection-qt5 PRIVATE -DUSE_VTK)
+    endif()
+endif()
+if(TARGET rock_widget_collection)
+    if (QWT_QT4_FOUND)
+        target_compile_definitions(rock_widget_collection PRIVATE -DUSE_QWT)
+    endif()
+    if (VTK_FOUND AND VTK_QT_VERSION EQUAL 4)
+        target_compile_definitions(rock_widget_collection PRIVATE -DUSE_VTK)
+    endif()
+endif()
+
 
 add_subdirectory(stream_aligner_widget)
 
-if (USE_VTK)
-    rock_executable(sonarTest sonar_view/sonarTest.cpp
-        DEPS rock_widget_collection
-        NOINSTALL)
+if (USE_VTK AND VTK_FOUND)
+    if (VTK_QT_VERSION EQUAL 4)
+        rock_executable(sonarTest sonar_view/sonarTest.cpp
+            DEPS rock_widget_collection
+            NOINSTALL)
+    endif()
+    if (VTK_QT_VERSION EQUAL 5)
+        rock_executable(sonarTest sonar_view/sonarTest.cpp
+            DEPS rock_widget_collection-qt5
+            NOINSTALL)
+    endif()
 endif()
 
 #rock_executable(timelineTest timeline/main.cpp
 #    DEPS rock_widget_collection
 #    NOINSTALL)
-#
+
+rock_executable(imageviewTest-qt5 image_view/main.cpp
+    DEPS rock_widget_collection-qt5
+    NOINSTALL)
+
 #rock_executable(imageviewTest image_view/main.cpp
 #    DEPS rock_widget_collection
 #    NOINSTALL)
 #
+
 #rock_executable(virtualJoystickTest 
 #    virtual_joystick/main.cpp
 #    DEPS rock_widget_collection

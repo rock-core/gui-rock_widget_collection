@@ -1,14 +1,18 @@
 #ifndef QWATERFALLDISPLAY_H
 #define QWATERFALLDISPLAY_H
 
-#include <QtGui/QFrame>
-#include <QtGui/QColor>
-#include <QtGui/QImage>
-#include <QtCore/QSize>
-#include <QtCore/QList>
-#include <QtGui/QPainter>
+#include <QFrame>
+#include <QColor>
+#include <QImage>
+#include <QSize>
+#include <QList>
+#include <QPainter>
 
+#if QT_VERSION >= 0x050000
+#include <QtUiPlugin/QDesignerExportWidget>
+#else
 #include <QtDesigner/QDesignerExportWidget>
+#endif
 
 #include <list>
 #include <vector>

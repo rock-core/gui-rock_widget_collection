@@ -17,9 +17,9 @@ lineWidth(0),
 penCapStyle(Qt::SquareCap),
 penStyle(Qt::SolidLine),
 m_id(_ID++),
-brender_on_opengl(false),
 position_factor_x(0),
-position_factor_y(0)
+position_factor_y(0),
+brender_on_opengl(false)
 {
  
 }

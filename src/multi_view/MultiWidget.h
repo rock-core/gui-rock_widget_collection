@@ -2,7 +2,11 @@
 #define _MULTI_VIEW_WIDGET_H
 
 #include <PaintWidget.h>
+#if QT_VERSION >= 0x050000
+#include <QtUiPlugin/QDesignerExportWidget>
+#else
 #include <QtDesigner/QDesignerExportWidget>
+#endif
 
 
 class QDESIGNER_WIDGET_EXPORT MultiWidget : public PaintWidget 
@@ -30,7 +34,7 @@ public slots:
 
 		for(QObjectList::const_iterator it = children().begin(); it != children().end(); it++){
 			MultiWidget *child = dynamic_cast<MultiWidget*>(*it);
-			if(child > 0){
+			if(child != 0){
 				child->setActive(isActive);
 			}
 		}

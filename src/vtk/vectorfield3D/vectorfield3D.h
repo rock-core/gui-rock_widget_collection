@@ -14,7 +14,11 @@
 #include <QtCore>
 #include <QString>
 #include <QVTKWidget.h>
+#if QT_VERSION >= 0x050000
+#include <QtUiPlugin/QDesignerExportWidget>
+#else
 #include <QtDesigner/QDesignerExportWidget>
+#endif
 #include <vtkPolyData.h>
 #include <vtkPoints.h>
 #include <vtkFloatArray.h>

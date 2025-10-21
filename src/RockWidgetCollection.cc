@@ -25,7 +25,9 @@
 #include "vtk/vectorfield3D/vectorfield3DPlugin.h"
 #endif
 
+#if QT_VERSION < 0x050000
 Q_EXPORT_PLUGIN2(RockWidgetCollection, RockWidgetCollection)
+#endif
 
 RockWidgetCollection::RockWidgetCollection(QObject *parent)
        : QObject(parent)

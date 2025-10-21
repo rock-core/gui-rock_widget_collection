@@ -9,17 +9,21 @@
 #define	SONARDISPLAY_H
 
 #include <MultiWidget.h>
-#include <QtGui/QWidget>
-#include <QtGui/QPaintEvent>
-#include <QtGui/QPainter>
-#include <QtGui/QImage>
-#include <QtGui/QPen>
-#include <QtCore/QByteArray>
-#include <QtCore/QList>
-#include <QtGui/qfiledialog.h>
-#include <QtGui/QMenu>
-#include <QtCore/QString>
+#include <QWidget>
+#include <QPaintEvent>
+#include <QPainter>
+#include <QImage>
+#include <QPen>
+#include <QByteArray>
+#include <QList>
+#include <QFileDialog>
+#include <QMenu>
+#include <QString>
+#if QT_VERSION >= 0x050000
+#include <QtUiPlugin/QDesignerExportWidget>
+#else
 #include <QtDesigner/QDesignerExportWidget>
+#endif
 
 #include <QVTKWidget.h>
 #include <vtkSmartPointer.h>

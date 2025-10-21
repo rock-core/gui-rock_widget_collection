@@ -4,7 +4,11 @@
 
 #include <QtCore/QString>
 #include <QtCore/QList>
+#if QT_VERSION >= 0x050000
+#include <QtUiPlugin/QDesignerExportWidget>
+#else
 #include <QtDesigner/QDesignerExportWidget>
+#endif
 
 #include <QVTKWidget.h>
 #include <vtkSmartPointer.h>
