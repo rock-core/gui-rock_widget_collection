@@ -11,6 +11,7 @@
 
 #include <base/samples/Frame.hpp>
 #include <base/samples/DistanceImage.hpp>
+#include <base/samples/DepthMap.hpp>
 #include <frame_helper/FrameQImageConverter.h>
 #include "rock_widget_collection/progress_indicator/ProgressIndicator.h"
 
@@ -41,11 +42,11 @@ QT_END_NAMESPACE
  * transformation the image might receive is going to be executed on the overlay as well.
  * For example: The overlays are immune to image rotation or scaling. They simple get scaled
  * and rotated as well.
- * Text overlays, on the other hand, are considered as status information. They are attatched
+ * Text overlays, on the other hand, are considered as status information. They are attached
  * to the widget and do not care about image transformation. Nevertheless, they react to widget
  * transformation, e.g. they keep their alignment to the assigned widget corner.
  * 
- * Overlays -- image- or widget attatched -- may be set persistent or volatile. Volatile overlays
+ * Overlays -- image- or widget attached -- may be set persistent or volatile. Volatile overlays
  * are being removed with the next frame update while persistent overlays stay until you remove
  * them. Currently, you can only remove all (persistent) overlays at once.
  * 
@@ -252,6 +253,7 @@ public slots:
      */
     void setFrame(const base::samples::DistanceImage &frame);
     void setFrame(const base::samples::frame::Frame &frame);
+    void setFrame(const base::samples::DepthMap &frame);
     void setImage(const QImage &image);
     void setRawImage(const QString &mode, int pixel_size, int width, int height,const char* pbuffer, const int size);
     void refresh();
